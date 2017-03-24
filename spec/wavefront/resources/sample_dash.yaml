@@ -1,0 +1,1114 @@
+---
+customer: sysdef
+url: internal_metrics
+name: Internal Metrics
+eventFilterType: BYCHART
+sections:
+- name: About
+  rows:
+  - charts:
+    - name: description
+      sources:
+      - name: New Query
+        query: ''
+        disabled: 
+        scatterPlotSource: Y
+        querybuilderSerialization: '{"_v":1,"metric":"","filters":[[],"and"],"functions":[]}'
+        querybuilderEnabled: true
+        secondaryAxis: 
+        sourceDescription: 
+      units: 
+      base: 0
+      noDefaultEvents: false
+      interpolatePoints: false
+      includeObsoleteMetrics: false
+      description: 
+      chartSettings:
+        type: markdown-widget
+        max: 
+        min: 
+        lineType: 
+        stackType: 
+        expectedDataSpacing: 
+        windowing: full
+        windowSize: 
+        showHosts: 
+        showLabels: 
+        showRawValues: 
+        autoColumnTags: false
+        columnTags: 
+        tagMode: all
+        numTags: 4
+        customTags: []
+        groupBySource: 
+        sortValuesDescending: 
+        y1Max: 
+        y1Min: 
+        y1Units: ''
+        y0ScaleSIBy1024: false
+        y1ScaleSIBy1024: false
+        y0UnitAutoscaling: false
+        y1UnitAutoscaling: false
+        invertDynamicLegendHoverControl: 
+        fixedLegendEnabled: false
+        fixedLegendUseRawStats: false
+        fixedLegendPosition: RIGHT
+        fixedLegendDisplayStats:
+        - CURRENT
+        fixedLegendFilterSort: TOP
+        fixedLegendFilterLimit: 5
+        fixedLegendFilterField: CURRENT
+        fixedLegendHideLabel: 
+        xMax: 
+        xMin: 
+        yMax: 
+        yMin: 
+        timeBasedColoring: 
+        markdownContent: IVt3Zl0oaHR0cHM6Ly93YXZlZnJvbnQtY3VzdG9tZXIuczMuYW1hem9uYXdzLmNvbS93YXZlZnJvbnRfbG9nb19zbWFsbC5wbmcpCgpUaGlzIGRhc2hib2FyZCBzaG93cyB0aGUgc3RhdGUgeW91ciBXYXZlZnJvbnQgSW5zdGFuY2UsIEFnZW50cyBhbmQgQVdTIEV4dGVybmFsIEludGVncmF0aW9ucyB0aGF0IGFyZSBzZW5kaW5nIGRhdGEgdG8gV2F2ZWZyb250LiBJdCBkaXNwbGF5cyB0aGUgb3ZlcmFsbCBkYXRhIHJhdGUsIHRoZSBkZXRhaWxzIGFyb3VuZCBxdWV1ZWQsIGJsb2NrZWQgcG9pbnRzKGlmIGFueSkgYXMgd2VsbCBhcyBhIGJyZWFrZG93biBvZiB0aGUgZGF0YSBieSBzb3VyY2VzIGFuZCBnaXZlcyBmdXJ0aGVyIGluc2lnaHRzIGxpa2UgdG90YWwgdW5pcXVlIG1ldHJpY3MgYW5kIHNvdXJjZXMu
+        sparklineDisplayValueType: 
+        sparklineDisplayColor: 
+        sparklineDisplayVerticalPosition: 
+        sparklineDisplayHorizontalPosition: 
+        sparklineDisplayFontSize: 
+        sparklineDisplayPrefix: 
+        sparklineDisplayPostfix: 
+        sparklineSize: 
+        sparklineLineColor: 
+        sparklineFillColor: 
+        sparklineValueColorMapColors: 
+        sparklineValueColorMapValuesV2: 
+        sparklineValueColorMapValues: 
+        sparklineValueColorMapApplyTo: 
+        sparklineDecimalPrecision: 
+        sparklineValueTextMapText: 
+        sparklineValueTextMapThresholds: 
+      summarization: MEAN
+    - name: latest agent version
+      sources:
+      - name: raw
+        query: max(ts(~agent.build.version))/1000000
+        disabled: true
+        scatterPlotSource: Y
+        querybuilderSerialization: '{"_v":1,"metric":"","filters":[[],"and"],"functions":[]}'
+        querybuilderEnabled: true
+        secondaryAxis: 
+        sourceDescription: ''
+      - name: New Query
+        query: floor(${raw}) + ((${raw} - floor(${raw}))*100)
+        disabled: 
+        scatterPlotSource: Y
+        querybuilderSerialization: '{"_v":1,"metric":"","filters":[[],"and"],"functions":[]}'
+        querybuilderEnabled: true
+        secondaryAxis: 
+        sourceDescription: ''
+      units: " "
+      base: 0
+      noDefaultEvents: false
+      interpolatePoints: false
+      includeObsoleteMetrics: false
+      description: the version of the most up-to-date agent registered with this account
+      chartSettings:
+        type: sparkline
+        max: 
+        min: 
+        lineType: linear
+        stackType: 
+        expectedDataSpacing: 
+        windowing: full
+        windowSize: 
+        showHosts: 
+        showLabels: 
+        showRawValues: 
+        autoColumnTags: false
+        columnTags: 
+        tagMode: all
+        numTags: 4
+        customTags: []
+        groupBySource: 
+        sortValuesDescending: 
+        y1Max: 
+        y1Min: 
+        y1Units: ''
+        y0ScaleSIBy1024: false
+        y1ScaleSIBy1024: false
+        y0UnitAutoscaling: true
+        y1UnitAutoscaling: false
+        invertDynamicLegendHoverControl: 
+        fixedLegendEnabled: false
+        fixedLegendUseRawStats: false
+        fixedLegendPosition: RIGHT
+        fixedLegendDisplayStats:
+        - CURRENT
+        fixedLegendFilterSort: TOP
+        fixedLegendFilterLimit: 5
+        fixedLegendFilterField: CURRENT
+        fixedLegendHideLabel: 
+        xMax: 
+        xMin: 
+        yMax: 
+        yMin: 
+        timeBasedColoring: 
+        markdownContent: 
+        sparklineDisplayValueType: VALUE
+        sparklineDisplayColor: ''
+        sparklineDisplayVerticalPosition: MIDDLE
+        sparklineDisplayHorizontalPosition: MIDDLE
+        sparklineDisplayFontSize: '125'
+        sparklineDisplayPrefix: v
+        sparklineDisplayPostfix: 
+        sparklineSize: BACKGROUND
+        sparklineLineColor: rgba(255,211,211,1)
+        sparklineFillColor: 
+        sparklineValueColorMapColors: 
+        sparklineValueColorMapValuesV2: 
+        sparklineValueColorMapValues: 
+        sparklineValueColorMapApplyTo: TEXT
+        sparklineDecimalPrecision: 2
+        sparklineValueTextMapText: 
+        sparklineValueTextMapThresholds: 
+      summarization: LAST
+    - name: agent(s)
+      sources:
+      - name: raw
+        query: count(ts(~agent.build.version))
+        disabled: 
+        scatterPlotSource: Y
+        querybuilderSerialization: 
+        querybuilderEnabled: false
+        secondaryAxis: 
+        sourceDescription: ''
+      - name: New Query
+        query: floor(${raw}) + ((${raw} - floor(${raw}))*10)
+        disabled: true
+        scatterPlotSource: Y
+        querybuilderSerialization: '{"_v":1,"metric":"","filters":[[],"and"],"functions":[]}'
+        querybuilderEnabled: true
+        secondaryAxis: 
+        sourceDescription: ''
+      units: " "
+      base: 0
+      noDefaultEvents: false
+      interpolatePoints: false
+      includeObsoleteMetrics: false
+      description: the version of the most up-to-date agent registered with this account
+      chartSettings:
+        type: sparkline
+        max: 
+        min: 
+        lineType: linear
+        stackType: 
+        expectedDataSpacing: 
+        windowing: full
+        windowSize: 
+        showHosts: 
+        showLabels: 
+        showRawValues: 
+        autoColumnTags: false
+        columnTags: 
+        tagMode: all
+        numTags: 4
+        customTags: []
+        groupBySource: 
+        sortValuesDescending: 
+        y1Max: 
+        y1Min: 
+        y1Units: ''
+        y0ScaleSIBy1024: false
+        y1ScaleSIBy1024: false
+        y0UnitAutoscaling: true
+        y1UnitAutoscaling: false
+        invertDynamicLegendHoverControl: 
+        fixedLegendEnabled: false
+        fixedLegendUseRawStats: false
+        fixedLegendPosition: RIGHT
+        fixedLegendDisplayStats:
+        - CURRENT
+        fixedLegendFilterSort: TOP
+        fixedLegendFilterLimit: 5
+        fixedLegendFilterField: CURRENT
+        fixedLegendHideLabel: 
+        xMax: 
+        xMin: 
+        yMax: 
+        yMin: 
+        timeBasedColoring: 
+        markdownContent: 
+        sparklineDisplayValueType: VALUE
+        sparklineDisplayColor: ''
+        sparklineDisplayVerticalPosition: MIDDLE
+        sparklineDisplayHorizontalPosition: MIDDLE
+        sparklineDisplayFontSize: '125'
+        sparklineDisplayPrefix: 
+        sparklineDisplayPostfix: 
+        sparklineSize: BACKGROUND
+        sparklineLineColor: rgba(255,211,211,1)
+        sparklineFillColor: 
+        sparklineValueColorMapColors: 
+        sparklineValueColorMapValuesV2: 
+        sparklineValueColorMapValues: 
+        sparklineValueColorMapApplyTo: TEXT
+        sparklineDecimalPrecision: 0
+        sparklineValueTextMapText: 
+        sparklineValueTextMapThresholds: 
+      summarization: MAX
+    heightFactor: 100
+- name: Point Statistics
+  rows:
+  - charts:
+    - name: Point Rate
+      sources:
+      - name: New Query
+        query: sum(deriv(ts(~collector.points.valid)))
+        disabled: 
+        scatterPlotSource: Y
+        querybuilderSerialization: 
+        querybuilderEnabled: false
+        secondaryAxis: 
+        sourceDescription: ''
+      units: points/s
+      base: 0
+      noDefaultEvents: false
+      interpolatePoints: false
+      includeObsoleteMetrics: false
+      description: 
+      chartSettings:
+        type: line
+        max: 
+        min: 
+        lineType: linear
+        stackType: zero
+        expectedDataSpacing: 
+        windowing: full
+        windowSize: 
+        showHosts: 
+        showLabels: 
+        showRawValues: false
+        autoColumnTags: false
+        columnTags: 
+        tagMode: all
+        numTags: 4
+        customTags: 
+        groupBySource: 
+        sortValuesDescending: 
+        y1Max: 
+        y1Min: 
+        y1Units: 
+        y0ScaleSIBy1024: 
+        y1ScaleSIBy1024: 
+        y0UnitAutoscaling: 
+        y1UnitAutoscaling: 
+        invertDynamicLegendHoverControl: 
+        fixedLegendEnabled: 
+        fixedLegendUseRawStats: 
+        fixedLegendPosition: 
+        fixedLegendDisplayStats: 
+        fixedLegendFilterSort: 
+        fixedLegendFilterLimit: 
+        fixedLegendFilterField: 
+        fixedLegendHideLabel: 
+        xMax: 
+        xMin: 
+        yMax: 
+        yMin: 
+        timeBasedColoring: 
+        markdownContent: 
+        sparklineDisplayValueType: 
+        sparklineDisplayColor: 
+        sparklineDisplayVerticalPosition: 
+        sparklineDisplayHorizontalPosition: 
+        sparklineDisplayFontSize: 
+        sparklineDisplayPrefix: 
+        sparklineDisplayPostfix: 
+        sparklineSize: 
+        sparklineLineColor: 
+        sparklineFillColor: 
+        sparklineValueColorMapColors: 
+        sparklineValueColorMapValuesV2: 
+        sparklineValueColorMapValues: 
+        sparklineValueColorMapApplyTo: 
+        sparklineDecimalPrecision: 
+        sparklineValueTextMapText: 
+        sparklineValueTextMapThresholds: 
+      summarization: MEAN
+    - name: smoothed point rate (6hr avg)
+      sources:
+      - name: smoothed rate
+        query: mavg(6h,sum(align(1200s, mean, rate(ts(~collector.points.valid)))))
+        disabled: 
+        scatterPlotSource: Y
+        querybuilderSerialization: 
+        querybuilderEnabled: false
+        secondaryAxis: 
+        sourceDescription: ''
+      units: points/s
+      base: 0
+      noDefaultEvents: false
+      interpolatePoints: false
+      includeObsoleteMetrics: false
+      description: 
+      chartSettings:
+        type: line
+        max: 
+        min: 
+        lineType: linear
+        stackType: 
+        expectedDataSpacing: 
+        windowing: full
+        windowSize: 
+        showHosts: 
+        showLabels: 
+        showRawValues: 
+        autoColumnTags: false
+        columnTags: 
+        tagMode: all
+        numTags: 4
+        customTags: []
+        groupBySource: 
+        sortValuesDescending: 
+        y1Max: 
+        y1Min: 
+        y1Units: ''
+        y0ScaleSIBy1024: false
+        y1ScaleSIBy1024: false
+        y0UnitAutoscaling: false
+        y1UnitAutoscaling: false
+        invertDynamicLegendHoverControl: 
+        fixedLegendEnabled: false
+        fixedLegendUseRawStats: false
+        fixedLegendPosition: RIGHT
+        fixedLegendDisplayStats:
+        - CURRENT
+        fixedLegendFilterSort: TOP
+        fixedLegendFilterLimit: 5
+        fixedLegendFilterField: CURRENT
+        fixedLegendHideLabel: 
+        xMax: 
+        xMin: 
+        yMax: 
+        yMin: 
+        timeBasedColoring: 
+        markdownContent: 
+        sparklineDisplayValueType: 
+        sparklineDisplayColor: 
+        sparklineDisplayVerticalPosition: 
+        sparklineDisplayHorizontalPosition: 
+        sparklineDisplayFontSize: 
+        sparklineDisplayPrefix: 
+        sparklineDisplayPostfix: 
+        sparklineSize: 
+        sparklineLineColor: 
+        sparklineFillColor: 
+        sparklineValueColorMapColors: 
+        sparklineValueColorMapValuesV2: 
+        sparklineValueColorMapValues: 
+        sparklineValueColorMapApplyTo: 
+        sparklineDecimalPrecision: 
+        sparklineValueTextMapText: 
+        sparklineValueTextMapThresholds: 
+      summarization: MEAN
+    heightFactor: 100
+  - charts:
+    - name: overall blocked points
+      sources:
+      - name: blocked points
+        query: deriv(ts(~agent.points.*.blocked))
+        disabled: 
+        scatterPlotSource: Y
+        querybuilderSerialization: 
+        querybuilderEnabled: false
+        secondaryAxis: 
+        sourceDescription: ''
+      units: ''
+      base: 0
+      noDefaultEvents: false
+      interpolatePoints: false
+      includeObsoleteMetrics: false
+      description: 
+      chartSettings:
+        type: line
+        max: 
+        min: 
+        lineType: step-before
+        stackType: zero
+        expectedDataSpacing: 
+        windowing: full
+        windowSize: 
+        showHosts: 
+        showLabels: 
+        showRawValues: 
+        autoColumnTags: false
+        columnTags: 
+        tagMode: all
+        numTags: 4
+        customTags: []
+        groupBySource: 
+        sortValuesDescending: 
+        y1Max: 
+        y1Min: 
+        y1Units: ''
+        y0ScaleSIBy1024: false
+        y1ScaleSIBy1024: false
+        y0UnitAutoscaling: false
+        y1UnitAutoscaling: false
+        invertDynamicLegendHoverControl: 
+        fixedLegendEnabled: false
+        fixedLegendUseRawStats: false
+        fixedLegendPosition: RIGHT
+        fixedLegendDisplayStats:
+        - CURRENT
+        fixedLegendFilterSort: TOP
+        fixedLegendFilterLimit: 5
+        fixedLegendFilterField: CURRENT
+        fixedLegendHideLabel: 
+        xMax: 
+        xMin: 
+        yMax: 
+        yMin: 
+        timeBasedColoring: 
+        markdownContent: 
+        sparklineDisplayValueType: 
+        sparklineDisplayColor: 
+        sparklineDisplayVerticalPosition: 
+        sparklineDisplayHorizontalPosition: 
+        sparklineDisplayFontSize: 
+        sparklineDisplayPrefix: 
+        sparklineDisplayPostfix: 
+        sparklineSize: 
+        sparklineLineColor: 
+        sparklineFillColor: 
+        sparklineValueColorMapColors: 
+        sparklineValueColorMapValuesV2: 
+        sparklineValueColorMapValues: 
+        sparklineValueColorMapApplyTo: 
+        sparklineDecimalPrecision: 
+        sparklineValueTextMapText: 
+        sparklineValueTextMapThresholds: 
+      summarization: MAX
+    - name: overall queued points
+      sources:
+      - name: queued points
+        query: sum(rate(ts(~agent.points.*.queued)))
+        disabled: 
+        scatterPlotSource: Y
+        querybuilderSerialization: 
+        querybuilderEnabled: false
+        secondaryAxis: 
+        sourceDescription: 
+      units: ''
+      base: 0
+      noDefaultEvents: false
+      interpolatePoints: false
+      includeObsoleteMetrics: false
+      description: 
+      chartSettings:
+        type: line
+        max: 
+        min: 
+        lineType: linear
+        stackType: 
+        expectedDataSpacing: 
+        windowing: full
+        windowSize: 
+        showHosts: 
+        showLabels: 
+        showRawValues: 
+        autoColumnTags: false
+        columnTags: 
+        tagMode: all
+        numTags: 4
+        customTags: []
+        groupBySource: 
+        sortValuesDescending: 
+        y1Max: 
+        y1Min: 
+        y1Units: ''
+        y0ScaleSIBy1024: false
+        y1ScaleSIBy1024: false
+        y0UnitAutoscaling: false
+        y1UnitAutoscaling: false
+        invertDynamicLegendHoverControl: 
+        fixedLegendEnabled: false
+        fixedLegendUseRawStats: false
+        fixedLegendPosition: RIGHT
+        fixedLegendDisplayStats:
+        - CURRENT
+        fixedLegendFilterSort: TOP
+        fixedLegendFilterLimit: 5
+        fixedLegendFilterField: CURRENT
+        fixedLegendHideLabel: 
+        xMax: 
+        xMin: 
+        yMax: 
+        yMin: 
+        timeBasedColoring: 
+        markdownContent: 
+        sparklineDisplayValueType: 
+        sparklineDisplayColor: 
+        sparklineDisplayVerticalPosition: 
+        sparklineDisplayHorizontalPosition: 
+        sparklineDisplayFontSize: 
+        sparklineDisplayPrefix: 
+        sparklineDisplayPostfix: 
+        sparklineSize: 
+        sparklineLineColor: 
+        sparklineFillColor: 
+        sparklineValueColorMapColors: 
+        sparklineValueColorMapValuesV2: 
+        sparklineValueColorMapValues: 
+        sparklineValueColorMapApplyTo: 
+        sparklineDecimalPrecision: 
+        sparklineValueTextMapText: 
+        sparklineValueTextMapThresholds: 
+      summarization: MEAN
+    heightFactor: 100
+  - charts:
+    - name: count of unique sources
+      sources:
+      - name: sources
+        query: sum(ts(~metric.source_count))
+        disabled: 
+        scatterPlotSource: Y
+        querybuilderSerialization: 
+        querybuilderEnabled: false
+        secondaryAxis: 
+        sourceDescription: ''
+      units: sources
+      base: 0
+      noDefaultEvents: false
+      interpolatePoints: false
+      includeObsoleteMetrics: false
+      description: 
+      chartSettings:
+        type: line
+        max: 
+        min: 
+        lineType: linear
+        stackType: 
+        expectedDataSpacing: 
+        windowing: full
+        windowSize: 
+        showHosts: 
+        showLabels: 
+        showRawValues: 
+        autoColumnTags: false
+        columnTags: 
+        tagMode: all
+        numTags: 4
+        customTags: []
+        groupBySource: 
+        sortValuesDescending: 
+        y1Max: 
+        y1Min: 
+        y1Units: ''
+        y0ScaleSIBy1024: false
+        y1ScaleSIBy1024: false
+        y0UnitAutoscaling: false
+        y1UnitAutoscaling: false
+        invertDynamicLegendHoverControl: 
+        fixedLegendEnabled: false
+        fixedLegendUseRawStats: false
+        fixedLegendPosition: RIGHT
+        fixedLegendDisplayStats:
+        - CURRENT
+        fixedLegendFilterSort: TOP
+        fixedLegendFilterLimit: 5
+        fixedLegendFilterField: CURRENT
+        fixedLegendHideLabel: 
+        xMax: 
+        xMin: 
+        yMax: 
+        yMin: 
+        timeBasedColoring: 
+        markdownContent: 
+        sparklineDisplayValueType: 
+        sparklineDisplayColor: 
+        sparklineDisplayVerticalPosition: 
+        sparklineDisplayHorizontalPosition: 
+        sparklineDisplayFontSize: 
+        sparklineDisplayPrefix: 
+        sparklineDisplayPostfix: 
+        sparklineSize: 
+        sparklineLineColor: 
+        sparklineFillColor: 
+        sparklineValueColorMapColors: 
+        sparklineValueColorMapValuesV2: 
+        sparklineValueColorMapValues: 
+        sparklineValueColorMapApplyTo: 
+        sparklineDecimalPrecision: 
+        sparklineValueTextMapText: 
+        sparklineValueTextMapThresholds: 
+      summarization: MEAN
+    - name: count of unique metrics
+      sources:
+      - name: Source
+        query: avg(ts(~metric.metric_count))
+        disabled: 
+        scatterPlotSource: Y
+        querybuilderSerialization: 
+        querybuilderEnabled: false
+        secondaryAxis: 
+        sourceDescription: ''
+      units: metrics
+      base: 0
+      noDefaultEvents: false
+      interpolatePoints: false
+      includeObsoleteMetrics: false
+      description: 
+      chartSettings:
+        type: line
+        max: 
+        min: 
+        lineType: linear
+        stackType: 
+        expectedDataSpacing: 
+        windowing: full
+        windowSize: 
+        showHosts: 
+        showLabels: 
+        showRawValues: 
+        autoColumnTags: false
+        columnTags: 
+        tagMode: all
+        numTags: 4
+        customTags: []
+        groupBySource: 
+        sortValuesDescending: 
+        y1Max: 
+        y1Min: 
+        y1Units: ''
+        y0ScaleSIBy1024: false
+        y1ScaleSIBy1024: false
+        y0UnitAutoscaling: false
+        y1UnitAutoscaling: false
+        invertDynamicLegendHoverControl: 
+        fixedLegendEnabled: false
+        fixedLegendUseRawStats: false
+        fixedLegendPosition: RIGHT
+        fixedLegendDisplayStats:
+        - CURRENT
+        fixedLegendFilterSort: TOP
+        fixedLegendFilterLimit: 5
+        fixedLegendFilterField: CURRENT
+        fixedLegendHideLabel: 
+        xMax: 
+        xMin: 
+        yMax: 
+        yMin: 
+        timeBasedColoring: 
+        markdownContent: 
+        sparklineDisplayValueType: 
+        sparklineDisplayColor: 
+        sparklineDisplayVerticalPosition: 
+        sparklineDisplayHorizontalPosition: 
+        sparklineDisplayFontSize: 
+        sparklineDisplayPrefix: 
+        sparklineDisplayPostfix: 
+        sparklineSize: 
+        sparklineLineColor: 
+        sparklineFillColor: 
+        sparklineValueColorMapColors: 
+        sparklineValueColorMapValuesV2: 
+        sparklineValueColorMapValues: 
+        sparklineValueColorMapApplyTo: 
+        sparklineDecimalPrecision: 
+        sparklineValueTextMapText: 
+        sparklineValueTextMapThresholds: 
+      summarization: MEAN
+    heightFactor: 100
+  - charts:
+    - name: busiest sources
+      sources:
+      - name: source rate
+        query: sum(rate(ts(~metric.counter)), sources)
+        disabled: 
+        scatterPlotSource: Y
+        querybuilderSerialization: 
+        querybuilderEnabled: false
+        secondaryAxis: 
+        sourceDescription: 
+      units: ''
+      base: 0
+      noDefaultEvents: false
+      interpolatePoints: true
+      includeObsoleteMetrics: false
+      description: 
+      chartSettings:
+        type: table
+        max: 
+        min: 
+        lineType: 
+        stackType: 
+        expectedDataSpacing: 
+        windowing: last
+        windowSize: 5
+        showHosts: true
+        showLabels: true
+        showRawValues: false
+        autoColumnTags: false
+        columnTags: 
+        tagMode: all
+        numTags: 4
+        customTags: []
+        groupBySource: false
+        sortValuesDescending: 
+        y1Max: 
+        y1Min: 
+        y1Units: ''
+        y0ScaleSIBy1024: false
+        y1ScaleSIBy1024: false
+        y0UnitAutoscaling: false
+        y1UnitAutoscaling: false
+        invertDynamicLegendHoverControl: 
+        fixedLegendEnabled: false
+        fixedLegendUseRawStats: false
+        fixedLegendPosition: RIGHT
+        fixedLegendDisplayStats:
+        - CURRENT
+        fixedLegendFilterSort: TOP
+        fixedLegendFilterLimit: 5
+        fixedLegendFilterField: CURRENT
+        fixedLegendHideLabel: 
+        xMax: 
+        xMin: 
+        yMax: 
+        yMin: 
+        timeBasedColoring: 
+        markdownContent: 
+        sparklineDisplayValueType: 
+        sparklineDisplayColor: 
+        sparklineDisplayVerticalPosition: 
+        sparklineDisplayHorizontalPosition: 
+        sparklineDisplayFontSize: 
+        sparklineDisplayPrefix: 
+        sparklineDisplayPostfix: 
+        sparklineSize: 
+        sparklineLineColor: 
+        sparklineFillColor: 
+        sparklineValueColorMapColors: 
+        sparklineValueColorMapValuesV2: 
+        sparklineValueColorMapValues: 
+        sparklineValueColorMapApplyTo: 
+        sparklineDecimalPrecision: 
+        sparklineValueTextMapText: 
+        sparklineValueTextMapThresholds: 
+      summarization: LAST
+    heightFactor: 100
+- name: Agent Statistics
+  rows:
+  - charts:
+    - name: agent statistics
+      sources:
+      - name: raw_ver
+        query: aliasMetric(ts(~agent.build.version)/1000000   ,"Version")
+        disabled: true
+        scatterPlotSource: Y
+        querybuilderSerialization: '{"_v":1,"metric":"","filters":[[],"and"],"functions":[]}'
+        querybuilderEnabled: true
+        secondaryAxis: 
+        sourceDescription: 
+      - name: version
+        query: floor(${raw_ver}) + ((${raw_ver} - floor(${raw_ver}))*10)
+        disabled: 
+        scatterPlotSource: Y
+        querybuilderSerialization: '{"_v":1,"metric":"","filters":[[],"and"],"functions":[]}'
+        querybuilderEnabled: true
+        secondaryAxis: 
+        sourceDescription: 
+      - name: predicted space (days)
+        query: floor(aliasMetric(ts(~agent.buffer.bytes-left)/ts(~agent.buffer.fill-rate),"Predicated
+          Space Available(in Days)") /(60*24))
+        disabled: 
+        scatterPlotSource: Y
+        querybuilderSerialization: '{"_v":1,"metric":"","filters":[[],"and"],"functions":[]}'
+        querybuilderEnabled: true
+        secondaryAxis: 
+        sourceDescription: 
+      - name: used buffer space (Gb)
+        query: round(aliasMetric(ts(~agent.buffer.bytes-left),"Usable Buffer Space(in
+          GB)")*100 /(1024*1024*1024))/100
+        disabled: 
+        scatterPlotSource: Y
+        querybuilderSerialization: 
+        querybuilderEnabled: false
+        secondaryAxis: 
+        sourceDescription: 
+      - name: fill rate (kb/m)
+        query: round(aliasMetric(ts(~agent.buffer.fill-rate),"Fill Rate(in kbytes/min)")
+          * 100/1024)/100
+        disabled: 
+        scatterPlotSource: Y
+        querybuilderSerialization: 
+        querybuilderEnabled: false
+        secondaryAxis: 
+        sourceDescription: 
+      - name: point rate
+        query: aliasMetric(round(sum(rate(ts(~agent.points.*.received)), sources)),"Point
+          Rate(k)")
+        disabled: 
+        scatterPlotSource: Y
+        querybuilderSerialization: 
+        querybuilderEnabled: false
+        secondaryAxis: 
+        sourceDescription: 
+      units: ''
+      base: 1
+      noDefaultEvents: false
+      interpolatePoints: false
+      includeObsoleteMetrics: false
+      description: ''
+      chartSettings:
+        type: table
+        max: 
+        min: 
+        lineType: 
+        stackType: 
+        expectedDataSpacing: 
+        windowing: last
+        windowSize: 5
+        showHosts: true
+        showLabels: true
+        showRawValues: false
+        autoColumnTags: false
+        columnTags: 
+        tagMode: all
+        numTags: 4
+        customTags: []
+        groupBySource: true
+        sortValuesDescending: 
+        y1Max: 
+        y1Min: 
+        y1Units: ''
+        y0ScaleSIBy1024: false
+        y1ScaleSIBy1024: false
+        y0UnitAutoscaling: false
+        y1UnitAutoscaling: false
+        invertDynamicLegendHoverControl: 
+        fixedLegendEnabled: false
+        fixedLegendUseRawStats: false
+        fixedLegendPosition: RIGHT
+        fixedLegendDisplayStats:
+        - CURRENT
+        fixedLegendFilterSort: TOP
+        fixedLegendFilterLimit: 5
+        fixedLegendFilterField: CURRENT
+        fixedLegendHideLabel: 
+        xMax: 
+        xMin: 
+        yMax: 
+        yMin: 
+        timeBasedColoring: 
+        markdownContent: 
+        sparklineDisplayValueType: 
+        sparklineDisplayColor: 
+        sparklineDisplayVerticalPosition: 
+        sparklineDisplayHorizontalPosition: 
+        sparklineDisplayFontSize: 
+        sparklineDisplayPrefix: 
+        sparklineDisplayPostfix: 
+        sparklineSize: 
+        sparklineLineColor: 
+        sparklineFillColor: 
+        sparklineValueColorMapColors: 
+        sparklineValueColorMapValuesV2: 
+        sparklineValueColorMapValues: 
+        sparklineValueColorMapApplyTo: 
+        sparklineDecimalPrecision: 
+        sparklineValueTextMapText: 
+        sparklineValueTextMapThresholds: 
+      summarization: LAST
+    heightFactor: 100
+  - charts:
+    - name: JVM memory
+      sources:
+      - name: total used
+        query: ts(~agent.jvm.memory.totalUsed)
+        disabled: 
+        scatterPlotSource: Y
+        querybuilderSerialization: 
+        querybuilderEnabled: false
+        secondaryAxis: 
+        sourceDescription: ''
+      - name: heap used
+        query: ts(~agent.jvm.memory.heapUsed)
+        disabled: 
+        scatterPlotSource: Y
+        querybuilderSerialization: 
+        querybuilderEnabled: false
+        secondaryAxis: 
+        sourceDescription: ''
+      - name: allocated
+        query: ts(~agent.jvm.memory.totalInit)
+        disabled: 
+        scatterPlotSource: Y
+        querybuilderSerialization: '{"_v":1,"metric":"","filters":[[],"and"],"functions":[]}'
+        querybuilderEnabled: true
+        secondaryAxis: 
+        sourceDescription: ''
+      units: B
+      base: 0
+      noDefaultEvents: false
+      interpolatePoints: false
+      includeObsoleteMetrics: false
+      description: 
+      chartSettings:
+        type: line
+        max: 
+        min: 0.0
+        lineType: linear
+        stackType: 
+        expectedDataSpacing: 
+        windowing: full
+        windowSize: 
+        showHosts: 
+        showLabels: 
+        showRawValues: 
+        autoColumnTags: false
+        columnTags: 
+        tagMode: all
+        numTags: 4
+        customTags: []
+        groupBySource: 
+        sortValuesDescending: 
+        y1Max: 
+        y1Min: 
+        y1Units: ''
+        y0ScaleSIBy1024: false
+        y1ScaleSIBy1024: false
+        y0UnitAutoscaling: true
+        y1UnitAutoscaling: false
+        invertDynamicLegendHoverControl: 
+        fixedLegendEnabled: true
+        fixedLegendUseRawStats: false
+        fixedLegendPosition: BOTTOM
+        fixedLegendDisplayStats:
+        - CURRENT
+        fixedLegendFilterSort: TOP
+        fixedLegendFilterLimit: 5
+        fixedLegendFilterField: CURRENT
+        fixedLegendHideLabel: 
+        xMax: 
+        xMin: 
+        yMax: 
+        yMin: 
+        timeBasedColoring: 
+        markdownContent: 
+        sparklineDisplayValueType: VALUE
+        sparklineDisplayColor: ''
+        sparklineDisplayVerticalPosition: MIDDLE
+        sparklineDisplayHorizontalPosition: MIDDLE
+        sparklineDisplayFontSize: '100'
+        sparklineDisplayPrefix: 
+        sparklineDisplayPostfix: 
+        sparklineSize: BACKGROUND
+        sparklineLineColor: 
+        sparklineFillColor: 
+        sparklineValueColorMapColors: 
+        sparklineValueColorMapValuesV2: 
+        sparklineValueColorMapValues: 
+        sparklineValueColorMapApplyTo: TEXT
+        sparklineDecimalPrecision: 
+        sparklineValueTextMapText: 
+        sparklineValueTextMapThresholds: 
+      summarization: MEAN
+    - name: network latency
+      sources:
+      - name: latency
+        query: ts(~agent.push.*.duration.duration.median)
+        disabled: 
+        scatterPlotSource: Y
+        querybuilderSerialization: 
+        querybuilderEnabled: false
+        secondaryAxis: 
+        sourceDescription: 
+      units: ms
+      base: 0
+      noDefaultEvents: false
+      interpolatePoints: false
+      includeObsoleteMetrics: false
+      description: 
+      chartSettings:
+        type: line
+        max: 
+        min: 
+        lineType: linear
+        stackType: 
+        expectedDataSpacing: 
+        windowing: full
+        windowSize: 
+        showHosts: 
+        showLabels: 
+        showRawValues: 
+        autoColumnTags: false
+        columnTags: 
+        tagMode: all
+        numTags: 4
+        customTags: []
+        groupBySource: 
+        sortValuesDescending: 
+        y1Max: 
+        y1Min: 
+        y1Units: ''
+        y0ScaleSIBy1024: false
+        y1ScaleSIBy1024: false
+        y0UnitAutoscaling: true
+        y1UnitAutoscaling: false
+        invertDynamicLegendHoverControl: 
+        fixedLegendEnabled: false
+        fixedLegendUseRawStats: false
+        fixedLegendPosition: RIGHT
+        fixedLegendDisplayStats:
+        - CURRENT
+        fixedLegendFilterSort: TOP
+        fixedLegendFilterLimit: 5
+        fixedLegendFilterField: CURRENT
+        fixedLegendHideLabel: 
+        xMax: 
+        xMin: 
+        yMax: 
+        yMin: 
+        timeBasedColoring: 
+        markdownContent: 
+        sparklineDisplayValueType: 
+        sparklineDisplayColor: 
+        sparklineDisplayVerticalPosition: 
+        sparklineDisplayHorizontalPosition: 
+        sparklineDisplayFontSize: 
+        sparklineDisplayPrefix: 
+        sparklineDisplayPostfix: 
+        sparklineSize: 
+        sparklineLineColor: 
+        sparklineFillColor: 
+        sparklineValueColorMapColors: 
+        sparklineValueColorMapValuesV2: 
+        sparklineValueColorMapValues: 
+        sparklineValueColorMapApplyTo: 
+        sparklineDecimalPrecision: 
+        sparklineValueTextMapText: 
+        sparklineValueTextMapThresholds: 
+      summarization: MEAN
+    heightFactor: 100
+description: 
+parameters: 
+parameterDetails: {}
+tags:
+  customerTags:
+  - wavefront
+  userTags:
+    slackboy@gmail.com:
+    - favorite
+updateUser: slackboy@gmail.com
+updateTime: 1489081763772
+displayDescription: false
+displaySectionTableOfContents: true
+displayQueryParameters: false
+chartTitleScalar: 
+eventQuery: 
+chartTitleColor: 
+chartTitleBgColor: 
+viewsLastDay: 0
+viewsLastWeek: 0
+viewsLastMonth: 0
+creatorUser: 
+createdTime: 
+owner: 
+systemDashboardVersion: 

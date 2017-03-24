@@ -1,0 +1,47 @@
+---
+customerTagsWithCounts:
+  performance: 1
+  storage: 1
+userTagsWithCounts: {}
+created: 1481216683640
+name: Zpool usage
+conditionQBEnabled: false
+displayExpressionQBEnabled: false
+condition: ts("*.host.zpool.*.cap") > 79
+displayExpression: highpass(79, ts("*.host.zpool.*cap"))
+minutes: 5
+resolveAfterMinutes: 5
+target: slackboy@gmail.com,
+event:
+  name: Zpool usage
+  startTime: 1489137278631
+  annotations:
+    severity: warn
+    details: "<a class='ds-alert-link' href='https://metrics.wavefront.com/u/rlqlMZHyzj'>View
+      Alert</a><br><strong>First Affected: </strong>shark (lab.dev.host.zpool.crypto.cap)"
+    type: alert
+    created: '1481216683640'
+    target: slackboy@gmail.com,
+  hosts:
+  - shark
+  table: sysdef
+failingHostLabelPairs:
+- host: shark
+  label: lab.dev.host.zpool.crypto.cap
+  tags: {}
+  observed: 5
+  firing: 5
+updated: 1488992153277
+severity: WARN
+additionalInformation: ZFS performance drops dramatically when capacity exceeds 80%
+activeMaintenanceWindows: []
+inMaintenanceHostLabelPairs: []
+prefiringHostLabelPairs: []
+alertStates:
+- ACTIVE
+inTrash: false
+numMetricsUsed: 5
+numHostsUsed: 1
+lastProcessedMillis: 1489161699315
+processRateMinutes: 1
+pointsScannedAtLastQuery: 157

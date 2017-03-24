@@ -1,0 +1,34 @@
+{
+  "customerTagsWithCounts": {
+  },
+  "userTagsWithCounts": {
+  },
+  "created": 1488995981076,
+  "name": "test1",
+  "condition": "ts(\"cpu\") > 0",
+  "minutes": 3,
+  "resolveAfterMinutes": 2,
+  "target": "slackboy@gmail.com,rob@sysdef.xyz",
+  "failingHostLabelPairs": [
+
+  ],
+  "updated": 1488995981076,
+  "severity": "INFO",
+  "additionalInformation": "some information",
+  "activeMaintenanceWindows": [
+
+  ],
+  "inMaintenanceHostLabelPairs": [
+
+  ],
+  "prefiringHostLabelPairs": [
+
+  ],
+  "alertStates": [
+    "CHECKING"
+  ],
+  "inTrash": false,
+  "numMetricsUsed": 0,
+  "numHostsUsed": 0,
+  "lastProcessedMillis": 1489011919425
+}

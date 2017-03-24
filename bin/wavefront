@@ -1,0 +1,316 @@
+#!/usr/bin/env ruby
+
+require 'pathname'
+require 'docopt'
+
+# uncomment for development
+$LOAD_PATH.<< Pathname.new(__FILE__).dirname.realpath.parent + 'lib'
+$LOAD_PATH.<< Pathname.new(__FILE__).dirname.realpath.parent.parent + 'wavefront-sdk' + 'lib'
+
+require 'wavefront-cli/version'
+require 'wavefront-cli/opt_handler'
+include WavefrontCli::Constants
+
+def sanitize_keys(hash)
+  hash.each_with_object({}) { |(k, v), aggr| aggr[k.delete('-').to_sym] = v }
+end
+
+ME = Pathname.new(__FILE__).basename
+
+# If we are a normal user, look for wavefront config in our home
+# directory; if not, look in /etc
+#
+conf_file = if ENV['HOME']
+              Pathname.new(ENV['HOME']) + '.wavefront'
+            else
+              Pathname.new('/etc/wavefront/client.conf')
+            end
+
+# The global_opts are available in every command.
+#
+global_opts = %(
+Global options:
+  -c, --config=FILE    path to configuration file [#{conf_file}]
+  -P, --profile=NAME   profile in configuration file [#{DEFAULT_OPTS[:profile]}]
+  -D, --debug          enable debug mode
+  -n, --noop           don't perform API calls
+  -V, --verbose        be verbose
+  -h, --help           show this message
+)
+
+# options common to nearly all commands
+#
+CMN = '[-DnV] [-c file] [-P profile] [-E endpoint]
+             [-t token]'
+
+# The following hash contains the docopt strings defining all the
+# commands we offer. They must include the global_opts.
+#
+usage = {
+ts: %(
+Usage:
+  #{ME} ts [-c file] [-P profile] [-E endpoint] [-t token] [-ODnV]
+            [-S | -m | -H | -d] [-s time] [-e time] [-f format] [-p num]
+            [-X bool] <query>
+#{global_opts}
+Options:
+  -E, --endpoint=URI            cluster endpoint [#{DEFAULT_OPTS[:endpoint]}]
+  -t, --token=TOKEN             Wavefront authentication token
+  -S, --seconds                 query granularity of seconds
+  -m, --minutes                 query granularity of minutes
+  -H, --hours                   query granularity of hours
+  -d, --days                    query granularity of days
+  -s, --start=TIME              start of query window in epoch seconds or
+                                strptime parseable format
+  -e, --end=TIME                end of query window in epoch seconds or
+                                strptime parseable format
+  -f, --format=STRING           output format (#{FORMATS.join(', ')})
+                                [#{DEFAULT_OPTS[:format]}]
+  -p, --prefixlength=NUM        number of path elements to treat as prefix
+                                in schema manipulation. [#{DEFAULT_OPTS[:prefixlength]}]
+  -X, --strict=BOOL             Do not return points outside the query
+                                window. [#{DEFAULT_OPTS[:strict]}]
+  -O, --includeObsoleteMetrics  include metrics unreported for > 4 weeks
+),
+
+alerts: %(
+Usage:
+  #{ME} alerts [-DnV] [-c file] [-P profile] [-E endpoint] [-t token]
+            [-f format] [-p tag] [ -s tag] <state>
+  #{ME} alerts export [-DnV] [-c file] [-P profile] [-E endpoint] [-t token]
+            [-f format] <timestamp>
+  #{ME} alerts import [-DnV] [-c file] [-P profile] [-E endpoint] [-t token]
+            <file>
+#{global_opts}
+Options:
+  -E, --endpoint=URI       cluster endpoint [#{DEFAULT_OPTS[:endpoint]}]
+  -t, --token=TOKEN        Wavefront authentication token
+  -f, --alertformat=STRING output format (#{ALERT_FORMATS.join(', ')})
+                           [#{DEFAULT_OPTS[:aformat]}]
+  -p, --private=TAG        retrieve only alerts with named private tags,
+                           comma delimited.
+  -s, --shared=TAG         retrieve only alerts with named shared tags,
+                           comma delimited.
+),
+
+event: %(
+Usage:
+  #{ME} event create [-DnV] [-c file] [-P profile] [-E endpoint] [-t token]
+           [-d description] [-s time] [-i | -e time] [-l level] [-T type]
+           [-H host] [-N] <event>
+  #{ME} event close [-DnV] [-c file] [-P profile] [-E endpoint] [-t token]
+           [<event>] [<timestamp>]
+  #{ME} event delete [-DnV] [-c file] [-P profile] [-E endpoint] [-t token]
+           <timestamp> <event>
+  #{ME} event show
+  #{ME} event --help
+#{global_opts}
+Options:
+  -E, --endpoint=URI   cluster endpoint [#{DEFAULT_OPTS[:endpoint]}]
+  -t, --token=TOKEN    Wavefront authentication token
+  -i, --instant        create an instantaneous event
+  -s, --start=TIME     time at which event begins
+  -e, --end=TIME       time at which event ends
+  -l, --level=LEVEL    level of event (#{EVENT_LEVELS.join(', ')})
+  -T, --type=TYPE      type of event
+  -d, --desc=STRING    description of event
+  -H, --host=STRING    list of sources to which event applies (comma separated)
+  -N, --nostate        do not create a local file recording the event
+
+View events in detail using the 'ts' command with the 'events()' function.
+),
+
+write: %(
+Usage:
+  #{ME} write point [-DnV] [-c file] [-P profile] [-E proxy] [-t time]
+           [-p port] [-H host] [-n] [-T tag...] <metric> <value>
+  #{ME} write file [-DnV] [-c file] [-P profile] [-E proxy] [-H host]
+           [-p port] [-n] [-F format] [-m metric] [-T tag...] <file>
+  #{ME} write --help
+#{global_opts}
+Options:
+  -E, --proxy=URI            proxy endpoint [#{DEFAULT_OPTS[:proxy]}]
+  -t, --time=TIME            time of data point (omit to use current time)
+  -H, --host=STRING          source host [#{DEFAULT_OPTS[:host]}]
+  -p, --port=INT             Wavefront proxy port [#{DEFAULT_OPTS[:port]}]
+  -T, --tag=TAG              point tag in key=value form
+  -F, --infileformat=STRING  format of input file or stdin [#{DEFAULT_OPTS[:infileformat]}]
+  -m, --metric=STRING        the metric path to which contents of a
+                             file will be assigned. If the file
+                             contains a metric name, the two will be
+                             concatenated
+
+Files are whitespace separated, and fields can be defined with the -F
+option.  Use 't' for timestamp; 'm' for metric name; 'v' for value
+and 'T' for tags. Put 'T' last.
+),
+source: %(
+Usage:
+  #{ME} source list [-c file] [-P profile] [-E endpoint] [-t token] [-DnV]
+           [-f format] [-T tag ...] [-ag] [-s source] [-l limit] <pattern>
+  #{ME} source show [-c file] [-P profile] [-E endpoint] [-t token] [-DnV]
+           [-f format] <host> ...
+  #{ME} source describe [-c file] [-P profile] [-E endpoint] [-t token]
+           [-DnV] [-H host ... ] <description>
+  #{ME} source undescribe [-c file] [-P profile] [-E endpoint] [-t token]
+           [-DnV] [<host>] ...
+  #{ME} source tag add [-c file] [-P profile] [-E endpoint] [-t token]
+           [-DnV] [-H host ... ] <tag> ...
+  #{ME} source tag delete [-c file] [-P profile] [-E endpoint] [-t token]
+           [-DnV] [-H host ... ] <tag> ...
+  #{ME} source untag [-c file] [-P profile] [-E endpoint] [-t token] [-DnV]
+           [<host>] ...
+  #{ME} source --help
+#{global_opts}
+Options:
+  -E, --endpoint=URI         cluster endpoint [#{DEFAULT_OPTS[:endpoint]}]
+  -t, --token=TOKEN          Wavefront authentication token
+  -a, --all                  including hidden sources in 'human' output
+  -g, --tags                 show tag counts in 'human' output
+  -T, --tagged=STRING        only list sources with this tag when using
+                             'human' output
+  -s, --start=STRING         start the list after the named source
+  -l, --limit=NUMBER         only list NUMBER sources
+  -H, --host=STRING          source to manipulate
+  -f, --sourceformat=STRING  output format (#{SOURCE_FORMATS.join(', ')}) [#{DEFAULT_OPTS[:sourceformat]}]
+),
+dashboard: %(
+Usage:
+  #{ME} dashboard list [-DnV] [-c file] [-P profile] [-E endpoint]
+           [-t token] [-f format] [-a] [-T tag...] [-p tag...]
+  #{ME} dashboard import [-DnV] [-c file] [-P profile] [-E endpoint]
+           [-t token] [-f format] [-F] <file>
+  #{ME} dashboard export [-DnV] [-c file] [-P profile] [-E endpoint]
+           [-t token] [-f format] [-v version] <dashboard_id>
+  #{ME} dashboard create [-DnV] [-c file] [-P profile] [-E endpoint]
+           [-t token] <dashboard_id> <name>
+  #{ME} dashboard clone [-DnV] [-c file] [-P profile] [-E endpoint]
+           [-t token] [-v version] <source_id> <new_id> <new_name>
+  #{ME} dashboard delete [-DnV] [-c file] [-P profile] [-E endpoint]
+           [-t token] <dashboard_id>
+  #{ME} dashboard undelete [-DnV] [-c file] [-P profile] [-E endpoint]
+           [-t token] <dashboard_id>
+  #{ME} dashboard history [-DnV] [-c file] [-P profile] [-E endpoint]
+           [-t token] [-f format] [-S version] [-L limit] <dashboard_id>
+  #{ME} dashboard --help
+#{global_opts}
+Options:
+  -E, --endpoint=URI       cluster endpoint [#{DEFAULT_OPTS[:endpoint]}]
+  -t, --token=TOKEN        Wavefront authentication token
+  -a, --all                in human output mode, list all dashboards
+  -T, --sharedtag=TAG      only select dashboards with this shared tag
+  -p, --privatetag=TAG     only select dashboards with this private tag
+  -S, --start=VERSION      highest version number from which to descend
+  -L, --limit=COUNT        number of versions to report
+  -v, --version=INTEGER    version of dashboard to clone
+  -F, --force              import dashboard even if it already exists
+  -f, --dashformat=STRING  output format (#{DASH_FORMATS.join(', ')}) [#{DEFAULT_OPTS[:dashformat]}]
+),
+agent: %(
+Usage:
+  #{ME} agent list #{CMN} [-f format] [-S start] [-L limit]
+  #{ME} agent describe #{CMN} [-f format] <id>
+  #{ME} agent delete #{CMN} <id>
+  #{ME} agent undelete #{CMN} <id>
+  #{ME} agent rename #{CMN} <id> <name>
+#{global_opts}
+Options:
+  -E, --endpoint=URI        cluster endpoint [#{DEFAULT_OPTS[:endpoint]}]
+  -t, --token=TOKEN         Wavefront authentication token
+  -S, --start=n             start from nth agent
+  -f, --agentformat=STRING  output format (#{AGENT_FORMATS.join(', ')}) [#{DEFAULT_OPTS[:agentformat]}]
+  -L, --limit=COUNT        number of agents to report
+),
+default: %(
+Wavefront CLI
+
+Usage:
+  #{ME} [options] command [options]
+  #{ME} --version
+  #{ME} --help
+
+Commands:
+  ts          view timeseries data
+  alerts      view alerts
+  dashboard   view and manage dashboards
+  event       open and close events
+  source      view and manage source tags and descriptions
+  write       send data points to a Wavefront proxy
+
+Use '#{ME} <command> --help' for further information.)
+}
+
+# Parse the input. The first Docopt.docopt handles the default
+# options, the second works on the command.
+#
+begin
+  opts = Docopt.docopt(usage[:default], version: WF_CLI_VERSION)
+rescue Docopt::Exit => e
+
+  cmd = ARGV.empty? ? nil : ARGV.first.to_sym
+
+  if usage.keys.include?(cmd)
+    begin
+      opts = sanitize_keys(Docopt.docopt(usage[cmd]))
+    rescue Docopt::Exit => e
+      abort e.message # command help
+    end
+  else
+    abort e.message # default help
+  end
+end
+
+opts = WavefrontCli::OptHandler.new(conf_file, opts).opts
+
+if opts[:debug]
+  require 'pp'
+  puts 'Combined options:'
+  pp opts
+end
+
+case cmd
+when :agent
+  require 'wavefront-cli/agent'
+  cli = WavefrontCli::Agent.new(opts)
+when :ts
+  require 'wavefront-cli/ts'
+  cli = WavefrontCli::Ts.new(opts, [opts[:'<query>']])
+when :event
+  require 'wavefront-cli/event'
+  cli = WavefrontCli::Event.new(opts, [opts[:'<query>']])
+when :alerts
+  require 'wavefront-cli/alert'
+  cli = WavefrontCli::Alert.new(opts, [opts[:'<state>']])
+when :source
+  require 'wavefront-cli/source'
+  cli = WavefrontCli::Sources.new(opts, [opts[:'<state>']])
+when :write
+  if opts[:file]
+    require 'wavefront-cli/batch_write'
+    cli = WavefrontCli::BatchWrite.new(opts, [opts[:'<state>']])
+  else
+    require 'wavefront-cli/write'
+    cli = WavefrontCli::Write.new(opts, [opts[:'<state>']])
+  end
+when :dashboard
+  require 'wavefront-cli/dashboard'
+  cli = WavefrontCli::Dashboard.new(opts, [opts[:'<state>']])
+end
+
+begin
+  cli.validate_opts
+  cli.run
+rescue => e
+  if e.class == RestClient::MethodNotAllowed
+    STDERR.puts "#{cmd} query failed. #{e}"
+  elsif e.class.ancestors.include?(RestClient::ExceptionWithResponse)
+    STDERR.puts "#{cmd} query failed. #{e.http_code}: " +
+                JSON.parse(e.response)['status']['message'] + '.'
+  else
+    STDERR.puts "general error: #{e}"
+    STDERR.puts "re-run with '-D' for stack trace." unless opts[:debug]
+  end
+
+  STDERR.puts "Backtrace:\n\t#{e.backtrace.join("\n\t")}" if opts[:debug]
+  exit 1
+end

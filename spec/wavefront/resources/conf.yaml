@@ -1,0 +1,10 @@
+[default]
+token = 12345678-abcd-1234-abcd-123456789012
+endpoint = default.wavefront.com
+proxy = wavefront.localnet
+sourceformat = raw
+
+[other]
+token = abcdefab-0123-abcd-0123-abcdefabcdef
+endpoint = other.wavefront.com
+proxy = otherwf.localnet

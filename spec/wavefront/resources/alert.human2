@@ -1,0 +1,14 @@
+name                  Test Alert
+created               2016-07-29 16:54:22 +0100 (1469807662271)
+severity              WARN
+condition             ts("dev.cli.test_metric") > 0
+displayExpression     ts("dev.cli.test_metric")
+minutes               5
+resolveAfterMinutes
+updated               2016-07-29 16:55:35 +0100 (1469807662271)
+alertStates           CHECKING
+metricsUsed
+hostsUsed
+additionalInformation This alert has been made up to feed into the test
+                      framework for the Ruby CLI. It is not real. Even this
+                      text is just placeholder text.
