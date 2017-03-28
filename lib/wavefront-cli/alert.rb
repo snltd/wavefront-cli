@@ -1,3 +1,59 @@
+require_relative './base'
+
+module WavefrontCli
+  #
+  # CLI coverage for the v2 'alert' API.
+  #
+  class Alert < WavefrontCli::Base
+    include WavefrontCli::Constants
+
+    def do_list
+      wf.list(options[:start] || 0, options[:limit] || 100)
+    end
+
+    def humanize_list_output(data)
+      puts "Found #{data['items'].size} alerts\n\n"
+
+      data['items'].each do |agent|
+        agent.each { |k, v| puts format("%-#{key_width(agent)}s%s", k, v) }
+        puts
+      end
+    end
+
+    def do_describe
+      wf.describe(options[:'<id>'])
+    end
+
+    def humanize_describe_output(data)
+      data.each { |k, v| puts format("%-#{key_width(data)}s%s", k, v) }
+    end
+
+    def do_delete
+      wf.delete(options[:'<id>'])
+    end
+
+    def do_undelete
+      wf.undelete(options[:'<id>'])
+    end
+
+    def humanize_undelete_output(data)
+      puts "undeleted alert #{data['id']}: #{data['name']}."
+    end
+
+    def do_summary
+      wf.summary
+    end
+
+    def humanize_summary_output(data)
+      data.sort.each { |k, v| puts format("%-#{key_width(data)}s%s", k, v) }
+    end
+
+    def history
+    end
+  end
+end
+
+=begin
 require 'wavefront-sdk/alert'
 require_relative './base'
 require_relative './constants'
@@ -215,3 +271,4 @@ class WavefrontCli::Alert < WavefrontCli::Base
               offset}").rstrip
   end
 end
+=end
