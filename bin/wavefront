@@ -2,6 +2,7 @@
 
 require 'pathname'
 require 'docopt'
+require 'rest-client'
 
 # uncomment for development
 $LOAD_PATH.<< Pathname.new(__FILE__).dirname.realpath.parent + 'lib'
@@ -73,18 +74,26 @@ Options:
   -O, --includeObsoleteMetrics  include metrics unreported for > 4 weeks
 ),
 
-alerts: %(
+alert: %(
 Usage:
+  #{ME} alert list #{CMN} [-f format] [-S start] [-L limit]
+  #{ME} alert describe #{CMN} [-f format] <id>
+  #{ME} alert delete #{CMN} <id>
+  #{ME} alert undelete #{CMN} <id>
+  #{ME} alert history #{CMN} [-v version | (-S start -L limit)] <id>
   #{ME} alerts [-DnV] [-c file] [-P profile] [-E endpoint] [-t token]
             [-f format] [-p tag] [ -s tag] <state>
-  #{ME} alerts export [-DnV] [-c file] [-P profile] [-E endpoint] [-t token]
+  #{ME} alert export #{CMN}
             [-f format] <timestamp>
-  #{ME} alerts import [-DnV] [-c file] [-P profile] [-E endpoint] [-t token]
+  #{ME} alert import #{CMN}
             <file>
+  #{ME} alert summary #{CMN}
 #{global_opts}
 Options:
   -E, --endpoint=URI       cluster endpoint [#{DEFAULT_OPTS[:endpoint]}]
   -t, --token=TOKEN        Wavefront authentication token
+  -S, --start=n            start from nth agent
+  -L, --limit=COUNT        number of agents to report
   -f, --alertformat=STRING output format (#{ALERT_FORMATS.join(', ')})
                            [#{DEFAULT_OPTS[:aformat]}]
   -p, --private=TAG        retrieve only alerts with named private tags,
@@ -231,7 +240,8 @@ Usage:
 
 Commands:
   ts          view timeseries data
-  alerts      view alerts
+  agent       view and manage Wavefront agents
+  alert       view and manage alerts
   dashboard   view and manage dashboards
   event       open and close events
   source      view and manage source tags and descriptions
@@ -272,15 +282,15 @@ case cmd
 when :agent
   require 'wavefront-cli/agent'
   cli = WavefrontCli::Agent.new(opts)
+when :alert
+  require 'wavefront-cli/alert'
+  cli = WavefrontCli::Alert.new(opts)
 when :ts
   require 'wavefront-cli/ts'
   cli = WavefrontCli::Ts.new(opts, [opts[:'<query>']])
 when :event
   require 'wavefront-cli/event'
   cli = WavefrontCli::Event.new(opts, [opts[:'<query>']])
-when :alerts
-  require 'wavefront-cli/alert'
-  cli = WavefrontCli::Alert.new(opts, [opts[:'<state>']])
 when :source
   require 'wavefront-cli/source'
   cli = WavefrontCli::Sources.new(opts, [opts[:'<state>']])
