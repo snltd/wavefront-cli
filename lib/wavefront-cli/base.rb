@@ -22,7 +22,7 @@ module WavefrontCli
         exit 0
       end
 
-      sdk_class = self.class.name.delete('Cli')
+      sdk_class = self.class.name.sub(/Cli/, '')
       require "wavefront-sdk/#{sdk_class.split('::').last.downcase}"
       @klass = Object.const_get(sdk_class)
     end
