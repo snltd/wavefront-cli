@@ -1,6 +1,7 @@
 require 'yaml'
 require 'json'
 require_relative './constants'
+require_relative './human_output'
 
 module WavefrontCli
   #
@@ -10,12 +11,14 @@ module WavefrontCli
   # The dispatch() method will find it, and call it.
   #
   class Base
-    attr_accessor :wf, :options, :klass
+    attr_accessor :wf, :options, :klass, :flags, :verbose_response
 
     include WavefrontCli::Constants
 
     def initialize(options)
       @options = options
+      @flags = {}
+      @verbose_response = false
 
       if options.include?(:help) && options[:help]
         puts options
@@ -56,15 +59,31 @@ module WavefrontCli
       (self.class.name.split('::').last.downcase + 'format').to_sym
     end
 
+    # Works out the user's command by matching any options docopt has
+    # set to 'true' with any 'do_' method in the class. Then calls that
+    # method, and displays whatever it returns.
+    #
     def dispatch
       #
-      # Works out the user's command by matching any option docopt
-      # has set to 'true' with any 'do_' method in the class. Then
-      # calls that method, and displays whatever it returns.
+      # Take a list of do_ methods, remove the 'do_' from their name,
+      # and break them into arrays of '_' separated words.
       #
-      options.select { |_k, v| v == true }.each do |opt, _val|
-        method = "do_#{opt}"
-        return display(public_send(method), method) if respond_to?(method)
+      m_list = methods.select { |m| m.to_s.start_with?('do_') }.map do |m|
+        m.to_s.split('_')[1..-1]
+      end
+
+      # Sort that array of arrays by length, longest first.  Then look
+      # through each deconstructed method name and see if the user
+      # supplied an option for each component. Call the first one that
+      # matches. The order will ensure we match "do_delete_tags" before
+      # we match "do_delete".
+      #
+
+      m_list.sort_by(&:length).reverse.each do |m|
+        if m.reject { |w| options[w.to_sym] }.empty?
+          method = (%w(do) + m).join('_')
+          return display(public_send(method), method)
+        end
       end
 
       raise 'unsupported command'
@@ -78,7 +97,7 @@ module WavefrontCli
       #
       return if options[:noop]
 
-      if data.key?('response')
+      if data.key?('response') && verbose_response
         data = data['response']
       elsif data['status']['code'] == 200
         puts 'operation was successful'
@@ -86,6 +105,8 @@ module WavefrontCli
       else
         abort 'operation failed'
       end
+
+      data = data['items'] if data.key?('items')
 
       case options[format_var].to_sym
       when :json
@@ -98,9 +119,7 @@ module WavefrontCli
         if respond_to?(human_method)
           send(human_method, data)
         else
-          puts human_method
-          p data
-          raise 'human output format is not supported by this subcommand'
+          HumanOutput.new(data)
         end
       else
         raise 'unsupported output format'
@@ -120,13 +139,23 @@ module WavefrontCli
       raise 'Please supply an API endpoint.' unless options[:endpoint]
     end
 
-    def key_width(hash)
+    def load_file(path)
       #
-      # Give it a key-value hash, and it will return the size of
-      # the first column to use when formatting that data. Used by
-      # humanize() methods.
+      # Give it a path to a file (as a string) and it will return the
+      # contents of that file as a Ruby object. Automatically detects
+      # JSON and YAML. Raises an exception if it doesn't look like
+      # either.
       #
-      hash.keys.map(&:size).max + 2
+      file = Pathname.new(path)
+      raise 'Import file does not exist.' unless file.exist?
+
+      if file.extname == '.json'
+        JSON.parse(IO.read(file))
+      elsif file.extname == '.yaml' || file.extname == '.yml'
+        YAML.load(IO.read(file))
+      else
+        raise 'Unsupported file format.'
+      end
     end
   end
 end

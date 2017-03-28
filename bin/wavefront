@@ -76,29 +76,34 @@ Options:
 
 alert: %(
 Usage:
-  #{ME} alert list #{CMN} [-f format] [-S start] [-L limit]
-  #{ME} alert describe #{CMN} [-f format] <id>
+  #{ME} alert list #{CMN} [-s] [-f format] [-S start] [-L limit]
+  #{ME} alert describe #{CMN} [-f format] [-v version] <id>
   #{ME} alert delete #{CMN} <id>
   #{ME} alert undelete #{CMN} <id>
-  #{ME} alert history #{CMN} [-v version | (-S start -L limit)] <id>
-  #{ME} alerts [-DnV] [-c file] [-P profile] [-E endpoint] [-t token]
-            [-f format] [-p tag] [ -s tag] <state>
-  #{ME} alert export #{CMN}
-            [-f format] <timestamp>
-  #{ME} alert import #{CMN}
-            <file>
+  #{ME} alert history #{CMN} [-f format] [-S start] [-L limit] <id>
+  #{ME} alert import #{CMN} <file>
+  #{ME} alert snooze #{CMN} [-t time] <id>
+  #{ME} alert unsnooze #{CMN} <id>
+  #{ME} alert tags #{CMN} [-f format] <id>
+  #{ME} alert tag set #{CMN} <id> <tag>...
+  #{ME} alert tag clear #{CMN} <id>
+  #{ME} alert tag add #{CMN} <id> <tag>
+  #{ME} alert tag delete #{CMN} <id> <tag>
   #{ME} alert summary #{CMN}
 #{global_opts}
 Options:
   -E, --endpoint=URI       cluster endpoint [#{DEFAULT_OPTS[:endpoint]}]
   -t, --token=TOKEN        Wavefront authentication token
+  -s, --short              only list alert names and IDs
+  -v, --version=INTEGER    describe only this version of alert
   -S, --start=n            start from nth agent
   -L, --limit=COUNT        number of agents to report
+  -T, --time=SECONDS       how long to snooze (default 3600)
   -f, --alertformat=STRING output format (#{ALERT_FORMATS.join(', ')})
-                           [#{DEFAULT_OPTS[:aformat]}]
-  -p, --private=TAG        retrieve only alerts with named private tags,
+                           [#{DEFAULT_OPTS[:alertformat]}]
+  -X, --private=TAG        retrieve only alerts with named private tags,
                            comma delimited.
-  -s, --shared=TAG         retrieve only alerts with named shared tags,
+  -Z, --shared=TAG         retrieve only alerts with named shared tags,
                            comma delimited.
 ),
 
@@ -311,15 +316,15 @@ begin
   cli.validate_opts
   cli.run
 rescue => e
-  if e.class == RestClient::MethodNotAllowed
-    STDERR.puts "#{cmd} query failed. #{e}"
-  elsif e.class.ancestors.include?(RestClient::ExceptionWithResponse)
-    STDERR.puts "#{cmd} query failed. #{e.http_code}: " +
-                JSON.parse(e.response)['status']['message'] + '.'
-  else
+  #if e.class == RestClient::MethodNotAllowed
+    #STDERR.puts "#{cmd} query failed. #{e}"
+  #elsif e.class.ancestors.include?(RestClient::ExceptionWithResponse)
+    #STDERR.puts "#{cmd} query failed. #{e.http_code}: " +
+                #JSON.parse(e.response)['status']['message'] + '.'
+  #else
     STDERR.puts "general error: #{e}"
     STDERR.puts "re-run with '-D' for stack trace." unless opts[:debug]
-  end
+  #end
 
   STDERR.puts "Backtrace:\n\t#{e.backtrace.join("\n\t")}" if opts[:debug]
   exit 1

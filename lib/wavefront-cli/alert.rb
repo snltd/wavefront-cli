@@ -8,24 +8,75 @@ module WavefrontCli
     include WavefrontCli::Constants
 
     def do_list
+      @verbose_response = true
+      @flags[:short] = options[:short]
       wf.list(options[:start] || 0, options[:limit] || 100)
     end
 
     def humanize_list_output(data)
-      puts "Found #{data['items'].size} alerts\n\n"
-
-      data['items'].each do |agent|
-        agent.each { |k, v| puts format("%-#{key_width(agent)}s%s", k, v) }
-        puts
+      if flags[:short]
+        data.each { |a| puts "#{a['id']}  #{a['name']}" }
+      else
+        HumanOutput.new(data)
       end
     end
 
     def do_describe
-      wf.describe(options[:'<id>'])
+      @verbose_response = true
+      wf.describe(options[:'<id>'], options[:version])
     end
 
-    def humanize_describe_output(data)
-      data.each { |k, v| puts format("%-#{key_width(data)}s%s", k, v) }
+    def do_import
+      raw = load_file(options[:'<file>'])
+
+      begin
+        prepped = import_to_create(raw)
+      rescue => e
+        puts e if options[:debug]
+        raise 'could not parse input.'
+      end
+
+      wf.create(prepped)
+    end
+
+    def import_to_create(raw)
+      #
+      # Take a previously exported alert, and construct a hash which
+      # create() can use to re-create it.
+      #
+      ret = {
+        name:      raw['name'],
+        condition: raw['condition'],
+        minutes:   raw['minutes'],
+        target:    raw['target'],
+        severity:  raw['severity'],
+      }
+
+      if raw.key?('displayExpression')
+        ret[:displayExpression] = raw['displayExpression']
+      end
+
+      if raw.key?('resolveAfterMinutes')
+        ret[:resolveMinutes] = raw['resolveAfterMinutes']
+      end
+
+      if raw.key?('customerTagsWithCounts')
+        ret[:sharedTags] = raw['customerTagsWithCounts'].keys
+      end
+
+      if raw.key?('additionalInformation')
+        ret[:additionalInformation] = raw['additionalInformation']
+      end
+
+      ret
+    end
+
+    def do_snooze
+      wf.snooze(options[:'<id>'], options[:time])
+    end
+
+    def do_unsnooze
+      wf.snooze(options[:'<id>'])
     end
 
     def do_delete
@@ -36,19 +87,51 @@ module WavefrontCli
       wf.undelete(options[:'<id>'])
     end
 
-    def humanize_undelete_output(data)
-      puts "undeleted alert #{data['id']}: #{data['name']}."
-    end
-
     def do_summary
+      @verbose_response = true
       wf.summary
     end
 
+    # Display the counts of alerts in various states. If a state has no
+    # alerts, it is skipped.
+    #
+    # @param data [Hash] hash of alerts
+    #
     def humanize_summary_output(data)
-      data.sort.each { |k, v| puts format("%-#{key_width(data)}s%s", k, v) }
+      kw = data.keys.map(&:size).max + 2
+      data.sort.reject { |k, v| v == 0 }.each do |k, v|
+        puts format("%-#{kw}s%s", k, v)
+      end
     end
 
-    def history
+    def do_history
+      @verbose_response = true
+      wf.history(options[:'<id>'])
+    end
+
+    def do_tags
+      @verbose_response = true
+      wf.tags(options[:'<id>'])
+    end
+
+    def do_tag_add
+      wf.tag_add(options[:'<id>'], options[:'<tag>'])
+    end
+
+    def do_tag_delete
+      wf.tag_delete(options[:'<id>'], options[:'<tag>'])
+    end
+
+    def do_tag_set
+      wf.tag_set(options[:'<id>'], Array(options[:'<tag>']))
+    end
+
+    def do_tag_clear
+      wf.tag_set(options[:'<id>'], [])
+    end
+
+    def humanize_tags_output(data)
+      data.sort.each { |t| puts t }
     end
   end
 end
@@ -106,24 +189,6 @@ class WavefrontCli::Alert < WavefrontCli::Base
 
     format_result(result, @options[:alertformat].to_sym)
     exit
-  end
-
-  def import_alert
-    raw = load_file(options[:'<file>'])
-
-    begin
-      prepped = wfa.import_to_create(raw)
-    rescue => e
-      puts e if options[:debug]
-      raise 'could not parse input.'
-    end
-
-    begin
-      wfa.create_alert(prepped)
-      puts 'Alert imported.' unless options[:noop]
-    rescue RestClient::BadRequest
-      raise '400 error: alert probably exists.'
-    end
   end
 
   def export_alert(id)
@@ -261,14 +326,6 @@ class WavefrontCli::Alert < WavefrontCli::Base
   def human_line_additionalInformation(k, v)
     human_line(k, indent_wrap(v))
   end
-
-  def indent_wrap(line, cols=78, offset=22)
-    #
-    # hanging indent long lines to fit in an 80-column terminal
-    #
-    return unless line
-    line.gsub(/(.{1,#{cols - offset}})(\s+|\Z)/, "\\1\n#{' ' *
-              offset}").rstrip
-  end
-end
 =end
+
+
