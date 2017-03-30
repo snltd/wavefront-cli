@@ -283,12 +283,19 @@ if opts[:debug]
   pp opts
 end
 
+begin
+  require "wavefront-cli/#{cmd}"
+  klass = Object.const_get('WavefrontCli').const_get(cmd.capitalize)
+  cli = klass.new(opts)
+rescue
+  abort 'Fatal error. Unsupported command.'
+end
+
+=begin
 case cmd
 when :agent
-  require 'wavefront-cli/agent'
   cli = WavefrontCli::Agent.new(opts)
 when :alert
-  require 'wavefront-cli/alert'
   cli = WavefrontCli::Alert.new(opts)
 when :ts
   require 'wavefront-cli/ts'
@@ -311,6 +318,7 @@ when :dashboard
   require 'wavefront-cli/dashboard'
   cli = WavefrontCli::Dashboard.new(opts, [opts[:'<state>']])
 end
+=end
 
 begin
   cli.validate_opts
