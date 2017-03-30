@@ -12,6 +12,15 @@ require 'wavefront-cli/version'
 require 'wavefront-cli/opt_handler'
 include WavefrontCli::Constants
 
+# Mostly we can derive the SDK class from the command, but there's
+# some CamelCasing to deal with
+#
+class_names = {
+  cloudintegration: 'CloudIntegration',
+  maintenancewindow: 'MaintenanceWindow',
+  savedsearch: 'SavedSearch',
+}
+
 def sanitize_keys(hash)
   hash.each_with_object({}) { |(k, v), aggr| aggr[k.delete('-').to_sym] = v }
 end
@@ -105,6 +114,18 @@ Options:
                            comma delimited.
   -Z, --shared=TAG         retrieve only alerts with named shared tags,
                            comma delimited.
+),
+cloudintegration: %(
+Usage:
+  #{ME} cloudintegration list #{CMN} [-s] [-f format] [-S start] [-L limit]
+  #{ME} cloudintegration describe #{CMN} [-f format] <id>
+  #{ME} cloudintegration delete #{CMN} <id>
+  #{ME} cloudintegration undelete #{CMN} <id>
+#{global_opts}
+Options:
+  -E, --endpoint=URI       cluster endpoint [#{DEFAULT_OPTS[:endpoint]}]
+  -t, --token=TOKEN        Wavefront authentication token
+  -s, --short              only list alert names and IDs
 ),
 
 event: %(
@@ -244,13 +265,14 @@ Usage:
   #{ME} --help
 
 Commands:
-  ts          view timeseries data
-  agent       view and manage Wavefront agents
-  alert       view and manage alerts
-  dashboard   view and manage dashboards
-  event       open and close events
-  source      view and manage source tags and descriptions
-  write       send data points to a Wavefront proxy
+  ts                view timeseries data
+  agent             view and manage Wavefront agents
+  alert             view and manage alerts
+  cloudintegration  view and manage cloud integrations
+  dashboard         view and manage dashboards
+  event             open and close events
+  source            view and manage source tags and descriptions
+  write             send data points to a Wavefront proxy
 
 Use '#{ME} <command> --help' for further information.)
 }
@@ -285,7 +307,12 @@ end
 
 begin
   require "wavefront-cli/#{cmd}"
-  klass = Object.const_get('WavefrontCli').const_get(cmd.capitalize)
+  klass_name = if class_names.key?(cmd.to_sym)
+                 class_names[cmd.to_sym]
+               else
+                 cmd.capitalize
+               end
+  klass = Object.const_get('WavefrontCli').const_get(klass_name)
   cli = klass.new(opts)
 rescue
   abort 'Fatal error. Unsupported command.'

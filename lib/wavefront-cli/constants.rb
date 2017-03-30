@@ -16,6 +16,7 @@ module WavefrontCli
     DASH_FORMATS = [:json, :human, :yaml]
     DEFAULT_ALERT_FORMAT = :human
     DEFAULT_AGENT_FORMAT = :human
+    DEFAULT_CLOUDINTEGRATION_FORMAT = :human
     DEFAULT_SOURCE_FORMAT = :human
     DEFAULT_DASH_FORMAT = :human
     GRANULARITIES = %w( s m h d )
@@ -41,6 +42,8 @@ module WavefrontCli
       agentformat:  DEFAULT_AGENT_FORMAT,  # agent command output format
       infileformat: DEFAULT_INFILE_FORMAT, # batch writer file format
       sourceformat: DEFAULT_SOURCE_FORMAT, # source output format
+      cloudintegrationformat:
+                    DEFAULT_CLOUDINTEGRATION_FORMAT,
       dashformat:   DEFAULT_DASH_FORMAT,   # dashboard output format
     }.freeze
   end
