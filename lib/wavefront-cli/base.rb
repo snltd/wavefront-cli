@@ -5,10 +5,18 @@ require_relative './human_output'
 
 module WavefrontCli
   #
-  # Parent of all the CLI classes.
+  # Parent of all the CLI classes. This class uses metaprogramming
+  # techniques to try to make adding new CLI commands and
+  # sub-commands as simple as possible.
   #
-  # To define a subcommand 'cmd', you must define a method 'do_cmd'.
-  # The dispatch() method will find it, and call it.
+  # To define a subcommand 'cmd', you only need add it to the
+  # `docopt` description in the relevant section, and create a
+  # method 'do_cmd'.  The WavefrontCli::Base::dispatch() method will
+  # find it, and call it. If your subcommand has multiple words,
+  # like 'delete tag', your do method would be called
+  # `do_delete_tag`. The `do_` methods are able to access the
+  # Wavefront SDK object as `wf`, and all docopt options as
+  # `options`.
   #
   class Base
     attr_accessor :wf, :options, :klass, :flags, :verbose_response
@@ -35,33 +43,43 @@ module WavefrontCli
       dispatch
     end
 
+    # Make a wavefront-sdk credentials object from standard
+    # options.
+    #
+    # @return [Hash] containing `token` and `endpoint`.
+    #
     def mk_creds
-      #
-      # Make a wavefront-sdk credentials object from standard
-      # options.
-      #
       { token: options[:token], endpoint: options[:endpoint] }
     end
 
+    # Make a common wavefront-sdk options object from standard CLI
+    # options.
+    #
+    # @return [Hash] containing `debug` and `noop`.
+    #
     def mk_opts
-      #
-      # Make a common wavefront-sdk options object from standard CLI
-      # options.
-      #
       { debug: options[:debug], noop: options[:noop] }
     end
 
+    # To allow a user to default to different output formats for
+    # different object, we define a format for each class. For
+    # instance, `alertformat` or `agentformat`. This method returns
+    # such a string appropriate for the inheriting class.
+    #
+    # @return [Symbol] name of the option or config-file key which
+    #   sets the default output format for this class
+    #
     def format_var
-      #
-      # The name of the option or config-file key which sets the
-      # default output format for this class
-      #
       (self.class.name.split('::').last.downcase + 'format').to_sym
     end
 
     # Works out the user's command by matching any options docopt has
     # set to 'true' with any 'do_' method in the class. Then calls that
     # method, and displays whatever it returns.
+    #
+    # @return [nil]
+    # @raise 'unsupported command', if the command does not match a
+    #   `do_` method.
     #
     def dispatch
       #
@@ -89,12 +107,18 @@ module WavefrontCli
       raise 'unsupported command'
     end
 
+    # Display a Ruby object as JSON, YAML, or human-readable.  We
+    # provide a default method to format human-readable output, but
+    # you can override it by creating your own
+    # `humanize_command_output` method.
+    #
+    # @param data [Hash] a hash of information returned by a
+    #   Wavefront SDK method. This will usually contain a `response`
+    #   block, and if it does, it will be extracted and displayed.
+    #   We assume the user is not interested in the `status` part of
+    #   the API response if the command worked.
+    #
     def display(data, method)
-      #
-      # Display a Ruby object as JSON, YAML, or human-readable. For
-      # human-readable to work, your class must implement a
-      # 'humanize_cmd_output' method.
-      #
       return if options[:noop]
 
       if data.key?('response') && verbose_response
@@ -126,33 +150,35 @@ module WavefrontCli
       end
     end
 
+    # There are things we need to have. If we don't have them, stop
+    # the user right now. Also, if we're in debug mode, print out a
+    # hash of options, which can be very useful when doing actual
+    # debugging. Some classes may have to override this method. The
+    # writer, for instance, uses a proxy and has no token.
+    #
     def validate_opts
-      #
-      # There are things we need to have. If we don't have them,
-      # stop the user right now. Also, if we're in debug mode, print
-      # out a hash of options, which can be very useful when doing
-      # actual debugging. Some classes may have to override this
-      # method. The writer, for instance, uses a proxy and has no
-      # token.
-      #
       raise 'Please supply an API token.' unless options[:token]
       raise 'Please supply an API endpoint.' unless options[:endpoint]
     end
 
+    # Give it a path to a file (as a string) and it will return the
+    # contents of that file as a Ruby object. Automatically detects
+    # JSON and YAML. Raises an exception if it doesn't look like
+    # either.
+    #
+    # @param path [String] the file to load
+    # @return [Hash] a Ruby object of the loaded file
+    # @raise 'Unsupported file format.' if the filetype is unknown.
+    # @raise pass through any error loading or parsing the file
+    #
     def load_file(path)
-      #
-      # Give it a path to a file (as a string) and it will return the
-      # contents of that file as a Ruby object. Automatically detects
-      # JSON and YAML. Raises an exception if it doesn't look like
-      # either.
-      #
       file = Pathname.new(path)
       raise 'Import file does not exist.' unless file.exist?
 
       if file.extname == '.json'
         JSON.parse(IO.read(file))
       elsif file.extname == '.yaml' || file.extname == '.yml'
-        YAML.load(IO.read(file))
+        YAML.safe_load(IO.read(file))
       else
         raise 'Unsupported file format.'
       end
