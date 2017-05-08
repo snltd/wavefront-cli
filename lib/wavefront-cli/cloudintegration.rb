@@ -7,6 +7,7 @@ module WavefrontCli
   class CloudIntegration < WavefrontCli::Base
     def do_list
       @verbose_response = true
+      @col2 = 'service'
       wf.list(options[:start] || 0, options[:limit] || 100)
     end
 
@@ -21,10 +22,6 @@ module WavefrontCli
 
     def do_undelete
       wf.undelete(options[:'<id>'])
-    end
-
-    def humanize_undelete_output(data)
-      puts "undeleted agent #{data['id']}: #{data['name']}."
     end
   end
 end
