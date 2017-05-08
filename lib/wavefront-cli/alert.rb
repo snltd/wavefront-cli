@@ -9,16 +9,7 @@ module WavefrontCli
 
     def do_list
       @verbose_response = true
-      @flags[:short] = options[:short]
       wf.list(options[:start] || 0, options[:limit] || 100)
-    end
-
-    def humanize_list_output(data)
-      if flags[:short]
-        data.each { |a| puts "#{a['id']}  #{a['name']}" }
-      else
-        HumanOutput.new(data)
-      end
     end
 
     def do_describe
@@ -83,15 +74,15 @@ module WavefrontCli
     end
 
     def do_tag_add
-      wf.tag_add(options[:'<id>'], options[:'<tag>'])
+      wf.tag_add(options[:'<id>'], options[:'<tag>'].first)
     end
 
     def do_tag_delete
-      wf.tag_delete(options[:'<id>'], options[:'<tag>'])
+      wf.tag_delete(options[:'<id>'], options[:'<tag>'].first)
     end
 
     def do_tag_set
-      wf.tag_set(options[:'<id>'], Array(options[:'<tag>']))
+      wf.tag_set(options[:'<id>'], options[:'<tag>'])
     end
 
     def do_tag_clear
