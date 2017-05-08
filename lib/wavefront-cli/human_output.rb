@@ -30,7 +30,7 @@ module WavefrontCli
 
     def print
       if options[:short]
-        terse
+        terse('id', options[:col2] || 'name')
       else
         two_columns
       end
