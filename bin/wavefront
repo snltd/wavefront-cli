@@ -121,6 +121,7 @@ Options:
   -t, --token=TOKEN        Wavefront authentication token
   -b, --brief              only list integration names and IDs
   -o, --offset=n           start from nth integration
+  -L, --limit=COUNT        number of integrations to list
 ),
 dashboard: %(
 Usage:
