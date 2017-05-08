@@ -7,7 +7,16 @@ module WavefrontCli
   class Event < WavefrontCli::Base
     def do_list
       @verbose_response = true
-      wf.list(options[:start] || 0, options[:limit] || 100)
+      @col2 = 'runningState'
+      options[:start] = Time.now - 600 unless options[:start]
+      options[:end] = Time.now unless options[:end]
+
+      wf.list(
+        options[:start],
+         options[:end],
+        options[:limit] || 100,
+        options[:offset] || nil
+      )
     end
   end
 end

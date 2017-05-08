@@ -150,11 +150,11 @@ Options:
 
 event: %(
 Usage:
-  #{WF} event list #{CMN} [-f format] [-s start] [-e end] [-L limit] [-o offset]
+  #{WF} event list #{CMN} [-b] [-f format] [-s start] [-e end] [-L limit] [-o offset]
   #{WF} event describe #{CMN} [-f format] <id>
   #{WF} event create [-DnV] [-c file] [-P profile] [-E endpoint] [-t token]
            [-d description] [-s time] [-i | -e time] [-l level] [-T type]
-           [-H host] [-N] <event>
+           [-H host...] [-N] <event>
   #{WF} event close [-DnV] [-c file] [-P profile] [-E endpoint] [-t token]
            [<event>] [<timestamp>]
   #{WF} event delete [-DnV] [-c file] [-P profile] [-E endpoint] [-t token]
@@ -165,14 +165,18 @@ Usage:
 Options:
   -E, --endpoint=URI   cluster endpoint [#{DEFAULT_OPTS[:endpoint]}]
   -t, --token=TOKEN    Wavefront authentication token
-  -i, --instant        create an instantaneous event
-  -s, --start=TIME     time at which event begins
-  -e, --end=TIME       time at which event ends
+  -b, --brief          only list event names and IDs
+  -s, --start=TIME     time at which event/window begins
+  -e, --end=TIME       time at which even/window  ends
   -l, --level=LEVEL    level of event (#{EVENT_LEVELS.join(', ')})
+  -o, --offset=n       start list from nth event
+  -L, --limit=COUNT    number of Events to list
+  -i, --instant        create an instantaneous event
   -T, --type=TYPE      type of event
   -d, --desc=STRING    description of event
-  -H, --host=STRING    list of sources to which event applies (comma separated)
+  -H, --host=STRING    source to which event applies
   -N, --nostate        do not create a local file recording the event
+  -f, --eventformat=STRING  output format (#{EVENT_FORMATS.join(', ')}) [#{DEFAULT_OPTS[:eventformat]}]
 
 View events in detail using the 'ts' command with the 'events()' function.
 ),
