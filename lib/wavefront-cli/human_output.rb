@@ -3,7 +3,7 @@ module WavefrontCli
   # Print human-friendly output
   #
   class HumanOutput
-    attr_reader :hide_blank, :indent_step, :kw, :indent
+    attr_reader :hide_blank, :indent_step, :kw, :indent, :data
 
     # Create a new HumanOutput object
     #
@@ -23,7 +23,25 @@ module WavefrontCli
       data = [data] unless data.is_a?(Array)
       @hide_blank = options[:hide_blank] || true
       @indent_step = options[:indent_step] || 2
-      two_columns(data)
+      @data = data
+    end
+
+    def two_columns
+      _two_columns(data)
+    end
+
+    # Extract two fields from a hash and print a list of them as
+    # pairs.
+    #
+    # @param col1 [String] the field to use in the first column
+    # @param col2 [String] the field to use in the second column
+    # @return [Nil]
+    #
+    def terse(col1 = 'id', col2 = 'name')
+      want = data.each_with_object({}) { |r, a| a[r[col1]] = r[col2] }
+      @indent = ''
+      @kw = key_width(want)
+      want.each { |k, v| print_line(k, v) }
     end
 
     # A recursive function which displays a key-value hash in two
@@ -37,14 +55,15 @@ module WavefrontCli
     # @kw [Integer] the width of the first (key) column.
     # @returns [Nil]
     #
-    def two_columns(data, indent = 0, kw = nil)
+    def _two_columns(data, indent = 0, kw = nil)
       data.each do |row|
         kw = key_width(row) unless kw
         @kw = kw unless @kw
         @indent = ' ' * indent_step
 
         row.each do |k, v|
-          next if (v.is_a?(String) || v.is_a?(Array)) && v.empty? && hide_blank
+          next if (v.is_a?(String) || v.is_a?(Array)) && v.empty? &&
+                  hide_blank
 
           if v.is_a?(String) && v.match(/<.*>/)
             v = v.gsub(%r{<\/?[^>]*>}, '').delete("\n")
@@ -52,7 +71,7 @@ module WavefrontCli
 
           if v.is_a?(Hash)
             print_line(k)
-            two_columns([v], indent + indent_step, kw - indent_step)
+            _two_columns([v], indent + indent_step, kw - indent_step)
           elsif v.is_a?(Array)
             print_line(k, v.shift)
             v.each { |w| print_line('', w) }
