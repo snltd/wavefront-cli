@@ -3,7 +3,7 @@ module WavefrontCli
   # Print human-friendly output
   #
   class HumanOutput
-    attr_reader :hide_blank, :indent_step, :kw, :indent, :data, :options
+    attr_reader :hide_blank, :indent_step, :kw, :indent, :data, :options, :indent_str
 
     # Create a new HumanOutput object
     #
@@ -25,6 +25,7 @@ module WavefrontCli
       @hide_blank = options[:hide_blank] || true
       @indent_step = options[:indent_step] || 2
       @data = data
+      @indent = 0
     end
 
     def print
@@ -48,9 +49,13 @@ module WavefrontCli
     #
     def terse(col1 = 'id', col2 = 'name')
       want = data.each_with_object({}) { |r, a| a[r[col1]] = r[col2] }
-      @indent = ''
+      @indent_str = ''
       @kw = key_width(want)
       want.each { |k, v| print_line(k, v) }
+    end
+
+    def set_indent(indent)
+      @indent_str = ' ' * indent
     end
 
     # A recursive function which displays a key-value hash in two
@@ -64,11 +69,11 @@ module WavefrontCli
     # @kw [Integer] the width of the first (key) column.
     # @returns [Nil]
     #
-    def _two_columns(data, indent = 0, kw = nil)
+    def _two_columns(data, kw = nil)
       data.each do |row|
         kw = key_width(row) unless kw
         @kw = kw unless @kw
-        @indent = ' ' * indent_step
+        set_indent(indent)
 
         row.each do |k, v|
           next if (v.is_a?(String) || v.is_a?(Array)) && v.empty? &&
@@ -80,15 +85,38 @@ module WavefrontCli
 
           if v.is_a?(Hash)
             print_line(k)
-            _two_columns([v], indent + indent_step, kw - indent_step)
+            @indent += indent_step
+            @kw -= 2
+            _two_columns([v], kw - indent_step)
           elsif v.is_a?(Array)
-            print_line(k, v.shift)
-            v.each { |w| print_line('', w) }
+            print_array(k, v)
           else
             print_line(k, v)
           end
         end
         puts if indent.zero?
+      end
+
+      @indent -= indent_step if indent > 0
+      @kw += 2
+      set_indent(indent)
+    end
+
+    def print_array(k, v)
+      v.each_with_index do |w, i|
+        if w.is_a?(Hash)
+          print_line(k) if i == 0
+          @indent += indent_step
+          @kw -= 2
+          _two_columns([w], kw - indent_step)
+          print_line('', "---") unless i == v.size - 1
+        else
+          if i == 0
+            print_line(k, v.shift)
+          else
+            print_line('', w)
+          end
+        end
       end
     end
 
@@ -98,7 +126,7 @@ module WavefrontCli
     # @param indent [Integer] number of leading spaces on line
     #
     def print_line(key, value = '')
-      puts format("%s%-#{kw}s%s", indent, key, value)
+      puts format("%s%-#{kw}s%s", indent_str, key, value)
     end
 
     # Give it a key-value hash, and it will return the size of the first
