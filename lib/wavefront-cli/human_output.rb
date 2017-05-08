@@ -48,10 +48,10 @@ module WavefrontCli
     # @return [Nil]
     #
     def terse(col1 = 'id', col2 = 'name')
-      p data.length
       want = data.each_with_object({}) { |r, a| a[r[col1]] = r[col2] }
       @indent_str = ''
       @kw = key_width(want)
+
       want.each do |k, v|
         v = v.join(', ') if v.is_a?(Array)
         print_line(k, v)
