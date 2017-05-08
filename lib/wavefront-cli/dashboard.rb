@@ -13,8 +13,7 @@ module WavefrontCli
 
     def do_list
       @verbose_response = true
-      @flags[:short] = options[:short]
-      wf.list(options[:start] || 0, options[:limit] || 100)
+      wf.list(options[:offset] || 0, options[:limit] || 100)
     end
 
     def do_describe
@@ -36,6 +35,8 @@ module WavefrontCli
 
     def do_history
       @verbose_response = true
+      @col1 = 'version'
+      @col2 = 'changeDescription'
       wf.history(options[:'<id>'])
     end
 

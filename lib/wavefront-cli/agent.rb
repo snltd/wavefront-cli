@@ -9,7 +9,7 @@ module WavefrontCli
 
     def do_list
       @verbose_response = true
-      wf.list(options[:start] || 0, options[:limit] || 100)
+      wf.list(options[:offset] || 0, options[:limit] || 100)
     end
 
     def do_describe

@@ -1,3 +1,18 @@
+require_relative './base'
+
+module WavefrontCli
+  #
+  # CLI coverage for the v2 'event' API.
+  #
+  class Event < WavefrontCli::Base
+    def do_list
+      @verbose_response = true
+      wf.list(options[:start] || 0, options[:limit] || 100)
+    end
+  end
+end
+
+=begin
 require 'json'
 require 'time'
 require 'fileutils'
@@ -263,3 +278,4 @@ class WavefrontCli::Event < WavefrontCli::Base
     abort 'Please supply an API endpoint.' unless options[:endpoint]
   end
 end
+=end

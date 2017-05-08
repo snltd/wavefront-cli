@@ -29,6 +29,11 @@ module WavefrontCli
     end
 
     def print
+      if data.empty?
+        puts 'no data'
+        return
+      end
+
       if options[:brief]
         terse(options[:col1] || 'id', options[:col2] || 'name')
       else

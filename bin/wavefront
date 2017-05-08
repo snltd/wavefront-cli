@@ -60,7 +60,7 @@ usage = {
 
 agent: %(
 Usage:
-  #{WF} agent list #{CMN} [-s] [-f format] [-S start] [-L limit]
+  #{WF} agent list #{CMN} [-b] [-f format] [-o offset] [-L limit]
   #{WF} agent describe #{CMN} [-f format] <id>
   #{WF} agent delete #{CMN} <id>
   #{WF} agent undelete #{CMN} <id>
@@ -69,15 +69,15 @@ Usage:
 Options:
   -E, --endpoint=URI        cluster endpoint [#{DEFAULT_OPTS[:endpoint]}]
   -t, --token=TOKEN         Wavefront authentication token
-  -s, --short               only list alert names and IDs
-  -S, --start=n             start from nth agent
+  -b, --brief               only list alert names and IDs
+  -o, --offset=n            start from nth agent
   -f, --agentformat=STRING  output format (#{AGENT_FORMATS.join(', ')}) [#{DEFAULT_OPTS[:agentformat]}]
-  -L, --limit=COUNT        number of agents to report
+  -L, --limit=COUNT        number of agents to list
 ),
 
 alert: %(
 Usage:
-  #{WF} alert list #{CMN} [-s] [-f format] [-S start] [-L limit]
+  #{WF} alert list #{CMN} [-b] [-f format] [-o offset] [-L limit]
   #{WF} alert describe #{CMN} [-f format] [-v version] <id>
   #{WF} alert delete #{CMN} <id>
   #{WF} alert undelete #{CMN} <id>
@@ -96,10 +96,10 @@ Usage:
 Options:
   -E, --endpoint=URI       cluster endpoint [#{DEFAULT_OPTS[:endpoint]}]
   -t, --token=TOKEN        Wavefront authentication token
-  -s, --short              only list alert names and IDs
+  -b, --brief              only list alert names and IDs
   -v, --version=INTEGER    describe only this version of alert
-  -S, --start=n            start from nth alert
-  -L, --limit=COUNT        number of alerts to report
+  -o, --offset=n           start from nth alert
+  -L, --limit=COUNT        number of alerts to list
   -T, --time=SECONDS       how long to snooze (default 3600)
   -f, --alertformat=STRING output format (#{ALERT_FORMATS.join(', ')})
                            [#{DEFAULT_OPTS[:alertformat]}]
@@ -110,7 +110,7 @@ Options:
 ),
 cloudintegration: %(
 Usage:
-  #{WF} cloudintegration list #{CMN} [-s] [-f format] [-S start] [-L limit]
+  #{WF} cloudintegration list #{CMN} [-b] [-f format] [-o offset] [-L limit]
   #{WF} cloudintegration describe #{CMN} [-f format] <id>
   #{WF} cloudintegration delete #{CMN} <id>
   #{WF} cloudintegration undelete #{CMN} <id>
@@ -119,16 +119,17 @@ Usage:
 Options:
   -E, --endpoint=URI       cluster endpoint [#{DEFAULT_OPTS[:endpoint]}]
   -t, --token=TOKEN        Wavefront authentication token
-  -s, --short              only list alert names and IDs
+  -b, --brief              only list integration names and IDs
+  -o, --offset=n           start from nth integration
 ),
 dashboard: %(
 Usage:
-  #{WF} dashboard list #{CMN} [-s] [-f format] [-S start] [-L limit]
+  #{WF} dashboard list #{CMN} [-b] [-f format] [-o offset] [-L limit]
   #{WF} dashboard describe #{CMN} [-f format] [-v version] <id>
   #{WF} dashboard import #{CMN} [-f format] [-F] <file>
   #{WF} dashboard delete #{CMN} <id>
   #{WF} dashboard undelete #{CMN} <id>
-  #{WF} dashboard history #{CMN} [-s] [-f format] [-S start] [-L limit] <id>
+  #{WF} dashboard history #{CMN} [-b] [-f format] [-o offset] [-L limit] <id>
   #{WF} dashboard tags #{CMN} [-f format] <id>
   #{WF} dashboard tag set #{CMN} <id> <tag>...
   #{WF} dashboard tag clear #{CMN} <id>
@@ -139,15 +140,17 @@ Usage:
 Options:
   -E, --endpoint=URI       cluster endpoint [#{DEFAULT_OPTS[:endpoint]}]
   -t, --token=TOKEN        Wavefront authentication token
-  -s, --short              only list dashboard names and IDs
-  -S, --start=VERSION      highest version number from which to descend
-  -L, --limit=COUNT        number of versions to report
-  -v, --version=INTEGER    version of dashboard to clone
+  -b, --brief              only list dashboard names and IDs
+  -o, --offset=n           start list from nth dashboard or revision
+  -L, --limit=COUNT        number of dashboards or revisions to list
+  -v, --version=INTEGER    version of dashboard
   -f, --dashformat=STRING  output format (#{DASH_FORMATS.join(', ')}) [#{DEFAULT_OPTS[:dashformat]}]
 ),
 
 event: %(
 Usage:
+  #{WF} event list #{CMN} [-f format] [-s start] [-e end] [-L limit] [-o offset]
+  #{WF} event describe #{CMN} [-f format] <id>
   #{WF} event create [-DnV] [-c file] [-P profile] [-E endpoint] [-t token]
            [-d description] [-s time] [-i | -e time] [-l level] [-T type]
            [-H host] [-N] <event>
