@@ -3,7 +3,7 @@ module WavefrontCli
   # Print human-friendly output
   #
   class HumanOutput
-    attr_reader :hide_blank, :indent_step, :kw, :indent, :data
+    attr_reader :hide_blank, :indent_step, :kw, :indent, :data, :options
 
     # Create a new HumanOutput object
     #
@@ -19,11 +19,20 @@ module WavefrontCli
     # @returns [Nil]
     #
     def initialize(data, options = {})
+      @options = options
       data = data['items'] if data.is_a?(Hash) && data.key?('items')
       data = [data] unless data.is_a?(Array)
       @hide_blank = options[:hide_blank] || true
       @indent_step = options[:indent_step] || 2
       @data = data
+    end
+
+    def print
+      if options[:short]
+        terse
+      else
+        two_columns
+      end
     end
 
     def two_columns

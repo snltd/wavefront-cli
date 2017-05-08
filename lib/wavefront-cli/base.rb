@@ -143,7 +143,7 @@ module WavefrontCli
         if respond_to?(human_method)
           send(human_method, data)
         else
-          HumanOutput.new(data)
+          HumanOutput.new(data, short: options[:short]).print
         end
       else
         raise 'unsupported output format'

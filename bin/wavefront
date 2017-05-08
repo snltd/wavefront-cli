@@ -60,7 +60,7 @@ usage = {
 
 agent: %(
 Usage:
-  #{WF} agent list #{CMN} [-f format] [-S start] [-L limit]
+  #{WF} agent list #{CMN} [-s] [-f format] [-S start] [-L limit]
   #{WF} agent describe #{CMN} [-f format] <id>
   #{WF} agent delete #{CMN} <id>
   #{WF} agent undelete #{CMN} <id>
@@ -69,6 +69,7 @@ Usage:
 Options:
   -E, --endpoint=URI        cluster endpoint [#{DEFAULT_OPTS[:endpoint]}]
   -t, --token=TOKEN         Wavefront authentication token
+  -s, --short               only list alert names and IDs
   -S, --start=n             start from nth agent
   -f, --agentformat=STRING  output format (#{AGENT_FORMATS.join(', ')}) [#{DEFAULT_OPTS[:agentformat]}]
   -L, --limit=COUNT        number of agents to report
