@@ -124,8 +124,8 @@ Options:
 dashboard: %(
 Usage:
   #{WF} dashboard list #{CMN} [-s] [-f format] [-S start] [-L limit]
+  #{WF} dashboard describe #{CMN} [-f format] [-v version] <id>
   #{WF} dashboard import #{CMN} [-f format] [-F] <file>
-  #{WF} dashboard export #{CMN} [-f format] [-v version] <id>
   #{WF} dashboard delete #{CMN} <id>
   #{WF} dashboard undelete #{CMN} <id>
   #{WF} dashboard history #{CMN} [-s] [-f format] [-S start] [-L limit] <id>

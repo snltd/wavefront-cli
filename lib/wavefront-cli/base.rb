@@ -124,10 +124,11 @@ module WavefrontCli
 
       if data.key?('response') && verbose_response
         data = data['response']
-      elsif data['status']['code'] == 200
+      elsif data['status'] && data['status'].key?('code') && data['status']['code'] == 200
         puts 'operation was successful'
         return
       else
+        p data if options[:debug]
         abort 'operation failed'
       end
 
