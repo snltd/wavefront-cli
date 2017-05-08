@@ -19,7 +19,8 @@ module WavefrontCli
   # `options`.
   #
   class Base
-    attr_accessor :wf, :options, :klass, :flags, :verbose_response, :col2
+    attr_accessor :wf, :options, :klass, :flags, :verbose_response,
+                  :col1, :col2
 
     include WavefrontCli::Constants
 
@@ -27,6 +28,7 @@ module WavefrontCli
       @options = options
       @flags = {}
       @verbose_response = false
+      @col1 = 'id'
       @col2 = 'name'
 
       if options.include?(:help) && options[:help]
@@ -145,7 +147,9 @@ module WavefrontCli
         if respond_to?(human_method)
           send(human_method, data)
         else
-          HumanOutput.new(data, short: options[:short], col2: col2).print
+          HumanOutput.new(data, { brief: options[:brief],
+                                  col1: col1,
+                                  col2: col2 }).print
         end
       else
         raise 'unsupported output format'

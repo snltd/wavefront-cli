@@ -29,8 +29,8 @@ module WavefrontCli
     end
 
     def print
-      if options[:short]
-        terse('id', options[:col2] || 'name')
+      if options[:brief]
+        terse(options[:col1] || 'id', options[:col2] || 'name')
       else
         two_columns
       end
@@ -48,10 +48,14 @@ module WavefrontCli
     # @return [Nil]
     #
     def terse(col1 = 'id', col2 = 'name')
+      p data.length
       want = data.each_with_object({}) { |r, a| a[r[col1]] = r[col2] }
       @indent_str = ''
       @kw = key_width(want)
-      want.each { |k, v| print_line(k, v) }
+      want.each do |k, v|
+        v = v.join(', ') if v.is_a?(Array)
+        print_line(k, v)
+      end
     end
 
     def set_indent(indent)
