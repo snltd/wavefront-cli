@@ -1,3 +1,4 @@
+require 'pathname'
 require 'yaml'
 require 'json'
 require_relative './constants'
@@ -39,6 +40,8 @@ module WavefrontCli
       sdk_class = self.class.name.sub(/Cli/, '')
       require "wavefront-sdk/#{sdk_class.split('::').last.downcase}"
       @klass = Object.const_get(sdk_class)
+
+      send(:post_initialize, options) if respond_to?(:post_initialize)
     end
 
     def run
@@ -99,7 +102,6 @@ module WavefrontCli
       # matches. The order will ensure we match "do_delete_tags" before
       # we match "do_delete".
       #
-
       m_list.sort_by(&:length).reverse.each do |m|
         if m.reject { |w| options[w.to_sym] }.empty?
           method = (%w(do) + m).join('_')
@@ -122,11 +124,16 @@ module WavefrontCli
     #   the API response if the command worked.
     #
     def display(data, method)
-      return if options[:noop]
+      return if options[:noop] || @no_response
+
+      if data.key?('result') && data['result'] == 'ERROR'
+        abort 'API ERROR: ' + data['message']
+      end
 
       if data.key?('response') && verbose_response
         data = data['response']
-      elsif data['status'] && data['status'].key?('code') && data['status']['code'] == 200
+      elsif data['status'] && data['status'].key?('code') &&
+            data['status']['code'] == 200
         puts 'operation was successful'
         return
       else

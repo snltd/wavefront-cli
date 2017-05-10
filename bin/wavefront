@@ -152,14 +152,17 @@ event: %(
 Usage:
   #{WF} event list #{CMN} [-b] [-f format] [-s start] [-e end] [-L limit] [-o offset]
   #{WF} event describe #{CMN} [-f format] <id>
-  #{WF} event create [-DnV] [-c file] [-P profile] [-E endpoint] [-t token]
-           [-d description] [-s time] [-i | -e time] [-l level] [-T type]
-           [-H host...] [-N] <event>
-  #{WF} event close [-DnV] [-c file] [-P profile] [-E endpoint] [-t token]
-           [<event>] [<timestamp>]
-  #{WF} event delete [-DnV] [-c file] [-P profile] [-E endpoint] [-t token]
-           <timestamp> <event>
-  #{WF} event show
+  #{WF} event create #{CMN} [-d description] [-s time] [-i | -e time]
+           [-l severity] [-T type] [-H host...] [-N] <event>
+  #{WF} event close #{CMN} <id>
+  #{WF} event delete #{CMN} <id>
+  #{WF} event update #{CMN} <key=value> <id>
+  #{WF} event tags #{CMN} [-f format] <id>
+  #{WF} event tag set #{CMN} <id> <tag>...
+  #{WF} event tag clear #{CMN} <id>
+  #{WF} event tag add #{CMN} <id> <tag>
+  #{WF} event tag delete #{CMN} <id> <tag>
+  #{WF} event show [-D]
   #{WF} event --help
 #{global_opts}
 Options:
@@ -168,7 +171,7 @@ Options:
   -b, --brief          only list event names and IDs
   -s, --start=TIME     time at which event/window begins
   -e, --end=TIME       time at which even/window  ends
-  -l, --level=LEVEL    level of event (#{EVENT_LEVELS.join(', ')})
+  -l, --severity=SEVERITY    severity of event (#{EVENT_LEVELS.join(', ')})
   -o, --offset=n       start list from nth event
   -L, --limit=COUNT    number of Events to list
   -i, --instant        create an instantaneous event
