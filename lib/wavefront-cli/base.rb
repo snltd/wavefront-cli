@@ -20,7 +20,7 @@ module WavefrontCli
   # `options`.
   #
   class Base
-    attr_accessor :wf, :options, :klass, :flags, :verbose_response,
+    attr_accessor :wf, :options, :klass, :flags, :response,
                   :col1, :col2
 
     include WavefrontCli::Constants
@@ -28,7 +28,7 @@ module WavefrontCli
     def initialize(options)
       @options = options
       @flags = {}
-      @verbose_response = false
+      @response = :quiet
       @col1 = 'id'
       @col2 = 'name'
 
@@ -109,6 +109,10 @@ module WavefrontCli
         end
       end
 
+      if respond_to?(:do_default)
+        return display(public_send(:do_default), :do_default)
+      end
+
       raise 'unsupported command'
     end
 
@@ -124,26 +128,30 @@ module WavefrontCli
     #   the API response if the command worked.
     #
     def display(data, method)
-      return if options[:noop] || @no_response
+      return if options[:noop] || response == :silent
 
-      if data.key?('result') && data['result'] == 'ERROR'
-        abort 'API ERROR: ' + data['message']
-      end
+      if data.is_a?(Hash)
+        if data.key?('result') && data['result'] == 'ERROR'
+          abort 'API ERROR: ' + data['message']
+        end
 
-      if data.key?('response') && verbose_response
-        data = data['response']
-      elsif data['status'] && data['status'].key?('code') &&
-            data['status']['code'] == 200
-        puts 'operation was successful'
-        return
-      else
+        if data.key?('response') && response == :verbose
+          data = data['response']
+        elsif data['status'] && data['status'].key?('code') &&
+              data['status']['code'] == 200
+          puts 'operation was successful'
+          return
+        end
+
+        data = data['items'] if data.key?('items')
+      elsif response != :raw
         p data if options[:debug]
         abort 'operation failed'
       end
 
-      data = data['items'] if data.key?('items')
+      format = options[format_var] ? options[format_var].to_sym : :human
 
-      case options[format_var].to_sym
+      case format
       when :json
         puts data.to_json
       when :yaml
