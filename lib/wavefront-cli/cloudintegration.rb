@@ -6,13 +6,13 @@ module WavefrontCli
   #
   class CloudIntegration < WavefrontCli::Base
     def do_list
-      @verbose_response = true
+      @response = :verbose
       @col2 = 'service'
       wf.list(options[:offset] || 0, options[:limit] || 100)
     end
 
     def do_describe
-      @verbose_response = true
+      @response = :verbose
       wf.describe(options[:'<id>'])
     end
 

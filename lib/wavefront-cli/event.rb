@@ -20,7 +20,7 @@ module WavefrontCli
     end
 
     def do_list
-      @verbose_response = true
+      @response = :verbose
       @col2 = 'runningState'
       options[:start] = Time.now - 600 unless options[:start]
       options[:end] = Time.now unless options[:end]
@@ -30,7 +30,7 @@ module WavefrontCli
     end
 
     def do_describe
-      @verbose_response = true
+      @response = :verbose
       wf.describe(options[:'<id>'])
     end
 
@@ -79,7 +79,7 @@ module WavefrontCli
     end
 
     def do_tags
-      @verbose_response = true
+      @response = :verbose
       wf.tags(options[:'<id>'])
     end
 

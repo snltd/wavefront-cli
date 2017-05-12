@@ -6,7 +6,7 @@ module WavefrontCli
   #
   class Message < WavefrontCli::Base
     def do_list
-      @verbose_response = true
+      @response = :verbose
       wf.list(options[:offset] || 0, options[:limit] || 100)
     end
 

@@ -8,12 +8,12 @@ module WavefrontCli
     include WavefrontCli::Constants
 
     def do_list
-      @verbose_response = true
+      @response = :verbose
       wf.list(options[:offset] || 0, options[:limit] || 100)
     end
 
     def do_describe
-      @verbose_response = true
+      @response = :verbose
       wf.describe(options[:'<id>'], options[:version])
     end
 
@@ -47,7 +47,7 @@ module WavefrontCli
     end
 
     def do_summary
-      @verbose_response = true
+      @response = :verbose
       wf.summary
     end
 
@@ -64,12 +64,12 @@ module WavefrontCli
     end
 
     def do_history
-      @verbose_response = true
+      @response = :verbose
       wf.history(options[:'<id>'])
     end
 
     def do_tags
-      @verbose_response = true
+      @response = :verbose
       wf.tags(options[:'<id>'])
     end
 

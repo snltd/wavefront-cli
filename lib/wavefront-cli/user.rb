@@ -11,7 +11,7 @@ module WavefrontCli
     end
 
     def do_describe
-      @verbose_response = true
+      @response = :verbose
       wf.describe(options[:'<user>'])
     end
 
