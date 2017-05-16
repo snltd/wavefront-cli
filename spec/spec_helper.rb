@@ -1,3 +1,6 @@
+require 'minitest'
+require 'minitest/autorun'
+
 =begin
     Copyright 2015 Wavefront Inc.
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -11,8 +14,6 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
    limitations under the License.
-
-=end
 
 $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
 require 'wavefront/client'
@@ -128,3 +129,5 @@ RSpec::Matchers.define :have_element do |expected|
     end.include?([expected[0].to_sym, URI.escape(expected[1].to_s)])
   end
 end
+=end
+
