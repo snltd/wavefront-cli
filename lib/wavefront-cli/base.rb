@@ -61,10 +61,11 @@ module WavefrontCli
     # Make a common wavefront-sdk options object from standard CLI
     # options.
     #
-    # @return [Hash] containing `debug` and `noop`.
+    # @return [Hash] containing `debug`, `verbose`, and `noop`.
     #
     def mk_opts
-      { debug: options[:debug], noop: options[:noop] }
+      { debug: options[:debug], verbose: options[:verbose],
+        noop: options[:noop] }
     end
 
     # To allow a user to default to different output formats for

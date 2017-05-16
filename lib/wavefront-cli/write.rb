@@ -1,95 +1,228 @@
-require 'wavefront/writer'
-require 'wavefront/cli'
-require 'socket'
-#
-# Push datapoints into Wavefront, via a proxy. This class deals in
-# single points. It cannot batch, or deal with files or streams of
-# data. This is because it depends on the very simple 'writer'
-# class, which cannot be significantly changed, so as to maintain
-# backward compatibility.
-#
-class Wavefront::Cli::Write < Wavefront::Cli
-  include Wavefront::Constants
-  include Wavefront::Mixins
+require 'wavefront-sdk/mixins'
+require_relative './base'
 
-  def validate_opts
-    #
-    # Unlike all the API methods, we don't need a token here
-    #
-    abort 'Please supply a proxy endpoint.' unless options[:proxy]
-  end
+module WavefrontCli
+  class Write < WavefrontCli::Base
+    attr_reader :fmt
+    include Wavefront::Mixins
 
-  def run
-    valid_value?(options[:'<value>'])
-    valid_metric?(options[:'<metric>'])
-    ts = options[:time] ? parse_time(options[:time]) : false
-
-    [:proxy, :host].each do |h|
-      fail Wavefront::Exception::InvalidHostname unless valid_host?(h)
+    def mk_creds
+      { proxy: options[:proxy], port: options[:port] || 2878 }
     end
 
-    write_opts = {
-      agent_host:   options[:proxy],
-      host_name:    options[:host],
-      metric_name:  options[:'<metric>'],
-      point_tags:   prep_tags(options[:tag]),
-      timestamp:    ts,
-      noop:         options[:noop]
-    }
+    def do_point
+      p = { path:  options[:'<metric>'],
+            value: options[:'<value>'].to_f,
+            tags:  tags_to_hash(options[:tag]) }
 
-    write_metric(options[:'<value>'].to_i, options[:'<metric>'], write_opts)
-  end
+      p[:source] = options[:host] if options[:host]
+      p[:ts] = parse_time(options[:time]) if options[:time]
 
-  def write_metric(value, name, opts)
-    wf = Wavefront::Writer.new(opts)
-    wf.write(value, name, opts)
-  end
-
-  def valid_host?(hostname)
-    #
-    # quickly make sure a hostname looks vaguely sensible
-    #
-    hostname.match(/^[\w\.\-]+$/) && hostname.length < 1024
-  end
-
-  def valid_value?(value)
-    #
-    # Values, it seems, will always come in as strings. We need to
-    # cast them to numbers. I don't think there's any reasonable way
-    # to allow exponential notation.
-    #
-    unless value.is_a?(Numeric) || value.match(/^-?\d*\.?\d*$/) ||
-           value.match(/^-?\d*\.?\d*e\d+$/)
-      fail Wavefront::Exception::InvalidMetricValue
+      wf.write(p)
     end
-    true
-  end
 
-  def valid_metric?(metric)
-    #
-    # Apply some common-sense rules to metric paths. Check it's a
-    # string, and that it has at least one dot in it. Don't allow
-    # through odd characters or whitespace.
-    #
-    begin
-      fail unless metric.is_a?(String) &&
-                  metric.split('.').length > 1 &&
-                  metric.match(/^[\w\-\._]+$/) &&
-                  metric.length < 1024
-    rescue
-      raise Wavefront::Exception::InvalidMetricName
+    def do_file
+      valid_format?(options[:infileformat])
+
+      #setup_opts(options)
+      setup_fmt(options[:infileformat] || DEFAULT_INFILE_FORMAT)
+
+      process_input(options[:'<file>'])
+
+      puts "Point summary: " + (%w(sent unsent rejected).map do |p|
+        [wf.summary[p.to_sym], p].join(' ')
+      end.join(', ')) + '.'
     end
-    true
-  end
 
-  def prep_tags(tags)
+    # Read the input, from a file or from STDIN, and turn each line
+    # into Wavefront points
     #
+    def process_input(file)
+      if file == '-'
+        STDIN.each_line { |l| wf.write(process_line(l.strip)) }
+      else
+        data = load_data(Pathname.new(file)).split("\n").map do |l|
+          process_line(l)
+        end
+
+        wf.write(data)
+      end
+    end
+
+    # Find and return the value in a chunked line of input
+    #
+    # param chunks [Array] a chunked line of input from #process_line
+    # return [Float] the value
+    # raise TypeError if field does not exist
+    # raise Wavefront::Exception::InvalidValue if it's not a value
+    #
+    def extract_value(chunks)
+      v = chunks[fmt.index('v')]
+      v.to_f
+    end
+
+    # Find and return the source in a chunked line of input.
+    #
+    # param chunks [Array] a chunked line of input from #process_line
+    # return [Float] the timestamp, if it is there, or the current
+    #   UTC time if it is not.
+    # raise TypeError if field does not exist
+    #
+    def extract_ts(chunks)
+      ts = chunks[fmt.index('t')]
+      return parse_time(ts) if valid_timestamp?(ts)
+    rescue TypeError
+      Time.now.utc.to_i
+    end
+
+    def extract_tags(chunks)
+      tags_to_hash(chunks.last.split(/\s(?=(?:[^"]|"[^"]*")*$)/))
+    end
+
+    # Find and return the metric path in a chunked line of input.
+    # The path can be in the data, or passed as an option, or both.
+    # If the latter, then we assume the option is a prefix, and
+    # concatenate the value in the data.
+    #
+    # param chunks [Array] a chunked line of input from #process_line
+    # return [String] the metric path
+    # raise TypeError if field does not exist
+    #
+    def extract_path(chunks)
+      m = chunks[fmt.index('m')]
+      return options[:metric] ? [options[:metric], m].join('.') : m
+    rescue TypeError
+      return options[:metric] if options[:metric]
+      raise
+    end
+
+    # Find and return the source in a chunked line of input.
+    #
+    # param chunks [Array] a chunked line of input from #process_line
+    # return [String] the source, if it is there, or if not, the
+    #   value passed through by -H, or the local hostname.
+    #
+    def extract_source(chunks)
+      return chunks[fmt.index('s')]
+    rescue TypeError
+      options[:source] || Socket.gethostname
+    end
+
+    # Process a line of input, as described by the format string
+    # held in options[:fmt]. Produces a hash suitable for the SDK to
+    # send on.
+    #
+    # We let the user define most of the fields, but anything beyond
+    # what they define is always assumed to be point tags.  This is
+    # because you can have arbitrarily many of those for each point.
+    #
+    def process_line(l)
+      return true if l.empty?
+      chunks = l.split(/\s+/, fmt.length)
+      raise 'wrong number of fields' unless enough_fields?(l)
+
+      begin
+        point = { path:   extract_path(chunks),
+                  value:  extract_value(chunks),
+                  ts:     extract_ts(chunks),
+                  source: extract_source(chunks)
+                }
+        point[:tags] = extract_tags(chunks) if fmt.last == 'T'
+      rescue TypeError
+        raise "could not process #{l}"
+        return false
+      end
+
+      point
+    end
+
     # Takes an array of key=value tags (as produced by docopt) and
-    # turns it into an array of [key, value] arrays (as required
-    # by various of our own methods). Anything not of the form
-    # key=val is dropped.
+    # turns it into a hash of key: value tags.  Anything not of the
+    # form key=val is dropped.  If key or value are quoted, we
+    # remove the quotes.
     #
-    return [] unless tags.is_a?(Array)
-    tags.map { |t| t.split('=') }.select { |e| e.length == 2 }
+    # @param tags [Array]
+    # return Hash
+    #
+    def tags_to_hash(tags)
+      [tags].flatten.each_with_object({}) do |t, ret|
+        k, v = t.split('=', 2)
+        k.gsub!(/^["']|["']$/, '')
+        ret[k] = v.to_s.gsub(/^["']|["']$/, '') if v
+      end
+    end
+
+    # The format string must contain a 'v'. It must not contain
+    # anything other than 'm', 't', 'T' or 'v', and the 'T', if
+    # there, must be at the end. No letter must appear more than
+    # once.
+    #
+    # @param fmt [String] format of input file
+    #
+    def valid_format?(fmt)
+      if fmt.include?('v') && fmt.match(/^[mtv]+T?$/) && fmt ==
+         fmt.split('').uniq.join
+        return true
+      end
+
+      raise 'Invalid format string.'
+    end
+
+    # Make sure we have the right number of columns, according to
+    # the format string. We want to take every precaution we can to
+    # stop users accidentally polluting their metric namespace with
+    # junk.
+    #
+    # If the format string says we are expecting point tags, we
+    # may have more columns than the length of the format string.
+    #
+    def enough_fields?(l)
+      ncols = l.split.length
+
+      if fmt.include?('T')
+        return false unless ncols >= fmt.length
+      else
+        return false unless ncols == fmt.length
+      end
+
+      true
+    end
+
+    # Although the SDK does value checking, we'll add another layer
+    # of input checing here.  See if the time looks valid. We'll
+    # assume anything before 2000/01/01 or after a year from now is
+    # wrong.  Arbitrary, but there has to be a cut-off somewhere.
+    #
+    def valid_timestamp?(ts)
+      (ts.is_a?(Integer) || ts.match(/^\d+$/)) &&
+        ts.to_i > 946684800 && ts.to_i < (Time.now.to_i + 31557600)
+    end
+
+    private
+
+    def setup_fmt(fmt)
+      @fmt = fmt.split('')
+    end
+
+    def load_data(file)
+      IO.read(file)
+    rescue
+      raise "Cannot open file '#{file}'." unless file.exist?
+    end
+
   end
 end
+
+=begin
+  def setup_opts(options)
+    @opts = {
+      prefix:   options[:metric] || '',
+      source:   options[:host] || Socket.gethostname,
+      tags:     tags_to_hash(options[:tag]),
+      endpoint: options[:proxy],
+      port:     options[:port],
+      verbose:  options[:verbose],
+      noop:     options[:noop],
+    }
+  end
+=end
