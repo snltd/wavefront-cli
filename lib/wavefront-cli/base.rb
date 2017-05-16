@@ -120,13 +120,17 @@ module WavefrontCli
     # Display a Ruby object as JSON, YAML, or human-readable.  We
     # provide a default method to format human-readable output, but
     # you can override it by creating your own
-    # `humanize_command_output` method.
+    # `humanize_command_output` method. An upstream method can
+    # control how its output is handled by setting the `response`
+    # instance variable.
     #
     # @param data [Hash] a hash of information returned by a
     #   Wavefront SDK method. This will usually contain a `response`
     #   block, and if it does, it will be extracted and displayed.
     #   We assume the user is not interested in the `status` part of
     #   the API response if the command worked.
+    # @param method [String] the name of the method which produced
+    #   this output. Used to find a suitable humanize method.
     #
     def display(data, method)
       return if options[:noop] || response == :silent
