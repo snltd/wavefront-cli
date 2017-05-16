@@ -1,5 +1,35 @@
+require 'pathname'
+require 'open3'
+require 'ostruct'
 require 'minitest'
 require 'minitest/autorun'
+
+ROOT = Pathname.new(__FILE__).dirname.parent
+LIB = ROOT + 'lib'
+#CF = RES_DIR + 'conf.yaml'
+WF = ROOT + 'bin' + 'wavefront'
+
+CMDS = %w(alert integration dashboard event link message metric
+          proxy query savedsearch source user window webhook write).freeze
+
+def wf(args = '')
+  #
+  # Run the 'wavefront' CLI command, with arguments, and return a struct
+  # for easy access
+  #
+  ret = OpenStruct.new
+  env = {'RUBYLIB' => [LIB.to_s, ENV['RUBYLIB']].join(':') }
+
+  puts "testing #{WF} #{args}"
+  stdout, stderr, status = Open3.capture3(env, "#{WF} #{args}")
+
+  ret.status = status.exitstatus
+  ret.stdout_a = stdout.split("\n")
+  ret.stdout = stdout.strip
+  ret.stderr_a = stderr.split("\n")
+  ret.stderr = stderr.strip
+  ret
+end
 
 =begin
     Copyright 2015 Wavefront Inc.
@@ -35,11 +65,7 @@ require 'wavefront/cli/dashboards'
 
 TEST_TOKEN = "test"
 TEST_HOST = "metrics.wavefront.com"
-ROOT = Pathname.new(__FILE__).dirname.parent
 RES_DIR = ROOT + 'spec' + 'wavefront' + 'cli' + 'resources'
-CF = RES_DIR + 'conf.yaml'
-WF = ROOT + 'bin' + 'wavefront'
-LIB = ROOT + 'lib'
 
 # The following RSpec matcher is used to test things which `puts`
 # (or related), which RSpec can't do by default. It works with RSpec
@@ -96,25 +122,6 @@ def raw(str)
   # prefixed with 'POST' or 'GET'
   #
   eval(str.split[1..-1].join(' '))
-end
-
-def wf(args = '')
-  #
-  # Run the 'wavefront' CLI command, with arguments, and return a struct
-  # for easy access
-  #
-  ret = OpenStruct.new
-  env = {'RUBYLIB' => [LIB.to_s, ENV['RUBYLIB']].join(':') }
-
-  puts "testing #{WF} #{args}"
-  stdout, stderr, status = Open3.capture3(env, "#{WF} #{args}")
-
-  ret.status = status.exitstatus
-  ret.stdout_a = stdout.split("\n")
-  ret.stdout = stdout.strip
-  ret.stderr_a = stderr.split("\n")
-  ret.stderr = stderr.strip
-  ret
 end
 
 # A matcher that tells you whether you have a key=value setting in a query

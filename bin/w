@@ -1,0 +1,7 @@
+#!/usr/bin/env ruby
+
+require 'pathname'
+require_relative '../lib/wavefront-cli'
+
+CMD = Pathname.new(__FILE__).basename
+WavefrontCommand.new(ARGV)
