@@ -1,4 +1,4 @@
-# Wavefront CLI
+# Wavefront CLI [![Code Climate](https://codeclimate.com/github/snltd/wavefront-cli/badges/gpa.svg)](https://codeclimate.com/github/snltd/wavefront-cli) [![Issue Count](https://codeclimate.com/github/snltd/wavefront-cli/badges/issue_count.svg)](https://codeclimate.com/github/snltd/wavefront-cli) [![Known Vulnerabilities](https://snyk.io/test/github/snltd/wavefront-cli/badge.svg)](https://snyk.io/test/github/snltd/wavefront-cli)
 
 `wavefront <command> [options]`
 
