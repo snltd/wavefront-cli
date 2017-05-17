@@ -51,14 +51,14 @@ class WavefrontCommand
   # options, the second works on the command.
   #
   def parse_args
-    Docopt.docopt(usage[:default], version: WF_CLI_VERSION)
+    Docopt.docopt(usage[:default], version: WF_CLI_VERSION, argv: args)
   rescue Docopt::Exit => e
     cmd = args.empty? ? nil : args.first.to_sym
 
     abort e.message unless usage.keys.include?(cmd)
 
     begin
-      [cmd, sanitize_keys(Docopt.docopt(usage[cmd]))]
+      [cmd, sanitize_keys(Docopt.docopt(usage[cmd], argv: args))]
     rescue Docopt::Exit => e
       abort e.message
     end
