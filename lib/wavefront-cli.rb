@@ -55,15 +55,12 @@ class WavefrontCommand
   rescue Docopt::Exit => e
     cmd = args.empty? ? nil : args.first.to_sym
 
-    if usage.keys.include?(cmd)
-      begin
-        [cmd, sanitize_keys(Docopt.docopt(usage[cmd]))]
-      rescue Docopt::Exit => e
-        puts e.message # command help
-        exit
-      end
-    else
-      abort e.message # default help
+    abort e.message unless usage.keys.include?(cmd)
+
+    begin
+      [cmd, sanitize_keys(Docopt.docopt(usage[cmd]))]
+    rescue Docopt::Exit => e
+      abort e.message
     end
   end
 
@@ -74,7 +71,6 @@ class WavefrontCommand
   def load_sdk(cmd, opts)
     require File.join('wavefront-cli', cmds[cmd].sdk_file)
     Object.const_get('WavefrontCli').const_get(cmds[cmd].sdk_class).new(opts)
-
   rescue
     abort 'Fatal error. Unsupported command.'
   end
@@ -89,15 +85,8 @@ class WavefrontCommand
     abort
   end
 
-  def sanitize_keys(hash)
-    hash.each_with_object({}) do |(k, v), aggr|
-      aggr[k.delete('-').to_sym] = v
-    end
-  end
-
   # Each command is defined in its own file. Dynamically load all
-  # those commands. Whilst we're at it, build up a list of
-  # descriptions for each command.
+  # those commands.
   #
   def load_commands
     CMD_DIR.children.each_with_object({}) do |f, ret|
@@ -128,5 +117,14 @@ class WavefrontCommand
     else
       Pathname.new('/etc/wavefront/client.conf')
     end
+  end
+
+  # Symbolize, and remove dashes from option keys
+  #
+  # @param h [Hash] options hash
+  # return [Hash] h with modified keys
+  #
+  def sanitize_keys(h)
+    h.each_with_object({}) { |(k, v), r| r[k.delete('-').to_sym] = v }
   end
 end
