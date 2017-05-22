@@ -26,8 +26,8 @@ class WavefrontCommand
     @usage = docopt_hash
     cmd, opts = parse_args
     @opts = parse_opts(opts)
-    pp opts if opts[:debug]
-    hook = load_sdk(cmd, opts)
+    pp @opts if @opts[:debug]
+    hook = load_sdk(cmd, @opts)
     run_command(hook)
   end
 
@@ -79,9 +79,9 @@ class WavefrontCommand
     hook.validate_opts
     hook.run
   rescue => e
-    STDERR.puts "general error: #{e}"
-    STDERR.puts "re-run with '-D' for stack trace." unless opts[:debug]
-    STDERR.puts "Backtrace:\n\t#{e.backtrace.join("\n\t")}" if opts[:debug]
+    $stderr.puts "general error: #{e}"
+    $stderr.puts "re-run with '-D' for stack trace." unless opts[:debug]
+    $stderr.puts "Backtrace:\n\t#{e.backtrace.join("\n\t")}" if opts[:debug]
     abort
   end
 
