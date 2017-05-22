@@ -35,7 +35,7 @@ module WavefrontCli
     end
 
     def do_unsnooze
-      wf.snooze(options[:'<id>'])
+      wf.unsnooze(options[:'<id>'])
     end
 
     def do_delete
