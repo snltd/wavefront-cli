@@ -54,7 +54,7 @@ class WavefrontCommandBase
   #
   def commands
     _commands.flatten.each_with_object("Usage:\n") do |cmd, ret|
-      ret.<< "  #{CMD} #{word} #{cmd}".fold(80, 10) + "\n"
+      ret.<< "  #{CMD} #{word} #{cmd}\n" #.fold(80, 10) + "\n"
     end + "  #{CMD} #{word} --help"
   end
 

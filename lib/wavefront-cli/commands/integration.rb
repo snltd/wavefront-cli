@@ -6,10 +6,10 @@ class WavefrontCommandIntegration < WavefrontCommandBase
   end
 
   def _commands
-    [ 'list #{CMN} [-b] [-f format] [-o offset] [-L limit]',
-      'describe #{CMN} [-f format] <id>',
-      'delete #{CMN} <id>',
-      'undelete #{CMN} <id>'
+    [ "list #{CMN} [-b] [-f format] [-o offset] [-L limit]",
+      "describe #{CMN} [-f format] <id>",
+      "delete #{CMN} <id>",
+      "undelete #{CMN} <id>"
     ]
   end
 

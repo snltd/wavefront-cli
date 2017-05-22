@@ -12,7 +12,7 @@ class WavefrontCommandAlert < WavefrontCommandBase
       "undelete #{CMN} <id>",
       "history #{CMN} [-f format] [-S start] [-L limit] <id>",
       "import #{CMN} <file>",
-      "snooze #{CMN} [-t time] <id>",
+      "snooze #{CMN} [-T time] <id>",
       "unsnooze #{CMN} <id>",
       "tags #{CMN} [-f format] <id>",
       "tag set #{CMN} <id> <tag>...",

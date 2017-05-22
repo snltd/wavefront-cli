@@ -6,12 +6,12 @@ class WavefrontCommandDashboard < WavefrontCommandBase
   end
 
   def _commands
-    [ 'list #{CMN} [-b] [-f format] [-o offset] [-L limit]',
-      'describe #{CMN} [-f format] [-v version] <id>',
-      'import #{CMN} [-f format] [-F] <file>',
-      'delete #{CMN} <id>',
-      'undelete #{CMN} <id>',
-      'history #{CMN} [-b] [-f format] [-o offset] [-L limit] <id>',
+    [ "list #{CMN} [-b] [-f format] [-o offset] [-L limit]",
+      "describe #{CMN} [-f format] [-v version] <id>",
+      "import #{CMN} [-f format] [-F] <file>",
+      "delete #{CMN} <id>",
+      "undelete #{CMN} <id>",
+      "history #{CMN} [-b] [-f format] [-o offset] [-L limit] <id>",
       tag_commands
     ]
   end
