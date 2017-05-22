@@ -3,6 +3,11 @@
 #require 'ostruct'
 require 'minitest'
 require 'minitest/autorun'
+require 'pathname'
+
+$LOAD_PATH.<< Pathname.new(__FILE__).dirname.realpath.parent.parent + 'lib'
+$LOAD_PATH.<< Pathname.new(__FILE__).dirname.realpath.parent
+              .parent + 'wavefront-sdk' + 'lib'
 
 CMD = 'wavefront'.freeze
 
