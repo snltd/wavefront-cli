@@ -1,17 +1,19 @@
-require 'pathname'
-require 'open3'
-require 'ostruct'
+#require 'pathname'
+#require 'open3'
+#require 'ostruct'
 require 'minitest'
 require 'minitest/autorun'
 
-ROOT = Pathname.new(__FILE__).dirname.parent
-LIB = ROOT + 'lib'
-#CF = RES_DIR + 'conf.yaml'
-WF = ROOT + 'bin' + 'wavefront'
+CMD = 'wavefront'.freeze
 
 CMDS = %w(alert integration dashboard event link message metric
           proxy query savedsearch source user window webhook write).freeze
 
+=begin
+ROOT = Pathname.new(__FILE__).dirname.parent
+LIB = ROOT + 'lib'
+#CF = RES_DIR + 'conf.yaml'
+WF = ROOT + 'bin' + 'wavefront'
 def wf(args = '')
   #
   # Run the 'wavefront' CLI command, with arguments, and return a struct
@@ -31,7 +33,6 @@ def wf(args = '')
   ret
 end
 
-=begin
     Copyright 2015 Wavefront Inc.
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

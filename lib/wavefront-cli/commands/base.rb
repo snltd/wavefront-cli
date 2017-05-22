@@ -54,17 +54,18 @@ class WavefrontCommandBase
   #
   def commands
     _commands.flatten.each_with_object("Usage:\n") do |cmd, ret|
-      ret.<< "  #{CMD} #{word} #{cmd}\n"
-    end
+      ret.<< "  #{CMD} #{word} #{cmd}".fold(80, 10) + "\n"
+    end + "  #{CMD} #{word} --help"
   end
 
   # Returns a string describing the options the command understands.
   #
   def options
-    (global_options + _options).flatten.
-      each_with_object("Options:\n") do |opt, ret|
-      ret.<< "  #{opt}\n"
-    end
+    ret = "Global options:\n"
+    global_options.each { |o| ret.<< "  #{o}\n" }
+    ret.<< "\nOptions:\n"
+    _options.flatten.each { |o| ret.<< "  #{o}\n" }
+    ret
   end
 
   # Returns a string which will be printed underneath the options.
@@ -76,6 +77,12 @@ class WavefrontCommandBase
   # Returns a full options string which docopt understands
   #
   def docopt
-    commands + "\n" + options + "\n" + postscript
+    commands + "\n\n" + options + "\n" + postscript
+  end
+end
+
+class String
+  def fold(width = 80, indent = 0)
+    scan(/.{#{width}}|.+/).map { |w| w.strip }.join("\n" + ' ' * indent)
   end
 end

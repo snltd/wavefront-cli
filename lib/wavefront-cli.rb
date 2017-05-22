@@ -17,7 +17,7 @@ CMD_DIR = Pathname.new(__FILE__).parent.parent +
 # each subcomand.
 #
 class WavefrontCommand
-  attr_reader :args, :usage, :opts, :cmds
+  attr_reader :args, :usage, :opts, :cmds, :tw
   include WavefrontCli::Constants
 
   def initialize(args)
@@ -25,7 +25,7 @@ class WavefrontCommand
     @cmds = load_commands
     @usage = docopt_hash
     cmd, opts = parse_args
-    opts = parse_opts(opts)
+    @opts = parse_opts(opts)
     pp opts if opts[:debug]
     hook = load_sdk(cmd, opts)
     run_command(hook)
@@ -36,7 +36,7 @@ class WavefrontCommand
         "  #{CMD} --version\n  #{CMD} --help\n\nCommands:\n"
 
     cmds.sort.each { |k, v| s.<< format("  %-15s %s\n", k, v.description) }
-    s.<< "\nUse '#{CMD} --help' for further information.\n"
+    s.<< "\nUse '#{CMD} <command> --help' for further information.\n"
   end
 
   # Make a hash of command descriptions for docopt.
@@ -126,5 +126,11 @@ class WavefrontCommand
   #
   def sanitize_keys(h)
     h.each_with_object({}) { |(k, v), r| r[k.delete('-').to_sym] = v }
+  end
+end
+
+class String
+  def fold(width = 80, indent = 0)
+    scan(/.{#{width}}|.+/).map { |w| w.strip }.join("\n" + ' ' * indent)
   end
 end
