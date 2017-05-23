@@ -123,7 +123,7 @@ def invalid_ids(cmd, subcmds)
   subcmds.each do |sc|
     it "fails '#{sc}' on invalid input" do
       out, err = fail_command("#{cmd} #{sc}")
-       assert_match(/^'.*' is not a valid \w+ ID.\n/, err)
+       assert_match(/^'.+' is not a valid \w+.\n/, err)
     end
   end
 end

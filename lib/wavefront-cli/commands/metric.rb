@@ -10,7 +10,8 @@ class WavefrontCommandMetric < WavefrontCommandBase
   end
 
   def _options
-    [ '-o, --offset=STRING        value to start from if results > 1000',
+    [ common_options,
+      '-o, --offset=STRING        value to start from if results > 1000',
       '-g, --glob=STRING          return sources matching this pattern',
       '-f, --metricformat=STRING  output format',
     ]
