@@ -1,146 +1,156 @@
-#require 'pathname'
-#require 'open3'
-#require 'ostruct'
+require 'webmock/minitest'
+require 'spy/integration'
+require 'inifile'
 require 'minitest'
 require 'minitest/autorun'
+require 'minitest/spec'
 require 'pathname'
+require_relative '../lib/wavefront-cli'
 
 $LOAD_PATH.<< Pathname.new(__FILE__).dirname.realpath.parent.parent + 'lib'
 $LOAD_PATH.<< Pathname.new(__FILE__).dirname.realpath.parent
               .parent + 'wavefront-sdk' + 'lib'
 
 CMD = 'wavefront'.freeze
+ENDPOINT = 'metrics.wavefront.com'
+TOKEN = '0123456789-ABCDEF'
+RES_DIR = Pathname.new(__FILE__).dirname + 'wavefront-cli' + 'resources'
+CF = RES_DIR + 'conf.yaml'
+CF_VAL =  IniFile.load(CF)
+JSON_POST_HEADERS = {
+    :'Content-Type' => 'application/json', :Accept => 'application/json'
+}.freeze
 
 CMDS = %w(alert integration dashboard event link message metric
           proxy query savedsearch source user window webhook write).freeze
 
-=begin
-ROOT = Pathname.new(__FILE__).dirname.parent
-LIB = ROOT + 'lib'
-#CF = RES_DIR + 'conf.yaml'
-WF = ROOT + 'bin' + 'wavefront'
-def wf(args = '')
-  #
-  # Run the 'wavefront' CLI command, with arguments, and return a struct
-  # for easy access
-  #
-  ret = OpenStruct.new
-  env = {'RUBYLIB' => [LIB.to_s, ENV['RUBYLIB']].join(':') }
-
-  puts "testing #{WF} #{args}"
-  stdout, stderr, status = Open3.capture3(env, "#{WF} #{args}")
-
-  ret.status = status.exitstatus
-  ret.stdout_a = stdout.split("\n")
-  ret.stdout = stdout.strip
-  ret.stderr_a = stderr.split("\n")
-  ret.stderr = stderr.strip
-  ret
-end
-
-    Copyright 2015 Wavefront Inc.
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-   limitations under the License.
-
-$LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
-require 'wavefront/client'
-require 'wavefront/writer'
-require 'wavefront/metadata'
-require 'wavefront/alerting'
-require 'wavefront/events'
-require 'wavefront/batch_writer'
-require 'wavefront/validators'
-require 'wavefront/opt_handler'
-require 'wavefront/dashboards'
-require 'wavefront/cli'
-require 'wavefront/cli/alerts'
-require 'wavefront/cli/events'
-require 'wavefront/cli/batch_write'
-require 'wavefront/cli/write'
-require 'wavefront/cli/sources'
-require 'wavefront/cli/dashboards'
-
-TEST_TOKEN = "test"
-TEST_HOST = "metrics.wavefront.com"
-RES_DIR = ROOT + 'spec' + 'wavefront' + 'cli' + 'resources'
-
-# The following RSpec matcher is used to test things which `puts`
-# (or related), which RSpec can't do by default. It works with RSpec
-# 3, and was lifted wholesale from
-# http://stackoverflow.com/questions/6372763/rspec-how-do-i-write-a-test-that-expects-certain-output-but-doesnt-care-about/28258747#28258747
-
-RSpec::Matchers.define :match_stdout do |check|
-
-  @capture = nil
-
-  match do |block|
-
-    begin
-      stdout_saved = $stdout
-      $stdout      = StringIO.new
-      block.call
-    ensure
-      @capture     = $stdout
-      $stdout      = stdout_saved
-    end
-
-    @capture.string.match check
-  end
-
-  failure_message do
-    "expected to #{description}"
-  end
-  failure_message_when_negated do
-    "expected not to #{description}"
-  end
-  description do
-    "match [#{check}] on stdout [#{@capture.string}]"
-  end
-
-  def supports_block_expectations?
-    true
-  end
-end
-
-class Mocket
-  def puts(str)
-    return true
-  end
-end
-
-def concat_url(*args)
-  'https://' + args.join('/').squeeze('/')
-end
-
-def raw(str)
-  #
-  # eval. I know. But some of the CLI tests dump raw Ruby hashes in the
-  # debug output. This parses them so you can check them. They'll be
-  # prefixed with 'POST' or 'GET'
-  #
-  eval(str.split[1..-1].join(' '))
-end
-
-# A matcher that tells you whether you have a key=value setting in a query
-# string. Call it with have_element([:key, value])
+# Return an array of CLI permutations and the values to which they relate
 #
-RSpec::Matchers.define :have_element do |expected|
-  match do |str|
-    str.sub(/^\S+ /, '').sub(/^.*\?/, '').split('&').
-        each_with_object([]) do |e, aggr|
-      k, v = e.split('=')
-      aggr.<< [k.to_sym, v]
-    end.include?([expected[0].to_sym, URI.escape(expected[1].to_s)])
+def permutations
+  [ ["-t #{TOKEN} -E #{ENDPOINT}", { t: TOKEN, e: ENDPOINT }],
+    ["-c #{CF}", { t: CF_VAL['default']['token'],
+                   e: CF_VAL['default']['endpoint'] }],
+    ["-c #{CF} -P other", { t: CF_VAL['other']['token'],
+                            e: CF_VAL['other']['endpoint'] }],
+    ["-c #{CF} -P other -t #{TOKEN}", { t: TOKEN,
+                                        e: CF_VAL['other']['endpoint'] }],
+    ["-c #{CF} -E #{ENDPOINT}", { t: CF_VAL['default']['token'],
+                                  e: ENDPOINT }]
+  ]
+end
+
+# Match a command to the final API call it should produce, applying options in
+# as many combinations as possible, and ensuring the requisite display methods
+# are called.
+#
+# @param cmd [String] command line args to supply to the Wavefront
+#  command
+# @param call [Hash]
+#
+def cmd_to_call(args, call)
+  headers = { 'Accept':          /.*/,
+              'Accept-Encoding': /.*/,
+              'Authorization':  'Bearer 0123456789-ABCDEF',
+              'User-Agent':     "wavefront-sdk 0.0.0",
+            }
+
+  headers.merge!(call[:headers]) if call.key?(:headers)
+  method = call[:method] || :get
+  fmts = call[:formats] ? ['-f json', '-f yaml', '-f human', ''] : ['']
+
+  permutations.each do |opts, vals|
+    describe "with #{args}" do
+      fmts.each do |fmt|
+        cmd = "#{args} #{opts} #{fmt}"
+        uri = 'https://' + vals[:e] + call[:path]
+        h = headers.dup
+        h[:'Authorization'] = "Bearer #{vals[:t]}"
+        it "runs #{cmd} and makes the correct API call" do
+          if call.key?(:body)
+            stub_request(method, uri).with(headers: h,
+                                           body: call[:body].to_json).
+              to_return(body: {}.to_json, status: 200)
+          else
+            stub_request(method, uri).with(headers: h).
+              to_return(body: {}.to_json, status: 200)
+          end
+          d = Spy.on_instance_method(WavefrontCli::Alert, :display)
+          WavefrontCommand.new(cmd.split)
+          assert d.has_been_called?
+          assert_requested(method, uri, headers: h)
+          WebMock.reset!
+        end
+      end
+    end
   end
 end
-=end
 
+# Run a command we expect to fail, returning stdout and stderr
+#
+def fail_command(cmd)
+  capture_io do
+    begin
+      WavefrontCommand.new(cmd.split).run
+    rescue SystemExit => e
+      assert_equal(1, e.status)
+    end
+  end
+end
+
+# Without a token, you should get an error. If you don't supply an endpoint, it
+# will default to 'metrics.wavefront.com'.
+#
+def missing_creds(cmd, subcmds)
+  describe 'commands with missing credentials' do
+    subcmds.each do |subcmd|
+      it "'#{subcmd}' errors and tells the user to use a token" do
+        out, err = fail_command("#{cmd} #{subcmd} -c /f")
+        assert_match(/supply an API token/, err)
+        assert_match(/config file '\/f' not found./, out)
+      end
+    end
+  end
+end
+
+# Generic list tests, needed by most commands
+#
+def list_tests(cmd, pth = nil)
+  pth = cmd unless pth
+  cmd_to_call("#{cmd} list", path: "/api/v2/#{pth}?limit=100&offset=0")
+  cmd_to_call("#{cmd} list -L 50", path: "/api/v2/#{pth}?limit=50&offset=0")
+  cmd_to_call("#{cmd} list -L 20 -o 8",
+              path: "/api/v2/#{pth}?limit=20&offset=8")
+  cmd_to_call("#{cmd} list -o 60", path: "/api/v2/#{pth}?limit=100&offset=60")
+end
+
+def tag_tests(cmd, pth = nil)
+  pth = cmd unless pth
+  cmd_to_call("#{cmd} tags #{ID}", { path: "/api/v2/#{pth}/#{ID}/tag" })
+  cmd_to_call("#{cmd} tag set #{ID} mytag",
+              { method: :post,
+                path:    "/api/v2/#{pth}/#{ID}/tag",
+                body:    %w(mytag),
+                headers: JSON_POST_HEADERS })
+  cmd_to_call("#{cmd} tag set #{ID} mytag1 mytag2",
+              { method: :post,
+                path: "/api/v2/#{pth}/#{ID}/tag",
+                body: %w(mytag1 mytag2),
+                headers: JSON_POST_HEADERS })
+  cmd_to_call("#{cmd} tag add #{ID} mytag",
+              { method: :put, path: "/api/v2/#{pth}/#{ID}/tag/mytag" })
+  cmd_to_call("#{cmd} tag delete #{ID} mytag",
+              { method: :delete, path: "/api/v2/#{pth}/#{ID}/tag/mytag" })
+  cmd_to_call("#{cmd} tag clear #{ID}", { method:  :post,
+                                         path:    "/api/v2/#{pth}/#{ID}/tag",
+                                         body:    [],
+                                         headers: JSON_POST_HEADERS })
+end
+
+class Hash
+
+  # A quick way to deep-copy a hash.
+  #
+  def dup
+    Marshal.load(Marshal.dump(self))
+  end
+end
