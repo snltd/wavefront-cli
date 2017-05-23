@@ -6,14 +6,15 @@ class WavefrontCommandQuery < WavefrontCommandBase
   end
 
   def _commands
-    [ "query #{CMN} -g granularity -s time [-e time] [-f format] " \
+    [ "#{CMN} -g granularity -s time [-e time] [-f format] " \
            '[-ivO] [-S mode] [-n name] [-p points] <query>',
-      "query raw #{CMN} [-H host] [-s time] [-e time] [-f format] <metric>"
+      "raw #{CMN} [-H host] [-s time] [-e time] [-f format] <metric>"
     ]
   end
 
   def _options
-    [ '-g, --granularity=STRING  query granularity (d, h, m, or s)',
+    [ common_options,
+      '-g, --granularity=STRING  query granularity (d, h, m, or s)',
       '-s, --start=TIME          start of query window',
       '-e, --end=TIME            end of query window',
       '-N, --name=STRING         name identifying query',
