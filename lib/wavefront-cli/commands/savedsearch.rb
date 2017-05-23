@@ -5,6 +5,14 @@ class WavefrontCommandSavedsearch < WavefrontCommandBase
     'view and manage saved searches'
   end
 
+  def sdk_file
+    'savedsearch'
+  end
+
+  def sdk_class
+    'SavedSearch'
+  end
+
   def _commands
     [ "list #{CMN} [-b] [-f format] [-o offset] [-L limit]",
       "describe #{CMN} [-f format] <id>",
@@ -13,7 +21,8 @@ class WavefrontCommandSavedsearch < WavefrontCommandBase
   end
 
   def _options
-    [ '-b, --brief               only list saved search names and IDs',
+    [ common_options,
+      '-b, --brief               only list saved search names and IDs',
       '-o, --offset=n            start from nth saved search',
       '-L, --limit=COUNT         number of saved searches to list',
       '-f, --savedsearchformat=STRING  output format'

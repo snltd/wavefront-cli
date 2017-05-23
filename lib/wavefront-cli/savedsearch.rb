@@ -19,5 +19,9 @@ module WavefrontCli
     def do_delete
       wf.delete(options[:'<id>'])
     end
+
+    def validator_exception
+      Wavefront::Exception::InvalidSavedSearchId
+    end
   end
 end
