@@ -1,7 +1,9 @@
 require 'pathname'
 require 'yaml'
 require 'json'
+require 'wavefront-sdk/validators'
 require_relative './constants'
+require_relative './exception'
 require_relative './human_output'
 
 module WavefrontCli
@@ -21,9 +23,10 @@ module WavefrontCli
   #
   class Base
     attr_accessor :wf, :options, :klass, :flags, :response,
-                  :col1, :col2
+                  :col1, :col2, :klass_word
 
     include WavefrontCli::Constants
+    include Wavefront::Validators
 
     def initialize(options)
       @options = options
@@ -31,14 +34,16 @@ module WavefrontCli
       @response = :quiet
       @col1 = 'id'
       @col2 = 'name'
+      sdk_class = self.class.name.sub(/Cli/, '')
+      @klass_word = sdk_class.split('::').last.downcase
+      validate_input
 
       if options.include?(:help) && options[:help]
         puts options
         exit 0
       end
 
-      sdk_class = self.class.name.sub(/Cli/, '')
-      require "wavefront-sdk/#{sdk_class.split('::').last.downcase}"
+      require File.join('wavefront-sdk', @klass_word)
       @klass = Object.const_get(sdk_class)
 
       send(:post_initialize, options) if respond_to?(:post_initialize)
@@ -47,6 +52,41 @@ module WavefrontCli
     def run
       @wf = klass.new(mk_creds, mk_opts)
       dispatch
+    end
+
+    # We normally validate with a predictable method name. Alert IDs are
+    # validated with #wf_alert_id? etc. If you need to change that, override
+    # this method.
+    #
+    def validator_method
+      "wf_#{klass_word}_id?".to_sym
+    end
+
+    def validator_exception
+      Object.const_get(
+        "Wavefront::Exception::Invalid#{klass_word.capitalize}Id")
+    end
+
+    def validate_input
+      validate_id if options[:'<id>']
+      validate_tags if options[:'<tag>']
+      send(:extra_validation) if respond_to?(:extra_validation)
+    end
+
+    def validate_tags
+      Array(options[:'<tag>']).each do |t|
+        begin
+          send(:wf_tag?, t)
+        rescue Wavefront::Exception::InvalidTag
+          abort "'#{t}' is not a valid tag."
+        end
+      end
+    end
+
+    def validate_id
+      send(validator_method, options[:'<id>'])
+    rescue validator_exception
+      abort "'#{options[:'<id>']}' is not a valid #{klass_word} ID."
     end
 
     # Make a wavefront-sdk credentials object from standard
@@ -114,7 +154,7 @@ module WavefrontCli
         return display(public_send(:do_default), :do_default)
       end
 
-      raise 'unsupported command'
+      raise WavefrontCli::Exception::UnhandledCommand
     end
 
     # Display a Ruby object as JSON, YAML, or human-readable.  We

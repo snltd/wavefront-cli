@@ -19,5 +19,13 @@ module WavefrontCli
     def do_delete
       wf.delete(options[:'<id>'])
     end
+
+    def validator_method
+      :wf_maintenance_window_id?
+    end
+
+    def validator_exception
+      Wavefront::Exception::InvalidMaintenanceWindowId
+    end
   end
 end

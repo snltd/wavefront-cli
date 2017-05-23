@@ -30,11 +30,21 @@ module WavefrontCli
     end
 
     def do_rename
+      wf_string?(options[:'<name>'])
       wf.rename(options[:'<id>'], options[:'<name>'])
     end
 
     def humanize_rename_output(data)
       puts "renamed #{data['id']} to '#{data['name']}'"
+    end
+
+    def extra_validation
+      return unless options[:'<name>']
+      begin
+        wf_string?(options[:'<name>'])
+      rescue Wavefront::Exception::InvalidString
+        abort "'#{options[:'<name>']}' is not a valid proxy name."
+      end
     end
   end
 end

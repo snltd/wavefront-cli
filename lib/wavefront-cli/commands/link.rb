@@ -5,6 +5,14 @@ class WavefrontCommandLink < WavefrontCommandBase
     'view and manage external links'
   end
 
+  def sdk_file
+    'externallink'
+  end
+
+  def sdk_class
+    'ExternalLink'
+  end
+
   def _commands
     [ "list #{CMN} [-b] [-f format] [-o offset] [-L limit]",
       "describe #{CMN} [-f format] <id>",

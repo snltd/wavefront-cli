@@ -71,8 +71,10 @@ class WavefrontCommand
   def load_sdk(cmd, opts)
     require File.join('wavefront-cli', cmds[cmd].sdk_file)
     Object.const_get('WavefrontCli').const_get(cmds[cmd].sdk_class).new(opts)
-  rescue
+  rescue WavefrontCli::Exception::UnhandledCommand
     abort 'Fatal error. Unsupported command.'
+  rescue => e
+    p e
   end
 
   def run_command(hook)

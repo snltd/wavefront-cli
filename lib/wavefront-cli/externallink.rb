@@ -18,5 +18,13 @@ module WavefrontCli
     def do_delete
       wf.delete(options[:'<id>'])
     end
+
+    def validator_method
+      :wf_link_id?
+    end
+
+    def validator_exception
+      Wavefront::Exception::InvalidExternalLinkId
+    end
   end
 end

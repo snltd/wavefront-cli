@@ -5,6 +5,14 @@ class WavefrontCommandWindow < WavefrontCommandBase
     'view and manage maintenance windows'
   end
 
+  def sdk_file
+    'maintenancewindow'
+  end
+
+  def sdk_class
+    'MaintenanceWindow'
+  end
+
   def _commands
     [ "list #{CMN} [-b] [-f format] [-o offset] [-L limit]",
       "describe #{CMN} [-f format] <id>",

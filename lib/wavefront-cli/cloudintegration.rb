@@ -23,5 +23,9 @@ module WavefrontCli
     def do_undelete
       wf.undelete(options[:'<id>'])
     end
+
+    def validator_exception
+      Wavefront::Exception::InvalidCloudIntegrationId
+    end
   end
 end

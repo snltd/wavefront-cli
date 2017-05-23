@@ -161,7 +161,7 @@ module WavefrontCli
     end
   end
 
-  =begin
+=begin
   require 'json'
   require 'time'
   require 'fileutils'

@@ -5,6 +5,14 @@ class WavefrontCommandIntegration < WavefrontCommandBase
     'view and manage cloud integrations'
   end
 
+  def sdk_file
+    'cloudintegration'
+  end
+
+  def sdk_class
+    'CloudIntegration'
+  end
+
   def _commands
     [ "list #{CMN} [-b] [-f format] [-o offset] [-L limit]",
       "describe #{CMN} [-f format] <id>",
