@@ -7,10 +7,10 @@ class WavefrontCommandUser < WavefrontCommandBase
 
   def _commands
     [ "list #{CMN} [-b]",
-      "describe #{CMN} [-f format] <user>",
-      "delete #{CMN} <user>",
-      "grant #{CMN} <privilege> <user>",
-      "revoke #{CMN} <privilege> <user>",
+      "describe #{CMN} [-f format] <id>",
+      "delete #{CMN} <id>",
+      "grant #{CMN} <privilege> <id>",
+      "revoke #{CMN} <privilege> <id>",
     ]
   end
 

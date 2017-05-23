@@ -12,19 +12,19 @@ module WavefrontCli
 
     def do_describe
       @response = :verbose
-      wf.describe(options[:'<user>'])
+      wf.describe(options[:'<id>'])
     end
 
     def do_delete
-      wf.delete(options[:'<user>'])
+      wf.delete(options[:'<id>'])
     end
 
     def do_grant
-      wf.grant(options[:'<user>'], options[:'<privilege>'])
+      wf.grant(options[:'<id>'], options[:'<privilege>'])
     end
 
     def do_revoke
-      wf.revoke(options[:'<user>'], options[:'<privilege>'])
+      wf.revoke(options[:'<id>'], options[:'<privilege>'])
     end
   end
 end
