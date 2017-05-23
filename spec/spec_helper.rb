@@ -72,7 +72,7 @@ def cmd_to_call(word, args, call, sdk_class = nil)
         it "runs #{cmd} and makes the correct API call" do
           if call.key?(:body)
             stub_request(method, uri).with(headers: h,
-                                           body: call[:body].to_json).
+                                           body: call[:body]).
               to_return(body: {}.to_json, status: 200)
           else
             stub_request(method, uri).with(headers: h).
@@ -162,12 +162,12 @@ def tag_tests(cmd, id, bad_id, pth = nil)
   cmd_to_call(cmd, "tag set #{id} mytag",
               { method: :post,
                 path:    "/api/v2/#{pth}/#{id}/tag",
-                body:    %w(mytag),
+                body:    %w(mytag).to_json,
                 headers: JSON_POST_HEADERS })
   cmd_to_call(cmd, "tag set #{id} mytag1 mytag2",
               { method: :post,
                 path: "/api/v2/#{pth}/#{id}/tag",
-                body: %w(mytag1 mytag2),
+                body: %w(mytag1 mytag2).to_json,
                 headers: JSON_POST_HEADERS })
   cmd_to_call(cmd, "tag add #{id} mytag",
               { method: :put, path: "/api/v2/#{pth}/#{id}/tag/mytag" })
@@ -175,7 +175,7 @@ def tag_tests(cmd, id, bad_id, pth = nil)
               { method: :delete, path: "/api/v2/#{pth}/#{id}/tag/mytag" })
   cmd_to_call(cmd, "tag clear #{id}", { method:  :post,
                                          path:    "/api/v2/#{pth}/#{id}/tag",
-                                         body:    [],
+                                         body:    [].to_json,
                                          headers: JSON_POST_HEADERS })
   invalid_ids(cmd, ["tags #{bad_id}", "tag clear #{bad_id}",
                     "tag add #{bad_id} mytag", "tag delete #{bad_id} mytag"])
