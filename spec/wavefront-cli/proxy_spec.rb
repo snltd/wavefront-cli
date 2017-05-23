@@ -15,7 +15,7 @@ describe "#{word} command" do
   cmd_to_call(word, "rename #{id} newname",
               { method: :put,
                 path:   "/api/v2/#{word}/#{id}",
-                body:   {name: "newname"} })
+                body:   {name: "newname"}.to_json })
   cmd_to_call(word, "delete #{id}",
               { method: :delete, path: "/api/v2/#{word}/#{id}" })
   cmd_to_call(word, "undelete #{id}",
