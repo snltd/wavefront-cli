@@ -1,2 +1,0 @@
-This isn't really a dashboard. The CLI should not see that, and not
-attempt to import it.
