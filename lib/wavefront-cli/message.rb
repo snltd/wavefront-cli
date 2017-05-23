@@ -7,7 +7,7 @@ module WavefrontCli
   class Message < WavefrontCli::Base
     def do_list
       @response = :verbose
-      wf.list(options[:offset] || 0, options[:limit] || 100)
+      wf.list(options[:offset] || 0, options[:limit] || 100, !options[:all])
     end
 
     def do_mark

@@ -6,7 +6,7 @@ class WavefrontCommandMessage < WavefrontCommandBase
   end
 
   def _commands
-    [ "list #{CMN} [-b] [-f format] [-o offset] [-L limit]",
+    [ "list #{CMN} [-b] [-f format] [-o offset] [-L limit] [-a]",
       "mark #{CMN} [-f format] <id>"
     ]
   end
@@ -16,6 +16,7 @@ class WavefrontCommandMessage < WavefrontCommandBase
       '-b, --brief                 only list link names and IDs',
       '-o, --offset=n              start from nth message',
       '-L, --limit=COUNT           number of messages to list',
+      '-a, --all                   list all messages, not just unread',
       '-f, --messageformat=STRING  output format',
     ]
   end
