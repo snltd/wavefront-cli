@@ -7,7 +7,7 @@ class WavefrontCommandSource < WavefrontCommandBase
 
   def _commands
     [ "list #{CMN} [-b] [-f format] [-o offset] [-L limit]",
-      "describe #{CMN} [-f format] [-v version] <id>",
+      "describe #{CMN} [-f format] <id>",
       "delete #{CMN} <id>",
       tag_commands
     ]
