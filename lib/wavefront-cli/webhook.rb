@@ -12,11 +12,11 @@ module WavefrontCli
 
     def do_describe
       @response = :verbose
-      wf.describe(options[:'<user>'])
+      wf.describe(options[:'<id>'])
     end
 
     def do_delete
-      wf.delete(options[:'<user>'])
+      wf.delete(options[:'<id>'])
     end
   end
 end

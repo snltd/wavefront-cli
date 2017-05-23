@@ -6,9 +6,9 @@ class WavefrontCommandWebhook < WavefrontCommandBase
   end
 
   def _commands
-    [ "list #{CMN} [-b]",
-      "describe #{CMN} [-f format] <webhook>",
-      "delete #{CMN} <webhook>"
+    [ "list #{CMN} [-b] [-f format] [-o offset] [-L limit]",
+      "describe #{CMN} [-f format] <id>",
+      "delete #{CMN} <id>"
     ]
   end
 
