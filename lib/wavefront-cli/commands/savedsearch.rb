@@ -1,5 +1,7 @@
 require_relative './base'
 
+# Define the saved search command.
+#
 class WavefrontCommandSavedsearch < WavefrontCommandBase
   def description
     'view and manage saved searches'
@@ -14,18 +16,16 @@ class WavefrontCommandSavedsearch < WavefrontCommandBase
   end
 
   def _commands
-    [ "list #{CMN} [-b] [-f format] [-o offset] [-L limit]",
-      "describe #{CMN} [-f format] <id>",
-      "delete #{CMN} <id>"
-    ]
+    ["list #{CMN} [-b] [-f format] [-o offset] [-L limit]",
+     "describe #{CMN} [-f format] <id>",
+     "delete #{CMN} <id>"]
   end
 
   def _options
-    [ common_options,
-      '-b, --brief               only list saved search names and IDs',
-      '-o, --offset=n            start from nth saved search',
-      '-L, --limit=COUNT         number of saved searches to list',
-      '-f, --savedsearchformat=STRING  output format'
-    ]
+    [common_options,
+     '-b, --brief               only list saved search names and IDs',
+     '-o, --offset=n            start from nth saved search',
+     '-L, --limit=COUNT         number of saved searches to list',
+     '-f, --savedsearchformat=STRING  output format']
   end
 end
