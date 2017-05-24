@@ -12,7 +12,7 @@ describe "#{word} command" do
   list_tests(word)
   cmd_to_call(word, "describe #{id}", path: "/api/v2/#{word}/#{id}")
   cmd_to_call(word, "delete #{id}",
-              { method: :delete, path: "/api/v2/#{word}/#{id}" })
+              method: :delete, path: "/api/v2/#{word}/#{id}")
   invalid_ids(word, ["describe #{bad_id}", "delete #{bad_id}"])
   tag_tests(word, id, bad_id)
 end

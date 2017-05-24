@@ -9,7 +9,7 @@ k = WavefrontCli::MaintenanceWindow
 word = 'window'
 
 describe "#{word} command" do
-  missing_creds(word, ['list', "describe #{id}", "delete #{id}" ])
+  missing_creds(word, ['list', "describe #{id}", "delete #{id}"])
   list_tests(word, 'maintenancewindow', k)
   cmd_to_call(word, "describe #{id}",
               { path: "/api/v2/maintenancewindow/#{id}" }, k)

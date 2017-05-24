@@ -18,11 +18,11 @@ describe "#{word} command" do
               path: "/api/v2/#{word}?limit=20&offset=8&unreadOnly=false")
   cmd_to_call(word, 'list -a -o 60',
               path: "/api/v2/#{word}?limit=100&offset=60&unreadOnly=false")
-  cmd_to_call(word, "list -a",
+  cmd_to_call(word, 'list -a',
               path: "/api/v2/#{word}?offset=0&limit=100&unreadOnly=false")
-  cmd_to_call(word, "list -L 50 -a",
+  cmd_to_call(word, 'list -L 50 -a',
               path: "/api/v2/#{word}?offset=0&limit=50&unreadOnly=false")
   cmd_to_call(word, "mark #{id}",
-              { method: :post, path: "/api/v2/#{word}/#{id}/read" })
+              method: :post, path: "/api/v2/#{word}/#{id}/read")
   invalid_ids(word, ["mark #{bad_id}"])
 end

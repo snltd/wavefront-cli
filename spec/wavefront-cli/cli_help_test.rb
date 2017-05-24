@@ -6,36 +6,29 @@ require_relative '../spec_helper'
 # Be sure the CLI behaves properly when people ask for help
 #
 class WavefrontCliHelpTest < MiniTest::Test
-
   def test_no_args
-    begin
-      WavefrontCommand.new([])
-    rescue SystemExit => e
-      assert_equal(1, e.status)
-      assert_match(/^Usage/, e.message)
-      assert_match(/^  wavefront --version$/, e.message)
-      assert_match(/^  wavefront --help$/, e.message)
-    end
+    WavefrontCommand.new([])
+  rescue SystemExit => e
+    assert_equal(1, e.status)
+    assert_match(/^Usage/, e.message)
+    assert_match(/^  wavefront --version$/, e.message)
+    assert_match(/^  wavefront --help$/, e.message)
   end
 
   def test_version
-    begin
-      WavefrontCommand.new(%w(--version))
-    rescue SystemExit => e
-      assert_equal(1, e.status)
-      assert_match(/^\d+\.\d+\.\d+$/, e.message)
-    end
+    WavefrontCommand.new(%w(--version))
+  rescue SystemExit => e
+    assert_equal(1, e.status)
+    assert_match(/^\d+\.\d+\.\d+$/, e.message)
   end
 
   def test_help
-    begin
-      WavefrontCommand.new(%w(--help))
-    rescue SystemExit => e
-      assert_equal(1, e.status)
-      assert_match(/^Commands:$/, e.message)
-      CMDS.each do |cmd|
-        assert_match(/^  #{cmd} /, e.message)
-      end
+    WavefrontCommand.new(%w(--help))
+  rescue SystemExit => e
+    assert_equal(1, e.status)
+    assert_match(/^Commands:$/, e.message)
+    CMDS.each do |cmd|
+      assert_match(/^  #{cmd} /, e.message)
     end
   end
 

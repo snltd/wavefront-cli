@@ -13,13 +13,13 @@ describe "#{word} command" do
   list_tests(word)
   cmd_to_call(word, "describe #{id}", path: "/api/v2/#{word}/#{id}")
   cmd_to_call(word, "rename #{id} newname",
-              { method: :put,
-                path:   "/api/v2/#{word}/#{id}",
-                body:   {name: "newname"}.to_json })
+              method: :put,
+              path:   "/api/v2/#{word}/#{id}",
+              body:   { name: 'newname' }.to_json)
   cmd_to_call(word, "delete #{id}",
-              { method: :delete, path: "/api/v2/#{word}/#{id}" })
+              method: :delete, path: "/api/v2/#{word}/#{id}")
   cmd_to_call(word, "undelete #{id}",
-              { method: :post, path: "/api/v2/#{word}/#{id}/undelete" })
+              method: :post, path: "/api/v2/#{word}/#{id}/undelete")
   invalid_ids(word, ["describe #{bad_id}", "delete #{bad_id}",
                      "undelete #{bad_id}", "rename #{bad_id} newname"])
   invalid_something(word, ["rename #{id} '(>_<)'"], 'proxy name')

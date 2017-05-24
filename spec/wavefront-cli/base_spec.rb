@@ -9,8 +9,8 @@ OPTS = {
   endpoint: 'test.wavefront.com',
   token:    '0123456789-ABCDEF',
   debug:    false,
-  noop:     true,
-}
+  noop:     true
+}.freeze
 
 OPTS_CMD = {
   endpoint: 'test.wavefront.com',
@@ -18,13 +18,13 @@ OPTS_CMD = {
   debug:    false,
   noop:     true,
   test:     true,
-  cmd:      true,
-}
+  cmd:      true
+}.freeze
 
 DISP_DATA = {
   a: 'string',
   b: %w(list_1 list_2)
-}
+}.freeze
 
 class WavefrontCliBaseTest < MiniTest::Test
   attr_reader :wf, :wf_cmd
@@ -36,8 +36,8 @@ class WavefrontCliBaseTest < MiniTest::Test
   end
 
   def test_mk_creds
-    assert_equal wf.mk_creds, { endpoint: 'test.wavefront.com',
-                                token:    '0123456789-ABCDEF' }
+    assert_equal wf.mk_creds, endpoint: 'test.wavefront.com',
+                              token:    '0123456789-ABCDEF'
   end
 
   def test_format_var

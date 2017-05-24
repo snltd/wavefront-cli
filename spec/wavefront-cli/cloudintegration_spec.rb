@@ -8,9 +8,9 @@ bad_id = '__BAD__'
 k = WavefrontCli::CloudIntegration
 word = 'integration'
 
-describe "integration command" do
+describe 'integration command' do
   missing_creds(word, ['list', "describe #{id}", "delete #{id}",
-                        "undelete #{id}"])
+                       "undelete #{id}"])
   list_tests(word, 'cloudintegration', k)
   cmd_to_call(word, "describe #{id}",
               { path: "/api/v2/cloudintegration/#{id}" }, k)
