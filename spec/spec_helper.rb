@@ -5,7 +5,7 @@ require 'minitest'
 require 'minitest/autorun'
 require 'minitest/spec'
 require 'pathname'
-require_relative '../lib/wavefront-cli'
+require_relative '../lib/wavefront-cli/controller'
 
 $LOAD_PATH.<< Pathname.new(__FILE__).dirname.realpath.parent.parent + 'lib'
 $LOAD_PATH.<< Pathname.new(__FILE__).dirname.realpath.parent
@@ -85,7 +85,7 @@ def cmd_to_call(word, args, call, sdk_class = nil)
             "Wavefront::#{sdk_class.name.split('::').last}"),
             :respond).and_return({})
           d = Spy.on_instance_method(sdk_class,  :display)
-          WavefrontCommand.new(cmd.split)
+          WavefrontCliController.new(cmd.split)
           assert d.has_been_called?
           assert_requested(method, uri, headers: h)
           WebMock.reset!
@@ -100,7 +100,7 @@ end
 def fail_command(cmd)
   capture_io do
     begin
-      WavefrontCommand.new(cmd.split).run
+      WavefrontCliController.new(cmd.split).run
     rescue SystemExit => e
       assert_equal(1, e.status)
     end

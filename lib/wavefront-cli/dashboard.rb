@@ -5,7 +5,7 @@ module WavefrontCli
   # CLI coverage for the v2 'dashboard' API.
   #
   class Dashboard < WavefrontCli::Base
-    include WavefrontCli::Constants
+    #include WavefrontCli::Constants
 
     def format_var
       :dashformat

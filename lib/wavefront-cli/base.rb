@@ -2,7 +2,7 @@ require 'pathname'
 require 'yaml'
 require 'json'
 require 'wavefront-sdk/validators'
-require_relative './constants'
+#require_relative './constants'
 require_relative './exception'
 require_relative './human_output'
 
@@ -25,7 +25,7 @@ module WavefrontCli
     attr_accessor :wf, :options, :klass, :flags, :response,
                   :col1, :col2, :klass_word
 
-    include WavefrontCli::Constants
+    #include WavefrontCli::Constants
     include Wavefront::Validators
 
     def initialize(options)

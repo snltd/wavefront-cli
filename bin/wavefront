@@ -2,7 +2,7 @@
 
 require 'pathname'
 require 'io/console'
-require_relative '../lib/wavefront-cli'
+require_relative '../lib/wavefront-cli/controller'
 
 begin
   TW = IO.console.winsize.last
@@ -11,4 +11,4 @@ rescue
 end
 
 CMD = Pathname.new(__FILE__).basename
-WavefrontCommand.new(ARGV)
+WavefrontCliController.new(ARGV)

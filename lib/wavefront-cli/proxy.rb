@@ -5,7 +5,7 @@ module WavefrontCli
   # CLI coverage for the v2 'proxy' API.
   #
   class Proxy < WavefrontCli::Base
-    include WavefrontCli::Constants
+    #include WavefrontCli::Constants
 
     def do_list
       @response = :verbose

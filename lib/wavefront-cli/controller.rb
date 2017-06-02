@@ -1,24 +1,17 @@
 require 'pathname'
 require 'pp'
 require 'docopt'
+require_relative './version'
+require_relative './opt_handler'
 
-# uncomment for development
-$LOAD_PATH.<< Pathname.new(__FILE__).dirname.realpath.parent + 'lib'
-$LOAD_PATH.<< Pathname.new(__FILE__).dirname.realpath.parent
-              .parent + 'wavefront-sdk' + 'lib'
-
-require 'wavefront-cli/version'
-require 'wavefront-cli/opt_handler'
-
-CMD_DIR = Pathname.new(__FILE__).parent.parent +
-          'lib' + 'wavefront-cli' + 'commands'
+CMD_DIR = Pathname.new(__FILE__).dirname + 'commands'
 
 # Dynamically generate a CLI interface from files which describe
 # each subcomand.
 #
-class WavefrontCommand
+class WavefrontCliController
   attr_reader :args, :usage, :opts, :cmds, :tw
-  include WavefrontCli::Constants
+  #include WavefrontCli::Constants
 
   def initialize(args)
     @args = args
@@ -69,7 +62,7 @@ class WavefrontCommand
   end
 
   def load_sdk(cmd, opts)
-    require File.join('wavefront-cli', cmds[cmd].sdk_file)
+    require_relative File.join('.', cmds[cmd].sdk_file)
     Object.const_get('WavefrontCli').const_get(cmds[cmd].sdk_class).new(opts)
   rescue WavefrontCli::Exception::UnhandledCommand
     abort 'Fatal error. Unsupported command.'
@@ -128,11 +121,5 @@ class WavefrontCommand
   #
   def sanitize_keys(h)
     h.each_with_object({}) { |(k, v), r| r[k.delete('-').to_sym] = v }
-  end
-end
-
-class String
-  def fold(width = 80, indent = 0)
-    scan(/.{#{width}}|.+/).map { |w| w.strip }.join("\n" + ' ' * indent)
   end
 end
