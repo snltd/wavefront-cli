@@ -25,6 +25,15 @@ module WavefrontCli
                options[:start], options[:end] || nil, opts)
     end
 
+    def extra_validation
+      return unless options[:granularity]
+      begin
+        wf_granularity?(options[:granularity])
+      rescue Wavefront::Exception::InvalidGranularity
+        abort "'#{options[:granularity]}' is not a valid granularity."
+      end
+    end
+
     def do_raw
       @response = :raw
       wf.raw(options[:'<metric>'], options[:host], options[:start],
