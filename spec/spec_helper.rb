@@ -53,7 +53,7 @@ def cmd_to_call(word, args, call, sdk_class = nil)
   headers = { 'Accept':          /.*/,
               'Accept-Encoding': /.*/,
               'Authorization':  'Bearer 0123456789-ABCDEF',
-              'User-Agent':     "wavefront-sdk 0.0.0",
+              'User-Agent':     /wavefront-sdk .*/,
             }
 
   sdk_class ||= Object.const_get("WavefrontCli::#{word.capitalize}")
@@ -69,15 +69,21 @@ def cmd_to_call(word, args, call, sdk_class = nil)
         uri = 'https://' + vals[:e] + call[:path]
         h = headers.dup
         h[:'Authorization'] = "Bearer #{vals[:t]}"
+
         it "runs #{cmd} and makes the correct API call" do
+
           if call.key?(:body)
-            stub_request(method, uri).with(headers: h,
-                                           body: call[:body]).
+            stub_request(method, uri).with(headers: h, body: call[:body]).
               to_return(body: {}.to_json, status: 200)
           else
             stub_request(method, uri).with(headers: h).
               to_return(body: {}.to_json, status: 200)
           end
+
+          require "wavefront-sdk/#{sdk_class.name.split('::').last.downcase}"
+          r = Spy.on_instance_method(Object.const_get(
+            "Wavefront::#{sdk_class.name.split('::').last}"),
+            :respond).and_return({})
           d = Spy.on_instance_method(sdk_class,  :display)
           WavefrontCommand.new(cmd.split)
           assert d.has_been_called?
