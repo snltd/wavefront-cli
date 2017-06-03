@@ -23,6 +23,6 @@ class WavefrontCommandDashboard < WavefrontCommandBase
      '-o, --offset=n           start list from nth dashboard or revision',
      '-L, --limit=COUNT        number of dashboards or revisions to list',
      '-v, --version=INTEGER    version of dashboard',
-     '-f, --dashformat=STRING  output format']
+     '-f, --format=STRING      output format']
   end
 end

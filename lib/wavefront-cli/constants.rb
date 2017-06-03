@@ -30,6 +30,7 @@ module WavefrontCli
     #
     DEFAULT_OPTS = {
       endpoint: 'metrics.wavefront.com',
+      format:   :human,
     }
       #endpoint:     DEFAULT_HOST,          # API endpoint
       #proxy:        'wavefront',           # proxy endpoint

@@ -31,6 +31,6 @@ class WavefrontCommandAlert < WavefrontCommandBase
      '-o, --offset=n           start from nth alert',
      '-L, --limit=COUNT        number of alerts to list',
      '-T, --time=SECONDS       how long to snooze (default 3600)',
-     '-f, --alertformat=STRING output format']
+     '-f, --format=STRING      output format']
   end
 end

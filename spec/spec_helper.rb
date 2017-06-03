@@ -7,10 +7,6 @@ require 'minitest/spec'
 require 'pathname'
 require_relative '../lib/wavefront-cli/controller'
 
-$LOAD_PATH.<< Pathname.new(__FILE__).dirname.realpath.parent.parent + 'lib'
-$LOAD_PATH.<< Pathname.new(__FILE__).dirname.realpath.parent
-              .parent + 'wavefront-sdk' + 'lib'
-
 CMD = 'wavefront'.freeze
 ENDPOINT = 'metrics.wavefront.com'
 TOKEN = '0123456789-ABCDEF'

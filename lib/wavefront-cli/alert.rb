@@ -5,7 +5,6 @@ module WavefrontCli
   # CLI coverage for the v2 'alert' API.
   #
   class Alert < WavefrontCli::Base
-    #include WavefrontCli::Constants
 
     def do_list
       @response = :verbose
@@ -51,18 +50,6 @@ module WavefrontCli
       wf.summary
     end
 
-    # Display the counts of alerts in various states. If a state has no
-    # alerts, it is skipped.
-    #
-    # @param data [Hash] hash of alerts
-    #
-    def humanize_summary_output(data)
-      kw = data.keys.map(&:size).max + 2
-      data.sort.reject { |_k, v| v.zero? }.each do |k, v|
-        puts format("%-#{kw}s%s", k, v)
-      end
-    end
-
     def do_history
       @response = :verbose
       wf.history(options[:'<id>'])
@@ -87,10 +74,6 @@ module WavefrontCli
 
     def do_tag_clear
       wf.tag_set(options[:'<id>'], [])
-    end
-
-    def humanize_tags_output(data)
-      data.sort.each { |t| puts t }
     end
 
     # Take a previously exported alert, and construct a hash which

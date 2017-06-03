@@ -4,7 +4,6 @@ require 'json'
 require 'wavefront-sdk/validators'
 #require_relative './constants'
 require_relative './exception'
-require_relative './human_output'
 
 module WavefrontCli
   #
@@ -117,7 +116,8 @@ module WavefrontCli
     #   sets the default output format for this class
     #
     def format_var
-      (self.class.name.split('::').last.downcase + 'format').to_sym
+      options[:format].to_sym
+      #(self.class.name.split('::').last.downcase + 'format').to_sym
     end
 
     # Works out the user's command by matching any options docopt has
@@ -164,55 +164,48 @@ module WavefrontCli
     # control how its output is handled by setting the `response`
     # instance variable.
     #
-    # @param data [Hash] a hash of information returned by a
-    #   Wavefront SDK method. This will usually contain a `response`
-    #   block, and if it does, it will be extracted and displayed.
-    #   We assume the user is not interested in the `status` part of
-    #   the API response if the command worked.
+    # @param data [WavefrontResponse] an object returned by a
+    #   Wavefront SDK method. This will contain a 'response'
+    #   and 'status' structures.
     # @param method [String] the name of the method which produced
     #   this output. Used to find a suitable humanize method.
     #
     def display(data, method)
       return if options[:noop] || response == :silent
 
-      if data.is_a?(Hash)
-        if data.key?('result') && data['result'] == 'ERROR'
-          abort 'API ERROR: ' + data['message']
-        end
-
-        if data.key?('response') && response == :verbose
-          data = data['response']
-        elsif data['status'] && data['status'].key?('code') &&
-              data['status']['code'] == 200
-          puts 'operation was successful'
-          return
-        end
-
-        data = data['items'] if data.key?('items')
-      elsif response != :raw
-        p data if options[:debug]
-        abort 'operation failed'
+      [:status, :response].each do |b|
+        abort "no #{b} block in API response" unless data.respond_to?(b)
       end
 
-      format = options[format_var] ? options[format_var].to_sym : :human
+      check_status(data.status)
 
+      resp = if data.response.respond_to?(:items)
+               data.response.items
+             else
+               data.response
+             end
+
+      handle_response(resp, format_var, method)
+    end
+
+    def check_status(s)
+      abort "API #{s.code}: #{s.message}." unless s.result == 'OK'
+    end
+
+    def handle_response(resp, format, method)
       case format
       when :json
-        puts data.to_json
+        puts resp.to_json
       when :yaml
-        puts data.to_yaml
+        puts resp.to_yaml
+      when :ruby
+        p resp
       when :human
-        human_method = "humanize_#{method[3..-1]}_output"
-
-        if respond_to?(human_method)
-          send(human_method, data)
-        else
-          HumanOutput.new(data, { brief: options[:brief],
-                                  col1: col1,
-                                  col2: col2 }).print
-        end
+        require_relative File.join('display', klass_word)
+        k = Object.const_get(klass.name.sub('Wavefront', 'WavefrontDisplay'))
+        k.new(resp, method, options)
       else
-        raise 'unsupported output format'
+        raise "Unknown output format '#{format}'."
       end
     end
 

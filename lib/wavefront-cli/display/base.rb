@@ -1,48 +1,38 @@
-module WavefrontCli
+module WavefrontDisplay
   #
-  # Print human-friendly output
+  # Print human-friendly output. If a command requires a dedicated
+  # handler to format its output, define a method with the same name
+  # as that which fetches the data, in a WavefrontDisplay class,
+  # extending this one.
   #
-  class HumanOutput
-    attr_reader :hide_blank, :indent_step, :kw, :indent, :data, :options, :indent_str
+  # We provide long_output() and terse_output() methods to solve
+  # standard formatting problems. To use them, define a do_() method
+  # but rather than printing the output, have it call the method.
+  #
+  class Base
+    attr_reader :data, :options, :indent, :kw, :indent_str, :indent_step,
+                :hide_blank
 
-    # Create a new HumanOutput object
-    #
-    # @param data [Hash, Array] data to display. Many Wavefront objects
-    #   have the data of interest in an 'items' key. If that is present,
-    #   it will automatically be extracted and used.
-    # @param options [Hash] hints on how to format the data. Valid keys
-    #   are:
-    #     'hide_blank' [Boolean] if this is true, lines with no, or
-    #       empty, values will not be displayed.
-    #     'indent_step' [Integer] when printing nested hashes, how many
-    #       characters to indent. Defaults to 2
-    # @returns [Nil]
-    #
-    def initialize(data, options = {})
-      @options = options
-      data = data['items'] if data.is_a?(Hash) && data.key?('items')
-      data = [data] unless data.is_a?(Array)
-      @hide_blank = options[:hide_blank] || true
-      @indent_step = options[:indent_step] || 2
+    def initialize(data, method, options = {})
       @data = data
+      @options = options
       @indent = 0
-    end
+      @indent_step = options[:indent_step] || 2
+      @hide_blank = options[:hide_blank] || true
 
-    def print
-      if data.empty?
-        puts 'no data'
-        return
-      end
-
-      if options[:brief]
-        terse(options[:col1] || 'id', options[:col2] || 'name')
+      if options[:brief] && self.respond_to?("#{method}_brief")
+        send("#{method}_brief")
+      elsif options[:brief]
+        terse_output
+      elsif self.respond_to?(method)
+        send(method)
       else
-        two_columns
+        long_output
       end
     end
 
-    def two_columns
-      _two_columns(data)
+    def long_output(fields = nil)
+      _two_columns(data, nil, fields)
     end
 
     # Extract two fields from a hash and print a list of them as
@@ -52,7 +42,7 @@ module WavefrontCli
     # @param col2 [String] the field to use in the second column
     # @return [Nil]
     #
-    def terse(col1 = 'id', col2 = 'name')
+    def terse_output(col1 = :id, col2 = :name)
       want = data.each_with_object({}) { |r, a| a[r[col1]] = r[col2] }
       @indent_str = ''
       @kw = key_width(want)
@@ -78,8 +68,9 @@ module WavefrontCli
     # @kw [Integer] the width of the first (key) column.
     # @returns [Nil]
     #
-    def _two_columns(data, kw = nil)
-      data.each do |row|
+    def _two_columns(data, kw = nil, fields = nil)
+      [data].flatten.each do |row|
+        row.keep_if { |k, _v| fields.include?(k) } unless fields.nil?
         kw = key_width(row) unless kw
         @kw = kw unless @kw
         set_indent(indent)
