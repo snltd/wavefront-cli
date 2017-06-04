@@ -242,5 +242,67 @@ module WavefrontCli
         raise 'Unsupported file format.'
       end
     end
+
+    # Below here are common methods. Most are used by most classes,
+    # but if they don't match a command described in the docopt
+    # text, the dispatcher will never call them. So, there's no
+    # harm inheriting unneeded things. Some classes override them.
+    #
+    def do_list
+      wf.list(options[:offset] || 0, options[:limit] || 100)
+    end
+
+    def do_describe
+      wf.describe(options[:'<id>'], options[:version])
+    end
+
+    def do_import
+      raw = load_file(options[:'<file>'])
+
+      begin
+        prepped = import_to_create(raw)
+      rescue => e
+        puts e if options[:debug]
+        raise 'could not parse input.'
+      end
+
+      wf.create(prepped)
+    end
+
+    def do_delete
+      wf.delete(options[:'<id>'])
+    end
+
+    def do_undelete
+      wf.undelete(options[:'<id>'])
+    end
+
+    def do_tags
+      @response = :verbose
+      wf.tags(options[:'<id>'])
+    end
+
+    def do_tag_add
+      wf.tag_add(options[:'<id>'], options[:'<tag>'].first)
+    end
+
+    def do_tag_delete
+      wf.tag_delete(options[:'<id>'], options[:'<tag>'].first)
+    end
+
+    def do_tag_set
+      wf.tag_set(options[:'<id>'], options[:'<tag>'])
+    end
+
+    def do_tag_clear
+      wf.tag_set(options[:'<id>'], [])
+    end
+
+    # Most things will re-import with the POST method if you remove
+    # the ID.
+    #
+    def import_to_create(raw)
+      raw.delete_if { |k, _v| k == 'id' }
+    end
   end
 end
