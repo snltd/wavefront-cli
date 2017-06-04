@@ -1,4 +1,4 @@
-# Wavefront CLI [![Code Climate](https://codeclimate.com/github/snltd/wavefront-cli/badges/gpa.svg)](https://codeclimate.com/github/snltd/wavefront-cli) [![Issue Count](https://codeclimate.com/github/snltd/wavefront-cli/badges/issue_count.svg)](https://codeclimate.com/github/snltd/wavefront-cli) [![Known Vulnerabilities](https://snyk.io/test/github/snltd/wavefront-cli/badge.svg)](https://snyk.io/test/github/snltd/wavefront-cli)
+# Wavefront CLI [![Build Status](https://travis-ci.org/snltd/wavefront-cli.svg?branch=master)](https://travis-ci.org/snltd/wavefront-cli) [![Code Climate](https://codeclimate.com/github/snltd/wavefront-cli/badges/gpa.svg)](https://codeclimate.com/github/snltd/wavefront-cli) [![Issue Count](https://codeclimate.com/github/snltd/wavefront-cli/badges/issue_count.svg)](https://codeclimate.com/github/snltd/wavefront-cli) [![Known Vulnerabilities](https://snyk.io/test/github/snltd/wavefront-cli/badge.svg)](https://snyk.io/test/github/snltd/wavefront-cli)
 
 
 This package provides a simple CLI front-end for Wavefront's API. Each API path
