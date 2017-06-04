@@ -18,7 +18,8 @@ class WavefrontCommandLink < WavefrontCommandBase
   def _commands
     ["list #{CMN} [-l] [-f format] [-o offset] [-L limit]",
      "describe #{CMN} [-f format] <id>",
-     "delete #{CMN} <id>"]
+     "delete #{CMN} <id>",
+     "import #{CMN} <file>"]
   end
 
   def _options
@@ -26,6 +27,6 @@ class WavefrontCommandLink < WavefrontCommandBase
      '-l, --long               list external links in detail',
      '-o, --offset=n           start from nth external link',
      '-L, --limit=COUNT        number of external link to list',
-     '-f, --linkformat=STRING  output format']
+     '-f, --format=STRING      output format']
   end
 end
