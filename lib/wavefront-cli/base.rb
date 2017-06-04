@@ -196,8 +196,8 @@ module WavefrontCli
       case format
       when :json
         puts resp.to_json
-      when :yaml
-        puts resp.to_yaml
+      when :yaml # We don't want the YAML keys to be symbols.
+        puts JSON.parse(resp.to_json).to_yaml
       when :ruby
         p resp
       when :human
