@@ -14,13 +14,5 @@ module WavefrontDisplay
     def do_list_brief
       terse_output(:id, :title)
     end
-
-    def do_import
-      puts "Imported webhook."
-    end
-
-    def do_delete
-      puts "Deleted webhook '#{options[:'<id>']}'."
-    end
   end
 end

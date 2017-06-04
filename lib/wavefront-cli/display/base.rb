@@ -30,9 +30,9 @@ module WavefrontDisplay
         return
       end
 
-      if self.respond_to?("#{method}_brief")
+      if respond_to?("#{method}_brief")
         send("#{method}_brief")
-      elsif self.respond_to?(method)
+      elsif respond_to?(method)
         send(method)
       else
         long_output
@@ -113,13 +113,13 @@ module WavefrontDisplay
     def print_array(k, v)
       v.each_with_index do |w, i|
         if w.is_a?(Hash)
-          print_line(k) if i == 0
+          print_line(k) if i.zero?
           @indent += indent_step
           @kw -= 2
           _two_columns([w], kw - indent_step)
-          print_line('', "---") unless i == v.size - 1
+          print_line('', '---') unless i == v.size - 1
         else
-          if i == 0
+          if i.zero?
             print_line(k, v.shift)
           else
             print_line('', w)
@@ -149,13 +149,18 @@ module WavefrontDisplay
       hash.keys.map(&:size).max + pad
     end
 
-    def indent_wrap(line, cols=78, offset=22)
+    def indent_wrap(line, cols = 78, offset = 22)
       #
       # hanging indent long lines to fit in an 80-column terminal
       #
       return unless line
       line.gsub(/(.{1,#{cols - offset}})(\s+|\Z)/, "\\1\n#{' ' *
               offset}").rstrip
+    end
+
+    def friendly_name
+      self.class.name.split('::').last.gsub(/([a-z])([A-Z])/, '\\1 \\2')
+          .downcase
     end
 
     def do_list
@@ -166,20 +171,33 @@ module WavefrontDisplay
       terse_output
     end
 
+    def do_import
+      puts "Imported #{friendly_name}."
+      long_output
+    end
+
+    def do_delete
+      puts "Deleted #{friendly_name} '#{options[:'<id>']}'."
+    end
+
+    def do_undelete
+      puts "Undeleted #{friendly_name} '#{options[:'<id>']}'."
+    end
+
     def do_tag_add
-      puts "Added tag."
+      puts "Tagged #{friendly_name}."
     end
 
     def do_tag_delete
-      puts "Deleted tag."
+      puts "Deleted tag from #{friendly_name}."
     end
 
     def do_tag_clear
-      puts "Cleared tags on #{options[:'<id>']}."
+      puts "Cleared tags on #{friendly_name} #{options[:'<id>']}."
     end
 
     def do_tag_set
-      puts "Set tags."
+      puts "Set tags on #{friendly_name}."
     end
 
     def do_tags

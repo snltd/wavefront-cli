@@ -11,19 +11,6 @@ module WavefrontDisplay
                    :additionalInformation]
     end
 
-    def do_import
-      puts "Imported alert."
-      long_output
-    end
-
-    def do_delete
-      puts "Deleted alert '#{options[:'<id>']}'."
-    end
-
-    def do_undelete
-      puts "Undeleted alert '#{options[:'<id>']}'."
-    end
-
     def do_snooze
       puts "Snoozed alert '#{options[:'<id>']}'."
     end
