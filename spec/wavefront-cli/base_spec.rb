@@ -40,10 +40,6 @@ class WavefrontCliBaseTest < MiniTest::Test
                               token:    '0123456789-ABCDEF'
   end
 
-  def test_format_var
-    assert_equal(wf.format_var, :baseformat)
-  end
-
   def test_dispatch
     assert_raises(WavefrontCli::Exception::UnhandledCommand) { wf.dispatch }
     assert_equal(wf_cmd.dispatch, nil)
