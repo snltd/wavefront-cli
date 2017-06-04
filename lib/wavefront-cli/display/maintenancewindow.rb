@@ -10,6 +10,10 @@ module WavefrontDisplay
       long_output
     end
 
+    def do_list_brief
+      terse_output(:id, :title)
+    end
+
     def do_delete
       puts "Deleted maintenance window '#{options[:'<id>']}'."
     end
