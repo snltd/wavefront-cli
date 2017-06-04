@@ -16,6 +16,19 @@ module WavefrontCli
       wf.describe(options[:'<id>'])
     end
 
+    def do_import
+      raw = load_file(options[:'<file>'])
+
+      begin
+        prepped = import_to_create(raw)
+      rescue => e
+        puts e if options[:debug]
+        raise 'could not parse input.'
+      end
+
+      wf.create(prepped)
+    end
+
     def do_delete
       wf.delete(options[:'<id>'])
     end
@@ -26,6 +39,10 @@ module WavefrontCli
 
     def validator_exception
       Wavefront::Exception::InvalidMaintenanceWindowId
+    end
+
+    def import_to_create(raw)
+      raw.delete_if { |k, _v| k == 'id' }
     end
   end
 end
