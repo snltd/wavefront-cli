@@ -5,7 +5,6 @@ module WavefrontDisplay
   # Format human-readable output for alerts.
   #
   class Alert < Base
-
     def do_list
       long_output [:id, :minutes, :target, :status, :tags, :hostsUsed,
                    :condition, :displayExpression, :severity,
