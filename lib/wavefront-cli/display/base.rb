@@ -137,6 +137,7 @@ module WavefrontDisplay
     # @return [Integer] length of longest key + pad
     #
     def key_width(hash, pad = 2)
+      return 0 if hash.keys.empty?
       hash.keys.map(&:size).max + pad
     end
 
@@ -147,6 +148,30 @@ module WavefrontDisplay
       return unless line
       line.gsub(/(.{1,#{cols - offset}})(\s+|\Z)/, "\\1\n#{' ' *
               offset}").rstrip
+    end
+
+    def do_tag_add
+      puts "Added tag."
+    end
+
+    def do_tag_delete
+      puts "Deleted tag."
+    end
+
+    def do_tag_clear
+      puts "Cleared tags on #{options[:'<id>']}."
+    end
+
+    def do_tag_set
+      puts "Set tags."
+    end
+
+    def do_tags
+      if data.empty?
+        puts "No tags set on #{options[:'<id>']}."
+      else
+        data.sort.each { |t| puts t }
+      end
     end
   end
 end
