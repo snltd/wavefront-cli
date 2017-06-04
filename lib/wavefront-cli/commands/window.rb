@@ -16,7 +16,7 @@ class WavefrontCommandWindow < WavefrontCommandBase
   end
 
   def _commands
-    ["list #{CMN} [-b] [-f format] [-o offset] [-L limit]",
+    ["list #{CMN} [-l] [-f format] [-o offset] [-L limit]",
      "describe #{CMN} [-f format] <id>",
      "delete #{CMN} <id>",
      "import #{CMN} <file>"]
@@ -24,7 +24,7 @@ class WavefrontCommandWindow < WavefrontCommandBase
 
   def _options
     [common_options,
-     '-b, --brief          only list window names and IDs',
+     '-l, --long           list maintenance windows in detail',
      '-o, --offset=n       start from nth maintenance window',
      '-L, --limit=COUNT    number of maintenance windows to list',
      '-f, --format=STRING  output format']

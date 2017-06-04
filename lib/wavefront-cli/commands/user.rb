@@ -8,7 +8,7 @@ class WavefrontCommandUser < WavefrontCommandBase
   end
 
   def _commands
-    ["list #{CMN} [-b]",
+    ["list #{CMN} [-l]",
      "describe #{CMN} [-f format] <id>",
      "delete #{CMN} <id>",
      "grant #{CMN} <privilege> <id>",
@@ -17,7 +17,7 @@ class WavefrontCommandUser < WavefrontCommandBase
 
   def _options
     [common_options,
-     '-b, --brief               only list alert names and IDs',
-     '-f, --userformat=STRING   output format']
+     '-l, --long                list users in detail',
+     '-f, --format=STRING       output format']
   end
 end

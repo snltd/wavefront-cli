@@ -5,12 +5,6 @@ module WavefrontCli
   # CLI coverage for the v2 'dashboard' API.
   #
   class Dashboard < WavefrontCli::Base
-    #include WavefrontCli::Constants
-
-    def format_var
-      :dashformat
-    end
-
     def do_list
       @response = :verbose
       wf.list(options[:offset] || 0, options[:limit] || 100)

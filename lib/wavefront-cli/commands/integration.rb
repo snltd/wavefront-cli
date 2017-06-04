@@ -16,7 +16,7 @@ class WavefrontCommandIntegration < WavefrontCommandBase
   end
 
   def _commands
-    ["list #{CMN} [-b] [-f format] [-o offset] [-L limit]",
+    ["list #{CMN} [-l] [-f format] [-o offset] [-L limit]",
      "describe #{CMN} [-f format] <id>",
      "delete #{CMN} <id>",
      "undelete #{CMN} <id>"]
@@ -24,9 +24,9 @@ class WavefrontCommandIntegration < WavefrontCommandBase
 
   def _options
     [common_options,
-     '-b, --brief                    only list integration names and IDs',
+     '-l, --long                     list integrations in detail',
      '-o, --offset=n                 start from nth integration',
      '-L, --limit=COUNT              number of integrations to list',
-     '-f, --integrationformat=STRING output format']
+     '-f, --format=STRING            output format']
   end
 end

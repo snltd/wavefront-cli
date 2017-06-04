@@ -8,7 +8,7 @@ class WavefrontCommandAlert < WavefrontCommandBase
   end
 
   def _commands
-    ["list #{CMN} [-b] [-f format] [-o offset] [-L limit]",
+    ["list #{CMN} [-l] [-f format] [-o offset] [-L limit]",
      "describe #{CMN} [-f format] [-v version] <id>",
      "delete #{CMN} <id>",
      "undelete #{CMN} <id>",
@@ -26,7 +26,7 @@ class WavefrontCommandAlert < WavefrontCommandBase
 
   def _options
     [common_options,
-     '-b, --brief              only list alert names and IDs',
+     '-l, --long               list alerts in detail',
      '-v, --version=INTEGER    describe only this version of alert',
      '-o, --offset=n           start from nth alert',
      '-L, --limit=COUNT        number of alerts to list',

@@ -8,7 +8,7 @@ class WavefrontCommandSource < WavefrontCommandBase
   end
 
   def _commands
-    ["list #{CMN} [-b] [-f format] [-o offset] [-L limit]",
+    ["list #{CMN} [-l] [-f format] [-o offset] [-L limit]",
      "describe #{CMN} [-f format] <id>",
      "delete #{CMN} <id>",
      tag_commands]
@@ -16,9 +16,9 @@ class WavefrontCommandSource < WavefrontCommandBase
 
   def _options
     [common_options,
-     '-b, --brief,               only list source names and IDs',
+     '-l, --long                 list sources in detail',
      '-o, --offset=n             start list from nth source',
      '-L, --limit=COUNT          number of sources to list',
-     '-f, --sourceformat=STRING  output format']
+     '-f, --format=STRING        output format']
   end
 end

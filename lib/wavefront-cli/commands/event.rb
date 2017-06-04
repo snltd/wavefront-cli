@@ -8,7 +8,7 @@ class WavefrontCommandEvent < WavefrontCommandBase
   end
 
   def _commands
-    ["list #{CMN} [-b] [-f format] [-s start] [-e end] [-L limit] " \
+    ["list #{CMN} [-l] [-f format] [-s start] [-e end] [-L limit] " \
       '[-o offset]',
      "describe #{CMN} [-f format] <id>",
      "create #{CMN} [-d description] [-s time] [-i | -e time] " \
@@ -22,7 +22,7 @@ class WavefrontCommandEvent < WavefrontCommandBase
 
   def _options
     [common_options,
-     '-b, --brief               only list event names and IDs',
+     '-l, --long                list events in detail',
      '-o, --offset=n            start list from nth event',
      '-L, --limit=COUNT         number of events to list',
      '-s, --start=TIME          time at which event/window begins',
@@ -34,7 +34,7 @@ class WavefrontCommandEvent < WavefrontCommandBase
      '-H, --host=STRING         source to which event applies',
      '-N, --nostate             do not create a local file recording ' \
      'the event',
-     '-f, --eventformat=STRING  output format']
+     '-f, --ormat=STRING        output format']
   end
 
   def postscript
