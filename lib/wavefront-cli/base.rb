@@ -253,7 +253,7 @@ module WavefrontCli
     end
 
     def do_describe
-      wf.describe(options[:'<id>'], options[:version])
+      wf.describe(options[:'<id>'])
     end
 
     def do_import

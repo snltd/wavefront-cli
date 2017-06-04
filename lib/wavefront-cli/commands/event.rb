@@ -12,7 +12,7 @@ class WavefrontCommandEvent < WavefrontCommandBase
       '[-o offset]',
      "describe #{CMN} [-f format] <id>",
      "create #{CMN} [-d description] [-s time] [-i | -e time] " \
-     '[-l severity] [-T type] [-H host...] [-N] <event>',
+     '[-S severity] [-T type] [-H host...] [-N] <event>',
      "close #{CMN} <id>",
      "delete #{CMN} <id>",
      "update #{CMN} <key=value> <id>",
@@ -27,7 +27,7 @@ class WavefrontCommandEvent < WavefrontCommandBase
      '-L, --limit=COUNT         number of events to list',
      '-s, --start=TIME          time at which event/window begins',
      '-e, --end=TIME            time at which even/window  ends',
-     '-l, --severity=SEVERITY   severity of event',
+     '-S, --severity=SEVERITY   severity of event',
      '-i, --instant             create an instantaneous event',
      '-T, --type=TYPE           type of event',
      '-d, --desc=STRING         description of event',

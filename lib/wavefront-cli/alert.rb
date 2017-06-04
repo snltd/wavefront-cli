@@ -6,6 +6,10 @@ module WavefrontCli
   #
   class Alert < WavefrontCli::Base
 
+    def do_describe
+      wf.describe(options[:'<id>'], options[:version])
+    end
+
     def do_snooze
       wf.snooze(options[:'<id>'], options[:time])
     end
