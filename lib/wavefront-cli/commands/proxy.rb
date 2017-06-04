@@ -19,7 +19,7 @@ class WavefrontCommandProxy < WavefrontCommandBase
     [common_options,
      '-l, --long                list proxies in detail',
      '-o, --offset=n            start from nth proxy',
-     '-f, --proxyformat=STRING  output format',
+     '-f, --format=STRING       output format',
      '-L, --limit=COUNT         number of proxies to list']
   end
 end
