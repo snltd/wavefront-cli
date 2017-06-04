@@ -39,8 +39,8 @@ module WavefrontDisplay
       end
     end
 
-    def long_output(fields = nil)
-      _two_columns(data, nil, fields)
+    def long_output(fields = nil, modified_data = nil)
+      _two_columns(modified_data || data, nil, fields)
     end
 
     # Extract two fields from a hash and print a list of them as
@@ -205,6 +205,19 @@ module WavefrontDisplay
         puts "No tags set on #{options[:'<id>']}."
       else
         data.sort.each { |t| puts t }
+      end
+    end
+
+    # Modify, in-place, the data structure to make times
+    # human-readable. Automatically handles second and millisecond
+    # epoch times.
+    #
+    def readable_time(*keys)
+      keys.each do |k|
+        next unless data.key?(k)
+        str = data[k].to_s
+        fmt = str.length == 13 ? '%Q' : '%s'
+        data[k] = DateTime.strptime(str, fmt).strftime('%T %F')
       end
     end
   end

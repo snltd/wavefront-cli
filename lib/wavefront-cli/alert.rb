@@ -19,12 +19,10 @@ module WavefrontCli
     end
 
     def do_summary
-      @response = :verbose
       wf.summary
     end
 
     def do_history
-      @response = :verbose
       wf.history(options[:'<id>'])
     end
 

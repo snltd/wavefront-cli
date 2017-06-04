@@ -13,7 +13,7 @@ class WavefrontCommandEvent < WavefrontCommandBase
      "describe #{CMN} [-f format] <id>",
      "create #{CMN} [-d description] [-s time] [-i | -e time] " \
      '[-S severity] [-T type] [-H host...] [-N] <event>',
-     "close #{CMN} <id>",
+     "close #{CMN} [<id>]",
      "delete #{CMN} <id>",
      "update #{CMN} <key=value> <id>",
      tag_commands,

@@ -1,19 +1,20 @@
+require 'date'
 require_relative './base'
 
 module WavefrontDisplay
 
-  # Format human-readable output for maintenance windows.
+  # Format human-readable output for events.
   #
-  class MaintenanceWindow < Base
+  class Event < Base
 
     def do_describe
-      readable_time(:startTimeInSeconds, :endTimeInSeconds,
+      readable_time(:startTime, :endTime, :updatedAt, :createdAt,
                     :createdEpochMillis, :updatedEpochMillis)
       long_output
     end
 
     def do_list_brief
-      terse_output(:id, :title)
+      terse_output(:id, :runningState)
     end
   end
 end
