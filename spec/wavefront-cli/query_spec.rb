@@ -4,7 +4,7 @@ word = 'query'
 
 require_relative '../spec_helper'
 require_relative "../../lib/wavefront-cli/#{word}"
-require_relative "../../../wavefront-sdk/lib/wavefront-sdk/mixins"
+require "wavefront-sdk/mixins"
 include Wavefront::Mixins
 
 q = 'ts("dev.cli.test")'
