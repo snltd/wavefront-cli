@@ -20,14 +20,22 @@ module WavefrontDisplay
       @indent_step = options[:indent_step] || 2
       @hide_blank = options[:hide_blank] || true
 
-      if options[:long] && self.respond_to?(method)
-        send(method)
-      elsif options[:long]
-        long_output
-      elsif self.respond_to?("#{method}_brief")
+      if method == 'do_list'
+        if options[:long]
+          do_list
+        else
+          do_list_brief
+        end
+
+        return
+      end
+
+      if self.respond_to?("#{method}_brief")
         send("#{method}_brief")
+      elsif self.respond_to?(method)
+        send(method)
       else
-        terse_output
+        long_output
       end
     end
 
