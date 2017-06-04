@@ -158,6 +158,14 @@ module WavefrontDisplay
               offset}").rstrip
     end
 
+    def do_list
+      long_output
+    end
+
+    def do_list_brief
+      terse_output
+    end
+
     def do_tag_add
       puts "Added tag."
     end
