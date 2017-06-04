@@ -39,14 +39,16 @@ Use 'wavefront <command> --help' for further information.
 ## General Rules
 
 Most commands have a `list` subcommand, which will produce brief
-"one thing per line" output with the `-b` (or `--brief`) flag.
+"one thing per line" output.
 
 ```
-$ wavefront proxy list -b
+$ wavefront proxy list
 457d6cf3-5171-45e0-8d31-5c980be889ea  test agent
 917102d1-a10e-997b-ba63-95058f98d4fb  Agent on wavefront-2017-03-13-02
 926dfb4c-23c6-4fb9-8c8d-833625ab8f6f  Agent on shark-wavefront
 ```
+
+You can get more verbose listings with the `-l` flag.
 
 Commands which operate on a time window, such as `query` or `event`
 will expect that window to be defined with `-s` and `-e` (or
