@@ -1,8 +1,8 @@
 require_relative './base'
 
 module WavefrontDisplay
-  #
-  # CLI coverage for the v2 'alert' API.
+
+  # Format human-readable output for alerts.
   #
   class Alert < Base
 
@@ -38,30 +38,6 @@ module WavefrontDisplay
 
       data.sort.reject { |_k, v| v.zero? }.each do |k, v|
         puts format("%-#{kw}s%s", k, v)
-      end
-    end
-
-    def do_tag_add
-      puts "Added tag."
-    end
-
-    def do_tag_delete
-      puts "Deleted tag."
-    end
-
-    def do_tag_clear
-      puts "Cleared tags on #{options[:'<id>']}."
-    end
-
-    def do_tag_set
-      puts "Set tags."
-    end
-
-    def do_tags
-      if data.empty?
-        puts "No tags set on #{options[:'<id>']}."
-      else
-        data.sort.each { |t| puts t }
       end
     end
   end
