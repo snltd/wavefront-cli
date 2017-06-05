@@ -27,6 +27,6 @@ class WavefrontCommandQuery < WavefrontCommandBase
      'points (mean, median, min, max, sum, count, last, first)',
      '-O, --obsolete            include metrics unreported for > 4 weeks',
      '-H, --host=STRING         host or source to query on',
-     '-f, --queryformat=STRING  output format']
+     '-f, --format=STRING       output format']
   end
 end

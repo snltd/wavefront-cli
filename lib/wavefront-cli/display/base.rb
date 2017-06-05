@@ -215,10 +215,14 @@ module WavefrontDisplay
     def readable_time(*keys)
       keys.each do |k|
         next unless data.key?(k)
-        str = data[k].to_s
-        fmt = str.length == 13 ? '%Q' : '%s'
-        data[k] = DateTime.strptime(str, fmt).strftime('%T %F')
+        data[k] = human_time(data[k])
       end
+    end
+
+    def human_time(t)
+      str = t.to_s
+      fmt = str.length == 13 ? '%Q' : '%s'
+      DateTime.strptime(str, fmt).strftime('%T %F')
     end
   end
 end
