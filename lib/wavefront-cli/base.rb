@@ -189,7 +189,9 @@ module WavefrontCli
     end
 
     def check_status(s)
-      abort "API #{s.code}: #{s.message}." unless s.result == 'OK'
+      unless s.respond_to?(:result) && s.result == 'OK'
+        abort "API #{s.code}: #{s.message}."
+      end
     end
 
     def handle_response(resp, format, method)
@@ -278,7 +280,6 @@ module WavefrontCli
     end
 
     def do_tags
-      @response = :verbose
       wf.tags(options[:'<id>'])
     end
 
