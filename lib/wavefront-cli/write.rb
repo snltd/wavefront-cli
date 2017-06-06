@@ -28,14 +28,8 @@ module WavefrontCli
 
     def do_file
       valid_format?(options[:infileformat])
-
-      setup_fmt(options[:infileformat] || DEFAULT_INFILE_FORMAT)
-
+      setup_fmt(options[:infileformat] || 'tmv')
       process_input(options[:'<file>'])
-
-      puts "Point summary: " + (%w(sent unsent rejected).map do |p|
-        [wf.summary[p.to_sym], p].join(' ')
-      end.join(', ')) + '.'
     end
 
     # Read the input, from a file or from STDIN, and turn each line

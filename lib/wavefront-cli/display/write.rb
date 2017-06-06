@@ -12,5 +12,9 @@ module WavefrontDisplay
 
       exit (data.rejected == 0 && data.unsent == 0) ? 0 : 1
     end
+
+    def do_file
+      do_point
+    end
   end
 end
