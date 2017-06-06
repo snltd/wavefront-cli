@@ -17,12 +17,12 @@ describe "#{word} command" do
   cmd_to_call(word, "describe #{id}", path: "/api/v2/#{word}/#{id}")
   cmd_to_call(word, "delete #{id}", method: :delete,
                                     path:   "/api/v2/#{word}/#{id}")
-  cmd_to_call(word, "grant agent_management #{id}",
+  cmd_to_call(word, "grant agent_management to #{id}",
               method: :post, path: "/api/v2/#{word}/#{id}/grant",
               body:   'group=agent_management',
               headers: hdrs)
 
-  cmd_to_call(word, "revoke agent_management #{id}",
+  cmd_to_call(word, "revoke agent_management from #{id}",
               method: :post, path: "/api/v2/#{word}/#{id}/revoke",
               body:   'group=agent_management',
               headers: hdrs)
