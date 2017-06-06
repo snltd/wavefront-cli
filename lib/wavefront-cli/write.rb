@@ -18,13 +18,17 @@ module WavefrontCli
       p[:source] = options[:host] if options[:host]
       p[:ts] = parse_time(options[:time]) if options[:time]
 
-      wf.write(p)
+      begin
+        wf.write(p)
+      rescue Wavefront::Exception::InvalidEndpoint => e
+        abort 'could not speak to proxy ' \
+              "'#{options[:proxy]}:#{options[:port]}'."
+      end
     end
 
     def do_file
       valid_format?(options[:infileformat])
 
-      #setup_opts(options)
       setup_fmt(options[:infileformat] || DEFAULT_INFILE_FORMAT)
 
       process_input(options[:'<file>'])
@@ -145,6 +149,8 @@ module WavefrontCli
     # return Hash
     #
     def tags_to_hash(tags)
+      return nil unless tags
+
       [tags].flatten.each_with_object({}) do |t, ret|
         k, v = t.split('=', 2)
         k.gsub!(/^["']|["']$/, '')
@@ -209,20 +215,5 @@ module WavefrontCli
     rescue
       raise "Cannot open file '#{file}'." unless file.exist?
     end
-
   end
 end
-
-=begin
-  def setup_opts(options)
-    @opts = {
-      prefix:   options[:metric] || '',
-      source:   options[:host] || Socket.gethostname,
-      tags:     tags_to_hash(options[:tag]),
-      endpoint: options[:proxy],
-      port:     options[:port],
-      verbose:  options[:verbose],
-      noop:     options[:noop],
-    }
-  end
-=end
