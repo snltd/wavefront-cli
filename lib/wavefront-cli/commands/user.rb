@@ -11,8 +11,9 @@ class WavefrontCommandUser < WavefrontCommandBase
     ["list #{CMN} [-l]",
      "describe #{CMN} [-f format] <id>",
      "delete #{CMN} <id>",
-     "grant #{CMN} <privilege> <id>",
-     "revoke #{CMN} <privilege> <id>"]
+     "import #{CMN} <file>",
+     "grant #{CMN} <privilege> to <id>",
+     "revoke #{CMN} <privilege> from <id>"]
   end
 
   def _options

@@ -6,17 +6,7 @@ module WavefrontCli
   #
   class User < WavefrontCli::Base
     def do_list
-      @response = :raw
       wf.list
-    end
-
-    def do_describe
-      @response = :verbose
-      wf.describe(options[:'<id>'])
-    end
-
-    def do_delete
-      wf.delete(options[:'<id>'])
     end
 
     def do_grant
@@ -25,6 +15,15 @@ module WavefrontCli
 
     def do_revoke
       wf.revoke(options[:'<id>'], options[:'<privilege>'])
+    end
+
+    def do_delete
+      puts "Deleted user '#{options[:'<id>']}."
+    end
+
+    def import_to_create(raw)
+      raw['emailAddress'] = raw['identifier']
+      raw.delete_if { |k, _v| k == 'customer' || k == 'identifier' }
     end
   end
 end
