@@ -1,10 +1,10 @@
 # Wavefront CLI [![Build Status](https://travis-ci.org/snltd/wavefront-cli.svg?branch=master)](https://travis-ci.org/snltd/wavefront-cli) [![Code Climate](https://codeclimate.com/github/snltd/wavefront-cli/badges/gpa.svg)](https://codeclimate.com/github/snltd/wavefront-cli) [![Issue Count](https://codeclimate.com/github/snltd/wavefront-cli/badges/issue_count.svg)](https://codeclimate.com/github/snltd/wavefront-cli) [![Known Vulnerabilities](https://snyk.io/test/github/snltd/wavefront-cli/badge.svg)](https://snyk.io/test/github/snltd/wavefront-cli)
 
 
-This package provides a simple CLI front-end for Wavefront's API. Each API path
+This package provides a command-line interface to Wavefront's API. Each API path
 is covered by a different command keyword.
 
-It is built on [my Wavefront
+It is built on [the Wavefront Ruby
 SDK](https://github.com/snltd/wavefront-sdk) and requires Ruby >= 2.2.
 
 ```
@@ -38,8 +38,11 @@ Use 'wavefront <command> --help' for further information.
 
 ## General Rules
 
+### Listing Things
+
 Most commands have a `list` subcommand, which will produce brief
-"one thing per line" output.
+"one thing per line" output. The unique ID  of the "thing" is in the first
+column.
 
 ```
 $ wavefront proxy list
@@ -49,6 +52,73 @@ $ wavefront proxy list
 ```
 
 You can get more verbose listings with the `-l` flag.
+
+### Describing Things
+
+Most commands have a `describe` subcommand which will tell you more about the
+object.
+
+```
+$ bin/wavefront proxy describe 917102d1-a10e-497b-ba63-95058f98d4fb
+name                     Agent on wavefront-2017-03-13-02
+id                       917102d1-a10e-497b-ba63-95058f98d4fb
+version                  4.7
+customerId               sysdef
+inTrash                  false
+lastCheckInTime          2017-06-06 14:47:20
+hostname                 wavefront-2017-03-13-02
+timeDrift                -751
+bytesLeftForBuffer       1536094720
+bytesPerMinuteForBuffer  280109
+localQueueSize           0
+sshAgent                 false
+ephemeral                false
+deleted                  false
+```
+
+Most timestamps come back from the API as epoch seconds or epoch milliseconds.
+The CLI, in its human-readable descriptions, will convert those to
+`YYYY-MM-DD HH:mm:ss` when it `describe`s something.
+
+### Formats, Importing, and Exporting
+
+Most commands and sub-commands support the `-f` option. This takes one of
+`json`, `yaml`, `human` and `raw`, and tells the CLI to present the information
+it fetches from the Wavefront API in that format. (`raw` is the raw Ruby
+representation, which, for instance, you could paste into `irb`.)
+
+Human output can be selective. As well as the time formatting mentioned above,
+human-readable listings and desctiptions may omit data which is not likely to be
+useful, or which is extremely hard to present in a readable way.
+
+If you `describe` an object like a dashboard, user, webhook etc as `json` or
+`yaml`, and send the output to a file, you can re-import that data. The format of the file to be imported is automatically detected.
+
+```
+$ wavefront user list
+slackboy@gmail.com
+sysdef.limited@gmail.com
+$ wavefront user describe -f json sysdef.limited@gmail.com > user.json
+$ cat user.json
+{"identifier":"sysdef.limited@gmail.com","customer":"sysdef","groups":["agent_management"]}
+$ wavefront user delete sysdef.limited@gmail.com
+Deleted user 'sysdef.limited@gmail.com'.
+$ wavefront user list
+slackboy@gmail.com
+$ wavefront user import user.json
+Imported user.
+identifier  sysdef.limited@gmail.com
+customer    sysdef
+groups      agent_management
+$ wavefront user list
+slackboy@gmail.com
+sysdef.limited@gmail.com
+```
+
+You could, of course, modify certain aspects of the exported data before
+re-importing.
+
+### Time Windows
 
 Commands which operate on a time window, such as `query` or `event`
 will expect that window to be defined with `-s` and `-e` (or
