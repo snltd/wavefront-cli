@@ -2,7 +2,7 @@ require 'wavefront-sdk/mixins'
 require_relative './base'
 
 module WavefrontCli
-  class Write < WavefrontCli::Base
+  class Write < Base
     attr_reader :fmt
     include Wavefront::Mixins
 
@@ -126,11 +126,10 @@ module WavefrontCli
       raise 'wrong number of fields' unless enough_fields?(l)
 
       begin
-        point = { path:   extract_path(chunks),
-                  value:  extract_value(chunks),
-                  ts:     extract_ts(chunks),
-                  source: extract_source(chunks)
-                }
+        point = { path:  extract_path(chunks),
+                  value: extract_value(chunks) }
+        point[:ts] = extract_ts(chunks) if fmt.include?('t')
+        point[:source] = extract_source(chunks) if fmt.include?('s')
         point[:tags] = extract_tags(chunks) if fmt.last == 'T'
       rescue TypeError
         raise "could not process #{l}"
@@ -204,6 +203,14 @@ module WavefrontCli
         ts.to_i > 946684800 && ts.to_i < (Time.now.to_i + 31557600)
     end
 
+    def validate_opts
+      unless options[:metric] || options[:infileformat].include?('m')
+        abort "Supply a metric path in the file or with '-m'."
+      end
+
+      raise 'Please supply a proxy address.' unless options[:proxy]
+    end
+
     private
 
     def setup_fmt(fmt)
@@ -216,4 +223,5 @@ module WavefrontCli
       raise "Cannot open file '#{file}'." unless file.exist?
     end
   end
+
 end
