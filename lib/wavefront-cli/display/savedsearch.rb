@@ -1,12 +1,12 @@
 require_relative './base'
 
 module WavefrontDisplay
-
+  #
   # Format human-readable output for saved searches.
   #
   class SavedSearch < Base
     def do_describe
-      readable_time( :createdEpochMillis, :updatedEpochMillis)
+      readable_time(:createdEpochMillis, :updatedEpochMillis)
       long_output
     end
 

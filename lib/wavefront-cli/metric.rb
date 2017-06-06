@@ -5,7 +5,7 @@ module WavefrontCli
   # CLI coverage for the v2 'metric' API.
   #
   class Metric < WavefrontCli::Base
-
+    #
     # There's an extra describe flag that other classes don't have.
     #
     def do_describe

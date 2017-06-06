@@ -1,7 +1,6 @@
 require_relative './base'
 
 module WavefrontDisplay
-
   # Format human-readable output when writing points.
   #
   class Write < Base
@@ -10,7 +9,7 @@ module WavefrontDisplay
         puts format('  %12s %d', k.to_s, data[k])
       end
 
-      exit (data.rejected == 0 && data.unsent == 0) ? 0 : 1
+      exit(data.rejected.zero? && data.unsent.zero? ? 0 : 1)
     end
 
     def do_file

@@ -5,7 +5,6 @@ module WavefrontCli
   # CLI coverage for the v2 'proxy' API.
   #
   class Proxy < WavefrontCli::Base
-
     def do_rename
       wf_string?(options[:'<name>'])
       wf.rename(options[:'<id>'], options[:'<name>'])

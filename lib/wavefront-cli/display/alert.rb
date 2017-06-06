@@ -1,7 +1,7 @@
 require_relative './base'
 
 module WavefrontDisplay
-
+  #
   # Format human-readable output for alerts.
   #
   class Alert < Base

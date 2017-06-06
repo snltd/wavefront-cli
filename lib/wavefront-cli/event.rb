@@ -12,7 +12,7 @@ module WavefrontCli
     attr_reader :state_dir
     include Wavefront::Mixins
 
-    def post_initialize(options)
+    def post_initialize(_options)
       begin
         @state_dir = EVENT_STATE_DIR + Etc.getlogin
       rescue
@@ -26,13 +26,14 @@ module WavefrontCli
       options[:start] = Time.now - 600 unless options[:start]
       options[:end] = Time.now unless options[:end]
 
+      o
       wf.list(options[:start], options[:end], options[:limit] || 100,
               options[:offset] || nil)
     end
 
     def do_update
       k, v = options[:'<key=value>'].split('=')
-      wf.update(options[:'<id>'], { k => v })
+      wf.update(options[:'<id>'], k => v)
     end
 
     def do_create
@@ -67,7 +68,6 @@ module WavefrontCli
     end
 
     def do_close
-
       # The user doesn't have to give us an event ID.
       #
       # If no event name is given, we'll pop the last event off the
@@ -84,9 +84,7 @@ module WavefrontCli
              pop_event(options[:'<id>'])
            end
 
-      unless ev
-        abort "No locally stored event matches '#{options[:'<id>']}'."
-      end
+      abort "No locally stored event matches '#{options[:'<id>']}'." unless ev
 
       wf.close(ev)
     end
@@ -126,13 +124,13 @@ module WavefrontCli
 
     def create_state_dir
       FileUtils.mkdir_p(state_dir)
-      unless state_dir.exist? && state_dir.directory? && state_dir.writable?
-        raise 'Cannot create state directory.'
-      end
+      return true if state_dir.exist? && state_dir.directory? &&
+                     state_dir.writable?
+      raise 'Cannot create state directory.'
     end
 
     def validate_input
-      validate_id if options[:'<id>'] && ! options[:close]
+      validate_id if options[:'<id>'] && !options[:close]
       validate_tags if options[:'<tag>']
       send(:extra_validation) if respond_to?(:extra_validation)
     end

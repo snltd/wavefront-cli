@@ -5,7 +5,6 @@ module WavefrontCli
   # CLI coverage for the v2 'alert' API.
   #
   class Alert < WavefrontCli::Base
-
     def do_describe
       wf.describe(options[:'<id>'], options[:version])
     end

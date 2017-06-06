@@ -1,11 +1,10 @@
 require_relative './base'
 
 module WavefrontDisplay
-
+  #
   # Format human-readable output for queries.
   #
   class Query < Base
-
     def do_default
       ts = data.timeseries.each { |s| s[:data] = humanize_series(s[:data]) }
 
@@ -36,16 +35,9 @@ module WavefrontDisplay
         end
 
         date, time = ht.split
-
-        if date == last_date
-          ht = ht.split.last
-          ds = ''
-        else
-          ds = date
-        end
-
+        ds = date == last_date ? '' : date
         last_date = date
-        format("%12s %s    %s", ds, time, val)
+        format('%12s %s    %s', ds, time, val)
       end
     end
   end

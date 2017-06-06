@@ -2,6 +2,9 @@ require 'wavefront-sdk/mixins'
 require_relative './base'
 
 module WavefrontCli
+  #
+  # Send points to a proxy.
+  #
   class Write < Base
     attr_reader :fmt
     include Wavefront::Mixins
@@ -20,7 +23,7 @@ module WavefrontCli
 
       begin
         wf.write(p)
-      rescue Wavefront::Exception::InvalidEndpoint => e
+      rescue Wavefront::Exception::InvalidEndpoint
         abort 'could not speak to proxy ' \
               "'#{options[:proxy]}:#{options[:port]}'."
       end
@@ -127,7 +130,6 @@ module WavefrontCli
         point[:tags] = extract_tags(chunks) if fmt.last == 'T'
       rescue TypeError
         raise "could not process #{l}"
-        return false
       end
 
       point
@@ -160,7 +162,7 @@ module WavefrontCli
     #
     def valid_format?(fmt)
       if fmt.include?('v') && fmt.match(/^[mtv]+T?$/) && fmt ==
-         fmt.split('').uniq.join
+                                                         fmt.split('').uniq.join
         return true
       end
 
@@ -217,5 +219,4 @@ module WavefrontCli
       raise "Cannot open file '#{file}'." unless file.exist?
     end
   end
-
 end

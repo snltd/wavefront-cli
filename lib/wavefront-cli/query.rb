@@ -6,8 +6,6 @@ module WavefrontCli
   #
   class Query < WavefrontCli::Base
     def do_default
-      @response = :raw
-
       opts = {
         autoEvents:             options[:events],
         i:                      options[:inclusive],
@@ -35,7 +33,6 @@ module WavefrontCli
     end
 
     def do_raw
-      @response = :raw
       wf.raw(options[:'<metric>'], options[:host], options[:start],
              options[:end])
     end

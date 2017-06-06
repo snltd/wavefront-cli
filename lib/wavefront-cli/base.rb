@@ -2,7 +2,7 @@ require 'pathname'
 require 'yaml'
 require 'json'
 require 'wavefront-sdk/validators'
-#require_relative './constants'
+# require_relative './constants'
 require_relative './exception'
 
 module WavefrontCli
@@ -21,18 +21,13 @@ module WavefrontCli
   # `options`.
   #
   class Base
-    attr_accessor :wf, :options, :klass, :flags, :response,
-                  :col1, :col2, :klass_word
+    attr_accessor :wf, :options, :klass, :klass_word
 
-    #include WavefrontCli::Constants
+    # include WavefrontCli::Constants
     include Wavefront::Validators
 
     def initialize(options)
       @options = options
-      @flags = {}
-      @response = :quiet
-      @col1 = 'id'
-      @col2 = 'name'
       sdk_class = self.class.name.sub(/Cli/, '')
       @klass_word = sdk_class.split('::').last.downcase
       validate_input
@@ -63,7 +58,8 @@ module WavefrontCli
 
     def validator_exception
       Object.const_get(
-        "Wavefront::Exception::Invalid#{klass_word.capitalize}Id")
+        "Wavefront::Exception::Invalid#{klass_word.capitalize}Id"
+      )
     end
 
     def validate_input
@@ -117,7 +113,7 @@ module WavefrontCli
     #
     def format_var
       options[:format].to_sym
-      #(self.class.name.split('::').last.downcase + 'format').to_sym
+      # (self.class.name.split('::').last.downcase + 'format').to_sym
     end
 
     # Works out the user's command by matching any options docopt has
@@ -189,9 +185,8 @@ module WavefrontCli
     end
 
     def check_status(s)
-      unless s.respond_to?(:result) && s.result == 'OK'
-        abort "API #{s.code}: #{s.message}."
-      end
+      return true if s.respond_to?(:result) && s.result == 'OK'
+      abort "API #{s.code}: #{s.message}."
     end
 
     def handle_response(resp, format, method)

@@ -5,7 +5,6 @@ module WavefrontCli
   # CLI coverage for the v2 'maintenancewindow' API.
   #
   class MaintenanceWindow < WavefrontCli::Base
-
     def validator_method
       :wf_maintenance_window_id?
     end
