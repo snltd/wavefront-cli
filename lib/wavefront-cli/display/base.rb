@@ -1,3 +1,5 @@
+require_relative '../constants'
+
 module WavefrontDisplay
   #
   # Print human-friendly output. If a command requires a dedicated
@@ -10,6 +12,8 @@ module WavefrontDisplay
   # but rather than printing the output, have it call the method.
   #
   class Base
+    include WavefrontCli::Constants
+
     attr_reader :data, :options, :indent, :kw, :indent_str, :indent_step,
                 :hide_blank
 
@@ -222,7 +226,7 @@ module WavefrontDisplay
     def human_time(t)
       str = t.to_s
       fmt = str.length == 13 ? '%Q' : '%s'
-      DateTime.strptime(str, fmt).strftime('%T %F')
+      DateTime.strptime(str, fmt).strftime(HUMAN_TIME_FORMAT)
     end
   end
 end

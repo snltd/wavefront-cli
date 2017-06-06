@@ -5,18 +5,9 @@ module WavefrontDisplay
   # Format human-readable output for queries.
   #
   class Query < Base
-    def do_default
-      last_date = nil
 
-      ts = data.timeseries.each do |s|
-        s[:data].map! do |t, v|
-          ht = human_time(t)
-          time, date = ht.split
-          ht = ht.split.first if date == last_date
-          last_date = date
-          format("%-25s %s", ht, v)
-        end
-      end
+    def do_default
+      ts = data.timeseries.each { |s| s[:data] = humanize_series(s[:data]) }
 
       new = {
         name: data.name,
@@ -29,15 +20,32 @@ module WavefrontDisplay
     end
 
     def do_raw
-      data.each do |ts|
-        last_date = nil
-        ts[:points].each do |row|
+      data.each { |ts| puts humanize_series(ts[:points]).join("\n") }
+    end
+
+    def humanize_series(data)
+      last_date = nil
+
+      data.map! do |row|
+        if row.is_a?(Hash)
           ht = human_time(row[:timestamp])
-          time, date = ht.split
-          ht = ht.split.first if date == last_date
-          last_date = date
-          puts format("%-25s %s", ht, row[:value])
+          val = row[:value]
+        else
+          ht = human_time(row[0])
+          val = row[1]
         end
+
+        date, time = ht.split
+
+        if date == last_date
+          ht = ht.split.last
+          ds = ''
+        else
+          ds = date
+        end
+
+        last_date = date
+        format("%12s %s    %s", ds, time, val)
       end
     end
   end
