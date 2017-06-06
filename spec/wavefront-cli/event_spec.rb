@@ -12,8 +12,8 @@ describe "#{word} command" do
                        "close #{id}", "delete #{id}"])
   cmd_to_call(word, "describe #{id}", path: "/api/v2/#{word}/#{id}")
   cmd_to_call(word, "create -N #{id}",
-              { method: :post, path: "/api/v2/#{word}" })
+              method: :post, path: "/api/v2/#{word}")
   cmd_to_call(word, "close #{id}",
-             { method: :post, path: "/api/v2/#{word}/#{id}/close" })
+              method: :post, path: "/api/v2/#{word}/#{id}/close")
   tag_tests(word, id, bad_id)
 end
