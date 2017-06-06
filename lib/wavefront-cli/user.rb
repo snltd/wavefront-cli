@@ -17,10 +17,6 @@ module WavefrontCli
       wf.revoke(options[:'<id>'], options[:'<privilege>'])
     end
 
-    def do_delete
-      puts "Deleted user '#{options[:'<id>']}."
-    end
-
     def import_to_create(raw)
       raw['emailAddress'] = raw['identifier']
       raw.delete_if { |k, _v| k == 'customer' || k == 'identifier' }
