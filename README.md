@@ -38,6 +38,30 @@ Use 'wavefront <command> --help' for further information.
 
 ## General Rules
 
+### Credentials and the Config File
+
+You can pass in your Wavefront API and token with command-line options `-E` and
+`-t`; with the environment variables `WAVEFRONT_ENDPOINT` and `WAVEFRONT_TOKEN`,
+or by putting them in a configuration file at `${HOME}/.wavefront`. This is an
+ini-style file, with a section for each Wavefront account you wish to use. (None
+of the tokens shown here are real, of course!)
+
+```
+[default]
+token = 106ba476-e3bd-c14c-4a3d-391cd4c11def
+endpoint = metrics.wavefront.com
+proxy = wavefront.localnet
+format = human
+
+[company]
+token = 9ac40b15-f47f-a168-a5d3-271ab5bad617
+endpoint = company.wavefront.com
+format = yaml
+```
+
+You can override the config file location with `-c`, and select a profile with
+`-P`. If you don't supply `-P`, the `default` profile is used.
+
 ### Listing Things
 
 Most commands have a `list` subcommand, which will produce brief
@@ -59,7 +83,7 @@ Most commands have a `describe` subcommand which will tell you more about the
 object.
 
 ```
-$ bin/wavefront proxy describe 917102d1-a10e-497b-ba63-95058f98d4fb
+$ wavefront proxy describe 917102d1-a10e-497b-ba63-95058f98d4fb
 name                     Agent on wavefront-2017-03-13-02
 id                       917102d1-a10e-497b-ba63-95058f98d4fb
 version                  4.7
@@ -154,3 +178,43 @@ Debug mode will show you combined options, and debug output from
 `faraday`. It also shows the full stack trace should a command
 fail. This output can be very verbose.
 
+## Writing Points
+
+Writing a single point is simple:
+
+```
+$ wavefront write point cli.example 10
+```
+
+and you can add point tags, if you like.
+
+```
+$ wavefront write point cli.example 9.4 -E wavefront -T proxy=wavefront \
+  -T from=README
+```
+
+or force a timestamp:
+
+```
+$ wavefront write point -t 16:53:14 cli.example 8
+```
+
+More usefully, you can write from a file. Your file must contain multiple
+columns: metric name (`m`), metric value (`v`), timestamp(`t`), and point tags
+(`T`). `v` is mandatory, `m` can be filled in with the `-m` flag, `t` can be
+filled in with the current timestamp, and `T` is optional, but if used, must be
+last. You then tell the CLI what order your fields are in.
+
+```
+$ cat datafile
+1496767813 dev.cli.test 12.1
+1496767813 dev.cli.test 10.0
+1496767813 dev.cli.test 14.5
+$ wavefront write file -F tmv datafile
+```
+
+If you set the file to `-`, you can read from standard in:
+
+```
+$ while true; do echo $RANDOM; sleep 1; done | wavefront write file -m cli.demo -Fv -
+```
