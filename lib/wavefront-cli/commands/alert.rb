@@ -21,7 +21,7 @@ class WavefrontCommandAlert < WavefrontCommandBase
      "tag clear #{CMN} <id>",
      "tag add #{CMN} <id> <tag>",
      "tag delete #{CMN} <id> <tag>",
-     "summary #{CMN}"]
+     "summary #{CMN} [-a]"]
   end
 
   def _options
@@ -31,6 +31,7 @@ class WavefrontCommandAlert < WavefrontCommandBase
      '-o, --offset=n           start from nth alert',
      '-L, --limit=COUNT        number of alerts to list',
      '-T, --time=SECONDS       how long to snooze (default 3600)',
+     '-a, --all                list all alerts',
      '-f, --format=STRING      output format']
   end
 end
