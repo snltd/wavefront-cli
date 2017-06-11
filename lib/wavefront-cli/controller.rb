@@ -29,6 +29,8 @@ class WavefrontCliController
     run_command(hook)
   end
 
+  # What you see when you do 'wavefront --help'
+  #
   def default_help
     s = "Wavefront CLI\n\nUsage:\n  #{CMD} command [options]\n" \
         "  #{CMD} --version\n  #{CMD} --help\n\nCommands:\n"
@@ -66,6 +68,8 @@ class WavefrontCliController
     WavefrontCli::OptHandler.new(conf_file, o).opts
   end
 
+  # Get the SDK class we need to run the command we've been given.
+  #
   def load_sdk(cmd, opts)
     require_relative File.join('.', cmds[cmd].sdk_file)
     Object.const_get('WavefrontCli').const_get(cmds[cmd].sdk_class).new(opts)

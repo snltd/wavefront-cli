@@ -52,7 +52,7 @@ class WavefrontCommandBase
   #
   def commands
     _commands.flatten.each_with_object("Usage:\n") do |cmd, ret|
-      ret.<< "  #{CMD} #{word} #{cmd}\n" # .fold(80, 10) + "\n"
+      ret.<< '  ' + "#{CMD} #{word} #{cmd}\n".cmd_fold + "\n"
     end + "  #{CMD} #{word} --help"
   end
 
@@ -79,8 +79,16 @@ class WavefrontCommandBase
   end
 end
 
+# Extensions to the String class to help with formatting.
+#
 class String
-  def fold(width = 80, indent = 0)
-    scan(/.{#{width}}|.+/).map(&:strip).join("\n" + ' ' * indent)
+
+  # Fold long command lines. We can't break on a space inside
+  # [square brackets] or it confuses docopt.
+  #
+  def cmd_fold(width = TW, indent = 10)
+    gsub(/\s(?=\w+\])/, '^').
+    scan(/\S.{0,#{width - 6}}\S(?=\s|$)|\S+/).join("\n" + ' ' * indent).
+    gsub('^', ' ')
   end
 end
