@@ -59,11 +59,22 @@ class WavefrontCommandBase
   # Returns a string describing the options the command understands.
   #
   def options
+    width = column_widths
     ret = "Global options:\n"
-    global_options.each { |o| ret.<< "  #{o}\n" }
+    global_options.each { |o| ret.<< opt_row(o, width) }
     ret.<< "\nOptions:\n"
-    _options.flatten.each { |o| ret.<< "  #{o}\n" }
+    _options.flatten.each { |o| ret.<< opt_row(o, width) }
     ret
+  end
+
+  def opt_row(opt, width)
+    format("  %s %-#{width}s %s\n", *opt.split(/\s+/, 3))
+  end
+
+  def column_widths
+    (global_options + _options).flatten.map do |o|
+      o.split(/\s+/, 3)[0..1].join(' ').size
+    end.max
   end
 
   # Returns a string which will be printed underneath the options.

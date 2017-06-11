@@ -21,6 +21,7 @@ CMDS = %w(alert integration dashboard event link message metric
           proxy query savedsearch source user window webhook write).freeze
 
 BAD_TAG="*BAD TAG*"
+TW = 80
 
 # Return an array of CLI permutations and the values to which they relate
 #
