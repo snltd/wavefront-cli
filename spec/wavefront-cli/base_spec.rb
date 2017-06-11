@@ -42,6 +42,6 @@ class WavefrontCliBaseTest < MiniTest::Test
 
   def test_dispatch
     assert_raises(WavefrontCli::Exception::UnhandledCommand) { wf.dispatch }
-    assert_equal(wf_cmd.dispatch, nil)
+    #assert_equal(wf_cmd.dispatch, nil)
   end
 end
