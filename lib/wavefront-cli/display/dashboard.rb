@@ -10,5 +10,12 @@ module WavefrontDisplay
                    :condition, :displayExpression, :severity,
                    :additionalInformation]
     end
+
+    def do_describe
+      drop_fields(:parameterDetails)
+      readable_time(:updatedEpochMillis)
+      data[:sections] = data[:sections].map { |s| s[:name] }
+      long_output
+    end
   end
 end

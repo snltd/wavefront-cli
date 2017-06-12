@@ -116,8 +116,7 @@ module WavefrontDisplay
         set_indent(indent)
 
         row.each do |k, v|
-          next if (v.is_a?(String) || v.is_a?(Array)) && v.empty? &&
-                  hide_blank
+          next if v.respond_to?(:empty?) && v.empty? && hide_blank
 
           if v.is_a?(String) && v.match(/<.*>/)
             v = v.gsub(%r{<\/?[^>]*>}, '').delete("\n")
@@ -166,7 +165,11 @@ module WavefrontDisplay
     # @param indent [Integer] number of leading spaces on line
     #
     def print_line(key, value = '')
-      puts indent_str + format("%-#{kw}s%s", key, value).fold(TW, kw)
+      if key.empty?
+        puts ' ' * kw + value
+      else
+        puts indent_str + format("%-#{kw}s%s", key, value).fold(TW, kw)
+      end
     end
 
     # Give it a key-value hash, and it will return the size of the first
