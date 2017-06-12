@@ -40,8 +40,9 @@ Use 'wavefront <command> --help' for further information.
 
 ### Credentials and the Config File
 
-You can pass in your Wavefront API and token with command-line options `-E` and
-`-t`; with the environment variables `WAVEFRONT_ENDPOINT` and `WAVEFRONT_TOKEN`,
+You can pass in your Wavefront API and token with command-line
+options `-E` and `-t`; with the environment variables
+`WAVEFRONT_ENDPOINT` and `WAVEFRONT_TOKEN`,
 or by putting them in a configuration file at `${HOME}/.wavefront`. This is an
 ini-style file, with a section for each Wavefront account you wish to use. (None
 of the tokens shown here are real, of course!)

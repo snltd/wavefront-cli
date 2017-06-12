@@ -17,12 +17,28 @@ module WavefrontCli
       wf.unsnooze(options[:'<id>'])
     end
 
+    def do_delete
+      print (if wf.describe(options[:'<id>']).status.code == 200
+              'Soft'
+            else
+              'Permanently'
+            end)
+
+      puts " deleting alert '#{options[:'<id>']}'."
+      wf.delete(options[:'<id>'])
+    end
+
     def do_summary
       wf.summary
     end
 
     def do_history
-      wf.history(options[:'<id>'])
+      wf.history(options[:'<id>'], options[:offset], options[:limit])
+    end
+
+    def do_update
+      k, v = options[:'<key=value>'].split('=')
+      wf.update(options[:'<id>'], k => v)
     end
 
     # Take a previously exported alert, and construct a hash which

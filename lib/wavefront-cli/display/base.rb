@@ -65,6 +65,34 @@ module WavefrontDisplay
       end
     end
 
+    # Print multiple column output. Currently this method does no
+    # word wrapping.
+    #
+    # @param keys [Symbol] the keys you want in the output. They
+    #   will be printed in the order given.
+    #
+    def multicolumn(*keys)
+      len = Hash[*keys.map {|k| [k, 0]}.flatten]
+
+      keys.each do |k|
+        data.each do |obj|
+          val = obj[k]
+          val = val.join(', ') if val.is_a?(Array)
+          len[k] = val.size if val.size > len[k]
+        end
+      end
+
+      fmt = keys.each_with_object('') { |k, out| out.<< "%-#{len[k]}s  " }
+
+      data.each do |obj|
+        args = keys.map do |k|
+          obj[k].is_a?(Array) ? obj[k].join(', ') : obj[k]
+        end
+
+        puts format(fmt, *args)
+      end
+    end
+
     def set_indent(indent)
       @indent_str = ' ' * indent
     end
@@ -189,24 +217,24 @@ module WavefrontDisplay
     end
 
     def do_tag_add
-      puts "Tagged #{friendly_name}."
+      puts "Tagged #{friendly_name} '#{options[:'<id>']}'."
     end
 
     def do_tag_delete
-      puts "Deleted tag from #{friendly_name}."
+      puts "Deleted tag from #{friendly_name} '#{options[:'<id>']}'."
     end
 
     def do_tag_clear
-      puts "Cleared tags on #{friendly_name} #{options[:'<id>']}."
+      puts "Cleared tags on #{friendly_name} '#{options[:'<id>']}'."
     end
 
     def do_tag_set
-      puts "Set tags on #{friendly_name}."
+      puts "Set tags on #{friendly_name} '#{options[:'<id>']}'."
     end
 
     def do_tags
       if data.empty?
-        puts "No tags set on #{options[:'<id>']}."
+        puts "No tags set on #{friendly_name} '#{options[:'<id>']}'."
       else
         data.sort.each { |t| puts t }
       end

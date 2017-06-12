@@ -11,6 +11,10 @@ module WavefrontDisplay
                    :additionalInformation]
     end
 
+    def do_list_brief
+      multicolumn(:id, :status, :name)
+    end
+
     def do_describe
       readable_time(:created, :lastProcessedMillis,
                     :lastNotificationMillis, :createdEpochMillis,
@@ -21,7 +25,10 @@ module WavefrontDisplay
     end
 
     def do_snooze
-      puts "Snoozed alert '#{options[:'<id>']}'."
+      print "Snoozed alert '#{options[:'<id>']}' "
+
+      puts options[:time] ? "for #{options[:time]} seconds." :
+                            'indefinitely.'
     end
 
     def do_unsnooze
