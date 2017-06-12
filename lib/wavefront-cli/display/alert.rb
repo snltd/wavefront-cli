@@ -11,6 +11,15 @@ module WavefrontDisplay
                    :additionalInformation]
     end
 
+    def do_describe
+      readable_time(:created, :lastProcessedMillis,
+                    :lastNotificationMillis, :createdEpochMillis,
+                    :updatedEpochMillis, :updated)
+      drop_fields(:conditionQBEnabled, :displayExpressionQBEnabled,
+                  :displayExpressionQBSerialization)
+      long_output
+    end
+
     def do_snooze
       puts "Snoozed alert '#{options[:'<id>']}'."
     end
