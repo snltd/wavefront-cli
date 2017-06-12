@@ -138,7 +138,7 @@ module WavefrontDisplay
     # @param indent [Integer] number of leading spaces on line
     #
     def print_line(key, value = '')
-      puts format("%s%-#{kw}s%s", indent_str, key, value)
+      puts indent_str + format("%-#{kw}s%s", key, value).fold(TW, kw)
     end
 
     # Give it a key-value hash, and it will return the size of the first
@@ -212,6 +212,15 @@ module WavefrontDisplay
       end
     end
 
+    # Modify, in-place, the data structure to remove fields which
+    # we deem not of interest to the user.
+    #
+    # @param keys [Symbol] keys you do not wish to be shown.
+    #
+    def drop_fields(*keys)
+      data.delete_if { |k, _v| keys.include?(k.to_sym) }
+    end
+
     # Modify, in-place, the data structure to make times
     # human-readable. Automatically handles second and millisecond
     # epoch times.
@@ -225,8 +234,27 @@ module WavefrontDisplay
 
     def human_time(t)
       str = t.to_s
-      fmt = str.length == 13 ? '%Q' : '%s'
-      DateTime.strptime(str, fmt).strftime(HUMAN_TIME_FORMAT)
+
+      if str.length == 13
+        fmt = '%Q'
+        out_fmt = HUMAN_TIME_FORMAT_MS
+      else
+        fmt = '%s'
+        out_fmt = HUMAN_TIME_FORMAT
+      end
+
+      DateTime.strptime(str, fmt).strftime(out_fmt)
     end
+  end
+end
+
+# Extensions to the String class to help with formatting.
+#
+class String
+
+  # Fold long command lines and suitably indent
+  #
+  def fold(width = TW, indent = 10)
+    scan(/\S.{0,#{width - 2}}\S(?=\s|$)|\S+/).join("\n" + ' ' * indent)
   end
 end
