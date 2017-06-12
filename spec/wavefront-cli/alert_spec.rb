@@ -15,8 +15,18 @@ describe "#{word} command" do
   cmd_to_call(word, "describe -v 7 #{id}",
               path: "/api/v2/#{word}/#{id}/history/7")
   cmd_to_call(word, "history #{id}", path: "/api/v2/#{word}/#{id}/history")
-  cmd_to_call(word, "delete #{id}",
-              method: :delete, path: "/api/v2/#{word}/#{id}")
+
+  it 'deletes with a check on inTrash' do
+    stub_request(:get,
+                 'https://other.wavefront.com/api/v2/alert/1481553823153').
+        with(headers: {'Accept': '*/*',
+                       'Accept-Encoding': 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+                       'Authorization': 'Bearer 0123456789-ABCDEF',
+                       'User-Agent': /wavefront.*/}).
+          to_return(:status => 200, :body => "", :headers => {})
+    cmd_to_call(word, "delete #{id}",
+                method: :delete, path: "/api/v2/#{word}/#{id}")
+  end
   cmd_to_call(word, "undelete #{id}",
               method: :post, path: "/api/v2/#{word}/#{id}/undelete")
   cmd_to_call(word, "snooze #{id}",
