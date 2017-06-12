@@ -25,8 +25,6 @@ module WavefrontCli
     def do_list
       options[:start] = Time.now - 600 unless options[:start]
       options[:end] = Time.now unless options[:end]
-
-      o
       wf.list(options[:start], options[:end], options[:limit] || 100,
               options[:offset] || nil)
     end
