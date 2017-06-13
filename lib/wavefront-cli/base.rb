@@ -1,4 +1,4 @@
-require 'pathname'
+
 require 'yaml'
 require 'json'
 require 'wavefront-sdk/validators'
@@ -23,7 +23,6 @@ module WavefrontCli
   class Base
     attr_accessor :wf, :options, :klass, :klass_word
 
-    # include WavefrontCli::Constants
     include Wavefront::Validators
 
     def initialize(options)
@@ -270,6 +269,11 @@ module WavefrontCli
 
     def do_undelete
       wf.undelete(options[:'<id>'])
+    end
+
+    def do_update
+      k, v = options[:'<key=value>'].split('=')
+      wf.update(options[:'<id>'], k => v)
     end
 
     def do_tags
