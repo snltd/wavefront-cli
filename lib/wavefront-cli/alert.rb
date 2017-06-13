@@ -36,11 +36,6 @@ module WavefrontCli
       wf.history(options[:'<id>'], options[:offset], options[:limit])
     end
 
-    def do_update
-      k, v = options[:'<key=value>'].split('=')
-      wf.update(options[:'<id>'], k => v)
-    end
-
     # Take a previously exported alert, and construct a hash which
     # create() can use to re-create it.
     #
