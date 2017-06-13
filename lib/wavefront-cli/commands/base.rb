@@ -99,7 +99,7 @@ class String
   #
   def cmd_fold(width = TW, indent = 10)
     gsub(/\s(?=\w+\])/, '^').
-    scan(/\S.{0,#{width - 6}}\S(?=\s|$)|\S+/).join("\n" + ' ' * indent).
+    scan(/\S.{0,#{width - 8}}\S(?=\s|$)|\S+/).join("\n" + ' ' * indent).
     gsub('^', ' ')
   end
 end

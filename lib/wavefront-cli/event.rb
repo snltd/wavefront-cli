@@ -48,7 +48,7 @@ module WavefrontCli
       body[:annotations][:details] = options[:desc] if options[:desc]
       body[:annotations][:severity] = options[:severity] if options[:severity]
       body[:annotations][:type] = options[:type] if options[:type]
-      body[:host] = options[:host] if options[:host]
+      body[:hosts] = options[:host] if options[:host]
 
       if options[:instant]
         body[:endTime] = t_start + 1
@@ -65,18 +65,19 @@ module WavefrontCli
       resp
     end
 
+    # The user doesn't have to give us an event ID.  If no event
+    # name is given, we'll pop the last event off the stack. If an
+    # event name is given and it doesn't look like a full WF event
+    # name, we'll look for something on the stack.  If it does look
+    # like a real event, we'll make and API call straight away.
+    #
     def do_close
-      # The user doesn't have to give us an event ID.
-      #
-      # If no event name is given, we'll pop the last event off the
-      # stack. If an event name is given and it doesn't look like a
-      # full WF event name, we'll look for something on the stack.
-      # If it does look like a real event, we'll make and API call
-      # straight away.
+      ev_file = nil
 
       ev = if options[:'<id>'] == false
              pop_event
            elsif options[:'<id>'] =~ /^\d{13}:.+/
+             ev_file = state_dir + options[:'<id>']
              options[:'<id>']
            else
              pop_event(options[:'<id>'])
@@ -84,7 +85,9 @@ module WavefrontCli
 
       abort "No locally stored event matches '#{options[:'<id>']}'." unless ev
 
-      wf.close(ev)
+      res = wf.close(ev)
+      ev_file.unlink if ev_file && ev_file.exist? && res.status.code == 200
+      res
     end
 
     def do_show
@@ -97,8 +100,10 @@ module WavefrontCli
       if events.size.zero?
         puts 'No open events.'
       else
-        events.each { |e| puts e.basename }
+        events.sort.reverse.each { |e| puts e.basename }
       end
+
+      exit
     end
 
     private

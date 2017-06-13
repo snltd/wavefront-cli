@@ -34,7 +34,7 @@ class WavefrontCommandEvent < WavefrontCommandBase
      '-H, --host=STRING         source to which event applies',
      '-N, --nostate             do not create a local file recording ' \
      'the event',
-     '-f, --ormat=STRING        output format']
+     '-f, --format=STRING        output format']
   end
 
   def postscript
