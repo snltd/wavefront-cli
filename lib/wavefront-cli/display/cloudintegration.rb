@@ -8,5 +8,11 @@ module WavefrontDisplay
     def do_list_brief
       terse_output(:id, :service)
     end
+
+    def do_describe
+      readable_time(:lastReceivedDataPointMs, :lastProcessingTimestamp)
+      drop_fields(:forceSave)
+      long_output
+    end
   end
 end
