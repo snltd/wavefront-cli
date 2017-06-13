@@ -9,6 +9,17 @@ module WavefrontCli
       wf.describe(options[:'<id>'], options[:version])
     end
 
+    def do_delete
+      print (if wf.describe(options[:'<id>']).status.code == 200
+              'Soft'
+            else
+              'Permanently'
+            end)
+
+      puts " deleting dashboard '#{options[:'<id>']}'."
+      wf.delete(options[:'<id>'])
+    end
+
     def do_history
       wf.history(options[:'<id>'])
     end
