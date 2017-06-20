@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    wavefront-cli (0.0.3)
+    wavefront-cli (0.0.4)
       docopt (= 0.5.0)
       wavefront-sdk (~> 0.1.5)
 

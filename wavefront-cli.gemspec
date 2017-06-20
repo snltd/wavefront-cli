@@ -18,7 +18,7 @@ Gem::Specification.new do |gem|
   gem.license       = 'BSD-2-Clause'
 
   gem.files         = `git ls-files`.split($INPUT_RECORD_SEPARATOR)
-  gem.executables   = gem.files.grep(/^bin/)
+  gem.executables   = 'wavefront'
   gem.test_files    = gem.files.grep(/^spec/)
   gem.require_paths = %w(lib)
 
