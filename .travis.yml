@@ -5,3 +5,12 @@ rvm:
 - 2.3.4
 - 2.4.1
 before_install: gem install bundler --no-rdoc --no-ri
+deploy:
+  provider: rubygems
+  api_key:
+    secure: dfmL5JwBn+u3cUmyAaDsApDa7ljGajGNz3GDcKd2J8FOt7+a758/lmL8EQ34sDT1ZFotrxn/y1RbgXlaDxAE1XDfrZbjckmx7a6wa2sqR3kBraJ2tx7CiXodbw3Z8XZf9WLb0kYGmlLtI73GNcuunMt/9f1cobqWISRLHw6b7amlO7GW2ZBZgzRS+N8TSS2dicIvKMo5HoMYU+uWLM4zDFBPnGNcMiWxh8ysLzJoKqA9kbBUyCVEZ03MlV7G71ObvWCLasKnZ3W5U+K1NbgU7mgMYfl9KIcA4y9hQ9hUCijk40SmT7ffy3P2gq8zblC/4x5Eefpau9X/bdLwXoRCIzqk05t4f45wstj2auHGK0HJwOYRtx8apdaLSgyJ5lQpGcbCRu40WR9mDkaM8m9n3u2o6GJmftCg3AN1QtsourmQB84x67LEbHzValMaokrbCol4XeWqlC+dCNLPixemQRBvcNfI3V9C6RqVGfjpoGlSTI+RkQqwm01PcxpeqIVfdMd1wnfUuAOywUO6UpvtK9TZaxg0NnVElXpPseQbtzulLwZ7R5Y3A4Ss8Z7w43c1KHxTkg54FWUOp065ItjAc4lmyORXq/2+F7sMvRN6dtCLaXTUlkYuU3cjFLIPlLGFYgqq4T4xQa+e5NEK1XW7nghv+IRfKfyVeZsB0WpY+uc=
+  gem: wavefront-cli
+  on:
+    tags: true
+    repo: snltd/wavefront-cli
+    ruby: 2.3.4
