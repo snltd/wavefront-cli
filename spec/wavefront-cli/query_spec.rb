@@ -14,11 +14,12 @@ o = '-g m -s 12:00'
 
 describe "#{word} command" do
   missing_creds(word, ["-g m -s 12:00 '#{q}'", "raw #{q}"])
+
   cmd_to_call(word, "#{o} #{q}",
               path: '/api/v2/chart/api?g=m&i=false&listMode=true' \
                     "&q=ts(%22dev.cli.test%22)&s=#{t1}&sorted=true" \
                     '&summarization=mean')
-
+=begin
   cmd_to_call(word, "#{o} -e 12:10 #{q}",
               path: "/api/v2/chart/api?e=#{t2}&g=m&i=false" \
                     '&listMode=true&q=ts(%22dev.cli.test%22)' \
@@ -60,4 +61,5 @@ describe "#{word} command" do
   cmd_to_call(word, 'raw -s 12:00 -e 12:10 -H h1 dev.cli.test',
               path: '/api/v2/chart/raw?metric=dev.cli.test&source=h1' \
                     "&startTime=#{t1}&endTime=#{t2}")
+=end
 end
