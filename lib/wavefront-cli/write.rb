@@ -36,11 +36,11 @@ module WavefrontCli
     end
 
     # Read the input, from a file or from STDIN, and turn each line
-    # into Wavefront points
+    # into Wavefront points.
     #
     def process_input(file)
       if file == '-'
-        STDIN.each_line { |l| wf.write(process_line(l.strip)) }
+        read_stdin
       else
         data = load_data(Pathname.new(file)).split("\n").map do |l|
           process_line(l)
@@ -48,6 +48,20 @@ module WavefrontCli
 
         wf.write(data)
       end
+    end
+
+    # Read from standard in and stream points through an open
+    # socket. If the user hits ctrl-c, close the socket and exit
+    # politely.
+    #
+    def read_stdin
+      wf.open
+      STDIN.each_line { |l| wf.write(process_line(l.strip), false) }
+      wf.close
+    rescue SystemExit, Interrupt
+      puts 'ctrl-c. Exiting.'
+      wf.close
+      exit 0
     end
 
     # Find and return the value in a chunked line of input
@@ -110,8 +124,7 @@ module WavefrontCli
     end
 
     # Process a line of input, as described by the format string
-    # held in options[:fmt]. Produces a hash suitable for the SDK to
-    # send on.
+    # held in @fmt. Produces a hash suitable for the SDK to send on.
     #
     # We let the user define most of the fields, but anything beyond
     # what they define is always assumed to be point tags.  This is
@@ -127,12 +140,21 @@ module WavefrontCli
                   value: extract_value(chunks) }
         point[:ts] = extract_ts(chunks) if fmt.include?('t')
         point[:source] = extract_source(chunks) if fmt.include?('s')
-        point[:tags] = extract_tags(chunks) if fmt.last == 'T'
+        point[:tags] = line_tags(chunks)
       rescue TypeError
         raise "could not process #{l}"
       end
 
       point
+    end
+
+    # We can get tags from the file, from the -T option, or both.
+    # Merge them, making the -T win if there is a collision.
+    #
+    def line_tags(chunks)
+      file_tags =  fmt.last == 'T' ? extract_tags(chunks) : {}
+      opt_tags = tags_to_hash(options[:tag])
+      file_tags.merge(opt_tags)
     end
 
     # Takes an array of key=value tags (as produced by docopt) and
@@ -154,15 +176,15 @@ module WavefrontCli
     end
 
     # The format string must contain a 'v'. It must not contain
-    # anything other than 'm', 't', 'T' or 'v', and the 'T', if
-    # there, must be at the end. No letter must appear more than
+    # anything other than 'm', 't', 'T', 's', or 'v', and the 'T',
+    # if there, must be at the end. No letter must appear more than
     # once.
     #
     # @param fmt [String] format of input file
     #
     def valid_format?(fmt)
-      if fmt.include?('v') && fmt.match(/^[mtv]+T?$/) && fmt ==
-                                                         fmt.split('').uniq.join
+      if fmt.include?('v') && fmt.match(/^[mstv]+T?$/) &&
+         fmt == fmt.split('').uniq.join
         return true
       end
 
@@ -200,7 +222,7 @@ module WavefrontCli
     end
 
     def validate_opts
-      unless options[:metric] || options[:infileformat].include?('m')
+      unless options[:metric] || options[:format].include?('m')
         abort "Supply a metric path in the file or with '-m'."
       end
 
