@@ -20,18 +20,19 @@ module WavefrontCli
       }
 
       if options[:start]
-        options[:start] = parse_time(options[:start])
+        options[:start] = parse_time(options[:start], true)
       else
         options[:start] = (Time.now - 600).to_i
       end
 
       if options[:end]
-        options[:end] = parse_time(options[:end])
+        options[:end] = parse_time(options[:end], true)
+        t_end = options[:end]
       else
-        options[:end] = Time.now.to_i
+        t_end = Time.now.to_i
       end
 
-      options[:granularity] ||= default_granularity((options[:end] -
+      options[:granularity] ||= default_granularity((t_end -
                                                     options[:start]).to_i)
 
       opts[:n] = options[:name] if options[:name]

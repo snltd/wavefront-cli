@@ -18,35 +18,34 @@ describe "#{word} command" do
   cmd_to_call(word, "#{o} #{q}",
               path: '/api/v2/chart/api?g=m&i=false&listMode=true' \
                     "&q=ts(%22dev.cli.test%22)&s=#{t1}&sorted=true" \
-                    '&summarization=mean')
-=begin
+                    '&strict=true&summarization=mean')
   cmd_to_call(word, "#{o} -e 12:10 #{q}",
               path: "/api/v2/chart/api?e=#{t2}&g=m&i=false" \
                     '&listMode=true&q=ts(%22dev.cli.test%22)' \
-                    "&s=#{t1}&sorted=true&summarization=mean")
+                    "&s=#{t1}&sorted=true&strict=true&summarization=mean")
 
   cmd_to_call(word, "-g s -s 12:00 -e 12:10 -S max #{q}",
               path: "/api/v2/chart/api?e=#{t2}&g=s&i=false" \
                     '&listMode=true&q=ts(%22dev.cli.test%22)' \
-                    "&s=#{t1}&sorted=true&summarization=max")
+                    "&s=#{t1}&sorted=true&strict=true&summarization=max")
 
   cmd_to_call(word, "-g s -s 12:00 -e 12:10 -p 100 #{q}",
               path: "/api/v2/chart/api?e=#{t2}&g=s&i=false" \
                     '&listMode=true&q=ts(%22dev.cli.test%22)' \
-                    "&s=#{t1}&sorted=true&summarization=mean" \
+                    "&s=#{t1}&sorted=true&summarization=mean&strict=true" \
                     '&p=100')
 
   cmd_to_call(word, "-iO -g h -s 12:00 -e 12:10 -p 100 #{q}",
               path: "/api/v2/chart/api?e=#{t2}&g=h&i=true" \
                     '&listMode=true&q=ts(%22dev.cli.test%22)' \
                     "&s=#{t1}&sorted=true&summarization=mean" \
-                    '&p=100&includeObsoleteMetrics=true')
+                    '&strict=true&p=100&includeObsoleteMetrics=true')
 
   cmd_to_call(word, "-N query -g h -s 12:00 -e 12:10 -p 100 #{q}",
               path: "/api/v2/chart/api?e=#{t2}&g=h&i=false" \
                     '&listMode=true&q=ts(%22dev.cli.test%22)' \
                     "&s=#{t1}&sorted=true&summarization=mean" \
-                    '&p=100&n=query')
+                    '&strict=true&p=100&n=query')
 
   cmd_to_call(word, 'raw dev.cli.test',
               path: '/api/v2/chart/raw?metric=dev.cli.test')
@@ -61,5 +60,4 @@ describe "#{word} command" do
   cmd_to_call(word, 'raw -s 12:00 -e 12:10 -H h1 dev.cli.test',
               path: '/api/v2/chart/raw?metric=dev.cli.test&source=h1' \
                     "&startTime=#{t1}&endTime=#{t2}")
-=end
 end
