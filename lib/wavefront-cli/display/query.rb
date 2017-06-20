@@ -6,12 +6,26 @@ module WavefrontDisplay
   #
   class Query < Base
     def do_default
-      ts = data.timeseries.each { |s| s[:data] = humanize_series(s[:data]) }
+
+      ts = if data.key?(:timeseries)
+             data[:timeseries].each do |s|
+               s[:data] = humanize_series(s[:data])
+             end
+           else
+             []
+           end
+
+      events = if data.key?(:events)
+                 data[:events].map { |s| humanize_event(s) }
+               else
+                 []
+               end
 
       new = {
         name: data.name,
         query: data.query,
-        timeseries: ts
+        timeseries: ts,
+        events: events
       }
 
       @data = new
@@ -20,6 +34,17 @@ module WavefrontDisplay
 
     def do_raw
       data.each { |ts| puts humanize_series(ts[:points]).join("\n") }
+    end
+
+    def do_raw_404
+      puts 'API 404: metric does not exist.'
+    end
+
+    def humanize_event(data)
+      data[:start] = human_time(data[:start])
+      data[:end] = human_time(data[:end]) if data[:end]
+      data.delete(:isEphemeral)
+      data
     end
 
     def humanize_series(data)

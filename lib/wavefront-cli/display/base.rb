@@ -17,13 +17,24 @@ module WavefrontDisplay
     attr_reader :data, :options, :indent, :kw, :indent_str, :indent_step,
                 :hide_blank
 
-    def initialize(data, method, options = {})
+    # Display classes can provide a do_method_code() method, which
+    # handles <code> errors when running do_method()
+    #
+    def run_error(method)
+      return unless respond_to?(method)
+      send(method)
+      exit 1
+    end
+
+    def initialize(data, options = {})
       @data = data
       @options = options
       @indent = 0
       @indent_step = options[:indent_step] || 2
       @hide_blank = options[:hide_blank] || true
+    end
 
+    def run(method)
       if method == 'do_list'
         if options[:long]
           do_list
@@ -54,8 +65,9 @@ module WavefrontDisplay
     # @param col2 [String] the field to use in the second column
     # @return [Nil]
     #
-    def terse_output(col1 = :id, col2 = :name)
-      want = data.each_with_object({}) { |r, a| a[r[col1]] = r[col2] }
+    def terse_output(col1 = :id, col2 = :name, modified_data = nil)
+      d = modified_data || data
+      want = d.each_with_object({}) { |r, a| a[r[col1]] = r[col2] }
       @indent_str = ''
       @kw = key_width(want)
 
@@ -276,6 +288,7 @@ module WavefrontDisplay
 
       DateTime.strptime(str, fmt).strftime(out_fmt)
     end
+
   end
 end
 

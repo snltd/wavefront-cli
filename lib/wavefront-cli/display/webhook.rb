@@ -14,5 +14,11 @@ module WavefrontDisplay
     def do_list_brief
       terse_output(:id, :title)
     end
+
+    def do_describe
+      readable_time(:createdEpochMillis, :updatedEpochMillis)
+      drop_fields(:template)
+      long_output
+    end
   end
 end

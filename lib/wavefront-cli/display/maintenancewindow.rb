@@ -8,6 +8,7 @@ module WavefrontDisplay
     def do_describe
       readable_time(:startTimeInSeconds, :endTimeInSeconds,
                     :createdEpochMillis, :updatedEpochMillis)
+      drop_fields(:hostTagGroupHostNamesGroupAnded, :relevantHostTagsAnded)
       long_output
     end
 
