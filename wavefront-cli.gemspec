@@ -1,6 +1,5 @@
 require 'pathname'
 require 'date'
-require 'English'
 
 require_relative 'lib/wavefront-cli/version'
 
@@ -17,7 +16,8 @@ Gem::Specification.new do |gem|
   gem.homepage      = 'https://github.com/snltd/wavefront-cli'
   gem.license       = 'BSD-2-Clause'
 
-  gem.files         = `git ls-files`.split($INPUT_RECORD_SEPARATOR)
+  gem.bindir        = 'bin'
+  gem.files         = `git ls-files`.split("\n")
   gem.executables   = 'wavefront'
   gem.test_files    = gem.files.grep(/^spec/)
   gem.require_paths = %w(lib)
