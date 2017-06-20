@@ -8,7 +8,7 @@ class WavefrontCommandQuery < WavefrontCommandBase
   end
 
   def _commands
-    ["#{CMN} -g granularity -s time [-e time] [-f format] " \
+    ["#{CMN} [-g granularity] [-s time] [-e time] [-f format] " \
            '[-ivO] [-S mode] [-N name] [-p points] <query>',
      "raw #{CMN} [-H host] [-s time] [-e time] [-f format] <metric>"]
   end
