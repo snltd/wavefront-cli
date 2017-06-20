@@ -170,7 +170,10 @@ module WavefrontCli
         abort "no #{b} block in API response" unless data.respond_to?(b)
       end
 
-      check_status(data.status)
+      unless check_status(data.status)
+        handle_error(method, data.status.code) if format_var == :human
+        abort "API #{data.status.code}: #{data.status.message}."
+      end
 
       resp = if data.response.respond_to?(:items)
                data.response.items
@@ -181,9 +184,16 @@ module WavefrontCli
       handle_response(resp, format_var, method)
     end
 
-    def check_status(s)
-      return true if s.respond_to?(:result) && s.result == 'OK'
-      abort "API #{s.code}: #{s.message}."
+    def check_status(status)
+      status.respond_to?(:result) && status.result == 'OK'
+    end
+
+    # This gives us a chance to catch different errors in
+    # WavefrontDisplay classes. If nothing catches, them abort.
+    #
+    def handle_error(method, code)
+      k = load_display_class
+      k.new({}, options).run_error([method, code].join('_'))
     end
 
     def handle_response(resp, format, method)
@@ -195,12 +205,16 @@ module WavefrontCli
       when :ruby
         p resp
       when :human
-        require_relative File.join('display', klass_word)
-        k = Object.const_get(klass.name.sub('Wavefront', 'WavefrontDisplay'))
-        k.new(resp, method, options)
+        k = load_display_class
+        k.new(resp, options).run(method)
       else
         raise "Unknown output format '#{format}'."
       end
+    end
+
+    def load_display_class
+      require_relative File.join('display', klass_word)
+      Object.const_get(klass.name.sub('Wavefront', 'WavefrontDisplay'))
     end
 
     # There are things we need to have. If we don't have them, stop
