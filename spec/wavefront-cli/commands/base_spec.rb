@@ -60,16 +60,16 @@ class WavefrontCommmandBaseTest < MiniTest::Test
     assert_equal(wf.sdk_file, 'base')
   end
 
-  def test_commands
-  end
+  def test_commands; end # test from subclass
 
-  def test_options
-  end
+  def test_options; end  # test from subclass
 
   def test_opt_row
+    gt
   end
 
-  def test_column_widths
+  def test_option_column_width
+    assert_equal(wf.option_column_width, 18)
   end
 
   def test_postscript
@@ -78,7 +78,6 @@ class WavefrontCommmandBaseTest < MiniTest::Test
 
   def test_docopt
     x = wf.docopt
-
     assert x.start_with?("Usage:\n")
     assert_match("\nGlobal options:\n", x)
     assert_match("--help\n", x)
