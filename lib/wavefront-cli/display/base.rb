@@ -133,7 +133,7 @@ module WavefrontDisplay
     #
     def _two_columns(data, kw = nil, fields = nil)
       [data].flatten.each do |row|
-        row.keep_if { |k, _v| fields.include?(k) } unless fields.nil?
+        row.keep_if { |k, _v| fields.include?(k.to_sym) } unless fields.nil?
         kw = key_width(row) unless kw
         @kw = kw unless @kw
         set_indent(indent)
