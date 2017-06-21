@@ -27,11 +27,22 @@ module WavefrontDisplay
     end
 
     def initialize(data, options = {})
-      @data = data
+      @data = data.is_a?(Map) ? Map(put_id_first(data)) : data
       @options = options
       @indent = 0
       @indent_step = options[:indent_step] || 2
       @hide_blank = options[:hide_blank] || true
+    end
+
+    # If the hash contains an 'id' key, move it to the start. Have to use the
+    # "old" notation because it's a Map.
+    #
+    def put_id_first(data)
+      if data.key?(:id)
+        { 'id' => data[:id] }.merge(data)
+      else
+        data
+      end
     end
 
     def run(method)
@@ -180,7 +191,8 @@ module WavefrontDisplay
       if key.empty?
         puts ' ' * kw + value
       else
-        puts indent_str + format("%-#{kw}s%s", key, value).fold(TW, kw)
+        puts indent_str + format("%-#{kw}s%s", key, value).
+             fold(TW, kw + indent_str.size)
       end
     end
 
@@ -196,6 +208,7 @@ module WavefrontDisplay
       hash.keys.map(&:size).max + pad
     end
 
+=begin
     def indent_wrap(line, cols = 78, offset = 22)
       #
       # hanging indent long lines to fit in an 80-column terminal
@@ -204,6 +217,7 @@ module WavefrontDisplay
       line.gsub(/(.{1,#{cols - offset}})(\s+|\Z)/, "\\1\n#{' ' *
               offset}").rstrip
     end
+=end
 
     def friendly_name
       self.class.name.split('::').last.gsub(/([a-z])([A-Z])/, '\\1 \\2')
@@ -261,7 +275,11 @@ module WavefrontDisplay
     # @param keys [Symbol] keys you do not wish to be shown.
     #
     def drop_fields(*keys)
-      data.delete_if { |k, _v| keys.include?(k.to_sym) }
+      if data.is_a?(Array)
+        data.each { |i| i.delete_if { |k, _v| keys.include?(k.to_sym) } }
+      else
+        data.delete_if { |k, _v| keys.include?(k.to_sym) }
+      end
     end
 
     # Modify, in-place, the data structure to make times

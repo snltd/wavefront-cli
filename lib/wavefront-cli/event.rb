@@ -26,7 +26,7 @@ module WavefrontCli
       options[:start] = Time.now - 600 unless options[:start]
       options[:end] = Time.now unless options[:end]
       wf.list(options[:start], options[:end], options[:limit] || 100,
-              options[:offset] || nil)
+              options[:cursor] || nil)
     end
 
     def do_update

@@ -24,6 +24,11 @@ module WavefrontDisplay
       long_output
     end
 
+    def do_history
+      drop_fields(:inTrash)
+      long_output
+    end
+
     def do_snooze
       print "Snoozed alert '#{options[:'<id>']}' "
 
