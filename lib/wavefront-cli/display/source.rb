@@ -15,10 +15,10 @@ module WavefrontDisplay
       terse_output(:id, :description)
     end
 
-    # Filter out the Wavefront cluster sources
+    # Filter out the Wavefront cluster sources. Don't sort them, or using offset
+    # and cursor becomes confusing.
     #
     def drop_cluster_sources
-      data.sort_by! { |k, _v| k }
       return if options[:all]
       data.delete_if { |k| k.id =~ /prod-[\da-f]{2}-/ }
     end
