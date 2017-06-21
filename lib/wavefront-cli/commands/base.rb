@@ -21,6 +21,12 @@ class WavefrontCommandBase
      '-t, --token=TOKEN        Wavefront authentication token']
   end
 
+  # Inheriting classes must override this method
+  #
+  def _options
+    []
+  end
+
   # Anything which takes tags provides the same interface
   #
   def tag_commands
@@ -29,6 +35,12 @@ class WavefrontCommandBase
      "tag clear #{CMN} <id>",
      "tag add #{CMN} <id> <tag>",
      "tag delete #{CMN} <id> <tag>"]
+  end
+
+  # Inheriting classes must override this method
+  #
+  def _commands
+    []
   end
 
   # The command keyword
@@ -44,6 +56,9 @@ class WavefrontCommandBase
     word.capitalize
   end
 
+  # Returns the name of the SDK file which does the work for this
+  # command.
+  #
   def sdk_file
     word
   end
