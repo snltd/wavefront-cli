@@ -166,6 +166,8 @@ module WavefrontCli
     #   this output. Used to find a suitable humanize method.
     #
     def display(data, method)
+      exit if options[:noop]
+
       [:status, :response].each do |b|
         abort "no #{b} block in API response" unless data.respond_to?(b)
       end
