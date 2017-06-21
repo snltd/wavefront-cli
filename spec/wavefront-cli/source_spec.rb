@@ -9,7 +9,10 @@ require_relative "../../lib/wavefront-cli/#{word}"
 
 describe "#{word} command" do
   missing_creds(word, ['list', "describe #{id}", "clear #{id}"])
-  list_tests(word)
+  cmd_to_call(word, 'list', { path: "/api/v2/#{word}" })
+  cmd_to_call(word, 'list -L 50', { path: "/api/v2/#{word}?limit=50" })
+  cmd_to_call(word, 'list -L 100 -o mysource',
+              { path: "/api/v2/#{word}?cursor=mysource&limit=100" })
   cmd_to_call(word, "describe #{id}", path: "/api/v2/#{word}/#{id}")
   cmd_to_call(word, "clear #{id}",
               method: :delete, path: "/api/v2/#{word}/#{id}")

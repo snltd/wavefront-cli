@@ -5,6 +5,10 @@ module WavefrontCli
   # CLI coverage for the v2 'source' API.
   #
   class Source < WavefrontCli::Base
+    def do_list
+      wf.list(options[:limit], options[:cursor])
+    end
+
     def do_clear
       wf.delete(options[:'<id>'])
     end
