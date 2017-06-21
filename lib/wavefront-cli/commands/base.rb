@@ -85,7 +85,7 @@ class WavefrontCommandBase
   # Formats an option string.
   #
   def opt_row(opt, width)
-    format("  %s %-#{width}s %s\n", *opt.split(/\s+/, 3))
+    format("  %s %-#{width}s %s\n", *opt.split(/\s+/, 3)).opt_fold(TW, width + 5)
   end
 
   # Returns the width of the column containing short and long
@@ -121,5 +121,19 @@ class String
     gsub(/\s(?=\w+\])/, '^').
     scan(/\S.{0,#{width - 8}}\S(?=\s|$)|\S+/).join("\n" + ' ' * indent).
     gsub('^', ' ')
+  end
+
+  # Fold long option lines with a hanging indent
+  #
+  def opt_fold(width = TW, indent = 10)
+    bits = scan(/\S.{0,#{width - 8}}\S(?=\s|$)|\S+/)
+
+    return '  ' + bits.first + "\n" if bits.size == 1
+
+    opt_line = bits.shift
+    rest = bits.join(' ').scan(/\S.{0,#{width - indent - 5}}\S(?=\s|$)|\S+/)
+    '  ' + opt_line + "\n" + rest.map do |l|
+      ' ' * (2 + indent) + l
+    end.join("\n") + "\n"
   end
 end
