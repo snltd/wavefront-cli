@@ -11,7 +11,7 @@ module WavefrontDisplay
 
     def do_describe
       readable_time(:lastReceivedDataPointMs, :lastProcessingTimestamp)
-      drop_fields(:forceSave)
+      drop_fields(:forceSave, :inTrash, :deleted)
       long_output
     end
   end

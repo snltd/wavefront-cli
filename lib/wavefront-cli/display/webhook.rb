@@ -6,9 +6,8 @@ module WavefrontDisplay
   #
   class Webhook < Base
     def do_list
-      long_output([:id, :description, :createdEpochMillis,
-                   :updatedEpochMillis, :updaterId, :creatorId,
-                   :title])
+      long_output([:id, :title, :description, :createdEpochMillis,
+                   :updatedEpochMillis, :updaterId, :creatorId])
     end
 
     def do_list_brief
