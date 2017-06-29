@@ -70,7 +70,8 @@ module WavefrontDisplay
     end
 
     # Extract two fields from a hash and print a list of them as
-    # pairs.
+    # pairs. This method does no word wrapping, so you can trust
+    # commands like 'wavefront proxy list | wc -l'.
     #
     # @param col1 [String] the field to use in the first column
     # @param col2 [String] the field to use in the second column
@@ -84,12 +85,12 @@ module WavefrontDisplay
 
       want.each do |k, v|
         v = v.join(', ') if v.is_a?(Array)
-        print_line(k, v)
+        print_line(k, v, false)
       end
     end
 
-    # Print multiple column output. Currently this method does no
-    # word wrapping.
+    # Print multiple column output. This method does no word
+    # wrapping.
     #
     # @param keys [Symbol] the keys you want in the output. They
     #   will be printed in the order given.
@@ -187,12 +188,13 @@ module WavefrontDisplay
     # @param val [String, Numeric] what to print in the second column
     # @param indent [Integer] number of leading spaces on line
     #
-    def print_line(key, value = '')
+    def print_line(key, value = '', fold = true)
       if key.empty?
         puts ' ' * kw + value
       else
-        puts indent_str + format("%-#{kw}s%s", key, value).
-             fold(TW, kw + indent_str.size)
+        str = indent_str + format("%-#{kw}s%s", key, value)
+        str = str.fold(TW, kw + indent_str.size) if fold
+        puts str
       end
     end
 
