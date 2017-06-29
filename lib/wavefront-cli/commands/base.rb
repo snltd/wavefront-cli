@@ -85,7 +85,8 @@ class WavefrontCommandBase
   # Formats an option string.
   #
   def opt_row(opt, width)
-    format("  %s %-#{width}s %s\n", *opt.split(/\s+/, 3)).opt_fold(TW, width + 5)
+    format("  %s %-#{width}s %s\n", *opt.split(/\s+/, 3))
+      .opt_fold(TW, width + 5)
   end
 
   # Returns the width of the column containing short and long
