@@ -65,9 +65,9 @@ class WavefrontCommandBase
 
   # Returns a string describing the subcommands the command offers.
   #
-  def commands
+  def commands(width = TW)
     _commands.flatten.each_with_object("Usage:\n") do |cmd, ret|
-      ret.<< '  ' + "#{CMD} #{word} #{cmd}\n".cmd_fold + "\n"
+      ret.<< '  ' + "#{CMD} #{word} #{cmd}\n".cmd_fold(width) + "\n"
     end + "  #{CMD} #{word} --help"
   end
 
@@ -114,14 +114,13 @@ end
 # Extensions to the String class to help with formatting.
 #
 class String
-
   # Fold long command lines. We can't break on a space inside
   # [square brackets] or it confuses docopt.
   #
   def cmd_fold(width = TW, indent = 10)
-    gsub(/\s(?=\w+\])/, '^').
-    scan(/\S.{0,#{width - 8}}\S(?=\s|$)|\S+/).join("\n" + ' ' * indent).
-    gsub('^', ' ')
+    gsub(/\s(?=\w+\])/, '^')
+      .scan(/\S.{0,#{width - 8}}\S(?=\s|$)|\S+/).join("\n" + ' ' * indent)
+      .tr('^', ' ')
   end
 
   # Fold long option lines with a hanging indent

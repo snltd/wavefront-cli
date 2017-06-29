@@ -1,19 +1,21 @@
 #!/usr/bin/env ruby
-CMD = 'test'
 
+CMD = 'test'
 require 'pathname'
+require_relative(File.join('../../../lib/wavefront-cli/commands',
+                 Pathname.new(__FILE__).basename.to_s.sub('_spec.rb', '')))
 require_relative './spec_helper'
 
-
-require_relative(File.join('../../../lib/wavefront-cli/commands',
-  Pathname.new(__FILE__).basename.to_s.sub('_spec.rb', '')))
-
-
 class WavefrontCommmandBaseTest < MiniTest::Test
-  attr_reader :wf
+  attr_reader :wf, :col_width, :skip_cmd
 
   def setup
     @wf = WavefrontCommandBase.new
+    @col_width = 18 # has to be manually set for each class
+  end
+
+  def word
+    self.class.name[17..-5]
   end
 
   def test_global_options
@@ -49,27 +51,63 @@ class WavefrontCommmandBaseTest < MiniTest::Test
   end
 
   def test_word
-    assert_equal(wf.word, 'base')
+    assert_equal(wf.word, word.downcase)
   end
 
   def test_sdk_class
-    assert_equal(wf.sdk_class, 'Base')
+    assert_equal(wf.sdk_class, word)
   end
 
   def test_sdk_file
-    assert_equal(wf.sdk_file, 'base')
+    assert_equal(wf.sdk_file, word.downcase)
   end
 
-  def test_commands; end # test from subclass
+  def test_commands;
+    assert wf.commands.start_with?("Usage:\n")
+    assert wf.commands.match(/ --help$/)
 
-  def test_options; end  # test from subclass
+    wf.commands(600).split("\n")[1..-1].each do |c|
+      next if skip_cmd && c.match(skip_cmd)
+      assert_match(/^  \w+/, c)
+      assert_includes(c, CMN) unless c.match(/--help$/)
+    end
+  end
+
+  def test_options
+    assert wf.options.start_with?("Global options:\n")
+    assert_match(%r{\nOptions:\n}, wf.options)
+
+    wf.options.split("\n")[1..-1].each do |o|
+      next if o == 'Global options:' || o == 'Options:' || o.empty?
+      assert_instance_of(String, o)
+      assert_match(/^  -\w, --\w+/, o)
+      refute o.end_with?('.')
+    end
+
+    assert_equal(wf.options.split("\n").select { |l| l.empty? }.size, 1)
+  end
 
   def test_opt_row
-    gt
+    assert_equal(wf.opt_row('-s, --short    short option', 10),
+                 "  -s, --short    short option\n")
+    assert_equal(wf.opt_row('-s, --short    short option', 8),
+                 "  -s, --short  short option\n")
+    assert_equal(wf.opt_row(
+      '-l, --longoption    a long option with a quite long description ' \
+      'which needs folding', 15),
+      '  -l, --longoption    a long option with a quite long ' \
+      "description which\n                      needs folding\n")
+    assert_equal(wf.opt_row(
+      '-h, --hugeoption    an option with a very long, far too verbose ' \
+      'description which is going need folding more than one time, let ' \
+      'me tell you', 12),
+      '  -h, --hugeoption an option with a very long, far too verbose ' \
+      "description\n                   which is going need folding " \
+      "more than one time, let me tell\n                   you\n")
   end
 
   def test_option_column_width
-    assert_equal(wf.option_column_width, 18)
+    assert_equal(wf.option_column_width, col_width)
   end
 
   def test_postscript
@@ -82,5 +120,34 @@ class WavefrontCommmandBaseTest < MiniTest::Test
     assert_match("\nGlobal options:\n", x)
     assert_match("--help\n", x)
     assert_instance_of(String, x)
+  end
+end
+
+class StringTest < MiniTest::Test
+  def test_cmd_fold
+    str = "command subcommand #{CMN} [-a alpha] [-b beta] [-c gamma] <id>"
+    assert_equal(str.cmd_fold,
+                 'command subcommand [-DnV] [-c file] [-P profile] ' \
+                 "[-E endpoint] [-t token]\n          [-a alpha] " \
+                 '[-b beta] [-c gamma] <id>')
+    assert_equal(str.cmd_fold(240), str)
+    assert_equal(str.cmd_fold(50),
+                 "command subcommand [-DnV] [-c file]\n          [-P " \
+                 "profile] [-E endpoint] [-t token]\n          [-a " \
+                 'alpha] [-b beta] [-c gamma] <id>')
+  end
+
+  def test_opt_fold
+    str = '-l, --longoption    a long option with a quite long ' \
+          'description which needs folding'
+
+    assert_equal(str.opt_fold,
+                 '  -l, --longoption    a long option with a quite ' \
+                 "long description which\n            needs folding\n")
+    assert_equal(str.opt_fold(50),
+                 "  -l, --longoption    a long option with a\n     " \
+                 "       quite long description which needs\n      " \
+                 "      folding\n")
+    assert_equal(str.opt_fold(100), "  #{str}\n")
   end
 end
