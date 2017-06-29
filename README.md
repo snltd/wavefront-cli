@@ -9,13 +9,13 @@ It is built on [the Wavefront Ruby
 SDK](https://github.com/snltd/wavefront-sdk) and requires Ruby >= 2.2.
 
 ```
-$ wavefront --help
+$ wf --help
 Wavefront CLI
 
 Usage:
-  wavefront [options] command [options]
-  wavefront --version
-  wavefront --help
+  wf [options] command [options]
+  wf --version
+  wf --help
 
 Commands:
   alert         view and manage alerts
@@ -71,7 +71,7 @@ Most commands have a `list` subcommand, which will produce brief
 column.
 
 ```
-$ wavefront proxy list
+$ wf proxy list
 457d6cf3-5171-45e0-8d31-5c980be889ea  test agent
 917102d1-a10e-997b-ba63-95058f98d4fb  Agent on wavefront-2017-03-13-02
 926dfb4c-23c6-4fb9-8c8d-833625ab8f6f  Agent on shark-wavefront
@@ -85,7 +85,7 @@ Most commands have a `describe` subcommand which will tell you more about the
 object.
 
 ```
-$ wavefront proxy describe 917102d1-a10e-497b-ba63-95058f98d4fb
+$ wf proxy describe 917102d1-a10e-497b-ba63-95058f98d4fb
 name                     Agent on wavefront-2017-03-13-02
 id                       917102d1-a10e-497b-ba63-95058f98d4fb
 version                  4.7
@@ -121,22 +121,22 @@ If you `describe` an object like a dashboard, user, webhook etc as `json` or
 `yaml`, and send the output to a file, you can re-import that data. The format of the file to be imported is automatically detected.
 
 ```
-$ wavefront user list
+$ wf user list
 slackboy@gmail.com
 sysdef.limited@gmail.com
-$ wavefront user describe -f json sysdef.limited@gmail.com > user.json
+$ wf user describe -f json sysdef.limited@gmail.com > user.json
 $ cat user.json
 {"identifier":"sysdef.limited@gmail.com","customer":"sysdef","groups":["agent_management"]}
-$ wavefront user delete sysdef.limited@gmail.com
+$ wf user delete sysdef.limited@gmail.com
 Deleted user 'sysdef.limited@gmail.com'.
-$ wavefront user list
+$ wf user list
 slackboy@gmail.com
-$ wavefront user import user.json
+$ wf user import user.json
 Imported user.
 identifier  sysdef.limited@gmail.com
 customer    sysdef
 groups      agent_management
-$ wavefront user list
+$ wf user list
 slackboy@gmail.com
 sysdef.limited@gmail.com
 ```
@@ -154,7 +154,7 @@ method](https://ruby-doc.org/stdlib-2.3.1/libdoc/date/rdoc/DateTime.html#method-
 method can parse unaided. For instance:
 
 ```
-$ wavefront --start 12:15 --end 12:20 ...
+$ wf command --start 12:15 --end 12:20 ...
 ```
 
 will define a window between 12:15 and 12:20pm today. If you ran
@@ -162,7 +162,7 @@ that in the morning, the time would be invalid, and you would get a
 400 error from Wavefront, so something of the form
 `2016-04-17T12:25:00` would remove all ambiguity.
 
-There is no need to include a timezone in your time: the `wavefront`
+There is no need to include a timezone in your time: the `wf`
 CLI will automatically use your local timezone when it parses the
 string.
 
@@ -185,20 +185,20 @@ fail. This output can be very verbose.
 Writing a single point is simple:
 
 ```
-$ wavefront write point cli.example 10
+$ wf write point cli.example 10
 ```
 
 and you can add point tags, if you like.
 
 ```
-$ wavefront write point cli.example 9.4 -E wavefront -T proxy=wavefront \
+$ wf write point cli.example 9.4 -E wavefront -T proxy=wavefront \
   -T from=README
 ```
 
 or force a timestamp:
 
 ```
-$ wavefront write point -t 16:53:14 cli.example 8
+$ wf write point -t 16:53:14 cli.example 8
 ```
 
 More usefully, you can write from a file. Your file must contain multiple
@@ -212,11 +212,11 @@ $ cat datafile
 1496767813 dev.cli.test 12.1
 1496767813 dev.cli.test 10.0
 1496767813 dev.cli.test 14.5
-$ wavefront write file -F tmv datafile
+$ wf write file -F tmv datafile
 ```
 
 If you set the file to `-`, you can read from standard in:
 
 ```
-$ while true; do echo $RANDOM; sleep 1; done | wavefront write file -m cli.demo -Fv -
+$ while true; do echo $RANDOM; sleep 1; done | wf write file -m cli.demo -Fv -
 ```
