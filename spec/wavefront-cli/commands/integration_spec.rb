@@ -1,10 +1,10 @@
 #!/usr/bin/env ruby
 
-require 'pathname'
-word = Pathname.new(__FILE__).basename.to_s.sub('_spec.rb', '')
 require_relative('../../../lib/wavefront-cli/commands/integration')
 require_relative './base_spec'
 
+# Test Cloud Integration commands and options
+#
 class WavefrontCommmandIntegrationTest < WavefrontCommmandBaseTest
   def setup
     @wf = WavefrontCommandIntegration.new

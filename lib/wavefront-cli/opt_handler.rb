@@ -37,13 +37,13 @@ module WavefrontCli
       @opts = DEFAULT_OPTS.merge(load_profile).merge(@cli_opts)
     end
 
+    # Load in configuration options from the (optionally) given
+    # section of an ini-style configuration file. If the file's not
+    # there, we don't consider that an error. Returns a hash of
+    # options which matches what Docopt gives us.
+    #
+    # rubocop:disable Metrics/AbcSize
     def load_profile
-      #
-      # Load in configuration options from the (optionally) given
-      # section of an ini-style configuration file. If the file's
-      # not there, we don't consider that an error. Returns a hash
-      # of options which matches what Docopt gives us.
-      #
       unless conf_file.exist?
         puts "config file '#{conf_file}' not found. Taking options " \
              'from command-line.'

@@ -1,10 +1,10 @@
 #!/usr/bin/env ruby
 
-require 'pathname'
-word = Pathname.new(__FILE__).basename.to_s.sub('_spec.rb', '')
 require_relative('../../../lib/wavefront-cli/commands/link')
 require_relative './base_spec'
 
+# Test External Link commands and options
+#
 class WavefrontCommmandLinkTest < WavefrontCommmandBaseTest
   def setup
     @wf = WavefrontCommandLink.new

@@ -27,8 +27,7 @@ class WavefrontCommandWrite < WavefrontCommandBase
      'a file will be assigned. If the file contains a metric name, ' \
      'the two will be dot-concatenated, with this value first',
      '-r, --rate=INTEGER         throttle point sending to this many ' \
-     'points per second'
-    ]
+     'points per second']
   end
 
   def postscript

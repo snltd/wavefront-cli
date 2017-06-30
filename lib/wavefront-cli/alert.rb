@@ -18,13 +18,13 @@ module WavefrontCli
     end
 
     def do_delete
-      print (if wf.describe(options[:'<id>']).status.code == 200
-              'Soft'
-            else
-              'Permanently'
-            end)
+      word = if wf.describe(options[:'<id>']).status.code == 200
+               'Soft'
+             else
+               'Permanently'
+             end
 
-      puts " deleting alert '#{options[:'<id>']}'."
+      puts "#{word} deleting alert '#{options[:'<id>']}'."
       wf.delete(options[:'<id>'])
     end
 
@@ -41,6 +41,7 @@ module WavefrontCli
     #
     # @param raw [Hash] Ruby hash of imported data
     #
+    # rubocop:disable Metrics/MethodLength
     def import_to_create(raw)
       ret = %w(name condition minutes target severity displayExpression
                additionalInformation).each_with_object({}) do |k, aggr|

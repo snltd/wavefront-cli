@@ -3,7 +3,6 @@ CMN = '[-DnV] [-c file] [-P profile] [-E endpoint] [-t token]'.freeze
 # A base class which all command classes extend.
 #
 class WavefrontCommandBase
-
   # All commands have these options
   # @return [Array]
   #
@@ -142,6 +141,7 @@ class String
 
   # Fold long option lines with a hanging indent
   #
+  # rubocop:disable Metrics/AbcSize
   def opt_fold(width = TW, indent = 10)
     bits = scan(/\S.{0,#{width - 8}}\S(?=\s|$)|\S+/)
 
