@@ -74,10 +74,10 @@ class WavefrontCommmandBaseTest < MiniTest::Test
   end
 
   def test_options
-    assert wf.options.start_with?("Global options:\n")
+    assert wf.options(600).start_with?("Global options:\n")
     assert_match(%r{\nOptions:\n}, wf.options)
 
-    wf.options.split("\n")[1..-1].each do |o|
+    wf.options(600).split("\n")[1..-1].each do |o|
       next if o == 'Global options:' || o == 'Options:' || o.empty?
       assert_instance_of(String, o)
       assert_match(/^  -\w, --\w+/, o)
