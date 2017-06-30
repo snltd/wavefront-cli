@@ -96,7 +96,7 @@ module WavefrontDisplay
     #   will be printed in the order given.
     #
     def multicolumn(*keys)
-      len = Hash[*keys.map {|k| [k, 0]}.flatten]
+      len = Hash[*keys.map { |k| [k, 0] }.flatten]
 
       keys.each do |k|
         data.each do |obj|
@@ -210,17 +210,6 @@ module WavefrontDisplay
       hash.keys.map(&:size).max + pad
     end
 
-=begin
-    def indent_wrap(line, cols = 78, offset = 22)
-      #
-      # hanging indent long lines to fit in an 80-column terminal
-      #
-      return unless line
-      line.gsub(/(.{1,#{cols - offset}})(\s+|\Z)/, "\\1\n#{' ' *
-              offset}").rstrip
-    end
-=end
-
     def friendly_name
       self.class.name.split('::').last.gsub(/([a-z])([A-Z])/, '\\1 \\2')
           .downcase
@@ -308,14 +297,12 @@ module WavefrontDisplay
 
       DateTime.strptime(str, fmt).strftime(out_fmt)
     end
-
   end
 end
 
 # Extensions to the String class to help with formatting.
 #
 class String
-
   # Fold long command lines and suitably indent
   #
   def fold(width = TW, indent = 10)

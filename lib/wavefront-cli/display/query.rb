@@ -6,7 +6,6 @@ module WavefrontDisplay
   #
   class Query < Base
     def do_default
-
       ts = if data.key?(:timeseries)
              data[:timeseries].each do |s|
                s[:data] = humanize_series(s[:data])
