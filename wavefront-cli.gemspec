@@ -22,14 +22,14 @@ Gem::Specification.new do |gem|
   gem.test_files    = gem.files.grep(/^spec/)
   gem.require_paths = %w(lib)
 
-  gem.add_dependency 'docopt', '0.5.0'
+  gem.add_dependency 'docopt', '0.6.0'
   gem.add_dependency 'wavefront-sdk', '>= 0.2.0'
 
   gem.add_development_dependency 'bundler', '~> 1.3'
   gem.add_development_dependency 'rake', '~> 12.0'
   gem.add_development_dependency 'yard', '~> 0.9.5'
   gem.add_development_dependency 'rubocop', '~> 0.49.1'
-  gem.add_development_dependency 'webmock', '~> 2.3', '>= 2.3.2'
+  gem.add_development_dependency 'webmock', '~> 3.0'
   gem.add_development_dependency 'minitest', '~> 5.8', '>= 5.8.0'
   gem.add_development_dependency 'spy', '~> 0.4.0'
 
