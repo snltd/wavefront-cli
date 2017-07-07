@@ -119,7 +119,7 @@ module WavefrontDisplay
         @out.<< '' if indent.zero?
       end
 
-      @indent -= indent_step if indent.positive?
+      @indent -= indent_step if indent > 0
       @kw += 2
       mk_indent(indent)
     end
