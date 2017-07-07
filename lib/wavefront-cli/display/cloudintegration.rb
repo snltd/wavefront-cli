@@ -6,7 +6,7 @@ module WavefrontDisplay
   #
   class CloudIntegration < Base
     def do_list_brief
-      terse_output(:id, :service)
+      multicolumn(:id, :service)
     end
 
     def do_describe

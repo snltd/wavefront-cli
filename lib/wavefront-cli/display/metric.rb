@@ -16,7 +16,7 @@ module WavefrontDisplay
           last_update: human_time(h[:last_update]) }
       end.sort_by { |h| h[:last_update] }.reverse
 
-      terse_output(:host, :last_update, modified_data)
+      multicolumn(:host, :last_update, modified_data)
     end
   end
 end

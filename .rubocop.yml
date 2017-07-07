@@ -1,0 +1,28 @@
+AllCops:
+  Exclude:
+    - 'spec/wavefront-cli/resources'
+  TargetRubyVersion: 2.3
+
+Style/NumericLiterals:
+  Enabled: no
+
+Style/FrozenStringLiteralComment:
+  EnforcedStyle: never
+
+Lint/UselessAccessModifier:
+  MethodCreatingMethods:
+    - 'def_matcher'
+    - 'def_node_matcher'
+
+Metrics/BlockLength:
+  Exclude:
+    - 'Rakefile'
+    - '**/*.rake'
+    - 'spec/**/*.rb'
+Metrics/MethodLength:
+  Exclude:
+    - 'lib/wavefront-cli/commands/*.rb'
+
+Metrics/ModuleLength:
+  Exclude:
+    - 'spec/**/*.rb'
