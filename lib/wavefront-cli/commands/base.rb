@@ -142,14 +142,19 @@ class String
   # Fold long option lines with a hanging indent
   #
   # rubocop:disable Metrics/AbcSize
-  def opt_fold(width = TW, indent = 10)
+  #
+  # @param width [Integer] terminal width
+  # @param indent [Integer] size of hanging indent, in chars
+  # @param lead [String] prepended to every line
+  #
+  def opt_fold(width = TW, indent = 10, lead = '  ')
     bits = scan(/\S.{0,#{width - 8}}\S(?=\s|$)|\S+/)
 
-    return '  ' + bits.first + "\n" if bits.size == 1
+    return lead + bits.first + "\n" if bits.size == 1
 
     opt_line = bits.shift
     rest = bits.join(' ').scan(/\S.{0,#{width - indent - 5}}\S(?=\s|$)|\S+/)
-    '  ' + opt_line + "\n" + rest.map do |l|
+    lead + opt_line + "\n" + rest.map do |l|
       ' ' * (2 + indent) + l
     end.join("\n") + "\n"
   end

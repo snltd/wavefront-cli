@@ -190,8 +190,8 @@ module WavefrontDisplay
     #
     def mk_line(key, value = '')
       return indent_str + ' ' * kw + value if !key || key.empty?
-      indent_str + format("%-#{kw - 2}s%s", key, value)
-        .opt_fold(TW, kw + indent_str.size + 2).rstrip
+      indent_str + format("%-#{kw}s%s", key, value)
+        .opt_fold(TW, kw + indent_str.size, '').rstrip
     end
   end
 end
