@@ -32,24 +32,31 @@ module WavefrontDisplay
       # File.open('/tmp/1', 'w') { |f| f.puts data.to_json }
       @data = data
       @keys = keys
-      @fmt_string = format_string
+      @fmt_string = format_string.rstrip
       @out = prep_output
     end
 
     # @return [String] a Ruby format string for each line
     #
     def format_string
-      len = Hash[*keys.map { |k| [k, 0] }.flatten]
+      lk = longest_keys
+      keys.each_with_object('') { |k, out| out.<< "%-#{lk[k]}s  " }
+    end
 
-      keys.each do |k|
+    # Find the length of the longest value for each member of @keys,
+    # in @data.
+    #
+    # @return [Hash] with the same keys as :keys and Integer values
+    #
+    def longest_keys
+      keys.each_with_object(Hash[*keys.map { |k| [k, 0] }.flatten]) \
+      do |k, aggr|
         data.each do |obj|
           val = obj[k]
           val = val.join(', ') if val.is_a?(Array)
-          len[k] = val.size if val.size > len[k]
+          aggr[k] = val.size if val.size > aggr[k]
         end
       end
-
-      keys.each_with_object('') { |k, out| out.<< "%-#{len[k]}s  " }
     end
 
     # Print multiple column output. This method does no word
@@ -72,7 +79,6 @@ module WavefrontDisplay
     attr_reader :indent, :indent_str, :indent_step, :kw, :hide_blank
 
     def initialize(data, fields = nil, modified_data = nil)
-
       @out = []
       @indent = 0
       @indent_step = 2
@@ -92,36 +98,46 @@ module WavefrontDisplay
     # @returns [Nil]
     #
     def _two_columns(data, kw = nil, fields = nil)
-      [data].flatten.each do |row|
-        row.keep_if { |k, _v| fields.include?(k.to_sym) } unless fields.nil?
-        kw = key_width(row) unless kw
+      [data].flatten.each do |item|
+        preen_fields(item, fields)
+        kw = key_width(item) unless kw
         @kw = kw unless @kw
         mk_indent(indent)
-
-        row.each do |k, v|
-          next if v.respond_to?(:empty?) && v.empty? && hide_blank
-
-          if v.is_a?(String) && v.match(/<.*>/)
-            v = v.gsub(%r{<\/?[^>]*>}, '').delete("\n")
-          end
-
-          if v.is_a?(Hash)
-            add_line(k)
-            @indent += indent_step
-            @kw -= 2
-            _two_columns([v], kw - indent_step)
-          elsif v.is_a?(Array)
-            print_array(k, v)
-          else
-            add_line(k, v)
-          end
-        end
-        @out.<< '' if indent.zero?
+        item.each { |k, v| parse_line(k, v) }
+        add_line(nil) if indent.zero?
       end
 
       @indent -= indent_step if indent > 0
       @kw += 2
       mk_indent(indent)
+    end
+
+    # Drop any fields not required
+    #
+    def preen_fields(item, fields)
+      return item unless fields
+      item.keep_if { |k, _v| fields.include?(k.to_sym) }
+    end
+
+    # Remove HTML and stuff
+    #
+    def preen_value(value)
+      return value unless value.is_a?(String) && value.match(/<.*>/)
+      value.gsub(%r{<\/?[^>]*>}, '').delete("\n")
+    end
+
+    def parse_line(k, v)
+      return if v.respond_to?(:empty?) && v.empty? && hide_blank
+
+      v = preen_value(v)
+
+      if v.is_a?(Hash)
+        add_new_hash(k, v, v, 0)
+      elsif v.is_a?(Array)
+        add_array(k, v)
+      else
+        add_line(k, v)
+      end
     end
 
     # Print an array as part of two_column output
@@ -130,22 +146,24 @@ module WavefrontDisplay
     # @param v [String] the value (column 2)
     # @return [Nil]
     #
-    def print_array(k, v)
-      v.each_with_index do |w, i|
-        if w.is_a?(Hash)
-          add_line(k) if i.zero?
-          @indent += indent_step
-          @kw -= 2
-          _two_columns([w], kw - indent_step)
-          add_line('', '---') unless i == v.size - 1
+    def add_array(k, v)
+      v.each_with_index do |value, index|
+        if value.is_a?(Hash)
+          add_new_hash(k, v, value, index)
+        elsif index.zero?
+          add_line(k, v.shift)
         else
-          if i.zero?
-            add_line(k, v.shift)
-          else
-            add_line('', w)
-          end
+          add_line(nil, value)
         end
       end
+    end
+
+    def add_new_hash(k, v, value, index)
+      add_line(k) if index.zero?
+      @indent += indent_step
+      @kw -= 2
+      _two_columns([value], kw - indent_step)
+      add_line(nil, '-' * (TW - kw - 4)) unless index == v.size - 1
     end
 
     # Make the string which is prepended to each line.
@@ -169,23 +187,11 @@ module WavefrontDisplay
     # @param key [String] what to print in the first (key) column.
     #   Make this an empty string to print
     # @param val [String, Numeric] what to print in the second column
-    # @param indent [Integer] number of leading spaces on line
     #
-    def mk_line(key, value = '', fold = true)
+    def mk_line(key, value = '')
       return indent_str + ' ' * kw + value if !key || key.empty?
-      str = indent_str + format("%-#{kw}s%s", key, value)
-      fold ? str.fold(TW, kw + indent_str.size) : str
+      indent_str + format("%-#{kw - 2}s%s", key, value)
+        .opt_fold(TW, kw + indent_str.size + 2).rstrip
     end
-  end
-end
-
-# Extensions to the String class to help with formatting.
-#
-class String
-  # Fold long command lines and suitably indent
-  #
-  def fold(width = TW, indent = 10)
-    return self if self.length < TW
-    scan(/\S.{0,#{width - 2}}\S(?=\s|$)|\S+/).join("\n" + ' ' * indent)
   end
 end
