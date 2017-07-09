@@ -1,81 +1,10 @@
-module WavefrontDisplay
-  #
-  # Base class for the two printer classes
-  #
-  class DisplayPrinter
-    attr_reader :out
+require_relative './base'
 
-    # Give it a key-value hash, and it will return the size of the first
-    # column to use when formatting that data.
-    #
-    # @param hash [Hash] the data for which you need a column width
-    # @param pad [Integer] the number of spaces you want between columns
-    # @return [Integer] length of longest key + pad
-    #
-    def key_width(hash = {}, pad = 2)
-      return 0 if hash.keys.empty?
-      hash.keys.map(&:size).max + pad
-    end
-
-    def to_s
-      out.join("\n")
-    end
-  end
-
-  # Print things which are per-row. The terse listings, primarily
-  #
-  class TerseDisplayPrinter < DisplayPrinter
-    attr_reader :data, :keys, :fmt_string
-
-    def initialize(data, *keys)
-      # require 'json'
-      # File.open('/tmp/1', 'w') { |f| f.puts data.to_json }
-      @data = data
-      @keys = keys
-      @fmt_string = format_string.rstrip
-      @out = prep_output
-    end
-
-    # @return [String] a Ruby format string for each line
-    #
-    def format_string
-      lk = longest_keys
-      keys.each_with_object('') { |k, out| out.<< "%-#{lk[k]}s  " }
-    end
-
-    # Find the length of the longest value for each member of @keys,
-    # in @data.
-    #
-    # @return [Hash] with the same keys as :keys and Integer values
-    #
-    def longest_keys
-      keys.each_with_object(Hash[*keys.map { |k| [k, 0] }.flatten]) \
-      do |k, aggr|
-        data.each do |obj|
-          val = obj[k]
-          val = val.join(', ') if val.is_a?(Array)
-          aggr[k] = val.size if val.size > aggr[k]
-        end
-      end
-    end
-
-    # Print multiple column output. This method does no word
-    # wrapping.
-    #
-    # @param keys [Symbol] the keys you want in the output. They
-    #   will be printed in the order given.
-    #
-    def prep_output
-      data.each_with_object([]) do |o, aggr|
-        args = keys.map { |k| o[k].is_a?(Array) ? o[k].join(', ') : o[k] }
-        aggr.<< format(fmt_string, *args).rstrip
-      end
-    end
-  end
+module WavefrontDisplayPrinter
 
   # Print the long indented descriptions of things
   #
-  class LongDisplayPrinter < DisplayPrinter
+  class Long < Base
     attr_reader :indent, :indent_str, :indent_step, :kw, :hide_blank
 
     def initialize(data, fields = nil, modified_data = nil)

@@ -1,5 +1,4 @@
 require_relative '../constants'
-require_relative './printer'
 
 module WavefrontDisplay
   #
@@ -81,11 +80,13 @@ module WavefrontDisplay
     #   modified_data means that any fields parameter is ignored.
     #
     def long_output(fields = nil, modified_data = nil)
-      puts LongDisplayPrinter.new(data, fields, modified_data)
+      require_relative 'printer/long'
+      puts WavefrontDisplayPrinter::Long.new(data, fields, modified_data)
     end
 
     def multicolumn(*columns)
-      puts TerseDisplayPrinter.new(data, *columns)
+      require_relative 'printer/terse'
+      puts WavefrontDisplayPrinter::Terse.new(data, *columns)
     end
 
     # Give it a key-value hash, and it will return the size of the first
