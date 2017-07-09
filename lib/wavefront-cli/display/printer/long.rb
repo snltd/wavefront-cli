@@ -1,4 +1,5 @@
 require_relative './base'
+require_relative '../../string'
 
 module WavefrontDisplayPrinter
 
@@ -120,7 +121,7 @@ module WavefrontDisplayPrinter
     def mk_line(key, value = '')
       return indent_str + ' ' * kw + value if !key || key.empty?
       indent_str + format("%-#{kw}s%s", key, value)
-        .opt_fold(TW, kw + indent_str.size, '').rstrip
+        .fold(TW, kw + indent_str.size, '').rstrip
     end
   end
 end

@@ -1,3 +1,5 @@
+require_relative '../string'
+
 CMN = '[-DnV] [-c file] [-P profile] [-E endpoint] [-t token]'.freeze
 
 # A base class which all command classes extend.
@@ -102,7 +104,7 @@ class WavefrontCommandBase
   #
   def opt_row(opt, width, term_width = TW)
     format("  %s %-#{width}s %s\n", *opt.split(/\s+/, 3))
-      .opt_fold(term_width, width + 5)
+      .fold(term_width, width + 5)
   end
 
   # @return [Integer] the width of the column containing short and
@@ -124,38 +126,5 @@ class WavefrontCommandBase
   #
   def docopt
     commands + "\n\n" + options + "\n" + postscript
-  end
-end
-
-# Extensions to the String class to help with formatting.
-#
-class String
-  # Fold long command lines. We can't break on a space inside
-  # [square brackets] or it confuses docopt.
-  #
-  def cmd_fold(width = TW, indent = 10)
-    gsub(/\s(?=\w+\])/, '^')
-      .scan(/\S.{0,#{width - 8}}\S(?=\s|$)|\S+/).join("\n" + ' ' * indent)
-      .tr('^', ' ')
-  end
-
-  # Fold long option lines with a hanging indent
-  #
-  # rubocop:disable Metrics/AbcSize
-  #
-  # @param width [Integer] terminal width
-  # @param indent [Integer] size of hanging indent, in chars
-  # @param lead [String] prepended to every line
-  #
-  def opt_fold(width = TW, indent = 10, lead = '  ')
-    bits = scan(/\S.{0,#{width - 8}}\S(?=\s|$)|\S+/)
-
-    return lead + bits.first + "\n" if bits.size == 1
-
-    opt_line = bits.shift
-    rest = bits.join(' ').scan(/\S.{0,#{width - indent - 5}}\S(?=\s|$)|\S+/)
-    lead + opt_line + "\n" + rest.map do |l|
-      ' ' * (2 + indent) + l
-    end.join("\n") + "\n"
   end
 end

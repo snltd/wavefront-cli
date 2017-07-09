@@ -1,8 +1,6 @@
-
 require 'yaml'
 require 'json'
 require 'wavefront-sdk/validators'
-# require_relative './constants'
 require_relative './exception'
 
 module WavefrontCli
