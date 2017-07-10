@@ -19,11 +19,11 @@ module WavefrontCli
         sorted:                 true
       }
 
-      if options[:start]
-        options[:start] = parse_time(options[:start], true)
-      else
-        options[:start] = (Time.now - 600).to_i
-      end
+      options[:start] = if options[:start]
+                          parse_time(options[:start], true)
+                        else
+                          (Time.now - 600).to_i
+                        end
 
       if options[:end]
         options[:end] = parse_time(options[:end], true)
@@ -41,7 +41,6 @@ module WavefrontCli
       wf.query(options[:'<query>'], options[:granularity],
                options[:start], options[:end] || nil, opts)
     end
-
 
     # Work out a sensible granularity based on the time window
     #

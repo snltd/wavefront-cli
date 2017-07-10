@@ -13,7 +13,7 @@ module WavefrontDisplay
     end
 
     def do_list_brief
-      terse_output(:id, :runningState)
+      multicolumn(:id, :runningState)
     end
   end
 end

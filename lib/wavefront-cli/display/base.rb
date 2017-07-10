@@ -7,56 +7,31 @@ module WavefrontDisplay
   # as that which fetches the data, in a WavefrontDisplay class,
   # extending this one.
   #
-  # We provide long_output() and terse_output() methods to solve
+  # We provide #long_output() and #multicolumn() methods to solve
   # standard formatting problems. To use them, define a do_() method
   # but rather than printing the output, have it call the method.
   #
   class Base
     include WavefrontCli::Constants
 
-    attr_reader :data, :options, :indent, :kw, :indent_str, :indent_step,
-                :hide_blank
+    attr_reader :data, :options
 
-    # Display classes can provide a do_method_code() method, which
-    # handles <code> errors when running do_method()
+    # @param data [Map, Hash, Array] the data returned by the SDK
+    #   response.
+    # @param options [Hash] options from docopt
     #
-    def run_error(method)
-      return unless respond_to?(method)
-      send(method)
-      exit 1
-    end
-
     def initialize(data, options = {})
       @data = data.is_a?(Map) ? Map(put_id_first(data)) : data
       @options = options
-      @indent = 0
-      @indent_step = options[:indent_step] || 2
-      @hide_blank = options[:hide_blank] || true
     end
 
-    # If the hash contains an 'id' key, move it to the start. Have to use the
-    # "old" notation because it's a Map.
+    # find the correct method to deal with the output of the user's
+    # command.
     #
-    def put_id_first(data)
-      if data.key?(:id)
-        { 'id' => data[:id] }.merge(data)
-      else
-        data
-      end
-    end
-
     def run(method)
       if method == 'do_list'
-        if options[:long]
-          do_list
-        else
-          do_list_brief
-        end
-
-        return
-      end
-
-      if respond_to?("#{method}_brief")
+        run_list
+      elsif respond_to?("#{method}_brief")
         send("#{method}_brief")
       elsif respond_to?(method)
         send(method)
@@ -65,135 +40,53 @@ module WavefrontDisplay
       end
     end
 
-    def long_output(fields = nil, modified_data = nil)
-      _two_columns(modified_data || data, nil, fields)
-    end
-
-    # Extract two fields from a hash and print a list of them as
-    # pairs.
+    # Choose the correct list handler. The user can specifiy a long
+    # listing with the --long options.
     #
-    # @param col1 [String] the field to use in the first column
-    # @param col2 [String] the field to use in the second column
-    # @return [Nil]
-    #
-    def terse_output(col1 = :id, col2 = :name, modified_data = nil)
-      d = modified_data || data
-      want = d.each_with_object({}) { |r, a| a[r[col1]] = r[col2] }
-      @indent_str = ''
-      @kw = key_width(want)
-
-      want.each do |k, v|
-        v = v.join(', ') if v.is_a?(Array)
-        print_line(k, v)
-      end
-    end
-
-    # Print multiple column output. Currently this method does no
-    # word wrapping.
-    #
-    # @param keys [Symbol] the keys you want in the output. They
-    #   will be printed in the order given.
-    #
-    def multicolumn(*keys)
-      len = Hash[*keys.map {|k| [k, 0]}.flatten]
-
-      keys.each do |k|
-        data.each do |obj|
-          val = obj[k]
-          val = val.join(', ') if val.is_a?(Array)
-          len[k] = val.size if val.size > len[k]
-        end
-      end
-
-      fmt = keys.each_with_object('') { |k, out| out.<< "%-#{len[k]}s  " }
-
-      data.each do |obj|
-        args = keys.map do |k|
-          obj[k].is_a?(Array) ? obj[k].join(', ') : obj[k]
-        end
-
-        puts format(fmt, *args)
-      end
-    end
-
-    def set_indent(indent)
-      @indent_str = ' ' * indent
-    end
-
-    # A recursive function which displays a key-value hash in two
-    # columns. The key column width is automatically calculated.
-    # Multiple-value 'v's are printed one per line. Hashes are nested.
-    #
-    # @param data [Array] and array of objects to display. Each object
-    #   should be a hash.
-    # @param indent [Integer] how many characters to indent the current
-    #   data.
-    # @kw [Integer] the width of the first (key) column.
-    # @returns [Nil]
-    #
-    def _two_columns(data, kw = nil, fields = nil)
-      [data].flatten.each do |row|
-        row.keep_if { |k, _v| fields.include?(k.to_sym) } unless fields.nil?
-        kw = key_width(row) unless kw
-        @kw = kw unless @kw
-        set_indent(indent)
-
-        row.each do |k, v|
-          next if v.respond_to?(:empty?) && v.empty? && hide_blank
-
-          if v.is_a?(String) && v.match(/<.*>/)
-            v = v.gsub(%r{<\/?[^>]*>}, '').delete("\n")
-          end
-
-          if v.is_a?(Hash)
-            print_line(k)
-            @indent += indent_step
-            @kw -= 2
-            _two_columns([v], kw - indent_step)
-          elsif v.is_a?(Array)
-            print_array(k, v)
-          else
-            print_line(k, v)
-          end
-        end
-        puts if indent.zero?
-      end
-
-      @indent -= indent_step if indent > 0
-      @kw += 2
-      set_indent(indent)
-    end
-
-    def print_array(k, v)
-      v.each_with_index do |w, i|
-        if w.is_a?(Hash)
-          print_line(k) if i.zero?
-          @indent += indent_step
-          @kw -= 2
-          _two_columns([w], kw - indent_step)
-          print_line('', '---') unless i == v.size - 1
-        else
-          if i.zero?
-            print_line(k, v.shift)
-          else
-            print_line('', w)
-          end
-        end
-      end
-    end
-
-    # Print a single line of output
-    # @param key [String] what to print in the first (key) column
-    # @param val [String, Numeric] what to print in the second column
-    # @param indent [Integer] number of leading spaces on line
-    #
-    def print_line(key, value = '')
-      if key.empty?
-        puts ' ' * kw + value
+    def run_list
+      if options[:long]
+        do_list
       else
-        puts indent_str + format("%-#{kw}s%s", key, value).
-             fold(TW, kw + indent_str.size)
+        do_list_brief
       end
+    end
+
+    # Display classes can provide a do_method_code() method, which
+    # handles <code> errors when running do_method(). (Code is 404
+    # etc.)
+    #
+    # @param method [Symbol] the error method we wish to call
+    #
+    def run_error(method)
+      return unless respond_to?(method)
+      send(method)
+      exit 1
+    end
+
+    # If the data contains an 'id' key, move it to the start.
+    #
+    def put_id_first(data)
+      data.key?(:id) ? { id: data[:id] }.merge(data) : data
+    end
+
+    # Default display method for 'describe' and long-list methods.
+    # Wraps around #_two_columns() giving you the chance to modify
+    # @data on the fly
+    #
+    # @param fields [Array[Symbol]] a list of fields you wish to
+    #   display. If this is nil, all fields are displayed.
+    # @param modified_data [Hash, Array] lets you modify @data
+    #   in-line. If this is truthy, it is used. Passing
+    #   modified_data means that any fields parameter is ignored.
+    #
+    def long_output(fields = nil, modified_data = nil)
+      require_relative 'printer/long'
+      puts WavefrontDisplayPrinter::Long.new(data, fields, modified_data)
+    end
+
+    def multicolumn(*columns)
+      require_relative 'printer/terse'
+      puts WavefrontDisplayPrinter::Terse.new(data, *columns)
     end
 
     # Give it a key-value hash, and it will return the size of the first
@@ -203,33 +96,30 @@ module WavefrontDisplay
     # @param pad [Integer] the number of spaces you want between columns
     # @return [Integer] length of longest key + pad
     #
-    def key_width(hash, pad = 2)
+    def key_width(hash = {}, pad = 2)
       return 0 if hash.keys.empty?
       hash.keys.map(&:size).max + pad
     end
 
-=begin
-    def indent_wrap(line, cols = 78, offset = 22)
-      #
-      # hanging indent long lines to fit in an 80-column terminal
-      #
-      return unless line
-      line.gsub(/(.{1,#{cols - offset}})(\s+|\Z)/, "\\1\n#{' ' *
-              offset}").rstrip
-    end
-=end
-
+    # return [String] the name of the thing we're operating on, like
+    #   'alert' or 'dashboard'.
+    #
     def friendly_name
       self.class.name.split('::').last.gsub(/([a-z])([A-Z])/, '\\1 \\2')
           .downcase
     end
 
+    # The following do_ methods are default handlers called
+    # following their namesake operation in the corresponding
+    # WavefrontCli class. They can be overriden in the inheriting
+    # class.
+    #
     def do_list
       long_output
     end
 
     def do_list_brief
-      terse_output
+      multicolumn(:id, :name)
     end
 
     def do_import
@@ -273,6 +163,7 @@ module WavefrontDisplay
     # we deem not of interest to the user.
     #
     # @param keys [Symbol] keys you do not wish to be shown.
+    # @return [Nil]
     #
     def drop_fields(*keys)
       if data.is_a?(Array)
@@ -284,39 +175,42 @@ module WavefrontDisplay
 
     # Modify, in-place, the data structure to make times
     # human-readable. Automatically handles second and millisecond
-    # epoch times.
+    # epoch times. Currently only operates on top-level keys.
+    #
+    # param keys [Symbol, Array[Symbol]] the keys you wish to be
+    #   turned into readable times.
+    # return [Nil]
     #
     def readable_time(*keys)
-      keys.each do |k|
-        next unless data.key?(k)
-        data[k] = human_time(data[k])
-      end
+      keys.each { |k| data[k] = human_time(data[k]) if data.key?(k) }
     end
 
-    def human_time(t)
+    # Make a time human-readable. Automatically deals with epoch
+    # seconds and epoch milliseconds
+    #
+    # param t [Integer, String] a timestamp. If it's a string, it is
+    #   converted to an int.
+    # param force_utc [Boolean] force output in UTC. Currently only
+    #   used for unit tests.
+    # return [String] a human-readable timestamp
+    #
+    def human_time(t, force_utc = false)
+      raise ArgumentError unless t.is_a?(Numeric) || t.is_a?(String)
       str = t.to_s
 
-      if str.length == 13
+      if str =~ /^\d{13}$/
         fmt = '%Q'
         out_fmt = HUMAN_TIME_FORMAT_MS
-      else
+      elsif str =~ /^\d{10}$/
         fmt = '%s'
         out_fmt = HUMAN_TIME_FORMAT
+      else
+        raise ArgumentError
       end
 
-      DateTime.strptime(str, fmt).strftime(out_fmt)
+      ret = DateTime.strptime(str, fmt).to_time
+      ret = ret.utc if force_utc
+      ret.strftime(out_fmt)
     end
-
-  end
-end
-
-# Extensions to the String class to help with formatting.
-#
-class String
-
-  # Fold long command lines and suitably indent
-  #
-  def fold(width = TW, indent = 10)
-    scan(/\S.{0,#{width - 2}}\S(?=\s|$)|\S+/).join("\n" + ' ' * indent)
   end
 end

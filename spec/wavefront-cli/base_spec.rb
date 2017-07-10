@@ -26,6 +26,8 @@ DISP_DATA = {
   b: %w(list_1 list_2)
 }.freeze
 
+# Test base class
+#
 class WavefrontCliBaseTest < MiniTest::Test
   attr_reader :wf, :wf_cmd
 
@@ -42,6 +44,6 @@ class WavefrontCliBaseTest < MiniTest::Test
 
   def test_dispatch
     assert_raises(WavefrontCli::Exception::UnhandledCommand) { wf.dispatch }
-    #assert_equal(wf_cmd.dispatch, nil)
+    # assert_equal(wf_cmd.dispatch, nil)
   end
 end

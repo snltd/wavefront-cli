@@ -10,13 +10,13 @@ module WavefrontCli
     end
 
     def do_delete
-      print (if wf.describe(options[:'<id>']).status.code == 200
-              'Soft'
-            else
-              'Permanently'
-            end)
+      word = if wf.describe(options[:'<id>']).status.code == 200
+               'Soft'
+             else
+               'Permanently'
+             end
 
-      puts " deleting dashboard '#{options[:'<id>']}'."
+      puts "#{word} deleting dashboard '#{options[:'<id>']}'."
       wf.delete(options[:'<id>'])
     end
 

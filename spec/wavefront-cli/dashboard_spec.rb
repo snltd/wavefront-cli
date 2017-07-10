@@ -18,13 +18,13 @@ describe "#{word} command" do
 
   it 'deletes with a check on inTrash' do
     stub_request(:get,
-                 "https://other.wavefront.com/api/v2/#{word}/#{id}").
-        with(headers: {'Accept': '*/*',
+                 "https://other.wavefront.com/api/v2/#{word}/#{id}")
+      .with(headers: { 'Accept': '*/*',
                        'Accept-Encoding':
                           'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
                        'Authorization': 'Bearer 0123456789-ABCDEF',
-                       'User-Agent': /wavefront.*/}).
-          to_return(:status => 200, :body => "", :headers => {})
+                       'User-Agent': /wavefront.*/ })
+      .to_return(status: 200, body: '', headers: {})
     cmd_to_call(word, "delete #{id}",
                 method: :delete, path: "/api/v2/#{word}/#{id}")
   end

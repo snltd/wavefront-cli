@@ -5,6 +5,7 @@ module WavefrontCli
   #
   # Send points to a proxy.
   #
+  # rubocop:disable Metrics/ClassLength
   class Write < Base
     attr_reader :fmt
     include Wavefront::Mixins
@@ -13,6 +14,8 @@ module WavefrontCli
       { proxy: options[:proxy], port: options[:port] || 2878 }
     end
 
+    # rubocop:disable Metrics/AbcSize
+    # rubocop:disable Metrics/MethodLength
     def do_point
       p = { path:  options[:'<metric>'],
             value: options[:'<value>'].to_f,
@@ -152,7 +155,7 @@ module WavefrontCli
     # Merge them, making the -T win if there is a collision.
     #
     def line_tags(chunks)
-      file_tags =  fmt.last == 'T' ? extract_tags(chunks) : {}
+      file_tags = fmt.last == 'T' ? extract_tags(chunks) : {}
       opt_tags = tags_to_hash(options[:tag])
       file_tags.merge(opt_tags)
     end

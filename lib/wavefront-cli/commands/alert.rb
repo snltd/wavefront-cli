@@ -28,11 +28,11 @@ class WavefrontCommandAlert < WavefrontCommandBase
   def _options
     [common_options,
      '-l, --long               list alerts in detail',
+     '-a, --all                list all alerts',
      '-v, --version=INTEGER    describe only this version of alert',
      '-o, --offset=n           start from nth alert',
      '-L, --limit=COUNT        number of alerts to list',
      '-T, --time=SECONDS       how long to snooze (default 3600)',
-     '-a, --all                list all alerts',
      '-f, --format=STRING      output format']
   end
 end

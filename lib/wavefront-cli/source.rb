@@ -18,7 +18,7 @@ module WavefrontCli
     end
 
     def do_description_clear
-      wf.update(options[:'<id>'], { description: ''}, false)
+      wf.update(options[:'<id>'], { description: '' }, false)
     end
   end
 end

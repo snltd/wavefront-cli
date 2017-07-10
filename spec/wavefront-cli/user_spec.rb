@@ -4,13 +4,13 @@ id = 'someone@somewhere.com'
 bad_id = '__BAD__'
 word = 'user'
 
-
 require_relative '../spec_helper'
 require_relative "../../lib/wavefront-cli/#{word}"
 
 describe "#{word} command" do
   hdrs = JSON_POST_HEADERS.merge(
-    'Content-Type': 'application/x-www-form-urlencoded')
+    'Content-Type': 'application/x-www-form-urlencoded'
+  )
 
   missing_creds(word, ['list', "describe #{id}", "delete #{id}"])
   cmd_to_call(word, 'list', path: "/api/v2/#{word}")

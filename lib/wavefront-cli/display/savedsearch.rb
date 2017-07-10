@@ -11,7 +11,7 @@ module WavefrontDisplay
     end
 
     def do_list_brief
-      terse_output(:id, :entityType)
+      multicolumn(:id, :entityType)
     end
   end
 end

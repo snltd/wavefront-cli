@@ -11,7 +11,7 @@ module WavefrontCli
     #
     DEFAULT_OPTS = {
       endpoint: 'metrics.wavefront.com',
-      format:   :human,
+      format:   :human
     }.freeze
   end
 end

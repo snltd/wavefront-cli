@@ -1,5 +1,5 @@
 module WavefrontCli
   class Exception
-    class UnhandledCommand < ::Exception; end
+    class UnhandledCommand < RuntimeError; end
   end
 end

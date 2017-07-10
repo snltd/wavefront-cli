@@ -12,7 +12,7 @@ module WavefrontDisplay
 
     def do_list_brief
       drop_cluster_sources
-      terse_output(:id, :description)
+      multicolumn(:id, :description)
     end
 
     # Filter out the Wavefront cluster sources. Don't sort them, or using offset

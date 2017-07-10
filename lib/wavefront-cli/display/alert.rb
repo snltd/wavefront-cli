@@ -30,16 +30,15 @@ module WavefrontDisplay
     end
 
     def do_snooze
-      print "Snoozed alert '#{options[:'<id>']}' "
-
-      puts options[:time] ? "for #{options[:time]} seconds." :
-                            'indefinitely.'
+      w = options[:time] ? "for #{options[:time]} seconds" : 'indefinitely'
+      puts "Snoozed alert '#{options[:'<id>']}' #{w}."
     end
 
     def do_unsnooze
       puts "Unsnoozed alert '#{options[:'<id>']}'."
     end
 
+    # rubocop:disable Metrics/AbcSize
     def do_summary
       kw = data.keys.map(&:size).max + 2
       data.delete_if { |_k, v| v.zero? } unless options[:all]

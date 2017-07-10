@@ -6,14 +6,13 @@ require_relative '../spec_helper'
 # Be sure the CLI behaves properly when people ask for help
 #
 class WavefrontCliHelpTest < MiniTest::Test
-=begin
   def test_no_args
     WavefrontCliController.new([])
   rescue SystemExit => e
     assert_equal(1, e.status)
     assert_match(/^Usage/, e.message)
-    assert_match(/^  wavefront --version$/, e.message)
-    assert_match(/^  wavefront --help$/, e.message)
+    assert_match(/^  \w+ --version$/, e.message)
+    assert_match(/^  \w+ --help$/, e.message)
   end
 
   def test_version
@@ -28,11 +27,11 @@ class WavefrontCliHelpTest < MiniTest::Test
   rescue SystemExit => e
     assert_equal(1, e.status)
     assert_match(/^Commands:$/, e.message)
-    CMDS.each do |cmd|
-      assert_match(/^  #{cmd} /, e.message)
-    end
+    CMDS.each { |cmd| assert_match(/^  #{cmd} /, e.message) }
   end
-=end
+
+  # rubocop:disable Metrics/AbcSize
+  # rubocop:disable Metrics/MethodLength
   def test_command_help
     CMDS.each do |cmd|
       begin
