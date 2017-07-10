@@ -61,7 +61,7 @@ module WavefrontDisplay
         date, time = ht.split
         ds = date == last_date ? '' : date
         last_date = date
-        format('%12s %s    %s', ds, time, val)
+        format('%-12s %s    %s', ds, time, val)
       end
     end
   end
