@@ -2,7 +2,7 @@ require_relative './base'
 require_relative '../../string'
 
 module WavefrontDisplayPrinter
-
+  #
   # Print the long indented descriptions of things
   #
   class Long < Base
@@ -42,73 +42,124 @@ module WavefrontDisplayPrinter
       mk_indent(indent)
     end
 
-    # Drop any fields not required
+    # Drop any fields not required.
     #
-    def preen_fields(item, fields)
+    # @param item [Hash, Map] the raw data
+    # @param fields [Array[Symbol]] the fields we wish to keep
+    # @return [Hash, Map]
+    #
+    def preen_fields(item, fields = nil)
       return item unless fields
       item.keep_if { |k, _v| fields.include?(k.to_sym) }
     end
 
     # Remove HTML and stuff
     #
+    # @param [String] raw value
+    # @return [String] value with all HTML stripped out
+    #
     def preen_value(value)
-      return value unless value.is_a?(String) && value.match(/<.*>/)
+      return value unless value.is_a?(String) && value =~ /<.*>/
       value.gsub(%r{<\/?[^>]*>}, '').delete("\n")
     end
 
-    def parse_line(k, v)
-      return if v.respond_to?(:empty?) && v.empty? && hide_blank
+    # Return true if this line is blank and we don't want to print
+    # blank lines
+    #
+    # @param value [Object] thing to check
+    # @return [Boolean]
+    #
+    def blank?(value)
+      value.respond_to?(:empty?) && value.empty? && hide_blank
+    end
 
-      v = preen_value(v)
+    # Parse a line and add it to the output or pass it on to another
+    # method which knows how to add it to the output.
+    #
+    # @param key [String] a key
+    # @param value [Object] the value: could be anything
+    # @return [Nil]
+    #
+    def parse_line(key, value)
+      return if blank?(value)
 
-      if v.is_a?(Hash)
-        add_new_hash(k, v, v, 0)
-      elsif v.is_a?(Array)
-        add_array(k, v)
+      value = preen_value(value)
+
+      if value.is_a?(Hash)
+        add_hash(key, value)
+      elsif value.is_a?(Array)
+        add_array(key, value)
       else
-        add_line(k, v)
+        add_line(key, value)
       end
     end
 
-    # Print an array as part of two_column output
+    # Add a key-value pair to the output when value is an array. It
+    # will put the key and the first value element on the first
+    # line, with subsequent value elements aligned at the same
+    # offset, but with no key. If any value element is a hash, it is
+    # handled by a separate method. For instance:
     #
-    # @param k [String] the key (column 1)
-    # @param v [String] the value (column 2)
+    # key    value1
+    #        value2
+    #        value3
+    #
+    # @param key [String] the key
+    # @param value_arr [Array] an array of values
     # @return [Nil]
     #
-    def add_array(k, v)
-      v.each_with_index do |value, index|
-        if value.is_a?(Hash)
-          add_new_hash(k, v, value, index)
-        elsif index.zero?
-          add_line(k, v.shift)
+    def add_array(key, value_arr)
+      value_arr.each_with_index do |element, index|
+        if element.is_a?(Hash)
+          add_hash(key, element, value_arr.size, index)
         else
-          add_line(nil, value)
+          add_line(index.zero? ? key : nil, element)
         end
       end
     end
 
-    def add_new_hash(k, v, value, index)
-      add_line(k) if index.zero?
+    # Add a hash to the output. It will put the key on a line on its
+    # own, followed by other keys indented. All values are aligned
+    # to the same point.  If this hash is a member of an array, we
+    # are able to print a horizontal rule at the end of it. We don't
+    # do this if it is the final member of the array.
+    #
+    # For instance:
+    #
+    #  key
+    #    subkey1    value1
+    #    subkey2    value2
+    #
+    # @param key [String] the key
+    # @param value [Hash] hash of values to display
+    # @param size [Integer] the size of the parent array, if there
+    #   is one
+    # @param index [Integer] the index of this element in parent
+    #   array, if there is one.
+    # @return [Nil]
+    #
+    def add_hash(key, value, arr_size = 0, arr_index = 0)
+      add_line(key) if arr_index.zero?
       @indent += indent_step
       @kw -= 2
       _two_columns([value], kw - indent_step)
-      add_line(nil, '-' * (TW - kw - 4)) unless index == v.size - 1
+      add_rule(kw) if arr_index + 1 < arr_size
     end
 
-    # Make the string which is prepended to each line.
+    # Add a horizontal rule, from the start of the second column to
+    # just shy of the end of the terminal
+    #
+    def add_rule(kw)
+      add_line(nil, '-' * (TW - kw - 4))
+    end
+
+    # Make the string which is prepended to each line.  Stepping is
+    # controlled by @indent_step.
     #
     # @param indent [Integer] how many characters to indent by.
-    # Stepping is controlled by indent_tep
     #
     def mk_indent(indent)
       @indent_str = ' ' * indent
-    end
-
-    # Add a line, prepped by #mk_line() to the out array.
-    #
-    def add_line(*args)
-      @out.<< mk_line(*args)
     end
 
     # Print a single line of output, handling the necessary
@@ -117,11 +168,19 @@ module WavefrontDisplayPrinter
     # @param key [String] what to print in the first (key) column.
     #   Make this an empty string to print
     # @param val [String, Numeric] what to print in the second column
+    # @param tw [Integer] terminal width
     #
-    def mk_line(key, value = '')
+    def mk_line(key, value = '', tw = TW)
       return indent_str + ' ' * kw + value if !key || key.empty?
+
       indent_str + format("%-#{kw}s%s", key, value)
-        .fold(TW, kw + indent_str.size, '').rstrip
+                   .fold(tw, kw + indent_str.size, '').rstrip
+    end
+
+    # Add a line, prepped by #mk_line() to the out array.
+    #
+    def add_line(*args)
+      @out.<< mk_line(*args)
     end
   end
 end

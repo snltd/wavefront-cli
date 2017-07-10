@@ -104,7 +104,7 @@ class WavefrontCommandBase
   #
   def opt_row(opt, width, term_width = TW)
     format("  %s %-#{width}s %s\n", *opt.split(/\s+/, 3))
-      .fold(term_width, width + 5)
+      .opt_fold(term_width, width + 5)
   end
 
   # @return [Integer] the width of the column containing short and

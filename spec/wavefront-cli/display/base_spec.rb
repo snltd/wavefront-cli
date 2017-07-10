@@ -160,8 +160,3 @@ class WavefrontDisplayBaseTest < MiniTest::Test
                                                           true))
   end
 end
-
-class StringTest < MiniTest::Test
-  def test_fold
-  end
-end

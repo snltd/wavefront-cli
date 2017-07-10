@@ -3,6 +3,8 @@
 require_relative '../../../../lib/wavefront-cli/display/printer/base'
 require_relative '../spec_helper'
 
+# Test base class
+#
 class WavefrontDisplayPrinterBase < MiniTest::Test
   attr_reader :wf
 
