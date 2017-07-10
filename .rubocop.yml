@@ -9,11 +9,6 @@ Style/NumericLiterals:
 Style/FrozenStringLiteralComment:
   EnforcedStyle: never
 
-Lint/UselessAccessModifier:
-  MethodCreatingMethods:
-    - 'def_matcher'
-    - 'def_node_matcher'
-
 Metrics/BlockLength:
   Exclude:
     - 'Rakefile'
