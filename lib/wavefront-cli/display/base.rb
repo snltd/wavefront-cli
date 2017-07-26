@@ -31,6 +31,8 @@ module WavefrontDisplay
     def run(method)
       if method == 'do_list'
         run_list
+      elsif method == 'do_search'
+        run_search
       elsif respond_to?("#{method}_brief")
         send("#{method}_brief")
       elsif respond_to?(method)
@@ -48,6 +50,17 @@ module WavefrontDisplay
         do_list
       else
         do_list_brief
+      end
+    end
+
+    # Choose the correct search handler. The user can specifiy a long
+    # listing with the --long options.
+    #
+    def run_search
+      if options[:long]
+        do_search
+      else
+        do_search_brief
       end
     end
 
@@ -133,6 +146,26 @@ module WavefrontDisplay
 
     def do_undelete
       puts "Undeleted #{friendly_name} '#{options[:'<id>']}'."
+    end
+
+    def do_search_brief
+      display_keys = ([:id] + options[:'<condition>'].map do |c|
+        c.split(/\W/, 2).first.to_sym
+      end).uniq
+
+      if data.empty?
+        puts 'No matches.'
+      else
+        multicolumn(*display_keys)
+      end
+    end
+
+    def do_search
+      if data.empty?
+        puts 'No matches.'
+      else
+        long_output
+      end
     end
 
     def do_tag_add

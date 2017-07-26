@@ -20,7 +20,8 @@ class WavefrontCommandLink < WavefrontCommandBase
      "describe #{CMN} [-f format] <id>",
      "delete #{CMN} <id>",
      "import #{CMN} <file>",
-     "update #{CMN} <key=value> <id>"]
+     "update #{CMN} <key=value> <id>",
+     "search #{CMN} [-f format] [-o offset] [-L limit] [-l] <condition>..."]
   end
 
   def _options

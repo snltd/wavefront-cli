@@ -290,6 +290,22 @@ module WavefrontCli
       wf.update(options[:'<id>'], k => v)
     end
 
+    def do_search
+      require 'wavefront-sdk/search'
+      wfs = Wavefront::Search.new(mk_creds)
+
+      query = options[:'<condition>'].each_with_object([]) do |c, aggr|
+        key, value = c.split(/\W/, 2)
+        q = { key: key, value: value }
+        q[:matchingMethod] = 'EXACT' if c.start_with?("#{key}=")
+        q[:matchingMethod] = 'STARTSWITH' if c.start_with?("#{key}^")
+        aggr.<< q
+      end
+
+      wfs.search(klass_word, query, { limit: options[:limit],
+                                      offset: options[:offset] || options[:cursor]})
+    end
+
     def do_tags
       wf.tags(options[:'<id>'])
     end

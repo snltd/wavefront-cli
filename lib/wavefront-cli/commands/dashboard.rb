@@ -15,6 +15,7 @@ class WavefrontCommandDashboard < WavefrontCommandBase
      "delete #{CMN} <id>",
      "undelete #{CMN} <id>",
      "history #{CMN} [-b] [-f format] [-o offset] [-L limit] <id>",
+     "search #{CMN} [-f format] [-o offset] [-L limit] [-l] <condition>...",
      tag_commands]
   end
 
