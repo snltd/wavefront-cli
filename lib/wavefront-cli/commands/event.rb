@@ -17,8 +17,8 @@ class WavefrontCommandEvent < WavefrontCommandBase
      "delete #{CMN} <id>",
      "update #{CMN} <key=value> <id>",
      "search #{CMN} [-f format] [-o offset] [-L limit] [-l] <condition>...",
-     "wrap #{CMN} [-d description] [-S severity] [-T type] " \
-     '[-H host...] -C command <event>',
+     "wrap #{CMN} -c command [-d description] [-S severity] [-T type] " \
+     '[-H host...] <event>',
      tag_commands,
      'show [-D]']
   end

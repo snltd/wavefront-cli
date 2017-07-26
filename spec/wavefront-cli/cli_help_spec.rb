@@ -34,6 +34,7 @@ class WavefrontCliHelpTest < MiniTest::Test
   # rubocop:disable Metrics/MethodLength
   def test_command_help
     CMDS.each do |cmd|
+      puts "+++++++++++++++++++++++++++++++++ #{cmd}"
       begin
         WavefrontCliController.new([cmd, '--help'])
       rescue SystemExit => e

@@ -9,7 +9,7 @@ class WavefrontCommandWrite < WavefrontCommandBase
 
   def _commands
     ['point [-DnV] [-c file] [-P profile] [-E proxy] [-t time] ' \
-      '[-p port] [-H host] [-n] [-T tag...] <metric> <value>',
+     '[-p port] [-H host] [-n] [-T tag...] <metric> <value>',
      'file [-DnV] [-c file] [-P profile] [-E proxy] [-H host] ' \
      '[-p port] [-n] [-F format] [-m metric] [-T tag...] ' \
      '[-r rate] <file>']
@@ -32,7 +32,7 @@ class WavefrontCommandWrite < WavefrontCommandBase
 
   def postscript
     'Files are whitespace separated, and fields can be defined ' \
-    "with the -F option.  Use 't' for timestamp; 'm' for metric " \
+    "with the '-F' option.  Use 't' for timestamp; 'm' for metric " \
     "name; 'v' for value, 's' for source, and 'T' for tags. Put 'T' " \
     'last.'.cmd_fold(TW, 0)
   end

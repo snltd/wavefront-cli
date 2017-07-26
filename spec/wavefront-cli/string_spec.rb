@@ -11,7 +11,7 @@ class StringTest < MiniTest::Test
     str = "command subcommand #{CMN} [-a alpha] [-b beta] [-c gamma] <id>"
     assert_equal(str.cmd_fold,
                  'command subcommand [-DnV] [-c file] [-P profile] ' \
-                 "[-E endpoint] [-t token]\n          [-a alpha] " \
+                 "[-E endpoint]\n          [-t token] [-a alpha] " \
                  '[-b beta] [-c gamma] <id>')
     assert_equal(str.cmd_fold(240), str)
     assert_equal(str.cmd_fold(50),

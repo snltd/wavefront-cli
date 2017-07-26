@@ -59,6 +59,8 @@ class WavefrontCliController
 
     begin
       [cmd, sanitize_keys(Docopt.docopt(usage[cmd], argv: args))]
+    rescue Docopt::DocoptLanguageError => e
+      abort "mangled command description:\n#{e.message}"
     rescue Docopt::Exit => e
       abort e.message
     end
