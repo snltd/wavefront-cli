@@ -5,10 +5,14 @@ require 'io/console'
 require_relative '../lib/wavefront-cli/controller'
 
 begin
-  TW = IO.console.winsize.last
+  tw = IO.console.winsize.last
 rescue
-  TW = 80
+  tw = 80
 end
+
+tw = 80 if tw < 60
+
+TW = tw
 
 CMD = Pathname.new(__FILE__).basename
 WavefrontCliController.new(ARGV)
