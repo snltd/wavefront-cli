@@ -16,7 +16,7 @@ class WavefrontCommandEvent < WavefrontCommandBase
      "close #{CMN} [<id>]",
      "delete #{CMN} <id>",
      "update #{CMN} <key=value> <id>",
-     "search #{CMN} [-l] <condition>...",
+     "search #{CMN} [-f format] [-o offset] [-L limit] [-l] <condition>...",
      tag_commands,
      'show [-D]']
   end

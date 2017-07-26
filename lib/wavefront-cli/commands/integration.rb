@@ -21,7 +21,7 @@ class WavefrontCommandIntegration < WavefrontCommandBase
      "delete #{CMN} <id>",
      "undelete #{CMN} <id>",
      "import #{CMN} <file>",
-     "search #{CMN} [-l] <condition>..."]
+     "search #{CMN} [-f format] [-o offset] [-L limit] [-l] <condition>..."]
   end
 
   def _options

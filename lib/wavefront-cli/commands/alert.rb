@@ -17,7 +17,7 @@ class WavefrontCommandAlert < WavefrontCommandBase
      "snooze #{CMN} [-T time] <id>",
      "update #{CMN} <key=value> <id>",
      "unsnooze #{CMN} <id>",
-     "search #{CMN} [-l] <condition>...",
+     "search #{CMN} [-f format] [-o offset] [-L limit] [-l] <condition>...",
      "tags #{CMN} [-f format] <id>",
      "tag set #{CMN} <id> <tag>...",
      "tag clear #{CMN} <id>",

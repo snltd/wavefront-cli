@@ -13,7 +13,7 @@ class WavefrontCommandWebhook < WavefrontCommandBase
      "delete #{CMN} <id>",
      "import #{CMN} <file>",
      "update #{CMN} <key=value> <id>",
-     "search #{CMN} [-l] <condition>..."]
+     "search #{CMN} [-f format] [-o offset] [-L limit] [-l] <condition>..."]
   end
 
   def _options

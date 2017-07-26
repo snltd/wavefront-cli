@@ -302,7 +302,8 @@ module WavefrontCli
         aggr.<< q
       end
 
-      wfs.search(klass_word, query)
+      wfs.search(klass_word, query, { limit: options[:limit],
+                                      offset: options[:offset] || options[:cursor]})
     end
 
     def do_tags
