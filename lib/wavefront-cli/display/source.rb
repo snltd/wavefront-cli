@@ -15,8 +15,12 @@ module WavefrontDisplay
       multicolumn(:id, :description)
     end
 
-    # Filter out the Wavefront cluster sources. Don't sort them, or using offset
-    # and cursor becomes confusing.
+    def do_search_brief
+      multicolumn(:id)
+    end
+
+    # Filter out the Wavefront cluster sources. Don't sort them, or
+    # using offset and cursor becomes confusing.
     #
     def drop_cluster_sources
       return if options[:all]
