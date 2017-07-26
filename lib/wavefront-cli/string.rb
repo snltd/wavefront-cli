@@ -1,14 +1,15 @@
 # Extensions to the String class to help with formatting.
 #
 class String
-  # Fold long command lines. We can't break on a space inside
-  # [square brackets] or it confuses docopt.
+  # Fold long command lines. We can't break on a space after an
+  # option or it confuses docopt.
   #
   # @param tw [Integer] terminal width
   # @param indent [Integer] size of hanging indent, in chars
   #
   def cmd_fold(tw = TW, indent = 10)
-    gsub(/\s(?=\w+\])/, '^').scan_line(tw - 8).join("\n" + ' ' * indent)
+    #gsub(/\s(?=\w+\])/, '^').scan_line(tw - 8).join("\n" + ' ' * indent)
+    gsub(/(-\w) /, "\\1^").scan_line(tw - 12).join("\n" + ' ' * indent)
       .tr('^', ' ')
   end
 
