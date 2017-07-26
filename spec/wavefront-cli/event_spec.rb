@@ -16,4 +16,13 @@ describe "#{word} command" do
   cmd_to_call(word, "close #{id}",
               method: :post, path: "/api/v2/#{word}/#{id}/close")
   tag_tests(word, id, bad_id)
+  cmd_to_call(word, "search -o 11 id=#{id}",
+              { method: :post, path: "/api/v2/search/#{word}",
+                body:   { limit: 10,
+                          offset: "11",
+                          query: [{key: 'id',
+                                   value: id,
+                                   matchingMethod: 'EXACT'}],
+                          sort: {field: 'id', ascending: true}},
+                headers: JSON_POST_HEADERS })
 end

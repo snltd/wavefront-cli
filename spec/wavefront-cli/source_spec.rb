@@ -18,4 +18,13 @@ describe "#{word} command" do
               method: :delete, path: "/api/v2/#{word}/#{id}")
   invalid_ids(word, ["describe #{bad_id}", "clear #{bad_id}"])
   tag_tests(word, id, bad_id)
+  cmd_to_call(word, "search -f json id^#{id}",
+              { method: :post, path: "/api/v2/search/#{word}",
+                body:   { limit: 10,
+                          offset: 0,
+                          query: [{key: 'id',
+                                   value: id,
+                                   matchingMethod: 'STARTSWITH'}],
+                          sort: {field: 'id', ascending: true}},
+                headers: JSON_POST_HEADERS })
 end
