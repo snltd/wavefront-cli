@@ -17,6 +17,8 @@ class WavefrontCommandEvent < WavefrontCommandBase
      "delete #{CMN} <id>",
      "update #{CMN} <key=value> <id>",
      "search #{CMN} [-f format] [-o offset] [-L limit] [-l] <condition>...",
+     "wrap #{CMN} [-d description] [-S severity] [-T type] " \
+     '[-H host...] -C command <event>',
      tag_commands,
      'show [-D]']
   end
@@ -35,7 +37,8 @@ class WavefrontCommandEvent < WavefrontCommandBase
      '-H, --host=STRING         source to which event applies',
      '-N, --nostate             do not create a local file recording ' \
      'the event',
-     '-f, --format=STRING        output format']
+     '-C, --command=COMMAND     command to run',
+     '-f, --format=STRING       output format']
   end
 
   def postscript
