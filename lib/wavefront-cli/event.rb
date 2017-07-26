@@ -81,7 +81,7 @@ module WavefrontCli
       id ||= options[:'<id>']
       ev_file = nil
 
-      ev = if ! id
+      ev = if !id
              pop_event
            elsif id =~ /^\d{13}:.+/
              ev_file = state_dir + id
@@ -130,7 +130,7 @@ module WavefrontCli
     # return the command's exit code
     #
     def run_wrapped_cmd(cmd)
-      puts "Command output follows, on STDERR:"
+      puts 'Command output follows, on STDERR:'
       puts '-' * (TW - 4)
       ret = nil
 
