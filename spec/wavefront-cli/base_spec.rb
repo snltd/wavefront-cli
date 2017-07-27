@@ -39,7 +39,8 @@ class WavefrontCliBaseTest < MiniTest::Test
 
   def test_mk_creds
     assert_equal wf.mk_creds, endpoint: 'test.wavefront.com',
-                              token:    '0123456789-ABCDEF'
+                              token:    '0123456789-ABCDEF',
+                              agent:    "wavefront-cli-#{WF_CLI_VERSION}"
   end
 
   def test_dispatch

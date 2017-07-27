@@ -50,7 +50,7 @@ def cmd_to_call(word, args, call, sdk_class = nil)
   headers = { 'Accept':          /.*/,
               'Accept-Encoding': /.*/,
               'Authorization':  'Bearer 0123456789-ABCDEF',
-              'User-Agent':     /wavefront-sdk .*/,
+              'User-Agent':     "wavefront-cli-#{WF_CLI_VERSION}"
             }
 
   sdk_class ||= Object.const_get("WavefrontCli::#{word.capitalize}")
