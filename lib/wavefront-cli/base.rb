@@ -87,7 +87,10 @@ module WavefrontCli
     # @return [Hash] containing `token` and `endpoint`.
     #
     def mk_creds
-      { token: options[:token], endpoint: options[:endpoint] }
+      { token:    options[:token],
+        endpoint: options[:endpoint],
+        agent:    "wavefront-cli-#{WF_CLI_VERSION}"
+      }
     end
 
     # Make a common wavefront-sdk options object from standard CLI
@@ -96,12 +99,14 @@ module WavefrontCli
     # @return [Hash] containing `debug`, `verbose`, and `noop`.
     #
     def mk_opts
-      { debug: options[:debug], verbose: options[:verbose],
-        noop: options[:noop] }
+      { debug:   options[:debug],
+        verbose: options[:verbose],
+        noop:    options[:noop],
+      }
     end
 
     # To allow a user to default to different output formats for
-    # different object, we define a format for each class. For
+    # different object, we are able to define a format for each class.
     # instance, `alertformat` or `agentformat`. This method returns
     # such a string appropriate for the inheriting class.
     #
@@ -292,7 +297,7 @@ module WavefrontCli
 
     def do_search
       require 'wavefront-sdk/search'
-      wfs = Wavefront::Search.new(mk_creds)
+      wfs = Wavefront::Search.new(mk_creds, mk_opts)
 
       query = options[:'<condition>'].each_with_object([]) do |c, aggr|
         key, value = c.split(/\W/, 2)
