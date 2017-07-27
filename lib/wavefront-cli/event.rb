@@ -129,6 +129,8 @@ module WavefrontCli
     # get combined -- could be an issue for someone somewhere) and
     # return the command's exit code
     #
+    # rubocop:disable Lint/AssignmentInCondition
+    #
     def run_wrapped_cmd(cmd)
       puts 'Command output follows, on STDERR:'
       puts '-' * (TW - 4)
