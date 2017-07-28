@@ -18,7 +18,7 @@ Gem::Specification.new do |gem|
 
   gem.bindir        = 'bin'
   gem.files         = `git ls-files`.split("\n")
-  gem.executables   = 'wavefront'
+  gem.executables   = 'wf'
   gem.test_files    = gem.files.grep(/^spec/)
   gem.require_paths = %w(lib)
 
