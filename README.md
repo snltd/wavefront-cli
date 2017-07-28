@@ -34,7 +34,7 @@ Commands:
   webhook       view and manage webhooks
   write         send data points to a Wavefront proxy
 
-Use 'wavefront <command> --help' for further information.
+Use 'wf <command> --help' for further information.
 ```
 
 ## General Rules
