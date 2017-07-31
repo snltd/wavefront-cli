@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-id = 'message123'
+id = 'CLUSTER::IHjNaHM9'
 bad_id = '(>_<)'
 word = 'message'
 
