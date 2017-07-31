@@ -93,8 +93,12 @@ module WavefrontDisplay
     #   modified_data means that any fields parameter is ignored.
     #
     def long_output(fields = nil, modified_data = nil)
-      require_relative 'printer/long'
-      puts WavefrontDisplayPrinter::Long.new(data, fields, modified_data)
+      if data.empty? || (modified_data && modified_data.empty?)
+        puts 'No data.'
+      else
+        require_relative 'printer/long'
+        puts WavefrontDisplayPrinter::Long.new(data, fields, modified_data)
+      end
     end
 
     def multicolumn(*columns)
