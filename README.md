@@ -5,8 +5,17 @@
 This package provides a command-line interface to Wavefront's API. Each API path
 is covered by a different command keyword.
 
+The gem is hosted [on
+Rubygems](https://rubygems.org/gems/wavefront-cli) and can be
+installed with
+
+```
+$ gem install wavefront-cli
+```
+
 It is built on [the Wavefront Ruby
-SDK](https://github.com/snltd/wavefront-sdk) and requires Ruby >= 2.2.
+SDK](https://github.com/snltd/wavefront-sdk) and requires Ruby >=
+2.2. It has no "native extension" dependencies.
 
 ```
 $ wf --help
