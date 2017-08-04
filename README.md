@@ -17,6 +17,9 @@ It is built on [the Wavefront Ruby
 SDK](https://github.com/snltd/wavefront-sdk) and requires Ruby >=
 2.2. It has no "native extension" dependencies.
 
+I also maintain [a reasonably thorough
+tutorial](http://sysdef.xyz/post/2017-07-26-wavefront-cli).
+
 ```
 $ wf --help
 Wavefront CLI
