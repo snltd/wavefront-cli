@@ -56,4 +56,29 @@ class String
   def scan_line(width)
     scan(/\S.{0,#{width}}\S(?=\s|$)|\S+/)
   end
+
+  def to_seconds
+    begin
+      number, unit = self.match(/^(\d+)([smhdw])$/).captures
+    rescue
+      raise ArgumentError
+    end
+
+    factor = case unit
+             when 's'
+               1
+             when 'm'
+               60
+             when 'h'
+               3600
+             when 'd'
+               86400
+             when 'w'
+               604800
+             else
+               raise ArgumentError
+             end
+
+    number.to_i * factor
+  end
 end

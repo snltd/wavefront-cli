@@ -6,9 +6,9 @@ require_relative './opt_handler'
 require_relative './exception'
 
 # $LOAD_PATH.<< Pathname.new(__FILE__).dirname.realpath.parent.parent
-              # .parent + 'lib'
+               # .parent + 'lib'
 # $LOAD_PATH.<< Pathname.new(__FILE__).dirname.realpath.parent.parent
-              # .parent + 'wavefront-sdk' + 'lib'
+               # .parent + 'wavefront-sdk' + 'lib'
 
 CMD_DIR = Pathname.new(__FILE__).dirname + 'commands'
 
