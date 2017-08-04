@@ -34,18 +34,13 @@ class StringTest < MiniTest::Test
     assert_equal(str.opt_fold(100), "  #{str}\n")
   end
 
-  #def test_fold_two_column_one_fold
-    #str = "a reasonably long string which must be folded just once"
-#
-    #assert_equal(str.fold(40), "a reasonably long string which" \
-                 #"\n          must be folded just once")
-#
-    ##assert_equal("  key    a very long string whose very length\n" \
-                 #"         means that the method is going to\n" \
-                 #"         have to fold it twice",
-#
-                 #wf.mk_line('key', 'a very long string whose very length means that the method is going to have to fold it twice', 40))
-#
-#
-  #end
+  def test_to_seconds
+    assert_equal(14, '14s'.to_seconds)
+    assert_equal(300, '5m'.to_seconds)
+    assert_equal(10800, '3h'.to_seconds)
+    assert_equal(1209600, '2w'.to_seconds)
+    assert_raises(ArgumentError) { 'm'.to_seconds }
+    assert_raises(ArgumentError) { '3m5s'.to_seconds }
+  end
 end
+
