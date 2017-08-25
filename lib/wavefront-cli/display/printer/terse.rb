@@ -8,8 +8,6 @@ module WavefrontDisplayPrinter
     attr_reader :data, :keys, :fmt_string
 
     def initialize(data, *keys)
-      # require 'json'
-      # File.open('/tmp/1', 'w') { |f| f.puts data.to_json }
       @data = data
       @keys = keys
       @fmt_string = format_string.rstrip
@@ -32,6 +30,7 @@ module WavefrontDisplayPrinter
       keys.each_with_object(Hash[*keys.map { |k| [k, 0] }.flatten]) \
       do |k, aggr|
         data.each do |obj|
+          next unless obj.key?(k)
           val = obj[k]
           val = val.join(', ') if val.is_a?(Array)
           aggr[k] = val.size if val.size > aggr[k]
