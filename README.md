@@ -2,7 +2,8 @@
 [![Build Status](https://travis-ci.org/snltd/wavefront-cli.svg?branch=master)](https://travis-ci.org/snltd/wavefront-cli) [![Code Climate](https://codeclimate.com/github/snltd/wavefront-cli/badges/gpa.svg)](https://codeclimate.com/github/snltd/wavefront-cli) [![Issue Count](https://codeclimate.com/github/snltd/wavefront-cli/badges/issue_count.svg)](https://codeclimate.com/github/snltd/wavefront-cli) [![Dependency Status](https://gemnasium.com/badges/github.com/snltd/wavefront-cli.svg)](https://gemnasium.com/github.com/snltd/wavefront-cli) [![Gem Version](https://badge.fury.io/rb/wavefront-cli.svg)](https://badge.fury.io/rb/wavefront-cli) ![](http://ruby-gem-downloads-badge.herokuapp.com/wavefront-cli?type=total)
 
 
-This package provides a command-line interface to Wavefront's API. Each API path
+This package provides a command-line interface to
+[Wavefront](https://www.wavefront.com/)'s API. Each API path
 is covered by a different command keyword.
 
 The gem is hosted [on
