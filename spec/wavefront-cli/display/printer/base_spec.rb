@@ -14,7 +14,7 @@ class WavefrontDisplayPrinterBase < MiniTest::Test
 
   def test_key_width
     assert_equal(wf.key_width, 0)
-    assert_equal(wf.key_width(key1: 1, row2: 2, longrow: 3), 9)
+    assert_equal(wf.key_width(key1: 1, row2: 2, longrow: 3), 10)
     assert_equal(wf.key_width({ key1: 1, row2: 2, longrow: 3 }, 3), 10)
   end
 end
