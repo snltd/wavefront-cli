@@ -14,11 +14,11 @@ module WavefrontCli
     end
 
     def do_description_set
-      wf.update(options[:'<id>'], description: options[:'<description>'])
+      wf.description_set(options[:'<id>'], options[:'<description>'])
     end
 
     def do_description_clear
-      wf.update(options[:'<id>'], { description: '' }, false)
+      wf.description_delete(options[:'<id>'])
     end
   end
 end
