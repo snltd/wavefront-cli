@@ -2,19 +2,25 @@ require_relative './base'
 
 # Define the cloud integration command.
 #
-class WavefrontCommandIntegration < WavefrontCommandBase
+class WavefrontCommandCloudintegration < WavefrontCommandBase
   def description
-    'view and manage Wavefront integrations'
+    'view and manage cloud integrations'
+  end
+
+  def sdk_file
+    'cloudintegration'
+  end
+
+  def sdk_class
+    'CloudIntegration'
   end
 
   def _commands
     ["list #{CMN} [-l] [-f format] [-o offset] [-L limit]",
      "describe #{CMN} [-f format] <id>",
-     "install #{CMN} <id>",
-     "uninstall #{CMN} <id>",
-     "manifests #{CMN}",
-     "status #{CMN} <id>",
-     "statuses #{CMN}",
+     "delete #{CMN} <id>",
+     "undelete #{CMN} <id>",
+     "import #{CMN} <file>",
      "search #{CMN} [-f format] [-o offset] [-L limit] [-l] <condition>..."]
   end
 

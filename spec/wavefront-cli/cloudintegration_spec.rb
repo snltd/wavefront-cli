@@ -6,9 +6,9 @@ require_relative '../../lib/wavefront-cli/cloudintegration'
 id = '3b56f61d-1a79-46f6-905c-d75a0f613d10'
 bad_id = '__BAD__'
 k = WavefrontCli::CloudIntegration
-word = 'integration'
+word = 'cloudintegration'
 
-describe 'integration command' do
+describe 'cloudintegration command' do
   missing_creds(word, ['list', "describe #{id}", "delete #{id}",
                        "undelete #{id}"])
   list_tests(word, 'cloudintegration', k)

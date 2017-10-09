@@ -5,10 +5,10 @@ require_relative './version'
 require_relative './opt_handler'
 require_relative './exception'
 
-# $LOAD_PATH.<< Pathname.new(__FILE__).dirname.realpath.parent.parent
-               # .parent + 'lib'
-# $LOAD_PATH.<< Pathname.new(__FILE__).dirname.realpath.parent.parent
-               # .parent + 'wavefront-sdk' + 'lib'
+ $LOAD_PATH.<< Pathname.new(__FILE__).dirname.realpath.parent.parent
+                .parent + 'lib'
+ $LOAD_PATH.<< Pathname.new(__FILE__).dirname.realpath.parent.parent
+                .parent + 'wavefront-sdk' + 'lib'
 
 CMD_DIR = Pathname.new(__FILE__).dirname + 'commands'
 
@@ -35,7 +35,7 @@ class WavefrontCliController
     s = "Wavefront CLI\n\nUsage:\n  #{CMD} command [options]\n" \
         "  #{CMD} --version\n  #{CMD} --help\n\nCommands:\n"
 
-    cmds.sort.each { |k, v| s.<< format("  %-15s %s\n", k, v.description) }
+    cmds.sort.each { |k, v| s.<< format("  %-18s %s\n", k, v.description) }
     s.<< "\nUse '#{CMD} <command> --help' for further information.\n"
   end
 
