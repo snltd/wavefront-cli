@@ -35,7 +35,7 @@ class WavefrontCliController
     s = "Wavefront CLI\n\nUsage:\n  #{CMD} command [options]\n" \
         "  #{CMD} --version\n  #{CMD} --help\n\nCommands:\n"
 
-    cmds.sort.each { |k, v| s.<< format("  %-15s %s\n", k, v.description) }
+    cmds.sort.each { |k, v| s.<< format("  %-18s %s\n", k, v.description) }
     s.<< "\nUse '#{CMD} <command> --help' for further information.\n"
   end
 

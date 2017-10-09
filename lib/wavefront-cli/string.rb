@@ -37,7 +37,7 @@ class String
   def fold(tw = TW, indent = 10, prefix = '')
     chunks = self.scan_line(tw - 8)
 
-    line_1 = prefix + chunks.shift + "\n"
+    line_1 = format("%s%s\n", prefix, chunks.shift)
 
     return line_1 if chunks.empty?
 
