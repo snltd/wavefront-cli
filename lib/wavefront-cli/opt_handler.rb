@@ -1,5 +1,6 @@
 require 'inifile'
 require 'pathname'
+require 'wavefront-sdk/credentials'
 require_relative './constants.rb'
 
 module WavefrontCli
@@ -23,40 +24,47 @@ module WavefrontCli
   class OptHandler
     include WavefrontCli::Constants
 
-    attr_reader :opts, :cli_opts, :conf_file
+    attr_reader :opts
 
-    def initialize(conf_file, cli_opts = {})
-      @conf_file = if cli_opts.key?(:config) && cli_opts[:config]
-                     Pathname.new(cli_opts[:config])
-                   else
-                     conf_file
-                   end
-
-      @cli_opts = cli_opts.reject { |_k, v| v.nil? }
-
-      @opts = DEFAULT_OPTS.merge(load_profile).merge(@cli_opts)
+    def initialize(cli_opts = {})
+      cred_opts = setup_cred_opts(cli_opts)
+      cli_opts.reject! { |_k, v| v.nil? }
+      @opts = DEFAULT_OPTS.merge(load_profile(cred_opts)).merge(cli_opts)
     end
 
-    # Load in configuration options from the (optionally) given
-    # section of an ini-style configuration file. If the file's not
-    # there, we don't consider that an error. Returns a hash of
-    # options which matches what Docopt gives us.
+    # Create an options hash to pass to the Wavefront::Credentials
+    # constructor.
+    # @param cli_opts [Hash] options from docopt, which may include
+    #   the location of the config file and the stanza within it
+    # @return [Hash] keys are none, one, or both of :file and
+    #   :profile
     #
-    # rubocop:disable Metrics/AbcSize
-    def load_profile
-      unless conf_file.exist?
-        puts "config file '#{conf_file}' not found. Taking options " \
-             'from command-line.'
-        return {}
+    def setup_cred_opts(cli_opts)
+      cred_opts = {}
+
+      if cli_opts[:config]
+        cred_opts[:file] = Pathname.new(cli_opts[:config])
+
+        unless cred_opts[:file].exist?
+          puts "config file '#{cred_opts[:file]}' not found."
+        end
       end
 
-      pf = cli_opts.fetch(:profile, 'default')
+      cred_opts[:profile] = cli_opts[:profile] if cli_opts[:profile]
+      cred_opts
+    end
 
-      puts "reading '#{pf}' profile from '#{conf_file}'" if cli_opts[:debug]
-
-      IniFile.load(conf_file)[pf].each_with_object({}) do |(k, v), memo|
-        memo[k.to_sym] = v
-      end
+    # Load credentials (and other config) using the SDK Credentials
+    # class. This allows the user to override values with
+    # environment variables
+    #
+    # @param cred_opts [Hash] options to pass to
+    #   Wavefront::Credentials constructor
+    # @return [Hash] keys are :token, :endpoint etc
+    #
+    def load_profile(cred_opts)
+      creds = Wavefront::Credentials.new(cred_opts).config
+      Hash[creds.map{ |k, v| [k.to_sym, v] }]
     end
   end
 end

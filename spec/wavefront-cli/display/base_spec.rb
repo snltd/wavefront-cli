@@ -1,7 +1,5 @@
 #!/usr/bin/env ruby
 
-CMD = 'test'.freeze
-
 require 'date'
 require 'map'
 require 'pathname'

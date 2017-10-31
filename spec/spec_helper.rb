@@ -7,21 +7,23 @@ require 'minitest/spec'
 require 'pathname'
 require_relative '../lib/wavefront-cli/controller'
 
-CMD = 'wavefront'.freeze
-ENDPOINT = 'metrics.wavefront.com'
-TOKEN = '0123456789-ABCDEF'
-RES_DIR = Pathname.new(__FILE__).dirname + 'wavefront-cli' + 'resources'
-CF = RES_DIR + 'conf.yaml'
-CF_VAL =  IniFile.load(CF)
-JSON_POST_HEADERS = {
-    :'Content-Type' => 'application/json', :Accept => 'application/json'
-}.freeze
+unless defined?(CMD)
+  CMD = 'wavefront'.freeze
+  ENDPOINT = 'metrics.wavefront.com'
+  TOKEN = '0123456789-ABCDEF'
+  RES_DIR = Pathname.new(__FILE__).dirname + 'wavefront-cli' + 'resources'
+  CF = RES_DIR + 'wavefront.conf'
+  CF_VAL =  IniFile.load(CF)
+  JSON_POST_HEADERS = {
+      :'Content-Type' => 'application/json', :Accept => 'application/json'
+  }.freeze
 
-CMDS = %w(alert integration dashboard event link message metric
-          proxy query savedsearch source user window webhook write).freeze
+  CMDS = %w(alert integration dashboard event link message metric
+            proxy query savedsearch source user window webhook write).freeze
 
-BAD_TAG="*BAD TAG*"
-TW = 80
+  BAD_TAG="*BAD TAG*"
+  TW = 80
+end
 
 # Return an array of CLI permutations and the values to which they relate
 #

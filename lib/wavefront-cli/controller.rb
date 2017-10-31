@@ -1,14 +1,17 @@
+# For development against a local checkout of the SDK, uncomment
+# this block
+#
+# dir = Pathname.new(__FILE__).dirname.realpath.parent.parent.parent
+# $LOAD_PATH.<< dir + 'lib'
+# $LOAD_PATH.<< dir + 'wavefront-sdk' + 'lib'
+
 require 'pathname'
 require 'pp'
 require 'docopt'
 require_relative './version'
-require_relative './opt_handler'
 require_relative './exception'
 
-# $LOAD_PATH.<< Pathname.new(__FILE__).dirname.realpath.parent.parent
-                # .parent + 'lib'
-# $LOAD_PATH.<< Pathname.new(__FILE__).dirname.realpath.parent.parent
-                # .parent + 'wavefront-sdk' + 'lib'
+require_relative './opt_handler'
 
 CMD_DIR = Pathname.new(__FILE__).dirname + 'commands'
 
@@ -29,7 +32,8 @@ class WavefrontCliController
     run_command(hook)
   end
 
-  # What you see when you do 'wavefront --help'
+  # What you see when you do 'wf --help'
+  # @return [String]
   #
   def default_help
     s = "Wavefront CLI\n\nUsage:\n  #{CMD} command [options]\n" \
@@ -39,7 +43,7 @@ class WavefrontCliController
     s.<< "\nUse '#{CMD} <command> --help' for further information.\n"
   end
 
-  # Make a hash of command descriptions for docopt.
+  # @return [Hash] command descriptions for docopt.
   #
   def docopt_hash
     cmds.each_with_object(default: default_help) do |(k, v), ret|
@@ -67,11 +71,12 @@ class WavefrontCliController
   end
 
   def parse_opts(o)
-    WavefrontCli::OptHandler.new(conf_file, o).opts
+    WavefrontCli::OptHandler.new(o).opts
   end
 
   # Get the SDK class we need to run the command we've been given.
   #
+  # @param cmd [String]
   def load_sdk(cmd, opts)
     require_relative File.join('.', cmds[cmd].sdk_file)
     Object.const_get('WavefrontCli').const_get(cmds[cmd].sdk_class).new(opts)
@@ -93,6 +98,7 @@ class WavefrontCliController
 
   # Each command is defined in its own file. Dynamically load all
   # those commands.
+  # @return [Hash] :command => CommandClass
   #
   def load_commands
     CMD_DIR.children.each_with_object({}) do |f, ret|
@@ -113,24 +119,12 @@ class WavefrontCliController
     Object.const_get("WavefrontCommand#{k_name.capitalize}").new
   end
 
-  # The default config file path.
-  #
-  # @return [Pathname] where we excpect to find a config file
-  #
-  def conf_file
-    if ENV['HOME']
-      Pathname.new(ENV['HOME']) + '.wavefront'
-    else
-      Pathname.new('/etc/wavefront/client.conf')
-    end
-  end
-
   # Symbolize, and remove dashes from option keys
   #
   # @param h [Hash] options hash
   # return [Hash] h with modified keys
   #
   def sanitize_keys(h)
-    h.each_with_object({}) { |(k, v), r| r[k.delete('-').to_sym] = v }
+    h.each_with_object({}) { |(k, v), r| r[k.to_s.delete('-').to_sym] = v }
   end
 end
