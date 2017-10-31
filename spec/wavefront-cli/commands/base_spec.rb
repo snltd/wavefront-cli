@@ -1,7 +1,5 @@
 #!/usr/bin/env ruby
 
-CMD = 'test'.freeze
-
 require 'pathname'
 require_relative(File.join('../../../lib/wavefront-cli/commands',
                            Pathname.new(__FILE__).basename
