@@ -7,7 +7,7 @@ require 'minitest/spec'
 require 'pathname'
 require_relative '../lib/wavefront-cli/controller'
 
-unless defined? CMD
+unless defined?(CMD)
   CMD = 'wavefront'.freeze
   ENDPOINT = 'metrics.wavefront.com'
   TOKEN = '0123456789-ABCDEF'

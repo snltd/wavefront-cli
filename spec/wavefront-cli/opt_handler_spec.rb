@@ -19,8 +19,6 @@ class OptHandlerTest < MiniTest::Test
   end
 
   def test_no_config_no_env
-    ENV['WAVEFRONT_TOKEN'] = nil
-    ENV['WAVEFRONT_ENDPOINT'] = nil
     opts = { config: '/nosuchfile' }
     x = WavefrontCli::OptHandler.new(opts)
     o = x.opts
@@ -51,11 +49,11 @@ class OptHandlerTest < MiniTest::Test
     assert_output("config file '/nosuchfile' not found.\n") do
       WavefrontCli::OptHandler.new(opts)
     end
+    ENV['WAVEFRONT_TOKEN'] = nil
+    ENV['WAVEFRONT_ENDPOINT'] = nil
   end
 
   def test_default_config_no_env
-    ENV['WAVEFRONT_TOKEN'] = nil
-    ENV['WAVEFRONT_ENDPOINT'] = nil
     opts = { config: CF }
     x = WavefrontCli::OptHandler.new(opts)
     o = x.opts
@@ -81,6 +79,8 @@ class OptHandlerTest < MiniTest::Test
     assert_equal(o[:endpoint], 'other.wavefront.com')
     assert_equal(o[:proxy], 'otherwf.localnet')
     assert_output("") { WavefrontCli::OptHandler.new(opts) }
+    ENV['WAVEFRONT_TOKEN'] = nil
+    ENV['WAVEFRONT_ENDPOINT'] = nil
   end
 
   def test_alt_config_env
@@ -96,5 +96,7 @@ class OptHandlerTest < MiniTest::Test
     assert_equal(o[:endpoint], 'myendpoint.wavefront.com')
     assert_equal(o[:proxy], 'otherwf.localnet')
     assert_output("") { WavefrontCli::OptHandler.new(opts) }
+    ENV['WAVEFRONT_TOKEN'] = nil
+    ENV['WAVEFRONT_ENDPOINT'] = nil
   end
 end
