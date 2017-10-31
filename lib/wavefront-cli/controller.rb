@@ -1,13 +1,15 @@
+# For development against a local checkout of the SDK, uncomment
+# this block
+#
+# dir = Pathname.new(__FILE__).dirname.realpath.parent.parent.parent
+# $LOAD_PATH.<< dir + 'lib'
+# $LOAD_PATH.<< dir + 'wavefront-sdk' + 'lib'
+
 require 'pathname'
 require 'pp'
 require 'docopt'
 require_relative './version'
 require_relative './exception'
-
- $LOAD_PATH.<< Pathname.new(__FILE__).dirname.realpath.parent.parent
-   .parent + 'lib'
- $LOAD_PATH.<< Pathname.new(__FILE__).dirname.realpath.parent.parent
-                 .parent + 'wavefront-sdk' + 'lib'
 
 require_relative './opt_handler'
 
