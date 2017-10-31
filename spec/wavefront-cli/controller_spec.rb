@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
-require_relative '../../lib/wavefront-cli/controller'
 require_relative '../spec_helper'
+require_relative '../../lib/wavefront-cli/controller'
 
 # Be sure the CLI behaves properly when people ask for help
 #
@@ -45,5 +45,27 @@ class WavefrontCliHelpTest < MiniTest::Test
         next
       end
     end
+  end
+end
+
+# To test internal methods, make a subclass with no initializer,
+# so we can get at the methods without triggering one of the things
+# tested above.
+#
+class Giblets < WavefrontCliController
+  def initialize; end
+end
+
+class GibletsTest < MiniTest::Test
+  attr_reader :wfc
+
+  def setup
+    @wfc = Giblets.new
+  end
+
+  def test_sanitize_keys
+    h_in = { '--help': true, stuff: false, 'key' => 'value' }
+    assert_equal(wfc.sanitize_keys(h_in),
+                 { help: true, stuff: false, key: 'value' })
   end
 end
