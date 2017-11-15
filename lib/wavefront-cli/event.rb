@@ -44,11 +44,9 @@ module WavefrontCli
       opts[:start] = Time.now unless opts[:start]
 
       t_start = parse_time(opts[:start], true)
-      id = [t_start, opts[:'<event>']].join(':')
 
       body = { name:        opts[:'<event>'],
                startTime:   t_start,
-               id:          id,
                annotations: {} }
 
       body[:annotations][:details] = opts[:desc] if opts[:desc]
@@ -65,7 +63,7 @@ module WavefrontCli
       resp = wf.create(body)
 
       unless opts[:nostate] || opts[:end] || opts[:instant]
-        create_state_file(id, opts[:host])
+        create_state_file(resp.response[:id], opts[:host])
       end
 
       resp
