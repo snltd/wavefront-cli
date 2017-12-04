@@ -3,3 +3,6 @@ Gemfile.lock
 /doc
 .*swp
 *.gem
+.ruby-version
+spec/gen_test.sh
+spec/parabola.rb
