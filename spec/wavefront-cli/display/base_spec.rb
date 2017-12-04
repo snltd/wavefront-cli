@@ -8,8 +8,8 @@ require_relative(File.join('../../../lib/wavefront-cli/display',
                            .to_s.sub('_spec.rb', '')))
 require_relative './spec_helper'
 
-S_DATA = Map.new()
-S_OPTIONS = { '<id>': 'abc123' }
+S_DATA = Map.new
+S_OPTIONS = { '<id>': 'abc123' }.freeze
 
 # Test base class for display methods
 #
@@ -21,16 +21,15 @@ class WavefrontDisplayBaseTest < MiniTest::Test
   end
 
   def test_put_id_first
-    assert_equal(wf.put_id_first({ k1: 1, k2: 2, id: 3, k4: 4 }),
-                                 { id: 3, k1: 1, k2: 2, k4: 4 })
-    assert_equal(wf.put_id_first({ id: 3, k1: 1, k2: 2, k4: 4 }),
-                                 { id: 3, k1: 1, k2: 2, k4: 4 })
-    assert_equal(wf.put_id_first({ k2: 1, k1: 2, k4: 4 }),
-                                 { k2: 1, k1: 2, k4: 4 })
+    assert_equal(wf.put_id_first(k1: 1, k2: 2, id: 3, k4: 4),
+                 id: 3, k1: 1, k2: 2, k4: 4)
+    assert_equal(wf.put_id_first(id: 3, k1: 1, k2: 2, k4: 4),
+                 id: 3, k1: 1, k2: 2, k4: 4)
+    assert_equal(wf.put_id_first(k2: 1, k1: 2, k4: 4),
+                 k2: 1, k1: 2, k4: 4)
   end
 
-  def test_run
-  end
+  def test_run; end
 
   def test_friendly_name
     assert_equal(wf.friendly_name, 'base')
@@ -82,11 +81,11 @@ class WavefrontDisplayBaseTest < MiniTest::Test
     assert_output("No tags set on base 'abc123'.\n") { wf.do_tags }
 
     assert_output("tag1\ntag2\n") do
-      WavefrontDisplay::Base.new(%w(tag1 tag2), S_OPTIONS).do_tags
+      WavefrontDisplay::Base.new(%w[tag1 tag2], S_OPTIONS).do_tags
     end
 
     assert_output("tag1\n") do
-      WavefrontDisplay::Base.new(%w(tag1), S_OPTIONS).do_tags
+      WavefrontDisplay::Base.new(%w[tag1], S_OPTIONS).do_tags
     end
   end
 
@@ -102,7 +101,7 @@ class WavefrontDisplayBaseTest < MiniTest::Test
     wf = WavefrontDisplay::Base.new(data)
     wf.drop_fields(:k1)
     assert_equal(wf.instance_variable_get(:@data),
-      { k2: Time.now.to_i, k3: Time.now.to_i })
+                 k2: Time.now.to_i, k3: Time.now.to_i)
   end
 
   def test_drop_fields_3
@@ -120,41 +119,41 @@ class WavefrontDisplayBaseTest < MiniTest::Test
   end
 
   def test_readable_time_2
-    data = { k1: 'string', k2: 1499426615, k3: 1499426615 }
+    data = { k1: 'string', k2: 1_499_426_615, k3: 1_499_426_615 }
     wf = WavefrontDisplay::Base.new(data)
     wf.readable_time(:k2)
     x = wf.data
     assert x.is_a?(Hash)
     assert_equal(x.size, 3)
-    assert_equal(x.keys, %i(k1 k2 k3))
+    assert_equal(x.keys, %i[k1 k2 k3])
     assert_equal(x[:k1], 'string')
     assert_match(/^20\d\d-[01]\d-[0-3]\d [0-2]\d:[0-5]\d:[0-5]\d$/, x[:k2])
-    assert_equal(x[:k3], 1499426615)
+    assert_equal(x[:k3], 1_499_426_615)
   end
 
-  def test_readable_time_2
-    data = { k1: 'string', k2: 1499426615, k3: 1499426615 }
+  def test_readable_time_3
+    data = { k1: 'string', k2: 1_499_426_615, k3: 1_499_426_615 }
     wf = WavefrontDisplay::Base.new(data)
     wf.readable_time(:k2, :k3)
     x = wf.data
     assert x.is_a?(Hash)
     assert_equal(x.size, 3)
-    assert_equal(x.keys, %i(k1 k2 k3))
+    assert_equal(x.keys, %i[k1 k2 k3])
     assert_equal(x[:k1], 'string')
     assert_match(/^20\d\d-[01]\d-[0-3]\d [0-2]\d:[0-5]\d:[0-5]\d$/, x[:k2])
     assert_match(/^20\d\d-[01]\d-[0-3]\d [0-2]\d:[0-5]\d:[0-5]\d$/, x[:k3])
   end
 
   def test_human_time
-    assert_raises(ArgumentError) { wf.human_time([1,2,3]) }
+    assert_raises(ArgumentError) { wf.human_time([1, 2, 3]) }
     assert_raises(ArgumentError) { wf.human_time(123) }
-    assert_raises(ArgumentError) { wf.human_time(12345678901234) }
-    assert_equal('2017-07-07 11:23:35', wf.human_time(1499426615, true))
+    assert_raises(ArgumentError) { wf.human_time(12_345_678_901_234) }
+    assert_equal('2017-07-07 11:23:35', wf.human_time(1_499_426_615, true))
     assert_match(/^20\d\d-[01]\d-[0-3]\d [0-2]\d:[0-5]\d:[0-5]\d.\d{3}$/,
                  wf.human_time(DateTime.now.strftime('%Q')))
     assert_match(/^20\d\d-[01]\d-[0-3]\d [0-2]\d:[0-5]\d:[0-5]\d$/,
                  wf.human_time(Time.now.to_i))
-    assert_equal('2017-07-07 11:23:35.123', wf.human_time(1499426615123,
+    assert_equal('2017-07-07 11:23:35.123', wf.human_time(1_499_426_615_123,
                                                           true))
   end
 end

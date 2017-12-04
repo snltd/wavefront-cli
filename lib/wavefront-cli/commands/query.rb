@@ -12,7 +12,6 @@ class WavefrontCommandQuery < WavefrontCommandBase
            '[-ivO] [-S mode] [-N name] [-p points] <query>',
      "raw #{CMN} [-H host] [-s time] [-e time] [-f format] <metric>"]
   end
-
   def _options
     [common_options,
      '-g, --granularity=STRING  query granularity (d, h, m, or s)',

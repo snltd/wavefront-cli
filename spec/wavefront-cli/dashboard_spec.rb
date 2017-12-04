@@ -30,14 +30,14 @@ describe "#{word} command" do
   end
 
   cmd_to_call(word, "search id=#{id}",
-              { method: :post, path: "/api/v2/search/#{word}",
-                body:   { limit: 10,
-                          offset: 0,
-                          query: [{key: 'id',
-                                   value: id,
-                                   matchingMethod: 'EXACT'}],
-                          sort: {field: 'id', ascending: true}},
-                headers: JSON_POST_HEADERS })
+              method: :post, path: "/api/v2/search/#{word}",
+              body:   { limit: 10,
+                        offset: 0,
+                        query: [{ key: 'id',
+                                  value: id,
+                                  matchingMethod: 'EXACT' }],
+                        sort: { field: 'id', ascending: true } },
+              headers: JSON_POST_HEADERS)
 
   cmd_to_call(word, "undelete #{id}",
               method: :post, path: "/api/v2/#{word}/#{id}/undelete")

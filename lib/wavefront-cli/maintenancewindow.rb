@@ -6,7 +6,6 @@ module WavefrontCli
   # CLI coverage for the v2 'maintenancewindow' API.
   #
   class MaintenanceWindow < WavefrontCli::Base
-
     include Wavefront::Mixins
 
     def validator_method
@@ -18,24 +17,10 @@ module WavefrontCli
     end
 
     def do_create
-      body = { title: options[:'<title>'] }
+      body = build_body
 
-      body[:startTimeInSeconds] = if options[:start]
-                                    parse_time(options[:start])
-                                  else
-                                    Time.now.to_i
-                                  end
-
-      body[:endTimeInSeconds] = if options[:end]
-                                  parse_time(options[:end])
-                                else
-                                  body[:startTimeInSeconds] + 3600
-                                end
-
-      body[:reason] = options[:desc] if options[:desc]
-
-      [%i(CustomerTags atag), %i(HostTags htag),
-       %i(HostNames host)].each do |key, opt|
+      [%i[CustomerTags atag], %i[HostTags htag],
+       %i[HostNames host]].each do |key, opt|
         k = ('relevant' + key.to_s).to_sym
         body[k] = options[opt] unless options[opt].empty?
       end
@@ -43,10 +28,41 @@ module WavefrontCli
       wf.create(body)
     end
 
+    def build_body
+      ret = { title:              options[:'<title>'],
+              startTimeInSeconds: window_start,
+              endTimeInSeconds:   window_end }
+
+      ret[:reason] = options[:desc] if options[:desc]
+      ret
+    end
+
+    # @return [Integer] start time of window, in seconds. If not
+    #   given as an option, start it now
+    #
+    def window_start
+      if options[:start]
+        parse_time(options[:start])
+      else
+        Time.now.to_i
+      end
+    end
+
+    # @return [Integer] end time of window, in seconds. If not
+    #   given as an option, end it in an hour
+    #
+    def window_end
+      if options[:end]
+        parse_time(options[:end])
+      else
+        window_start + 3600
+      end
+    end
+
     def do_extend_by
       begin
         to_add = options[:'<time>'].to_seconds
-      rescue
+      rescue ArgumentError
         abort "Could not parse time range '#{options[:'<time>']}'."
       end
 
@@ -63,7 +79,7 @@ module WavefrontCli
     end
 
     def change_end_time(ts)
-      wf.update(options[:'<id>'], { endTimeInSeconds: ts })
+      wf.update(options[:'<id>'], endTimeInSeconds: ts)
     end
   end
 end

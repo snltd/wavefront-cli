@@ -28,7 +28,7 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'bundler', '~> 1.3'
   gem.add_development_dependency 'rake', '~> 12.0'
   gem.add_development_dependency 'yard', '~> 0.9.5'
-  gem.add_development_dependency 'rubocop', '~> 0.50.0'
+  gem.add_development_dependency 'rubocop', '~> 0.51.0'
   gem.add_development_dependency 'webmock', '~> 3.0'
   gem.add_development_dependency 'minitest', '~> 5.8', '>= 5.8.0'
   gem.add_development_dependency 'spy', '~> 0.4.0'

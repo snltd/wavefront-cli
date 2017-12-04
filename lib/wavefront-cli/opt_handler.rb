@@ -64,7 +64,7 @@ module WavefrontCli
     #
     def load_profile(cred_opts)
       creds = Wavefront::Credentials.new(cred_opts).config
-      Hash[creds.map{ |k, v| [k.to_sym, v] }]
+      Hash[creds.map { |k, v| [k.to_sym, v] }]
     end
   end
 end

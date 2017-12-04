@@ -6,9 +6,9 @@ module WavefrontDisplay
   #
   class Alert < Base
     def do_list
-      long_output [:id, :minutes, :target, :status, :tags, :hostsUsed,
-                   :condition, :displayExpression, :severity,
-                   :additionalInformation]
+      long_output %i[id minutes target status tags hostsUsed
+                     condition displayExpression severity
+                     additionalInformation]
     end
 
     def do_list_brief
@@ -37,8 +37,6 @@ module WavefrontDisplay
     def do_unsnooze
       puts "Unsnoozed alert '#{options[:'<id>']}'."
     end
-
-    # rubocop:disable Metrics/AbcSize
     def do_summary
       kw = data.keys.map(&:size).max + 2
       data.delete_if { |_k, v| v.zero? } unless options[:all]

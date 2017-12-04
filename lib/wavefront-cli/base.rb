@@ -29,15 +29,17 @@ module WavefrontCli
       @klass_word = sdk_class.split('::').last.downcase
       validate_input
 
-      if options.include?(:help) && options[:help]
-        puts options
-        exit 0
-      end
+      options_and_exit if options[:help]
 
       require File.join('wavefront-sdk', @klass_word)
       @klass = Object.const_get(sdk_class)
 
       send(:post_initialize, options) if respond_to?(:post_initialize)
+    end
+
+    def options_and_exit
+      puts options
+      exit 0
     end
 
     def run
@@ -89,8 +91,7 @@ module WavefrontCli
     def mk_creds
       { token:    options[:token],
         endpoint: options[:endpoint],
-        agent:    "wavefront-cli-#{WF_CLI_VERSION}"
-      }
+        agent:    "wavefront-cli-#{WF_CLI_VERSION}" }
     end
 
     # Make a common wavefront-sdk options object from standard CLI
@@ -101,8 +102,7 @@ module WavefrontCli
     def mk_opts
       { debug:   options[:debug],
         verbose: options[:verbose],
-        noop:    options[:noop],
-      }
+        noop:    options[:noop] }
     end
 
     # To allow a user to default to different output formats for
@@ -143,7 +143,7 @@ module WavefrontCli
       #
       m_list.sort_by(&:length).reverse.each do |m|
         if m.reject { |w| options[w.to_sym] }.empty?
-          method = (%w(do) + m).join('_')
+          method = (%w[do] + m).join('_')
           return display(public_send(method), method)
         end
       end
@@ -171,7 +171,7 @@ module WavefrontCli
     def display(data, method)
       exit if options[:noop]
 
-      [:status, :response].each do |b|
+      %i[status response].each do |b|
         abort "no #{b} block in API response" unless data.respond_to?(b)
       end
 
@@ -274,7 +274,7 @@ module WavefrontCli
 
       begin
         prepped = import_to_create(raw)
-      rescue => e
+      rescue StandardError => e
         puts e if options[:debug]
         raise 'could not parse input.'
       end
@@ -299,16 +299,23 @@ module WavefrontCli
       require 'wavefront-sdk/search'
       wfs = Wavefront::Search.new(mk_creds, mk_opts)
 
-      query = options[:'<condition>'].each_with_object([]) do |c, aggr|
-        key, value = c.split(/\W/, 2)
+      query = conds_to_query(options[:'<condition>'])
+
+      wfs.search(klass_word, query, limit: options[:limit],
+                                    offset: options[:offset] ||
+                                            options[:cursor])
+    end
+
+    # Turn a list of search conditions into an API query
+    #
+    def conds_to_query(conds)
+      conds.each_with_object([]) do |cond, aggr|
+        key, value = cond.split(/\W/, 2)
         q = { key: key, value: value }
-        q[:matchingMethod] = 'EXACT' if c.start_with?("#{key}=")
-        q[:matchingMethod] = 'STARTSWITH' if c.start_with?("#{key}^")
+        q[:matchingMethod] = 'EXACT' if cond.start_with?("#{key}=")
+        q[:matchingMethod] = 'STARTSWITH' if cond.start_with?("#{key}^")
         aggr.<< q
       end
-
-      wfs.search(klass_word, query, { limit: options[:limit],
-                                      offset: options[:offset] || options[:cursor]})
     end
 
     def do_tags

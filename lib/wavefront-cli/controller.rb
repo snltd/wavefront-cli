@@ -1,9 +1,9 @@
 # For development against a local checkout of the SDK, uncomment
 # this block
 #
-# dir = Pathname.new(__FILE__).dirname.realpath.parent.parent.parent
-# $LOAD_PATH.<< dir + 'lib'
-# $LOAD_PATH.<< dir + 'wavefront-sdk' + 'lib'
+dir = Pathname.new(__FILE__).dirname.realpath.parent.parent.parent
+$LOAD_PATH.<< dir + 'lib'
+$LOAD_PATH.<< dir + 'wavefront-sdk' + 'lib'
 
 require 'pathname'
 require 'pp'
@@ -82,14 +82,14 @@ class WavefrontCliController
     Object.const_get('WavefrontCli').const_get(cmds[cmd].sdk_class).new(opts)
   rescue WavefrontCli::Exception::UnhandledCommand
     abort 'Fatal error. Unsupported command.'
-  rescue => e
+  rescue StandardError => e
     p e
   end
 
   def run_command(hook)
     hook.validate_opts
     hook.run
-  rescue => e
+  rescue StandardError => e
     $stderr.puts "general error: #{e}"
     $stderr.puts "re-run with '-D' for stack trace." unless opts[:debug]
     $stderr.puts "Backtrace:\n\t#{e.backtrace.join("\n\t")}" if opts[:debug]

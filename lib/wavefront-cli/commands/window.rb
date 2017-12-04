@@ -14,7 +14,6 @@ class WavefrontCommandWindow < WavefrontCommandBase
   def sdk_class
     'MaintenanceWindow'
   end
-
   def _commands
     ["list #{CMN} [-l] [-f format] [-o offset] [-L limit]",
      "describe #{CMN} [-f format] <id>",

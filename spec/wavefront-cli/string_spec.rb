@@ -37,10 +37,9 @@ class StringTest < MiniTest::Test
   def test_to_seconds
     assert_equal(14, '14s'.to_seconds)
     assert_equal(300, '5m'.to_seconds)
-    assert_equal(10800, '3h'.to_seconds)
-    assert_equal(1209600, '2w'.to_seconds)
+    assert_equal(10_800, '3h'.to_seconds)
+    assert_equal(1_209_600, '2w'.to_seconds)
     assert_raises(ArgumentError) { 'm'.to_seconds }
     assert_raises(ArgumentError) { '3m5s'.to_seconds }
   end
 end
-

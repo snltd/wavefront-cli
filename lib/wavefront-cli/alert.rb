@@ -41,10 +41,9 @@ module WavefrontCli
     #
     # @param raw [Hash] Ruby hash of imported data
     #
-    # rubocop:disable Metrics/MethodLength
     def import_to_create(raw)
-      ret = %w(name condition minutes target severity displayExpression
-               additionalInformation).each_with_object({}) do |k, aggr|
+      ret = %w[name condition minutes target severity displayExpression
+               additionalInformation].each_with_object({}) do |k, aggr|
         aggr[k.to_sym] = raw[k]
       end
 

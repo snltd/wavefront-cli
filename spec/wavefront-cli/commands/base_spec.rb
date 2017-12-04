@@ -64,7 +64,6 @@ class WavefrontCommmandBaseTest < MiniTest::Test
     assert_equal(wf.sdk_file, word.downcase)
   end
 
-  # rubocop:disable Metrics/AbcSize
   def test_commands
     assert wf.commands.start_with?("Usage:\n")
     assert wf.commands.match(/ --help$/)
@@ -90,7 +89,6 @@ class WavefrontCommmandBaseTest < MiniTest::Test
     assert_equal(wf.options.split("\n").select(&:empty?).size, 1)
   end
 
-  # rubocop:disable Metrics/MethodLength
   def test_opt_row
     assert_equal(wf.opt_row('-s, --short    short option', 10),
                  "  -s, --short    short option\n")

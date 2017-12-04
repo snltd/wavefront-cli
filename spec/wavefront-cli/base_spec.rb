@@ -23,7 +23,7 @@ OPTS_CMD = {
 
 DISP_DATA = {
   a: 'string',
-  b: %w(list_1 list_2)
+  b: %w[list_1 list_2]
 }.freeze
 
 # Test base class
