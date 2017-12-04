@@ -19,19 +19,18 @@ describe "#{word} command" do
   cmd_to_call(word, "search -o 100 id=#{id}",
               { method: :post, path: '/api/v2/search/maintenancewindow',
                 body:   { limit: 10,
-                          offset: "100",
-                          query: [{key: 'id',
-                                   value: id,
-                                   matchingMethod: 'EXACT'}],
-                          sort: {field: 'id', ascending: true}},
+                          offset: '100',
+                          query: [{ key: 'id',
+                                    value: id,
+                                    matchingMethod: 'EXACT' }],
+                          sort: { field: 'id', ascending: true } },
                 headers: JSON_POST_HEADERS },
-                WavefrontCli::MaintenanceWindow)
+              WavefrontCli::MaintenanceWindow)
 
   cmd_to_call(word, 'create -d testing -H shark tester',
               { method: :post, path: '/api/v2/maintenancewindow',
                 body: {
-              },
+                },
                 headers: JSON_POST_HEADERS },
-                WavefrontCli::MaintenanceWindow)
-
+              WavefrontCli::MaintenanceWindow)
 end

@@ -8,9 +8,8 @@ class String
   # @param indent [Integer] size of hanging indent, in chars
   #
   def cmd_fold(tw = TW, indent = 10)
-    #gsub(/\s(?=\w+\])/, '^').scan_line(tw - 8).join("\n" + ' ' * indent)
-    gsub(/(-\w) /, "\\1^").scan_line(tw - 12).join("\n" + ' ' * indent)
-      .tr('^', ' ')
+    gsub(/(-\w) /, '\\1^').scan_line(tw - 12).join("\n" + ' ' * indent)
+                          .tr('^', ' ')
   end
 
   # Wrapper around #fold()
@@ -27,7 +26,6 @@ class String
   # for option folding, now addded the prefix parameter to make it
   # more general.
   #
-  # rubocop:disable Metrics/AbcSize
   #
   # @param tw [Integer] terminal width
   # @param indent [Integer] size of hanging indent, in chars
@@ -35,17 +33,17 @@ class String
   # @return [String] the folded line
   #
   def fold(tw = TW, indent = 10, prefix = '')
-    chunks = self.scan_line(tw - 8)
+    chunks = scan_line(tw - 8)
 
-    line_1 = format("%s%s\n", prefix, chunks.shift)
+    first_line = format("%s%s\n", prefix, chunks.shift)
 
-    return line_1 if chunks.empty?
+    return first_line if chunks.empty?
 
     rest = chunks.join(' ').scan_line(tw - indent - 5).map do |l|
       prefix + ' ' * indent + l
     end
 
-    line_1 + rest.join("\n") + "\n"
+    first_line + rest.join("\n") + "\n"
   end
 
   # @param width [Integer] length of longest string (width of
@@ -59,26 +57,16 @@ class String
 
   def to_seconds
     begin
-      number, unit = self.match(/^(\d+)([smhdw])$/).captures
-    rescue
+      number, unit = match(/^(\d+)([smhdw])$/).captures
+    rescue NoMethodError
       raise ArgumentError
     end
 
-    factor = case unit
-             when 's'
-               1
-             when 'm'
-               60
-             when 'h'
-               3600
-             when 'd'
-               86400
-             when 'w'
-               604800
-             else
-               raise ArgumentError
-             end
+    number.to_i * unit_factor(unit.to_sym)
+  end
 
-    number.to_i * factor
+  def unit_factor(unit)
+    factors = { s: 1, m: 60, h: 3600, d: 86_400, w: 604_800 }
+    factors[unit] || 1
   end
 end

@@ -5,7 +5,6 @@ module WavefrontCli
   # CLI coverage for the v2 'integration' API.
   #
   class Integration < WavefrontCli::Base
-
     def do_status
       wf.status(options[:'<id>'])
     end

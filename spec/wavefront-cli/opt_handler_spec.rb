@@ -7,7 +7,6 @@ require_relative '../../lib/wavefront-cli/opt_handler'
 # always done in the constructor
 #
 class OptHandlerTest < MiniTest::Test
-
   # This one has to be kind of vague because I have a config file on
   # the box I develop on, which will always be picked up. Other
   # tests are more specific
@@ -63,7 +62,7 @@ class OptHandlerTest < MiniTest::Test
     assert_equal(o[:config], CF)
     assert_equal(o[:endpoint], 'default.wavefront.com')
     assert_equal(o[:proxy], 'wavefront.localnet')
-    assert_output("") { WavefrontCli::OptHandler.new(opts) }
+    assert_output('') { WavefrontCli::OptHandler.new(opts) }
   end
 
   def test_alt_config_env
@@ -78,12 +77,12 @@ class OptHandlerTest < MiniTest::Test
     assert_equal(o[:config], CF)
     assert_equal(o[:endpoint], 'other.wavefront.com')
     assert_equal(o[:proxy], 'otherwf.localnet')
-    assert_output("") { WavefrontCli::OptHandler.new(opts) }
+    assert_output('') { WavefrontCli::OptHandler.new(opts) }
     ENV['WAVEFRONT_TOKEN'] = nil
     ENV['WAVEFRONT_ENDPOINT'] = nil
   end
 
-  def test_alt_config_env
+  def test_alt_config_env_2
     ENV['WAVEFRONT_TOKEN'] = nil
     ENV['WAVEFRONT_ENDPOINT'] = 'myendpoint.wavefront.com'
     opts = { config: CF, profile: 'other' }
@@ -95,7 +94,7 @@ class OptHandlerTest < MiniTest::Test
     assert_equal(o[:config], CF)
     assert_equal(o[:endpoint], 'myendpoint.wavefront.com')
     assert_equal(o[:proxy], 'otherwf.localnet')
-    assert_output("") { WavefrontCli::OptHandler.new(opts) }
+    assert_output('') { WavefrontCli::OptHandler.new(opts) }
     ENV['WAVEFRONT_TOKEN'] = nil
     ENV['WAVEFRONT_ENDPOINT'] = nil
   end

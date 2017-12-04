@@ -6,7 +6,6 @@ class WavefrontCommandEvent < WavefrontCommandBase
   def description
     'open, close, view, and manage events'
   end
-
   def _commands
     ["list #{CMN} [-l] [-f format] [-s start] [-e end] [-L limit] " \
       '[-o cursor]',

@@ -24,12 +24,12 @@ describe "#{word} command" do
                      "undelete #{bad_id}", "rename #{bad_id} newname"])
   invalid_something(word, ["rename #{id} '(>_<)'"], 'proxy name')
   cmd_to_call(word, "search -o 10 id=#{id}",
-              { method: :post, path: "/api/v2/search/#{word}",
-                body:   { limit: 10,
-                          offset: "10",
-                          query: [{key: 'id',
-                                   value: id,
-                                   matchingMethod: 'EXACT'}],
-                          sort: {field: 'id', ascending: true}},
-                headers: JSON_POST_HEADERS })
+              method: :post, path: "/api/v2/search/#{word}",
+              body:   { limit: 10,
+                        offset: '10',
+                        query: [{ key: 'id',
+                                  value: id,
+                                  matchingMethod: 'EXACT' }],
+                        sort: { field: 'id', ascending: true } },
+              headers: JSON_POST_HEADERS)
 end

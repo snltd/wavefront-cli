@@ -5,7 +5,7 @@ module WavefrontDisplay
   #
   class Write < Base
     def do_point
-      [:sent, :rejected, :unsent].each do |k|
+      %i[sent rejected unsent].each do |k|
         puts format('  %12s %d', k.to_s, data[k])
       end
 

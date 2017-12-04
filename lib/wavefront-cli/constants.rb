@@ -1,5 +1,4 @@
 module WavefrontCli
-
   # Universal truths
   #
   module Constants

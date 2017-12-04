@@ -14,7 +14,6 @@ class WavefrontCommandWrite < WavefrontCommandBase
      '[-p port] [-F format] [-m metric] [-T tag...] ' \
      '[-r rate] <file>']
   end
-
   def _options
     ['-E, --proxy=URI            proxy endpoint',
      '-t, --time=TIME            time of data point (omit to use ' \

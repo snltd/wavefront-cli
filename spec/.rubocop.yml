@@ -1,0 +1,16 @@
+AllCops:
+  TargetRubyVersion: 2.2
+
+# Allow long blocks of tests
+#
+Metrics/BlockLength:
+  Max: 120
+
+Metrics/MethodLength:
+  Max: 80
+
+Metrics/AbcSize:
+  Max: 45
+
+Metrics/ClassLength:
+  Max: 300

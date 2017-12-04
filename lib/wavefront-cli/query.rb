@@ -9,37 +9,54 @@ module WavefrontCli
     include Wavefront::Mixins
 
     def do_default
-      opts = {
-        autoEvents:             options[:events],
-        i:                      options[:inclusive],
-        summarization:          options[:summarize] || 'mean',
-        listMode:               true,
-        strict:                 true,
-        includeObsoleteMetrics: options[:obsolete],
-        sorted:                 true
-      }
+      t_start     = window_start
+      t_end       = window_end
+      granularity = granularity(t_start, t_end)
+      t_end       = nil unless options[:end]
 
-      options[:start] = if options[:start]
-                          parse_time(options[:start], true)
-                        else
-                          (Time.now - 600).to_i
-                        end
+      wf.query(options[:'<query>'], granularity, t_start, t_end, q_opts)
+    end
 
-      if options[:end]
-        options[:end] = parse_time(options[:end], true)
-        t_end = options[:end]
+    # @return [Hash] options for the SDK query method
+    #
+    def q_opts
+      ret = { autoEvents:             options[:events],
+              i:                      options[:inclusive],
+              summarization:          options[:summarize] || 'mean',
+              listMode:               true,
+              strict:                 true,
+              includeObsoleteMetrics: options[:obsolete],
+              sorted:                 true }
+
+      ret[:n] = options[:name] if options[:name]
+      ret[:p] = options[:points] if options[:points]
+      ret
+    end
+
+    # @return [Integer] start of query window. If one has been
+    #   given, that; if not, ten minutes ago
+    #
+    def window_start
+      if options[:start]
+        parse_time(options[:start], true)
       else
-        t_end = Time.now.to_i
+        (Time.now - 600).to_i
       end
+    end
 
-      options[:granularity] ||= default_granularity((t_end -
-                                                    options[:start]).to_i)
+    # @return [Integer] end of query window. If one has been
+    #   given, that; if not, now
+    #
+    def window_end
+      if options[:end]
+        parse_time(options[:end], true)
+      else
+        Time.now.to_i
+      end
+    end
 
-      opts[:n] = options[:name] if options[:name]
-      opts[:p] = options[:points] if options[:points]
-
-      wf.query(options[:'<query>'], options[:granularity],
-               options[:start], options[:end] || nil, opts)
+    def granularity(t_start, t_end)
+      options[:granularity] || default_granularity(t_start - t_end)
     end
 
     # Work out a sensible granularity based on the time window
@@ -47,9 +64,9 @@ module WavefrontCli
     def default_granularity(window)
       if window < 300
         :s
-      elsif window < 10800
+      elsif window < 10_800
         :m
-      elsif window < 259200
+      elsif window < 259_200
         :h
       else
         :d

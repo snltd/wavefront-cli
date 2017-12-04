@@ -5,7 +5,6 @@ module WavefrontCli
   #
   # Send points to a proxy.
   #
-  # rubocop:disable Metrics/ClassLength
   class Write < Base
     attr_reader :fmt
     include Wavefront::Mixins
@@ -13,9 +12,6 @@ module WavefrontCli
     def mk_creds
       { proxy: options[:proxy], port: options[:port] || 2878 }
     end
-
-    # rubocop:disable Metrics/AbcSize
-    # rubocop:disable Metrics/MethodLength
     def do_point
       p = { path:  options[:'<metric>'],
             value: options[:'<value>'].to_f,
@@ -221,7 +217,7 @@ module WavefrontCli
     #
     def valid_timestamp?(ts)
       (ts.is_a?(Integer) || ts.match(/^\d+$/)) &&
-        ts.to_i > 946684800 && ts.to_i < (Time.now.to_i + 31557600)
+        ts.to_i > 946_684_800 && ts.to_i < (Time.now.to_i + 31_557_600)
     end
 
     def validate_opts
@@ -239,9 +235,8 @@ module WavefrontCli
     end
 
     def load_data(file)
-      IO.read(file)
-    rescue
       raise "Cannot open file '#{file}'." unless file.exist?
+      IO.read(file)
     end
   end
 end
