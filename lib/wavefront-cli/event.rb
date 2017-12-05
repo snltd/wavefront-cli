@@ -104,6 +104,7 @@ module WavefrontCli
       body[:annotations][:severity] = opts[:severity] if opts[:severity]
       body[:annotations][:type] = opts[:type] if opts[:type]
       body[:hosts] = opts[:host] if opts[:host]
+      body[:tags] = opts[:evtag] if opts[:evtag]
 
       if opts[:instant]
         body[:endTime] = t_start + 1
@@ -179,6 +180,7 @@ module WavefrontCli
     def validate_input
       validate_id if options[:'<id>'] && !options[:close]
       validate_tags if options[:'<tag>']
+      validate_tags(:evtag) if options[:evtag]
       send(:extra_validation) if respond_to?(:extra_validation)
     end
 
