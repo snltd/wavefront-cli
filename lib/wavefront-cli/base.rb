@@ -67,8 +67,8 @@ module WavefrontCli
       send(:extra_validation) if respond_to?(:extra_validation)
     end
 
-    def validate_tags
-      Array(options[:'<tag>']).each do |t|
+    def validate_tags(key = :'<tag>')
+      Array(options[key]).each do |t|
         begin
           send(:wf_tag?, t)
         rescue Wavefront::Exception::InvalidTag
