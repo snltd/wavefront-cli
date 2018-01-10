@@ -14,13 +14,21 @@ module WavefrontDisplay
   class Base
     include WavefrontCli::Constants
 
-    attr_reader :data, :options
+    attr_reader :raw, :data, :options
 
     # @param data [Map, Hash, Array] the data returned by the SDK
     #   response.
     # @param options [Hash] options from docopt
     #
-    def initialize(data, options = {})
+    def initialize(raw_response, options = {})
+      @raw = raw_response
+
+      data = if raw_response.respond_to?(:items)
+               raw_response.items
+             else
+               raw_response
+             end
+
       @data = data.is_a?(Map) ? Map(put_id_first(data)) : data
       @options = options
     end
@@ -98,12 +106,28 @@ module WavefrontDisplay
       else
         require_relative 'printer/long'
         puts WavefrontDisplayPrinter::Long.new(data, fields, modified_data)
+        pagination_line
       end
     end
 
     def multicolumn(*columns)
       require_relative 'printer/terse'
       puts WavefrontDisplayPrinter::Terse.new(data, *columns)
+      pagination_line
+    end
+
+    # if this is a section of a larger dataset, say so
+    #
+    def pagination_line
+      if raw.moreItems
+        if raw.offset && raw.limit
+          enditem = raw.limit > 0 ? raw.offset + raw.limit - 1 : 0
+          puts format('Showing items %d to %d. Use -o and -L for more.',
+                      raw.offset, enditem)
+        else
+          puts 'Showing paginated output. Use -o and -L for more.'
+        end
+      end
     end
 
     # Give it a key-value hash, and it will return the size of the first
