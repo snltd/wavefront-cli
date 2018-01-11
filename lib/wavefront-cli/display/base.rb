@@ -119,8 +119,8 @@ module WavefrontDisplay
     # if this is a section of a larger dataset, say so
     #
     def pagination_line
-      if raw.moreItems
-        if raw.offset && raw.limit
+      if raw.respond_to?(:moreItems) && raw.moreItems == true
+        if raw.respond_to?(:offset) && raw.respond_to?(:limit)
           enditem = raw.limit > 0 ? raw.offset + raw.limit - 1 : 0
           puts format('Showing items %d to %d. Use -o and -L for more.',
                       raw.offset, enditem)
