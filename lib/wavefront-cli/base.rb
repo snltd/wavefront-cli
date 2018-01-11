@@ -285,7 +285,7 @@ module WavefrontCli
     end
 
     def do_update
-      k, v = options[:'<key=value>'].split('=')
+      k, v = options[:'<key=value>'].split('=', 2)
       wf.update(options[:'<id>'], k => v)
     end
 
