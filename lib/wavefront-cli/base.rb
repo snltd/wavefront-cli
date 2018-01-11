@@ -180,13 +180,7 @@ module WavefrontCli
         abort "API #{data.status.code}: #{data.status.message}."
       end
 
-      resp = if data.response.respond_to?(:items)
-               data.response.items
-             else
-               data.response
-             end
-
-      handle_response(resp, format_var, method)
+      handle_response(data.response, format_var, method)
     end
 
     def check_status(status)
