@@ -16,7 +16,7 @@ module WavefrontDisplay
 
     attr_reader :raw, :data, :options
 
-    # @param data [Map, Hash, Array] the data returned by the SDK
+    # @param raw_response [Map, Hash, Array] the data returned by the SDK
     #   response.
     # @param options [Hash] options from docopt
     #
