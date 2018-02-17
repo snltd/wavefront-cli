@@ -122,10 +122,10 @@ module WavefrontDisplay
       if raw.respond_to?(:moreItems) && raw.moreItems == true
         if raw.respond_to?(:offset) && raw.respond_to?(:limit)
           enditem = raw.limit > 0 ? raw.offset + raw.limit - 1 : 0
-          puts format('Showing items %d to %d. Use -o and -L for more.',
+          puts format('List shows items %d to %d. Use -o and -L for more.',
                       raw.offset, enditem)
         else
-          puts 'Showing paginated output. Use -o and -L for more.'
+          puts 'List shows paginated output. Use -o and -L for more.'
         end
       end
     end
@@ -234,7 +234,7 @@ module WavefrontDisplay
       end
     end
 
-    # Modify, in-place, the data structure to make times
+    # Modify, in-place, the @data structure to make times
     # human-readable. Automatically handles second and millisecond
     # epoch times. Currently only operates on top-level keys.
     #
@@ -244,6 +244,15 @@ module WavefrontDisplay
     #
     def readable_time(*keys)
       keys.each { |k| data[k] = human_time(data[k]) if data.key?(k) }
+    end
+
+    # As for #readable_time, but when @data is an array. For
+    # instance in "firing" alerts
+    #
+    def readable_time_arr(*keys)
+      data.map do |row|
+        keys.each { |k| row[k] = human_time(row[k]) if row.key?(k) }
+      end
     end
 
     # Make a time human-readable. Automatically deals with epoch

@@ -8,6 +8,8 @@ class WavefrontCommandAlert < WavefrontCommandBase
   end
   def _commands
     ["list #{CMN} [-l] [-f format] [-o offset] [-L limit]",
+     "firing #{CMN} [-o offset] [-L limit]",
+     "snoozed #{CMN} [-o offset] [-L limit]",
      "describe #{CMN} [-f format] [-v version] <id>",
      "delete #{CMN} <id>",
      "undelete #{CMN} <id>",

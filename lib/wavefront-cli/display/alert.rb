@@ -15,6 +15,16 @@ module WavefrontDisplay
       multicolumn(:id, :status, :name)
     end
 
+    def do_firing
+      readable_time_arr(:startTime)
+      multicolumn(:id, :name, :startTime)
+    end
+
+    def do_snoozed
+      readable_time_arr(:startTime)
+      multicolumn(:id, :name, :startTime)
+    end
+
     def do_describe
       readable_time(:created, :lastProcessedMillis,
                     :lastNotificationMillis, :createdEpochMillis,
@@ -37,6 +47,7 @@ module WavefrontDisplay
     def do_unsnooze
       puts "Unsnoozed alert '#{options[:'<id>']}'."
     end
+
     def do_summary
       kw = data.keys.map(&:size).max + 2
       data.delete_if { |_k, v| v.zero? } unless options[:all]

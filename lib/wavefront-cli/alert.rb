@@ -36,6 +36,29 @@ module WavefrontCli
       wf.history(options[:'<id>'], options[:offset], options[:limit])
     end
 
+    def do_firing
+      find_in_state(:firing)
+    end
+
+    def do_snoozed
+      find_in_state(:snoozed)
+    end
+
+    # Does the work for #do_firing() and #do_snoozed()
+    # @param status [Symbol,String] the alert status you wish to
+    #   find
+    # @return Wavefront::Response
+    #
+    def find_in_state(status)
+      search = do_search([format('status=%s', status)])
+
+      items = search.response.items.map do |i|
+        { name: i.name, id: i.id, startTime: i.event.startTime }
+      end
+
+      search.tap { |s| s.response[:items] = items }
+    end
+
     # Take a previously exported alert, and construct a hash which
     # create() can use to re-create it.
     #
