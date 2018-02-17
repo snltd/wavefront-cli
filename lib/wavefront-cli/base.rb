@@ -289,11 +289,11 @@ module WavefrontCli
       wf.update(options[:'<id>'], k => v)
     end
 
-    def do_search
+    def do_search(cond = options[:'<condition>'])
       require 'wavefront-sdk/search'
       wfs = Wavefront::Search.new(mk_creds, mk_opts)
 
-      query = conds_to_query(options[:'<condition>'])
+      query = conds_to_query(cond)
 
       wfs.search(klass_word, query, limit: options[:limit],
                                     offset: options[:offset] ||
