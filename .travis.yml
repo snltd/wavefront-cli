@@ -14,5 +14,4 @@ deploy:
   on:
     tags: true
     repo: snltd/wavefront-cli
-    ruby: 2.3.4
-
+    ruby: 2.3.6
