@@ -20,15 +20,17 @@ module WavefrontDisplay
                  []
                end
 
-      new = {
-        name: data.name,
-        query: data.query,
-        timeseries: ts,
-        events: events
-      }
+      new = { name:       data.name,
+              query:      data.query,
+              timeseries: ts,
+              events:     events }
 
       @data = new
       long_output
+    end
+
+    def do_run
+      do_default
     end
 
     def do_raw
@@ -38,6 +40,16 @@ module WavefrontDisplay
     def do_raw_404
       puts 'API 404: metric does not exist.'
     end
+
+    def do_aliases
+      if data.empty?
+        puts 'No aliases defined.'
+      else
+        data.each { |k, _v| puts k.to_s[2..-1] }
+      end
+    end
+
+    private
 
     def humanize_event(data)
       data[:start] = human_time(data[:start])

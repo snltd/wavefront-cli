@@ -71,6 +71,7 @@ class WavefrontCommmandBaseTest < MiniTest::Test
     wf.commands(600).split("\n")[1..-1].each do |c|
       next if skip_cmd && c.match(skip_cmd)
       assert_match(/^  \w+/, c)
+      puts "#{c}"
       assert_includes(c, CMN) unless c =~ /--help$/
     end
   end

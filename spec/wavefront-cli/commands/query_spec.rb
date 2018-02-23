@@ -12,5 +12,6 @@ class WavefrontCommmandQueryTest < WavefrontCommmandBaseTest
   def setup
     @wf = WavefrontCommandQuery.new
     @col_width = 24
+    @skip_cmd = /aliases/
   end
 end
