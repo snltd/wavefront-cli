@@ -6,16 +6,48 @@ module WavefrontCli
   # CLI coverage for the v2 'query' API.
   #
   class Query < WavefrontCli::Base
+    attr_reader :query_string
+
     include Wavefront::Mixins
 
+    def no_api_response
+      %w[do_aliases]
+    end
+
     def do_default
+      qs = query_string || options[:'<query>']
+
       t_start     = window_start
       t_end       = window_end
       granularity = granularity(t_start, t_end)
       t_end       = nil unless options[:end]
 
-      wf.query(options[:'<query>'], granularity, t_start, t_end, q_opts)
+      wf.query(qs, granularity, t_start, t_end, q_opts)
     end
+
+    def do_raw
+      wf.raw(options[:'<metric>'], options[:host], options[:start],
+             options[:end])
+    end
+
+    def do_run
+      alias_key = format('q_%s', options[:'<alias>']).to_sym
+      query = all_aliases.fetch(alias_key, nil)
+
+      unless query
+        abort "Query not found. 'wf query aliases' will show all " \
+              'aliased queries.'
+      end
+
+      @query_string = query
+      do_default
+    end
+
+    def do_aliases
+      all_aliases
+    end
+
+    private
 
     # @return [Hash] options for the SDK query method
     #
@@ -82,9 +114,12 @@ module WavefrontCli
       end
     end
 
-    def do_raw
-      wf.raw(options[:'<metric>'], options[:host], options[:start],
-             options[:end])
+    # @return [Hash] all query aliases for the active profile
+    #
+    def all_aliases
+      WavefrontCli::OptHandler.new(options).opts.select do |line|
+        line.to_s.start_with?('q_')
+      end
     end
   end
 end

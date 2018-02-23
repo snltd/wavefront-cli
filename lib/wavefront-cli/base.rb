@@ -37,6 +37,18 @@ module WavefrontCli
       send(:post_initialize, options) if respond_to?(:post_initialize)
     end
 
+    # Some subcommands don't make an API call, so they don't return
+    # a Wavefront::Response object. You can override this method
+    # with something which returns an array of methods like that.
+    # They will bypass the usual response checking.
+    #
+    # @return [Array[String]] methods which do not include an API
+    # response
+    #
+    def no_api_response
+      []
+    end
+
     def options_and_exit
       puts options
       exit 0
@@ -47,9 +59,9 @@ module WavefrontCli
       dispatch
     end
 
-    # We normally validate with a predictable method name. Alert IDs are
-    # validated with #wf_alert_id? etc. If you need to change that, override
-    # this method.
+    # We normally validate with a predictable method name. Alert IDs
+    # are validated with #wf_alert_id? etc. If you need to change
+    # that, override this method.
     #
     def validator_method
       "wf_#{klass_word}_id?".to_sym
@@ -169,6 +181,10 @@ module WavefrontCli
     #   this output. Used to find a suitable humanize method.
     #
     def display(data, method)
+      if no_api_response.include?(method)
+        return display_no_api_response(data, method)
+      end
+
       exit if options[:noop]
 
       %i[status response].each do |b|
@@ -181,6 +197,10 @@ module WavefrontCli
       end
 
       handle_response(data.response, format_var, method)
+    end
+
+    def display_no_api_response(data, method)
+      handle_response(data, format_var, method)
     end
 
     def check_status(status)

@@ -8,10 +8,14 @@ class WavefrontCommandQuery < WavefrontCommandBase
   end
 
   def _commands
-    ["#{CMN} [-g granularity] [-s time] [-e time] [-f format] " \
+    ['aliases [-DV] [-c file] [-P profile]',
+     "#{CMN} [-g granularity] [-s time] [-e time] [-f format] " \
            '[-ivO] [-S mode] [-N name] [-p points] <query>',
-     "raw #{CMN} [-H host] [-s time] [-e time] [-f format] <metric>"]
+     "raw #{CMN} [-H host] [-s time] [-e time] [-f format] <metric>",
+     "run #{CMN} [-g granularity] [-s time] [-e time] [-f format] " \
+           '[-ivO] [-S mode] [-N name] [-p points] <alias>']
   end
+
   def _options
     [common_options,
      '-g, --granularity=STRING  query granularity (d, h, m, or s)',
