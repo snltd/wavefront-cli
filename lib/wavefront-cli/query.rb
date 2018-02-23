@@ -117,7 +117,7 @@ module WavefrontCli
     # @return [Hash] all query aliases for the active profile
     #
     def all_aliases
-      raw = WavefrontCli::OptHandler.new(options).opts.select do |line|
+      WavefrontCli::OptHandler.new(options).opts.select do |line|
         line.to_s.start_with?('q_')
       end
     end
