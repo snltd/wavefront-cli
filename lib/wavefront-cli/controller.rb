@@ -1,9 +1,13 @@
 # For development against a local checkout of the SDK, uncomment
-# this block
+# this definition
 #
-# dir = Pathname.new(__FILE__).dirname.realpath.parent.parent.parent
-# $LOAD_PATH.<< dir + 'lib'
-# $LOAD_PATH.<< dir + 'wavefront-sdk' + 'lib'
+DEVELOPMENT = true
+
+if defined?(DEVELOPMENT)
+  dir = Pathname.new(__FILE__).dirname.realpath.parent.parent.parent
+  $LOAD_PATH.<< dir + 'lib'
+  $LOAD_PATH.<< dir + 'wavefront-sdk' + 'lib'
+end
 
 require 'pathname'
 require 'pp'
