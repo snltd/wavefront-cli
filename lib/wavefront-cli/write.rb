@@ -14,7 +14,7 @@ module WavefrontCli
     end
     def do_point
       p = { path:  options[:'<metric>'],
-            value: options[:'<value>'].to_f,
+            value: options[:'<value>'].delete('\\').to_f,
             tags:  tags_to_hash(options[:tag]) }
 
       p[:source] = options[:host] if options[:host]
