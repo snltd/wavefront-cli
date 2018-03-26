@@ -233,3 +233,10 @@ If you set the file to `-`, you can read from standard in:
 ```
 $ while true; do echo $RANDOM; sleep 1; done | wf write file -m cli.demo -Fv -
 ```
+
+Due to limitations in [docopt](https://github.com/docopt/docopt.rb),
+writing negative values is a bit of a mess.
+
+```
+$ wf write point cli.example "\-10"
+```
