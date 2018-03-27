@@ -5,8 +5,10 @@ module WavefrontDisplay
   #
   class Write < Base
     def do_point
-      %i[sent rejected unsent].each do |k|
-        puts format('  %12s %d', k.to_s, data[k])
+      unless options[:quiet] || (data[:unsent] + data[:rejected] > 0)
+        %i[sent rejected unsent].each do |k|
+          puts format('  %12s %d', k.to_s, data[k])
+        end
       end
 
       exit(data.rejected.zero? && data.unsent.zero? ? 0 : 1)
