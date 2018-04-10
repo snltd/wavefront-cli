@@ -45,7 +45,7 @@ module WavefrontHclOutput
     #
     def required_fields
       return resp if hcl_fields.empty?
-      resp.select { |k, v| hcl_fields.include?(k) }
+      resp.select { |k, _v| hcl_fields.include?(k) }
     end
 
     # Format each key-value pair
@@ -72,7 +72,7 @@ module WavefrontHclOutput
     #
     def vhandle_tags(v)
       v = v.values if v.is_a?(Hash)
-      v = Array(v).flatten
+      Array(v).flatten
     end
 
     # Some values need to be quoted, some need to be escaped etc
