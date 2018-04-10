@@ -34,7 +34,6 @@ class String
   #
   def fold(tw = TW, indent = 10, prefix = '')
     chunks = scan_line(tw - 8)
-
     first_line = format("%s%s\n", prefix, chunks.shift)
 
     return first_line if chunks.empty?
@@ -65,8 +64,20 @@ class String
     number.to_i * unit_factor(unit.to_sym)
   end
 
+  # How many seconds in the given unit
+  # @param unit [Symbol]
+  # @return [Integer]
+  #
   def unit_factor(unit)
     factors = { s: 1, m: 60, h: 3600, d: 86_400, w: 604_800 }
     factors[unit] || 1
+  end
+
+  # Make a camelCase string be snake_case
+  # @return [String]
+  #
+  def to_snake
+    self.gsub(/(.)([A-Z])/) { Regexp.last_match[1] + '_' +
+                              Regexp.last_match[2].downcase }
   end
 end

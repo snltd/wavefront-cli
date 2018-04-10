@@ -20,6 +20,17 @@ class StringTest < MiniTest::Test
                  'alpha] [-b beta] [-c gamma] <id>')
   end
 
+  def test_opt_fold
+    assert_equal('short string'.opt_fold, "  short string\n")
+
+    str = '-o, --option PARAMETER a rather pointless option with a ' \
+          'needlessly wordy description string'
+    pad = "\n" + ' ' * 12
+    assert_equal("  -o, --option PARAMETER a#{pad}rather pointless" \
+                 "#{pad}option with a#{pad}needlessly wordy#{pad}" \
+                 "description#{pad}string\n",str.opt_fold(30, 10))
+  end
+
   def test_fold_options
     str = '-l, --longoption    a long option with a quite long ' \
           'description which needs folding'
@@ -41,5 +52,18 @@ class StringTest < MiniTest::Test
     assert_equal(1_209_600, '2w'.to_seconds)
     assert_raises(ArgumentError) { 'm'.to_seconds }
     assert_raises(ArgumentError) { '3m5s'.to_seconds }
+  end
+
+  def test_unit_factor
+    assert_equal(60, '1'.unit_factor(:m))
+    assert_equal(1, '1'.unit_factor('m'))
+    assert_equal(1, '1'.unit_factor(:t))
+  end
+
+  def test_to_snake
+    assert_equal('snake_case', 'snakeCase'.to_snake)
+    assert_equal('lots_and_lots_of_words', 'lotsAndLotsOfWords'.to_snake)
+    assert_equal('unchanged', 'unchanged'.to_snake)
+    assert_equal('Unchanged', 'Unchanged'.to_snake)
   end
 end

@@ -224,19 +224,27 @@ module WavefrontCli
     end
 
     def handle_response(resp, format, method)
-      case format
-      when :json
-        puts resp.to_json
-      when :yaml # We don't want the YAML keys to be symbols.
-        puts JSON.parse(resp.to_json).to_yaml
-      when :ruby
-        p resp
-      when :human
+      if format == :human
         k = load_display_class
         k.new(resp, options).run(method)
       else
-        raise "Unknown output format '#{format}'."
+        parseable_output(format, resp)
       end
+    end
+
+    def parseable_output(format, resp)
+      options[:class] = klass_word
+      options[:hcl_fields] = hcl_fields
+      require_relative File.join('output', format.to_s)
+      oclass = Object.const_get(format('WavefrontOutput::%s',
+                              format.to_s.capitalize))
+      oclass.new(resp, options).run
+    rescue LoadError
+      raise "Unsupported output format '#{format}'."
+    end
+
+    def hcl_fields
+      []
     end
 
     def load_display_class
