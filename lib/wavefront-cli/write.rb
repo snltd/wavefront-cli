@@ -21,7 +21,7 @@ module WavefrontCli
       p[:ts] = parse_time(options[:time]) if options[:time]
 
       begin
-        wf.write(p)
+        call_write(p)
       rescue Wavefront::Exception::InvalidEndpoint
         abort 'could not speak to proxy ' \
               "'#{options[:proxy]}:#{options[:port]}'."
@@ -45,6 +45,16 @@ module WavefrontCli
           process_line(l)
         end
 
+        call_write(data)
+      end
+    end
+
+    # A wrapper which lets us send normal points or deltas
+    #
+    def call_write(data)
+      if options[:delta]
+        wf.write_delta(data)
+      else
         wf.write(data)
       end
     end
@@ -55,7 +65,7 @@ module WavefrontCli
     #
     def read_stdin
       wf.open
-      STDIN.each_line { |l| wf.write(process_line(l.strip), false) }
+      STDIN.each_line { |l| call_write(process_line(l.strip), false) }
       wf.close
     rescue SystemExit, Interrupt
       puts 'ctrl-c. Exiting.'
