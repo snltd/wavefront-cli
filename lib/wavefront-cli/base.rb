@@ -193,10 +193,18 @@ module WavefrontCli
 
       unless check_status(data.status)
         handle_error(method, data.status.code) if format_var == :human
-        abort "API #{data.status.code}: #{data.status.message}."
+        display_api_error(data.status)
       end
 
       handle_response(data.response, format_var, method)
+    end
+
+    # @param status [Map] status object from SDK response
+    # @return System exit
+    #
+    def display_api_error(status)
+      msg = status.message || 'No further information'
+      abort format('ERROR: API code %s: %s.', status.code, msg)
     end
 
     def display_no_api_response(data, method)
