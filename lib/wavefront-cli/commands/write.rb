@@ -8,9 +8,9 @@ class WavefrontCommandWrite < WavefrontCommandBase
   end
 
   def _commands
-    ['point [-DnVi] [-c file] [-P profile] [-E proxy] [-t time] ' \
+    ['point [-DnViq] [-c file] [-P profile] [-E proxy] [-t time] ' \
      '[-p port] [-H host] [-T tag...] <metric> <value>',
-     'file [-DnVi] [-c file] [-P profile] [-E proxy] [-H host] ' \
+     'file [-DnViq] [-c file] [-P profile] [-E proxy] [-H host] ' \
      '[-p port] [-F format] [-m metric] [-T tag...] ' \
      '[-r rate] <file>']
   end
@@ -26,6 +26,8 @@ class WavefrontCommandWrite < WavefrontCommandBase
      'a file will be assigned. If the file contains a metric name, ' \
      'the two will be dot-concatenated, with this value first',
      '-i, --delta                increment metric by given value',
+     "-q, --quiet                don't report the points sent summary " \
+     '(unless there were errors)',
      '-r, --rate=INTEGER         throttle point sending to this many ' \
      'points per second']
   end
