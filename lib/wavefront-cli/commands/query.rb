@@ -10,7 +10,7 @@ class WavefrontCommandQuery < WavefrontCommandBase
   def _commands
     ['aliases [-DV] [-c file] [-P profile]',
      "#{CMN} [-g granularity] [-s time] [-e time] [-f format] " \
-           '[-ivO] [-S mode] [-N name] [-p points] <query>',
+           '[-ikvO] [-S mode] [-N name] [-p points] <query>',
      "raw #{CMN} [-H host] [-s time] [-e time] [-f format] <metric>",
      "run #{CMN} [-g granularity] [-s time] [-e time] [-f format] " \
            '[-ivO] [-S mode] [-N name] [-p points] <alias>']
@@ -30,6 +30,7 @@ class WavefrontCommandQuery < WavefrontCommandBase
      'points (mean, median, min, max, sum, count, last, first)',
      '-O, --obsolete            include metrics unreported for > 4 weeks',
      '-H, --host=STRING         host or source to query on',
-     '-f, --format=STRING       output format']
+     '-f, --format=STRING       output format',
+     '-k, --nospark             do not show sparkline']
   end
 end

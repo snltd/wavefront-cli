@@ -1,4 +1,5 @@
 require_relative './base'
+require_relative 'printer/sparkline'
 
 module WavefrontDisplay
   #
@@ -6,8 +7,13 @@ module WavefrontDisplay
   #
   class Query < Base
     def do_default
+               p data.class
       ts = if data.key?(:timeseries)
              data[:timeseries].each do |s|
+               unless options[:nospark]
+                 s[:sparkline] = WavefrontSparkline.new(s[:data]).sparkline
+                 s.reorder!({label: nil, sparkline: nil})
+               end
                s[:data] = humanize_series(s[:data])
              end
            else
