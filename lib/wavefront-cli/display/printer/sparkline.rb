@@ -1,10 +1,11 @@
 # The Unicode characters which we use to make a sparkline
 #
-BLOCKS = ["\u05c5", "\u2581", "\u2582", "\u2583", "\u2585", "\u2586",
+BLOCKS = [' ', "\u2581", "\u2582", "\u2583", "\u2585", "\u2586",
           "\u2587", "\u2588"].freeze
+
 # How long the sparkline should be
 #
-SPARK_WIDTH = TW / 2
+SPARK_WIDTH = TW - 20
 
 # A class to create very simple single-row sparklines of a Wavefront
 # result.
@@ -13,7 +14,7 @@ class WavefrontSparkline
   attr_reader :sparkline
 
   def initialize(series)
-    @sparkline = generate_sparkline(series)
+    @sparkline = '>' + generate_sparkline(series) + '<'
   end
 
   # @return [String] the block corresponding to the given value in
@@ -44,8 +45,9 @@ class WavefrontSparkline
   #
   def generate_sparkline(data)
     values = data.map { |_k, v| v }
-    min = values.min
-    v_range = values.max - min
+    max = values.max || 0
+    min = values.min || 0
+    v_range = max - min
     values = make_fit(values)
     values.map { |v| sized_block(v - min, v_range) }.join
   end

@@ -7,7 +7,6 @@ module WavefrontDisplay
   #
   class Query < Base
     def do_default
-               p data.class
       ts = if data.key?(:timeseries)
              data[:timeseries].each do |s|
                unless options[:nospark]
