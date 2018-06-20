@@ -28,7 +28,7 @@ class StringTest < MiniTest::Test
     pad = "\n" + ' ' * 12
     assert_equal("  -o, --option PARAMETER a#{pad}rather pointless" \
                  "#{pad}option with a#{pad}needlessly wordy#{pad}" \
-                 "description#{pad}string\n",str.opt_fold(30, 10))
+                 "description#{pad}string\n", str.opt_fold(30, 10))
   end
 
   def test_fold_options
