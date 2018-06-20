@@ -7,31 +7,30 @@ module WavefrontDisplay
   #
   class Query < Base
     def do_default
-      ts = if data.key?(:timeseries)
-             data[:timeseries].each do |s|
-               unless options[:nospark]
-                 s[:sparkline] = WavefrontSparkline.new(s[:data]).sparkline
-                 s.reorder!({label: nil, sparkline: nil})
-               end
-               s[:data] = humanize_series(s[:data])
-             end
-           else
-             []
-           end
-
-      events = if data.key?(:events)
-                 data[:events].map { |s| humanize_event(s) }
-               else
-                 []
-               end
-
-      new = { name:       data.name,
+      @data = { name:       data.name,
               query:      data.query,
-              timeseries: ts,
-              events:     events }
+              timeseries: mk_timeseries(data),
+              events:     mk_events(data) }
 
-      @data = new
       long_output
+    end
+
+    def mk_timeseries(data)
+      return []  unless data.key?(:timeseries)
+
+      data[:timeseries].each do |s|
+        unless options[:nospark]
+          s[:sparkline] = WavefrontSparkline.new(s[:data]).sparkline
+          s.reorder!({label: nil, sparkline: nil})
+        end
+
+        s[:data] = humanize_series(s[:data])
+      end
+    end
+
+    def mk_events(data)
+      return [] unless data.key?(:events)
+      data[:events].map { |s| humanize_event(s) }
     end
 
     def do_run
