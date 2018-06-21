@@ -1,5 +1,5 @@
 require 'wavefront-sdk/mixins'
-require_relative './base'
+require_relative 'base'
 
 module WavefrontCli
   #
