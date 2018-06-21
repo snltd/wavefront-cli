@@ -8,9 +8,9 @@ module WavefrontDisplay
   class Query < Base
     def do_default
       @data = { name:       data.name,
-              query:      data.query,
-              timeseries: mk_timeseries(data),
-              events:     mk_events(data) }
+                query:      data.query,
+                timeseries: mk_timeseries(data),
+                events:     mk_events(data) }
 
       long_output
     end
