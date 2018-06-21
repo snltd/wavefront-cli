@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
 require_relative('../../../lib/wavefront-cli/commands/cloudintegration')
-require_relative './base_spec'
+require_relative 'base_spec'
 
 # Test Cloud Integration commands and options
 #

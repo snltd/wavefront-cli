@@ -1,5 +1,5 @@
 require 'date'
-require_relative './base'
+require_relative 'base'
 
 module WavefrontDisplay
   #
