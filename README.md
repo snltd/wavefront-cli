@@ -1,6 +1,5 @@
 # Wavefront CLI
-[![Build Status](https://travis-ci.org/snltd/wavefront-cli.svg?branch=master)](https://travis-ci.org/snltd/wavefront-cli) [![Maintainability](https://api.codeclimate.com/v1/badges/9b712047af0b2dafc146/maintainability)](https://codeclimate.com/github/snltd/wavefront-cli/maintainability) [![Dependency Status](https://gemnasium.com/badges/github.com/snltd/wavefront-cli.svg)](https://gemnasium.com/github.com/snltd/wavefront-cli) [![Gem Version](https://badge.fury.io/rb/wavefront-cli.svg)](https://badge.fury.io/rb/wavefront-cli) ![](http://ruby-gem-downloads-badge.herokuapp.com/wavefront-cli?type=total)
-
+[![Build Status](https://travis-ci.org/snltd/wavefront-cli.svg?branch=master)](https://travis-ci.org/snltd/wavefront-cli) [![Maintainability](https://api.codeclimate.com/v1/badges/9b712047af0b2dafc146/maintainability)](https://codeclimate.com/github/snltd/wavefront-cli/maintainability) [![Gem Version](https://badge.fury.io/rb/wavefront-cli.svg)](https://badge.fury.io/rb/wavefront-cli) ![](http://ruby-gem-downloads-badge.herokuapp.com/wavefront-cli?type=total)
 
 This package provides a command-line interface to
 [Wavefront](https://www.wavefront.com/)'s API. Each API path
