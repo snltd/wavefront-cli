@@ -12,9 +12,9 @@ end
 require 'pathname'
 require 'pp'
 require 'docopt'
-require_relative './version'
-require_relative './exception'
-require_relative './opt_handler'
+require_relative 'version'
+require_relative 'exception'
+require_relative 'opt_handler'
 
 CMD_DIR = Pathname.new(__FILE__).dirname + 'commands'
 

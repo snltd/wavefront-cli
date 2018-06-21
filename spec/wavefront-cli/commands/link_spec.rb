@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
 require_relative('../../../lib/wavefront-cli/commands/link')
-require_relative './base_spec'
+require_relative 'base_spec'
 
 # Test External Link commands and options
 #

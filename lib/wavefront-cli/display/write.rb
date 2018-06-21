@@ -1,4 +1,4 @@
-require_relative './base'
+require_relative 'base'
 
 module WavefrontDisplay
   # Format human-readable output when writing points.
