@@ -7,11 +7,16 @@ module WavefrontDisplay
   #
   class Query < Base
     def do_default
-      @data = { name:       data.name,
+      d_obj = { name:       data.name,
                 query:      data.query,
                 timeseries: mk_timeseries(data),
                 events:     mk_events(data) }
 
+      if data.key?(:warnings) && !options[:nowarn]
+        d_obj[:warnings] = data[:warnings]
+      end
+
+      @data = d_obj
       long_output
     end
 
