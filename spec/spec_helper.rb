@@ -162,27 +162,27 @@ def list_tests(cmd, pth = nil, k = nil)
               k)
 end
 
-def tag_tests(cmd, id, bad_id, pth = nil)
+def tag_tests(cmd, id, bad_id, pth = nil, k = nil)
   pth ||= cmd
-  cmd_to_call(cmd, "tags #{id}", path: "/api/v2/#{pth}/#{id}/tag")
+  cmd_to_call(cmd, "tags #{id}", { path: "/api/v2/#{pth}/#{id}/tag" }, k)
   cmd_to_call(cmd, "tag set #{id} mytag",
-              method: :post,
-              path:    "/api/v2/#{pth}/#{id}/tag",
-              body:    %w[mytag].to_json,
-              headers: JSON_POST_HEADERS)
+              { method: :post,
+                path:    "/api/v2/#{pth}/#{id}/tag",
+                body:    %w[mytag].to_json,
+                headers: JSON_POST_HEADERS }, k)
   cmd_to_call(cmd, "tag set #{id} mytag1 mytag2",
-              method: :post,
-              path: "/api/v2/#{pth}/#{id}/tag",
-              body: %w[mytag1 mytag2].to_json,
-              headers: JSON_POST_HEADERS)
+              { method: :post,
+                path: "/api/v2/#{pth}/#{id}/tag",
+                body: %w[mytag1 mytag2].to_json,
+                headers: JSON_POST_HEADERS }, k)
   cmd_to_call(cmd, "tag add #{id} mytag",
-              method: :put, path: "/api/v2/#{pth}/#{id}/tag/mytag")
+              { method: :put, path: "/api/v2/#{pth}/#{id}/tag/mytag" }, k)
   cmd_to_call(cmd, "tag delete #{id} mytag",
-              method: :delete, path: "/api/v2/#{pth}/#{id}/tag/mytag")
-  cmd_to_call(cmd, "tag clear #{id}", method:  :post,
-                                      path:    "/api/v2/#{pth}/#{id}/tag",
-                                      body:    [].to_json,
-                                      headers: JSON_POST_HEADERS)
+              { method: :delete, path: "/api/v2/#{pth}/#{id}/tag/mytag" }, k)
+  cmd_to_call(cmd, "tag clear #{id}", { method:  :post,
+                                        path:    "/api/v2/#{pth}/#{id}/tag",
+                                        body:    [].to_json,
+                                        headers: JSON_POST_HEADERS }, k)
   invalid_ids(cmd, ["tags #{bad_id}", "tag clear #{bad_id}",
                     "tag add #{bad_id} mytag", "tag delete #{bad_id} mytag"])
   invalid_tags(cmd, ["tag add #{id} #{BAD_TAG}", "tag delete #{id} #{BAD_TAG}"])
