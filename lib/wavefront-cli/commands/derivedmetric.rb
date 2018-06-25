@@ -38,7 +38,7 @@ class WavefrontCommandDerivedmetric < WavefrontCommandBase
                               'list',
      '-v, --version=INTEGER   version of derived metrics',
      '-O, --obsolete          include obsolete metrics',
-     '-T, --tag=STRING        add customer tag',
+     '-T, --ctag=STRING       add customer tag',
      '-d, --desc=STRING       additional information about query',
      '-i, --interval=INTEGER  execute query every n minutes [default: 1]',
      '-r, --range=INTEGER     include results in the last n minutes ' \

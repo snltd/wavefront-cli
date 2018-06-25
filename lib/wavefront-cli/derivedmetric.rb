@@ -41,7 +41,12 @@ module WavefrontCli
               processRateMinutes: options[:interval].to_i }
 
       ret[:additionalInformation] = options[:desc] if options[:desc]
+      ret[:tags] = options[:ctag] if valid_tags?
       ret
+    end
+
+    def valid_tags?
+      !options[:ctag].empty? && validate_tags(options[:ctag])
     end
   end
 end

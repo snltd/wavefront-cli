@@ -64,4 +64,13 @@ describe "#{word} command" do
                         processRateMinutes: 3,
                         query:              'ts(series)' },
                 headers: JSON_POST_HEADERS }, k)
+
+  cmd_to_call(word, 'create -i 3 -T tag1 -T tag2 test_dm ts(series)',
+              { method: :post, path: '/api/v2/derivedmetric',
+                body: { minutes:            5,
+                        name:               'test_dm',
+                        processRateMinutes: 3,
+                        tags:               ['tag1', 'tag2'],
+                        query:              'ts(series)' },
+                headers: JSON_POST_HEADERS }, k)
 end
