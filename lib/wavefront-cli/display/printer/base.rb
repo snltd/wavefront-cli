@@ -12,9 +12,17 @@ module WavefrontDisplayPrinter
     # @param pad [Integer] the number of spaces you want between columns
     # @return [Integer] length of longest key + pad
     #
-    def key_width(hash = {}, pad = 3)
+    def key_width(hash = {}, pad = 3, carry = 0)
       return 0 if hash.keys.empty?
-      hash.keys.map(&:size).max + pad
+
+      ret = pad
+
+      hash.each do |k, v|
+        hash.keys.map(&:size).max + pad
+        ret
+      end
+
+      ret
     end
 
     def to_s

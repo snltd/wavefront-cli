@@ -16,11 +16,14 @@ module WavefrontDisplayPrinter
       _two_columns(modified_data || data, nil, fields)
     end
 
-    # A recursive function which displays a key-value hash in two
-    # columns. The key column width is automatically calculated.
-    # Multiple-value 'v's are printed one per line. Hashes are nested.
+    # Display a key-value hash in two columns.
     #
-    # @param data [Array] and array of objects to display. Each object
+    # Multiple-value 'v's are printed one per line. Hashes are
+    # nested, which means the method can be called recursively:
+    # another hash will trigger another call of #_two_columns.
+    #
+    #
+    # @param data [Array] an array of objects to display. Each object
     #   should be a hash.
     # @param indent [Integer] how many characters to indent the current
     #   data.
@@ -33,7 +36,7 @@ module WavefrontDisplayPrinter
         kw = key_width(item) unless kw
         @kw = kw unless @kw
         mk_indent(indent)
-        item.each { |k, v| parse_line(k, v) }
+        item.each { |k, v| handle_pair(k, v) }
         add_line(nil) if indent.zero?
       end
 
@@ -73,14 +76,14 @@ module WavefrontDisplayPrinter
       value.respond_to?(:empty?) && value.empty? && hide_blank
     end
 
-    # Parse a line and add it to the output or pass it on to another
-    # method which knows how to add it to the output.
+    # Pass a key-value pair on to a method which knows exactly what
+    # to do with it.
     #
     # @param key [String] a key
     # @param value [Object] the value: could be anything
     # @return [Nil]
     #
-    def parse_line(key, value)
+    def handle_pair(key, value)
       return if blank?(value)
 
       value = preen_value(value)
