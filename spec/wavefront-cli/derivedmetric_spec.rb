@@ -51,26 +51,29 @@ describe "#{word} command" do
 
   cmd_to_call(word, 'create test_dm ts(series)',
               { method: :post, path: '/api/v2/derivedmetric',
-                body: { minutes:            5,
-                        name:               'test_dm',
-                        processRateMinutes: 1,
-                        query:              'ts(series)' },
+                body: { minutes:                5,
+                        name:                   'test_dm',
+                        includeObsoleteMetrics: false,
+                        processRateMinutes:     1,
+                        query:                  'ts(series)' },
                 headers: JSON_POST_HEADERS }, k)
 
-  cmd_to_call(word, 'create -i 3 -r 7 test_dm ts(series)',
+  cmd_to_call(word, 'create -i 3 -r 7 -O test_dm ts(series)',
               { method: :post, path: '/api/v2/derivedmetric',
-                body: { minutes:            7,
-                        name:               'test_dm',
-                        processRateMinutes: 3,
-                        query:              'ts(series)' },
+                body: { minutes:                7,
+                        name:                   'test_dm',
+                        includeObsoleteMetrics: true,
+                        processRateMinutes:     3,
+                        query:                  'ts(series)' },
                 headers: JSON_POST_HEADERS }, k)
 
   cmd_to_call(word, 'create -i 3 -T tag1 -T tag2 test_dm ts(series)',
               { method: :post, path: '/api/v2/derivedmetric',
-                body: { minutes:            5,
-                        name:               'test_dm',
-                        processRateMinutes: 3,
-                        tags:               ['tag1', 'tag2'],
-                        query:              'ts(series)' },
+                body: { minutes:                5,
+                        name:                   'test_dm',
+                        includeObsoleteMetrics: false,
+                        processRateMinutes:     3,
+                        tags:                   ['tag1', 'tag2'],
+                        query:                  'ts(series)' },
                 headers: JSON_POST_HEADERS }, k)
 end

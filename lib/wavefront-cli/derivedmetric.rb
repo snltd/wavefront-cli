@@ -35,10 +35,11 @@ module WavefrontCli
     end
 
     def build_body
-      ret = { query:              options[:'<query>'],
-              name:               options[:'<name>'],
-              minutes:            options[:range].to_i,
-              processRateMinutes: options[:interval].to_i }
+      ret = { query:                  options[:'<query>'],
+              name:                   options[:'<name>'],
+              minutes:                options[:range].to_i,
+              includeObsoleteMetrics: options[:obsolete],
+              processRateMinutes:     options[:interval].to_i }
 
       ret[:additionalInformation] = options[:desc] if options[:desc]
       ret[:tags] = options[:ctag] if valid_tags?
