@@ -10,11 +10,11 @@ class WavefrontCommandDashboard < WavefrontCommandBase
   def _commands
     ["list #{CMN} [-l] [-f format] [-o offset] [-L limit]",
      "describe #{CMN} [-f format] [-v version] <id>",
-     "import #{CMN} [-f format] [-F] <file>",
+     "import #{CMN} [-f format] <file>",
      "update #{CMN} <key=value> <id>",
      "delete #{CMN} <id>",
      "undelete #{CMN} <id>",
-     "history #{CMN} [-b] [-f format] [-o offset] [-L limit] <id>",
+     "history #{CMN} [-f format] [-o offset] [-L limit] <id>",
      "search #{CMN} [-f format] [-o offset] [-L limit] [-l] <condition>...",
      tag_commands]
   end

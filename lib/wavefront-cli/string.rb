@@ -9,7 +9,7 @@ class String
   #
   def cmd_fold(tw = TW, indent = 10)
     gsub(/(-\w) /, '\\1^').scan_line(tw - 12).join("\n" + ' ' * indent)
-                          .tr('^', ' ')
+                          .restored
   end
 
   # Wrapper around #fold()
@@ -24,8 +24,8 @@ class String
 
   # Fold long lines with a hanging indent. Originally a special case
   # for option folding, now addded the prefix parameter to make it
-  # more general.
-  #
+  # more general. Don't line-break default values, because it also
+  # breaks docopt.
   #
   # @param tw [Integer] terminal width
   # @param indent [Integer] size of hanging indent, in chars
@@ -33,16 +33,23 @@ class String
   # @return [String] the folded line
   #
   def fold(tw = TW, indent = 10, prefix = '')
-    chunks = scan_line(tw - 8)
+    chunks = gsub(/default: /, 'default:^').scan_line(tw - 8)
     first_line = format("%s%s\n", prefix, chunks.shift)
 
-    return first_line if chunks.empty?
+    return first_line.restored if chunks.empty?
 
     rest = chunks.join(' ').scan_line(tw - indent - 5).map do |l|
       prefix + ' ' * indent + l
     end
 
-    first_line + rest.join("\n") + "\n"
+    (first_line + rest.join("\n") + "\n").restored
+  end
+
+  # We use a carat as a temporary whitespace character to avoid
+  # undesirable line breaking. This puts it back
+  #
+  def restored
+    tr('^', ' ')
   end
 
   # @param width [Integer] length of longest string (width of
