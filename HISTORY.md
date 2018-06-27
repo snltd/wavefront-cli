@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.6.1 (27/06/2018)
+
+* Make `sources list` not show hidden sources by default. (In
+  accordance with the documentation.)
+
 ## 2.6.0 (27/06/2018)
 
 * Anything which can be imported can be imported from STDIN. The CLI
