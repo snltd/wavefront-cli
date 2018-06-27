@@ -266,7 +266,7 @@ module WavefrontCli
     # Give it a path to a file (as a string) and it will return the
     # contents of that file as a Ruby object. Automatically detects
     # JSON and YAML. Raises an exception if it doesn't look like
-    # either.
+    # either. If path is '-' then it will read STDIN.
     #
     # @param path [String] the file to load
     # @return [Hash] a Ruby object of the loaded file
@@ -274,6 +274,8 @@ module WavefrontCli
     # @raise pass through any error loading or parsing the file
     #
     def load_file(path)
+      return load_from_stdin if path == '-'
+
       file = Pathname.new(path)
       raise 'Import file does not exist.' unless file.exist?
 
@@ -284,6 +286,26 @@ module WavefrontCli
       else
         raise 'Unsupported file format.'
       end
+    end
+
+    # Read STDIN and return a Ruby object, assuming that STDIN is
+    # valid JSON or YAML. This is a dumb method, it does no
+    # buffering, so STDIN must be a single block of data. This
+    # appears to be a valid assumption for use-cases of this CLI.
+    #
+    # @return [Object]
+    # @raise 'cannot parse stdin' if it, well you know.
+    #
+    def load_from_stdin
+      raw = STDIN.read
+
+      if raw.start_with?('---')
+        YAML.safe_load(raw)
+      else
+        JSON.parse(raw)
+      end
+    rescue
+      raise 'Cannot parse stdin.'
     end
 
     # Below here are common methods. Most are used by most classes,
