@@ -1,6 +1,11 @@
 # Changelog
 
-## 2.5.0
+## 2.6.0 (27/06/2018)
+
+* Anything which can be imported can be imported from STDIN. The CLI
+  will do its best to work out if the format is YAML or JSON.
+
+## 2.5.0 (25/06/2018)
 
 * Support [derived
   metrics](https://docs.wavefront.com/derived_metrics.html).
