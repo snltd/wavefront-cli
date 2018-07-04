@@ -22,14 +22,15 @@ class WavefrontCommandReport < WavefrontCommandBase
      '-m, --metric=STRING        the metric path to which contents of ' \
      'a file will be assigned. If the file contains a metric name, ' \
      'the two will be dot-concatenated, with this value first',
+     '-i, --delta                increment metric by given value',
      "-q, --quiet                don't report the points sent summary " \
      '(unless there were errors)']
   end
 
   def postscript
     'Files are whitespace separated, and fields can be defined ' \
-    "with the '-F' option.  Use 't' for timestamp; 'm' for metric " \
-    "name; 'v' for value, 's' for source, and 'T' for tags. Put 'T' " \
+    "with the '-F' option.  Use 't' for timestamp, 'm' for metric " \
+    "name, 'v' for value, 's' for source, and 'T' for tags. Put 'T' " \
     'last.'.cmd_fold(TW, 0)
   end
 end
