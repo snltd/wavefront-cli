@@ -9,7 +9,8 @@ class WavefrontCommandReport < WavefrontCommandBase
 
   def _commands
     ["point #{CMN} [-s time] [-H host] [-T tag...] [-iq] <metric> <value>",
-     "file #{CMN} [-H host] [-F format] [-m metric] [-T tag...] <file>"]
+     "file #{CMN} [-H host] [-F format] [-m metric] [-T tag...] " \
+     '[-iq] <file>']
   end
 
   def _options
