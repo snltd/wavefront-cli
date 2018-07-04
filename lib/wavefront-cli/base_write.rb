@@ -20,7 +20,7 @@ module WavefrontCli
     end
 
     def send_point(p)
-      wf.write(p)
+      call_write(p)
     rescue Wavefront::Exception::InvalidEndpoint
       abort "could not speak to proxy #{options[:proxy]}:#{options[:port]}."
     end
@@ -42,8 +42,14 @@ module WavefrontCli
           process_line(l)
         end
 
-        wf.write(data)
+        call_write(data)
       end
+    end
+
+    # A wrapper which lets us send normal points or deltas
+    #
+    def call_write(data)
+      options[:delta] ? wf.write_delta(data) : wf.write(data)
     end
 
     # Read from standard in and stream points through an open
@@ -52,7 +58,7 @@ module WavefrontCli
     #
     def read_stdin
       open_connection
-      STDIN.each_line { |l| wf.write(process_line(l.strip), false) }
+      STDIN.each_line { |l| call_write(process_line(l.strip), false) }
       close_connection
     rescue SystemExit, Interrupt
       puts 'ctrl-c. Exiting.'

@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.7.0 (04/07/2018)
+
+* Add a `-i` option to the `report` command, to send delta metrics.
+* Fix delta metrics on the `write` command.
+
 ## 2.6.0 (27/06/2018)
 
 * Anything which can be imported can be imported from STDIN. The CLI
