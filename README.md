@@ -1,9 +1,9 @@
 # Wavefront CLI
 [![Build Status](https://travis-ci.org/snltd/wavefront-cli.svg?branch=master)](https://travis-ci.org/snltd/wavefront-cli) [![Maintainability](https://api.codeclimate.com/v1/badges/9b712047af0b2dafc146/maintainability)](https://codeclimate.com/github/snltd/wavefront-cli/maintainability) [![Gem Version](https://badge.fury.io/rb/wavefront-cli.svg)](https://badge.fury.io/rb/wavefront-cli) ![](http://ruby-gem-downloads-badge.herokuapp.com/wavefront-cli?type=total)
 
-This package provides a command-line interface to
-[Wavefront](https://www.wavefront.com/)'s API. Each API path
-is covered by a different command keyword.
+This package provides a complete command-line interface to
+[Wavefront](https://www.wavefront.com/)'s API. It also provides easy
+ways to write data through a proxy.
 
 The gem is hosted [on
 Rubygems](https://rubygems.org/gems/wavefront-cli) and can be
@@ -13,12 +13,12 @@ installed with
 $ gem install wavefront-cli
 ```
 
-It is built on [the Wavefront Ruby
+It is built on [our Wavefront Ruby
 SDK](https://github.com/snltd/wavefront-sdk) and requires Ruby >=
 2.2. It has no "native extension" dependencies.
 
-I also maintain [a reasonably thorough
-tutorial](http://sysdef.xyz/post/2017-07-26-wavefront-cli).
+For a far more comprehensive overview/tutorial, please read [this
+article](http://sysdef.xyz/post/2017-07-26-wavefront-cli).
 
 ```
 $ wf --help
@@ -30,21 +30,25 @@ Usage:
   wf --help
 
 Commands:
-  alert         view and manage alerts
-  integration   view and manage cloud integrations
-  dashboard     view and manage dashboards
-  event         view, manage, open, and close events
-  link          view and manage external links
-  message       view and mark as read user messages
-  metric        view metric details
-  proxy         view and manage Wavefront proxies
-  query         run timeseries queries
-  savedsearch   view and manage saved searches
-  source        view and manage source tags and descriptions
-  user          view and manage Wavefront users
-  window        view and manage maintenance windows
-  webhook       view and manage webhooks
-  write         send data points to a Wavefront proxy
+  alert              view and manage alerts
+  cloudintegration   view and manage cloud integrations
+  dashboard          view and manage dashboards
+  derivedmetric      view and manage derived metrics
+  event              open, close, view, and manage events
+  integration        view and manage Wavefront integrations
+  link               view and manage external links
+  message            read and mark user messages
+  metric             view metrics
+  notificant         view and manage Wavefront notification targets
+  proxy              view and manage Wavefront proxies
+  query              query the Wavefront API
+  report             send data directly to Wavefront
+  savedsearch        view and manage saved searches
+  source             view and manage source tags and descriptions
+  user               view and manage Wavefront users
+  webhook            view and manage webhooks
+  window             view and manage maintenance windows
+  write              send data to a Wavefront proxy
 
 Use 'wf <command> --help' for further information.
 ```
@@ -55,10 +59,10 @@ Use 'wf <command> --help' for further information.
 
 You can pass in your Wavefront API and token with command-line
 options `-E` and `-t`; with the environment variables
-`WAVEFRONT_ENDPOINT` and `WAVEFRONT_TOKEN`,
-or by putting them in a configuration file at `${HOME}/.wavefront`. This is an
-ini-style file, with a section for each Wavefront account you wish to use. (None
-of the tokens shown here are real, of course!)
+`WAVEFRONT_ENDPOINT` and `WAVEFRONT_TOKEN`, or by putting them in a
+configuration file at `${HOME}/.wavefront`. This is an ini-style
+file, with a section for each Wavefront account you wish to use.
+(None of the tokens shown here are real, of course!)
 
 ```
 [default]
@@ -73,14 +77,15 @@ endpoint = company.wavefront.com
 format = yaml
 ```
 
-You can override the config file location with `-c`, and select a profile with
-`-P`. If you don't supply `-P`, the `default` profile is used.
+You can override the config file location with `-c`, and select a
+profile with `-P`. If you don't supply `-P`, the `default` profile
+is used.
 
 ### Listing Things
 
 Most commands have a `list` subcommand, which will produce brief
-"one thing per line" output. The unique ID  of the "thing" is in the first
-column.
+"one thing per line" output. The unique ID  of the "thing" is in the
+first column.
 
 ```
 $ wf proxy list
@@ -114,23 +119,30 @@ ephemeral                false
 deleted                  false
 ```
 
-Most timestamps come back from the API as epoch seconds or epoch milliseconds.
-The CLI, in its human-readable descriptions, will convert those to
-`YYYY-MM-DD HH:mm:ss` when it `describe`s something.
+Most timestamps come back from the API as epoch seconds or epoch
+milliseconds.  The CLI, in its human-readable descriptions, will
+convert those to `YYYY-MM-DD HH:mm:ss` when it `describe`s
+something.
 
 ### Formats, Importing, and Exporting
 
-Most commands and sub-commands support the `-f` option. This takes one of
-`json`, `yaml`, `human` and `raw`, and tells the CLI to present the information
-it fetches from the Wavefront API in that format. (`raw` is the raw Ruby
-representation, which, for instance, you could paste into `irb`.)
+Most commands and sub-commands support the `-f` option. This takes
+one of `json`, `yaml`, `human` and `raw`, and tells the CLI to
+present the information it fetches from the Wavefront API in that
+format. (`raw` is the raw Ruby representation, which, for instance,
+you could paste into `irb`.) Some object types can be exported in
+HCL, for easy integration with Space Ape's Wavefront Terraform
+provider.
 
-Human output can be selective. As well as the time formatting mentioned above,
-human-readable listings and desctiptions may omit data which is not likely to be
-useful, or which is extremely hard to present in a readable way.
+Human output can be selective. As well as the time formatting
+mentioned above, human-readable listings and desctiptions may omit
+data which is not likely to be useful, or which is extremely hard to
+present in a readable way.
 
-If you `describe` an object like a dashboard, user, webhook etc as `json` or
-`yaml`, and send the output to a file, you can re-import that data. The format of the file to be imported is automatically detected.
+If you `describe` an object like a dashboard, user, webhook etc as
+`json` or `yaml`, and send the output to a file, you can re-import
+that data. The format of the file to be imported is automatically
+detected.
 
 ```
 $ wf user list
@@ -213,11 +225,12 @@ or force a timestamp:
 $ wf write point -t 16:53:14 cli.example 8
 ```
 
-More usefully, you can write from a file. Your file must contain multiple
-columns: metric name (`m`), metric value (`v`), timestamp(`t`), and point tags
-(`T`). `v` is mandatory, `m` can be filled in with the `-m` flag, `t` can be
-filled in with the current timestamp, and `T` is optional, but if used, must be
-last. You then tell the CLI what order your fields are in.
+More usefully, you can write from a file. Your file must contain
+multiple columns: metric name (`m`), metric value (`v`),
+timestamp(`t`), and point tags (`T`). `v` is mandatory, `m` can be
+filled in with the `-m` flag, `t` can be filled in with the current
+timestamp, and `T` is optional, but if used, must be last. You then
+tell the CLI what order your fields are in.
 
 ```
 $ cat datafile
@@ -232,6 +245,9 @@ If you set the file to `-`, you can read from standard in:
 ```
 $ while true; do echo $RANDOM; sleep 1; done | wf write file -m cli.demo -Fv -
 ```
+
+If you wish to write points directly via the API, and you have the
+"direct ingestion" privilege, just swap `write` for `report`.
 
 Due to limitations in [docopt](https://github.com/docopt/docopt.rb),
 writing negative values is a bit of a mess.
