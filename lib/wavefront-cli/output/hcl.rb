@@ -9,12 +9,7 @@ module WavefrontOutput
   #
   class Hcl < Base
     def run
-      require_relative File.join('hcl', options[:class])
-      oclass = Object.const_get(format('WavefrontHclOutput::%s',
-                              options[:class].to_s.capitalize))
-      oclass.new(resp, options).run
-    rescue LoadError
-      abort "no HCL output for #{options[:class]}."
+      delegate_run('HCL')
     end
   end
 end
