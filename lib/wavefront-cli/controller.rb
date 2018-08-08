@@ -57,6 +57,7 @@ class WavefrontCliController
   # Parse the input. The first Docopt.docopt handles the default
   # options, the second works on the command.
   #
+  # rubocop:disable Metrics/AbcSize
   def parse_args
     Docopt.docopt(usage[:default], version: WF_CLI_VERSION, argv: args)
   rescue Docopt::Exit => e
@@ -72,9 +73,10 @@ class WavefrontCliController
       abort e.message
     end
   end
+  # rubocop:enable Metrics/AbcSize
 
-  def parse_opts(o)
-    WavefrontCli::OptHandler.new(o).opts
+  def parse_opts(options)
+    WavefrontCli::OptHandler.new(options).opts
   end
 
   # Get the SDK class we need to run the command we've been given.
@@ -95,9 +97,9 @@ class WavefrontCliController
   rescue WavefrontCli::Exception::UnsupportedOutput => e
     abort e.message
   rescue StandardError => e
-    $stderr.puts "general error: #{e}"
-    $stderr.puts "re-run with '-D' for stack trace." unless opts[:debug]
-    $stderr.puts "Backtrace:\n\t#{e.backtrace.join("\n\t")}" if opts[:debug]
+    warn "general error: #{e}"
+    warn "re-run with '-D' for stack trace." unless opts[:debug]
+    warn "Backtrace:\n\t#{e.backtrace.join("\n\t")}" if opts[:debug]
     abort
   end
 
@@ -117,9 +119,9 @@ class WavefrontCliController
   # @param f [Pathname] path of file to load
   # return [Class] new class object defining command.
   #
-  def import_command(f)
-    return if f.extname != '.rb' || f.basename.to_s == 'base.rb'
-    k_name = f.basename.to_s[0..-4]
+  def import_command(path)
+    return if path.extname != '.rb' || path.basename.to_s == 'base.rb'
+    k_name = path.basename.to_s[0..-4]
     require(CMD_DIR + k_name)
     Object.const_get("WavefrontCommand#{k_name.capitalize}").new
   end
@@ -129,7 +131,9 @@ class WavefrontCliController
   # @param h [Hash] options hash
   # return [Hash] h with modified keys
   #
-  def sanitize_keys(h)
-    h.each_with_object({}) { |(k, v), r| r[k.to_s.delete('-').to_sym] = v }
+  def sanitize_keys(options)
+    options.each_with_object({}) do |(k, v), r|
+      r[k.to_s.delete('-').to_sym] = v
+    end
   end
 end

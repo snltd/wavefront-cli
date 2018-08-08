@@ -2,6 +2,7 @@
 
 require_relative '../../../../lib/wavefront-cli/display/printer/long'
 require_relative '../spec_helper'
+require_relative '../../../spec_helper'
 
 # Test verbose printing stuff
 #

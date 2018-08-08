@@ -21,8 +21,8 @@ class WavefrontSparkline
   #   the given range. The `rescue` clause handles occasions when
   #   Wavefront returns NaN as a value, or if the range is zero.
   #
-  def sized_block(v, range)
-    BLOCKS[(v / range * (BLOCKS.length - 1)).floor]
+  def sized_block(val, range)
+    BLOCKS[(val / range * (BLOCKS.length - 1)).floor]
   rescue StandardError
     BLOCKS.first
   end

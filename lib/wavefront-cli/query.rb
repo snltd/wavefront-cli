@@ -51,6 +51,7 @@ module WavefrontCli
 
     # @return [Hash] options for the SDK query method
     #
+    # rubocop:disable Metrics/AbcSize
     def q_opts
       ret = { autoEvents:             options[:events],
               i:                      options[:inclusive],
@@ -64,6 +65,7 @@ module WavefrontCli
       ret[:p] = options[:points] if options[:points]
       ret
     end
+    # rubocop:enable Metrics/AbcSize
 
     # @return [Integer] start of query window. If one has been
     #   given, that; if not, ten minutes ago

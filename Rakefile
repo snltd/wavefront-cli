@@ -4,7 +4,7 @@ require 'rubocop/rake_task'
 
 task default: :test
 
-Rake::TestTask.new do |t|
+Rake::TestTask.new(test: :rubocop) do |t|
   t.pattern = 'spec/wavefront-cli/**/*_spec.rb'
   t.warning = false
 end

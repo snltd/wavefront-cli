@@ -149,8 +149,10 @@ class WavefrontDisplayBaseTest < MiniTest::Test
     assert_raises(ArgumentError) { wf.human_time(123) }
     assert_raises(ArgumentError) { wf.human_time(12_345_678_901_234) }
     assert_equal('2017-07-07 11:23:35', wf.human_time(1_499_426_615, true))
+    # rubocop:disable Style/DateTime
     assert_match(/^20\d\d-[01]\d-[0-3]\d [0-2]\d:[0-5]\d:[0-5]\d.\d{3}$/,
                  wf.human_time(DateTime.now.strftime('%Q')))
+    # rubocop:enable Style/DateTime
     assert_match(/^20\d\d-[01]\d-[0-3]\d [0-2]\d:[0-5]\d:[0-5]\d$/,
                  wf.human_time(Time.now.to_i))
     assert_equal('2017-07-07 11:23:35.123', wf.human_time(1_499_426_615_123,

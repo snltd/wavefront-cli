@@ -39,8 +39,8 @@ module WavefrontWavefrontOutput
       end
     end
 
-    def wavefront_format(path, value, ts, source, tags = nil)
-      arr = [path, value, ts, format('source=%s', source)]
+    def wavefront_format(path, value, timestamp, source, tags = nil)
+      arr = [path, value, timestamp, format('source=%s', source)]
       arr.<< tags.to_wf_tag if tags && !tags.empty?
       arr.join(' ')
     end
