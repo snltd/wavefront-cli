@@ -240,7 +240,10 @@ module WavefrontCli
                               format.to_s.capitalize))
       oclass.new(resp, options).run
     rescue LoadError
-      raise "Unsupported output format '#{format}'."
+      raise WavefrontCli::Exception::UnsupportedOutput.new(
+        format("The '%s' command does not support '%s' output.",
+               options[:class], format)
+      )
     end
 
     def hcl_fields

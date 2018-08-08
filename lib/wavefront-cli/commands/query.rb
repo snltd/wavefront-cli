@@ -34,4 +34,10 @@ class WavefrontCommandQuery < WavefrontCommandBase
      '-k, --nospark             do not show sparkline',
      '-W, --nowarn              do not show API warning messages']
   end
+
+  def postscript
+    'The query command has an additional output format. Using ' \
+    "'-f wavefront' produces output suitable for feeding back into a " \
+    'proxy.'.cmd_fold(TW, 0)
+  end
 end
