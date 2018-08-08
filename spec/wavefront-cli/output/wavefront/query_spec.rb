@@ -9,7 +9,7 @@ class WavefrontOutputWavefrontTest < MiniTest::Test
   attr_reader :wfq, :wfr
 
   def setup
-    @wfq = WavefrontWavefrontOutput::Query.new(load_query_response)
+    @wfq = WavefrontWavefrontOutput::Query.new(load_query_response, {})
     @wfr = WavefrontWavefrontOutput::Query.new(load_raw_query_response,
     { raw: true, host: 'www-blue', '<metric>': 'solaris.network.obytes64' })
   end

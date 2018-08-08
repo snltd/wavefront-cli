@@ -1,12 +1,12 @@
 require 'wavefront-sdk/stdlib/hash'
-require_relative '../base'
+require_relative 'base'
 
 module WavefrontWavefrontOutput
   #
   # Display query results in Wavefront wire format. We have to
   # handle raw and normal output in different ways.
   #
-  class Query < WavefrontOutput::Base
+  class Query < Base
     def _run
       if options[:raw]
         raw_output

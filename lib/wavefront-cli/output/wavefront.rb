@@ -6,9 +6,5 @@ module WavefrontOutput
   # that timeseries can be extracted, modified, and fed back in via
   # a proxy.
   #
-  class Wavefront < Base
-    def run
-      delegate_run('Wavefront')
-    end
-  end
+  class Wavefront < Base; end
 end

@@ -13,6 +13,10 @@ class WavefrontOutputJsonTest < MiniTest::Test
     @wfo = WavefrontOutput::Json.new(load_query_response)
   end
 
+  def test_my_format
+    assert('json', wfo.my_format)
+  end
+
   def test__run
     out = wfo._run
     po = JSON.parse(out)

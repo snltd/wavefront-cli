@@ -7,6 +7,13 @@ require 'minitest/spec'
 require 'pathname'
 require_relative '../lib/wavefront-cli/controller'
 
+def all_commands
+  (Pathname.new(__FILE__).dirname.parent + 'lib' + 'wavefront-cli' +
+   'commands').children.each.with_object([]) do |c, a|
+    a.<< c.basename.to_s.chomp('.rb') unless c.basename.to_s == 'base.rb'
+  end
+end
+
 unless defined?(CMD)
   CMD = 'wavefront'.freeze
   ENDPOINT = 'metrics.wavefront.com'.freeze
@@ -17,10 +24,7 @@ unless defined?(CMD)
   JSON_POST_HEADERS = {
     'Content-Type': 'application/json', Accept: 'application/json'
   }.freeze
-
-  CMDS = %w[alert integration dashboard event link message metric
-            proxy query savedsearch source user window webhook write].freeze
-
+  CMDS = all_commands.freeze
   BAD_TAG = '*BAD_TAG*'.freeze
   TW = 80
 end
