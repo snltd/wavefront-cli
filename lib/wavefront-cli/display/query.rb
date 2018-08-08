@@ -56,7 +56,7 @@ module WavefrontDisplay
       if data.empty?
         puts 'No aliases defined.'
       else
-        data.each { |k, _v| puts k.to_s[2..-1] }
+        data.each_key { |k| puts k.to_s[2..-1] }
       end
     end
 
