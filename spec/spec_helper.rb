@@ -188,6 +188,18 @@ def tag_tests(cmd, id, bad_id, pth = nil, k = nil)
   invalid_tags(cmd, ["tag add #{id} #{BAD_TAG}", "tag delete #{id} #{BAD_TAG}"])
 end
 
+# Load in a canned query response
+#
+def load_query_response
+  JSON.parse(IO.read(RES_DIR + 'sample_query_response.json'),
+             symbolize_names: true)
+end
+
+def load_raw_query_response
+  JSON.parse(IO.read(RES_DIR + 'sample_raw_query_response.json'),
+             symbolize_names: true)
+end
+
 # stdlib extensions
 #
 class Hash
