@@ -3,9 +3,11 @@ require_relative 'base'
 # Define the Alert command
 #
 class WavefrontCommandAlert < WavefrontCommandBase
+
   def description
     'view and manage alerts'
   end
+
   def _commands
     ["list #{CMN} [-l] [-f format] [-o offset] [-L limit]",
      "firing #{CMN} [-o offset] [-L limit]",
