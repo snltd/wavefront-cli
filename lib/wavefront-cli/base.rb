@@ -135,8 +135,8 @@ module WavefrontCli
     # method, and displays whatever it returns.
     #
     # @return [nil]
-    # @raise 'unsupported command', if the command does not match a
-    #   `do_` method.
+    # @raise WavefrontCli::Exception::UnhandledCommand if the
+    #   command does not match a `do_` method.
     #
     def dispatch
       #
@@ -262,8 +262,15 @@ module WavefrontCli
     # writer, for instance, uses a proxy and has no token.
     #
     def validate_opts
-      raise 'Please supply an API token.' unless options[:token]
-      raise 'Please supply an API endpoint.' unless options[:endpoint]
+      unless options[:token]
+        raise WavefrontCli::Exception::CredentialError.new(
+          'Missing API token.')
+      end
+
+      unless options[:endpoint]
+        raise WavefrontCli::Exception::CredentialError.new(
+          'Missing API endpoint.')
+      end
     end
 
     # Give it a path to a file (as a string) and it will return the

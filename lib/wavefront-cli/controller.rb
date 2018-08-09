@@ -92,8 +92,12 @@ class WavefrontCliController
   def run_command(hook)
     hook.validate_opts
     hook.run
+  rescue WavefrontCli::Exception::CredentialError => e
+    abort "Credential error. #{e.message}"
   rescue WavefrontCli::Exception::UnsupportedOutput => e
     abort e.message
+  rescue WavefrontCli::Exception::InsufficientData => e
+    abort "Insufficient data. #{e.message}"
   rescue StandardError => e
     $stderr.puts "general error: #{e}"
     $stderr.puts "re-run with '-D' for stack trace." unless opts[:debug]
