@@ -1,8 +1,8 @@
 #!/usr/bin/env ruby
 
-require_relative '../spec_helper'
-require_relative '../../lib/wavefront-cli/string'
-require_relative '../../lib/wavefront-cli/commands/base'
+require_relative '../../spec_helper'
+require_relative '../../../lib/wavefront-cli/stdlib/string'
+require_relative '../../../lib/wavefront-cli/commands/base'
 
 # Test extensions to string class
 #

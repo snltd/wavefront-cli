@@ -138,6 +138,7 @@ module WavefrontCli
     # @raise WavefrontCli::Exception::UnhandledCommand if the
     #   command does not match a `do_` method.
     #
+    # rubocop:disable Metrics/AbcSize
     def dispatch
       #
       # Take a list of do_ methods, remove the 'do_' from their name,
@@ -166,6 +167,7 @@ module WavefrontCli
 
       raise WavefrontCli::Exception::UnhandledCommand
     end
+    # rubocop:enable Metrics/AbcSize
 
     # Display a Ruby object as JSON, YAML, or human-readable.  We
     # provide a default method to format human-readable output, but
@@ -180,6 +182,7 @@ module WavefrontCli
     # @param method [String] the name of the method which produced
     #   this output. Used to find a suitable humanize method.
     #
+    # rubocop:disable Metrics/AbcSize
     def display(data, method)
       if no_api_response.include?(method)
         return display_no_api_response(data, method)
@@ -198,6 +201,7 @@ module WavefrontCli
 
       handle_response(data.response, format_var, method)
     end
+    # rubocop:enable Metrics/AbcSize
 
     # @param status [Map] status object from SDK response
     # @return System exit
@@ -232,19 +236,21 @@ module WavefrontCli
       end
     end
 
+    # rubocop:disable Metrics/AbcSize
     def parseable_output(format, resp)
       options[:class] = klass_word
       options[:hcl_fields] = hcl_fields
       require_relative File.join('output', format.to_s)
       oclass = Object.const_get(format('WavefrontOutput::%s',
-                              format.to_s.capitalize))
+                                       format.to_s.capitalize))
       oclass.new(resp, options).run
     rescue LoadError
-      raise WavefrontCli::Exception::UnsupportedOutput.new(
-        format("The '%s' command does not support '%s' output.",
-               options[:class], format)
-      )
+      raise WavefrontCli::Exception::UnsupportedOutput,
+            format("The '%s' command does not support '%s' output.",
+                   options[:class],
+                   format)
     end
+    # rubocop:enable Metrics/AbcSize
 
     def hcl_fields
       []
@@ -283,6 +289,7 @@ module WavefrontCli
     # @raise 'Unsupported file format.' if the filetype is unknown.
     # @raise pass through any error loading or parsing the file
     #
+    # rubocop:disable Metrics/AbcSize
     def load_file(path)
       return load_from_stdin if path == '-'
 
@@ -297,6 +304,7 @@ module WavefrontCli
         raise 'Unsupported file format.'
       end
     end
+    # rubocop:enable Metrics/AbcSize
 
     # Read STDIN and return a Ruby object, assuming that STDIN is
     # valid JSON or YAML. This is a dumb method, it does no
@@ -314,7 +322,7 @@ module WavefrontCli
       else
         JSON.parse(raw)
       end
-    rescue
+    rescue RuntimeError
       raise 'Cannot parse stdin.'
     end
 

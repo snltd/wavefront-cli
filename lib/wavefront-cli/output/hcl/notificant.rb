@@ -11,8 +11,8 @@ module WavefrontHclOutput
          contentType customHttpHeaders]
     end
 
-    def vhandle_template(v)
-      v.gsub(/\s*\n/, '')
+    def vhandle_template(val)
+      val.gsub(/\s*\n/, '')
     end
 
     def resource_name
@@ -23,8 +23,10 @@ module WavefrontHclOutput
       'name'
     end
 
+    # rubocop:disable Naming/MethodName
     def khandle_customHttpHeaders
       'custom_headers'
     end
+    # rubocop:enable Naming/MethodName
   end
 end

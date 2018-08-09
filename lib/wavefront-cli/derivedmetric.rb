@@ -13,6 +13,7 @@ module WavefrontCli
       wf.describe(options[:'<id>'], options[:version])
     end
 
+    # rubocop:disable Metrics/AbcSize
     def do_delete
       word = if wf.describe(options[:'<id>']).status.code == 200
                'Soft'
@@ -25,6 +26,7 @@ module WavefrontCli
 
       wf.delete(options[:'<id>'])
     end
+    # rubocop:enable Metrics/AbcSize
 
     def do_history
       wf.history(options[:'<id>'])
@@ -34,6 +36,7 @@ module WavefrontCli
       wf.create(build_body)
     end
 
+    # rubocop:disable Metrics/AbcSize
     def build_body
       ret = { query:                  options[:'<query>'],
               name:                   options[:'<name>'],
@@ -45,6 +48,7 @@ module WavefrontCli
       ret[:tags] = options[:ctag] if valid_tags?
       ret
     end
+    # rubocop:enable Metrics/AbcSize
 
     def valid_tags?
       !options[:ctag].empty? && validate_tags(options[:ctag])

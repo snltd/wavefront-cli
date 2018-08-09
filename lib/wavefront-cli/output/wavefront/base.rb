@@ -1,4 +1,7 @@
 module WavefrontWavefrontOutput
+  #
+  # Standard output template
+  #
   class Base
     attr_reader :resp, :options
 

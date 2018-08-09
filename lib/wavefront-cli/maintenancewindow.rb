@@ -78,8 +78,8 @@ module WavefrontCli
       change_end_time(Time.now.to_i)
     end
 
-    def change_end_time(ts)
-      wf.update(options[:'<id>'], endTimeInSeconds: ts)
+    def change_end_time(timestamp)
+      wf.update(options[:'<id>'], endTimeInSeconds: timestamp)
     end
   end
 end
