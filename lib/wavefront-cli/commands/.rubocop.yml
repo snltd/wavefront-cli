@@ -1,0 +1,7 @@
+---
+
+inherit_from: ../../../.rubocop.yml
+
+# Some of these methods are long, but they're just lists
+Metrics/MethodLength:
+  Enabled: false

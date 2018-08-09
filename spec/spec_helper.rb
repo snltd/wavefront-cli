@@ -8,13 +8,17 @@ require 'pathname'
 require_relative '../lib/wavefront-cli/controller'
 
 def all_commands
-  (Pathname.new(__FILE__).dirname.parent + 'lib' + 'wavefront-cli' +
-   'commands').children.each.with_object([]) do |c, a|
-    a.<< c.basename.to_s.chomp('.rb') unless c.basename.to_s == 'base.rb'
+  cmd_dir = ROOT + 'lib' + 'wavefront-cli' + 'commands'
+
+  files = cmd_dir.children.select do |f|
+    f.extname == '.rb' && f.basename.to_s != 'base.rb'
   end
+
+  files.each.with_object([]) { |c, a| a.<< c.basename.to_s.chomp('.rb') }
 end
 
 unless defined?(CMD)
+  ROOT = Pathname.new(__FILE__).dirname.parent
   CMD = 'wavefront'.freeze
   ENDPOINT = 'metrics.wavefront.com'.freeze
   TOKEN = '0123456789-ABCDEF'.freeze
@@ -75,10 +79,12 @@ def cmd_to_call(word, args, call, sdk_class = nil)
         it "runs #{cmd} and makes the correct API call" do
           if call.key?(:body)
             stub_request(method, uri).with(headers: h, body: call[:body])
-                                     .to_return(body: {}.to_json, status: 200)
+                                     .to_return(body: {}.to_json,
+                                                status: 200)
           else
             stub_request(method, uri).with(headers: h)
-                                     .to_return(body: {}.to_json, status: 200)
+                                     .to_return(body: {}.to_json,
+                                                status: 200)
           end
 
           require "wavefront-sdk/#{sdk_class.name.split('::').last.downcase}"
@@ -98,6 +104,7 @@ def cmd_to_call(word, args, call, sdk_class = nil)
     end
   end
 end
+# rubocop:enable Metrics/AbcSize
 
 # Run a command we expect to fail, returning stdout and stderr
 #
@@ -155,41 +162,50 @@ end
 
 # Generic list tests, needed by most commands
 #
-def list_tests(cmd, pth = nil, k = nil)
+def list_tests(cmd, pth = nil, klass = nil)
   pth ||= cmd
-  cmd_to_call(cmd, 'list', { path: "/api/v2/#{pth}?limit=100&offset=0" }, k)
-  cmd_to_call(cmd, 'list -L 50', { path: "/api/v2/#{pth}?limit=50&offset=0" },
-              k)
+  cmd_to_call(cmd, 'list', { path: "/api/v2/#{pth}?limit=100&offset=0" },
+              klass)
+  cmd_to_call(cmd, 'list -L 50',
+              { path: "/api/v2/#{pth}?limit=50&offset=0" },
+              klass)
   cmd_to_call(cmd, 'list -L 20 -o 8',
-              { path: "/api/v2/#{pth}?limit=20&offset=8" }, k)
-  cmd_to_call(cmd, 'list -o 60', { path: "/api/v2/#{pth}?limit=100&offset=60" },
-              k)
+              { path: "/api/v2/#{pth}?limit=20&offset=8" }, klass)
+  cmd_to_call(cmd, 'list -o 60',
+              { path: "/api/v2/#{pth}?limit=100&offset=60" },
+              klass)
 end
 
-def tag_tests(cmd, id, bad_id, pth = nil, k = nil)
+def tag_tests(cmd, id, bad_id, pth = nil, klass = nil)
   pth ||= cmd
-  cmd_to_call(cmd, "tags #{id}", { path: "/api/v2/#{pth}/#{id}/tag" }, k)
+  cmd_to_call(cmd, "tags #{id}", { path: "/api/v2/#{pth}/#{id}/tag" },
+              klass)
   cmd_to_call(cmd, "tag set #{id} mytag",
               { method: :post,
                 path:    "/api/v2/#{pth}/#{id}/tag",
                 body:    %w[mytag].to_json,
-                headers: JSON_POST_HEADERS }, k)
+                headers: JSON_POST_HEADERS }, klass)
   cmd_to_call(cmd, "tag set #{id} mytag1 mytag2",
               { method: :post,
                 path: "/api/v2/#{pth}/#{id}/tag",
                 body: %w[mytag1 mytag2].to_json,
-                headers: JSON_POST_HEADERS }, k)
+                headers: JSON_POST_HEADERS }, klass)
   cmd_to_call(cmd, "tag add #{id} mytag",
-              { method: :put, path: "/api/v2/#{pth}/#{id}/tag/mytag" }, k)
+              { method: :put, path: "/api/v2/#{pth}/#{id}/tag/mytag" },
+              klass)
   cmd_to_call(cmd, "tag delete #{id} mytag",
-              { method: :delete, path: "/api/v2/#{pth}/#{id}/tag/mytag" }, k)
+              { method: :delete, path: "/api/v2/#{pth}/#{id}/tag/mytag" },
+              klass)
   cmd_to_call(cmd, "tag clear #{id}", { method:  :post,
                                         path:    "/api/v2/#{pth}/#{id}/tag",
                                         body:    [].to_json,
-                                        headers: JSON_POST_HEADERS }, k)
-  invalid_ids(cmd, ["tags #{bad_id}", "tag clear #{bad_id}",
-                    "tag add #{bad_id} mytag", "tag delete #{bad_id} mytag"])
-  invalid_tags(cmd, ["tag add #{id} #{BAD_TAG}", "tag delete #{id} #{BAD_TAG}"])
+                                        headers: JSON_POST_HEADERS }, klass)
+  invalid_ids(cmd, ["tags #{bad_id}",
+                    "tag clear #{bad_id}",
+                    "tag add #{bad_id} mytag",
+                    "tag delete #{bad_id} mytag"])
+  invalid_tags(cmd, ["tag add #{id} #{BAD_TAG}",
+                     "tag delete #{id} #{BAD_TAG}"])
 end
 
 # Load in a canned query response

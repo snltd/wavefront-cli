@@ -1,4 +1,4 @@
-require_relative '../string'
+require_relative '../stdlib/string'
 
 CMN = '[-DnV] [-c file] [-P profile] [-E endpoint] [-t token]'.freeze
 

@@ -9,6 +9,7 @@ module WavefrontCli
     attr_reader :fmt
     include Wavefront::Mixins
 
+    # rubocop:disable Metrics/AbcSize
     def do_point
       p = { path:  options[:'<metric>'],
             value: options[:'<value>'].delete('\\').to_f,
@@ -18,9 +19,10 @@ module WavefrontCli
       p[:ts] = parse_time(options[:time]) if options[:time]
       send_point(p)
     end
+    # rubocop:enable Metrics/AbcSize
 
-    def send_point(p)
-      call_write(p)
+    def send_point(point)
+      call_write(point)
     rescue Wavefront::Exception::InvalidEndpoint
       abort "could not speak to proxy #{options[:proxy]}:#{options[:port]}."
     end
@@ -107,7 +109,7 @@ module WavefrontCli
     #
     def extract_path(chunks)
       m = chunks[fmt.index('m')]
-      return options[:metric] ? [options[:metric], m].join('.') : m
+      options[:metric] ? [options[:metric], m].join('.') : m
     rescue TypeError
       return options[:metric] if options[:metric]
       raise
@@ -120,7 +122,7 @@ module WavefrontCli
     #   value passed through by -H, or the local hostname.
     #
     def extract_source(chunks)
-      return chunks[fmt.index('s')]
+      chunks[fmt.index('s')]
     rescue TypeError
       options[:source] || Socket.gethostname
     end
@@ -132,10 +134,11 @@ module WavefrontCli
     # what they define is always assumed to be point tags.  This is
     # because you can have arbitrarily many of those for each point.
     #
-    def process_line(l)
-      return true if l.empty?
-      chunks = l.split(/\s+/, fmt.length)
-      raise 'wrong number of fields' unless enough_fields?(l)
+    # rubocop:disable Metrics/AbcSize
+    def process_line(line)
+      return true if line.empty?
+      chunks = line.split(/\s+/, fmt.length)
+      raise 'wrong number of fields' unless enough_fields?(line)
 
       begin
         point = { path:  extract_path(chunks),
@@ -144,11 +147,12 @@ module WavefrontCli
         point[:source] = extract_source(chunks) if fmt.include?('s')
         point[:tags] = line_tags(chunks)
       rescue TypeError
-        raise "could not process #{l}"
+        raise "could not process #{line}"
       end
 
       point
     end
+    # rubocop:enable Metrics/AbcSize
 
     # We can get tags from the file, from the -T option, or both.
     # Merge them, making the -T win if there is a collision.
@@ -201,8 +205,8 @@ module WavefrontCli
     # If the format string says we are expecting point tags, we
     # may have more columns than the length of the format string.
     #
-    def enough_fields?(l)
-      ncols = l.split.length
+    def enough_fields?(line)
+      ncols = line.split.length
 
       if fmt.include?('T')
         return false unless ncols >= fmt.length
@@ -218,9 +222,10 @@ module WavefrontCli
     # assume anything before 2000/01/01 or after a year from now is
     # wrong.  Arbitrary, but there has to be a cut-off somewhere.
     #
-    def valid_timestamp?(ts)
-      (ts.is_a?(Integer) || ts.match(/^\d+$/)) &&
-        ts.to_i > 946_684_800 && ts.to_i < (Time.now.to_i + 31_557_600)
+    def valid_timestamp?(timestamp)
+      (timestamp.is_a?(Integer) || timestamp.match(/^\d+$/)) &&
+        timestamp.to_i > 946_684_800 &&
+        timestamp.to_i < (Time.now.to_i + 31_557_600)
     end
 
     private

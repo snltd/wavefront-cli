@@ -4,32 +4,36 @@ require_relative '../../../spec_helper'
 require_relative '../../../../lib/wavefront-cli/output/wavefront/query'
 
 # Test Wavefront wire-format output
-
+#
 class WavefrontOutputWavefrontTest < MiniTest::Test
   attr_reader :wfq, :wfr
 
   def setup
     @wfq = WavefrontWavefrontOutput::Query.new(load_query_response, {})
-    @wfr = WavefrontWavefrontOutput::Query.new(load_raw_query_response,
-    { raw: true, host: 'www-blue', '<metric>': 'solaris.network.obytes64' })
+    @wfr = WavefrontWavefrontOutput::Query.new(
+      load_raw_query_response,
+      raw: true,
+      host: 'www-blue',
+      '<metric>': 'solaris.network.obytes64'
+    )
   end
 
   def test_wavefront_format
     assert_equal(
       'metric.path 1.23 1533682320 source=testhost',
-      wfq.wavefront_format('metric.path', 1.23, 1533682320, 'testhost')
+      wfq.wavefront_format('metric.path', 1.23, 1_533_682_320, 'testhost')
     )
 
     assert_equal(
       'metric.path 1.234567 1533682320 source=testhost tag="val"',
-      wfq.wavefront_format('metric.path', 1.234567, 1533682320, 'testhost',
-                           {tag: 'val'})
+      wfq.wavefront_format('metric.path', 1.234567, 1_533_682_320,
+                           'testhost', tag: 'val')
     )
 
     assert_equal(
       'metric.path 1 1533682320 source=testhost tag1="val1" tag2="val2"',
-      wfq.wavefront_format('metric.path', 1, 1533682320, 'testhost',
-                           {tag1: 'val1', tag2: 'val2'})
+      wfq.wavefront_format('metric.path', 1, 1_533_682_320, 'testhost',
+                           tag1: 'val1', tag2: 'val2')
     )
   end
 
@@ -40,7 +44,8 @@ class WavefrontOutputWavefrontTest < MiniTest::Test
       'solaris.network.obytes64 20910.38968253968 1533679200 ' \
       'source=wavefront-blue colour="blue" environment="production" ' \
       'product="websites" role="wavefront-proxy" nic="net0" ' \
-      'platform="JPC-triton" dc="eu-ams-1"', out[0])
+      'platform="JPC-triton" dc="eu-ams-1"', out[0]
+    )
 
     assert_equal(24, out.size)
     check_wf_native_output(out)

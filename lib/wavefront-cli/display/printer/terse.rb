@@ -1,7 +1,7 @@
 require_relative 'base'
 
 module WavefrontDisplayPrinter
-
+  #
   # Print things which are per-row. The terse listings, primarily
   #
   class Terse < Base
@@ -26,6 +26,7 @@ module WavefrontDisplayPrinter
     #
     # @return [Hash] with the same keys as :keys and Integer values
     #
+    # rubocop:disable Metrics/AbcSize
     def longest_keys
       keys.each_with_object(Hash[*keys.map { |k| [k, 0] }.flatten]) \
       do |k, aggr|
@@ -37,6 +38,7 @@ module WavefrontDisplayPrinter
         end
       end
     end
+    # rubocop:enable Metrics/AbcSize
 
     # Print multiple column output. This method does no word
     # wrapping.

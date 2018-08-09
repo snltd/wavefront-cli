@@ -3,6 +3,8 @@
 require_relative '../../spec_helper'
 require_relative '../../../lib/wavefront-cli/output/wavefront'
 
+# Test the Wavefront instantiation of the base class
+#
 class WavefrontOutputBaseTest < MiniTest::Test
   attr_reader :wfo
 
@@ -36,7 +38,7 @@ class WavefrontOutputBaseTest < MiniTest::Test
 
     (CMDS - supported_commands).each do |cmd|
       wfo = WavefrontOutput::Wavefront.new(load_query_response, class: cmd)
-      assert_raises(LoadError) { wfo.command_class  }
+      assert_raises(LoadError) { wfo.command_class }
     end
   end
 end

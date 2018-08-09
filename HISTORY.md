@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.8.0 (08/08/2018)
+* Add `wavefront` format to the `query` command. This outputs the
+  result of a raw or timeseries query in a format which can be fed
+  back into Wavefront via a proxy.
+* Use 1.6.0 of * [wavefront-sdk](https://github.com/snltd/wavefront-sdk).
+* Restructure the way different output formats are handled in a
+  better, more flexible way.
+
 ## 2.7.0 (04/07/2018)
 
 * Add a `-i` option to the `report` command, to send delta metrics.

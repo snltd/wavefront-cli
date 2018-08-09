@@ -3,7 +3,6 @@ require_relative 'base'
 # Define the Alert command
 #
 class WavefrontCommandAlert < WavefrontCommandBase
-
   def description
     'view and manage alerts'
   end

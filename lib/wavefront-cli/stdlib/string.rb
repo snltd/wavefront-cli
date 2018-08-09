@@ -4,22 +4,22 @@ class String
   # Fold long command lines. We can't break on a space after an
   # option or it confuses docopt.
   #
-  # @param tw [Integer] terminal width
+  # @param twidth [Integer] terminal width
   # @param indent [Integer] size of hanging indent, in chars
   #
-  def cmd_fold(tw = TW, indent = 10)
-    gsub(/(-\w) /, '\\1^').scan_line(tw - 12).join("\n" + ' ' * indent)
+  def cmd_fold(twidth = TW, indent = 10)
+    gsub(/(-\w) /, '\\1^').scan_line(twidth - 12).join("\n" + ' ' * indent)
                           .restored
   end
 
   # Wrapper around #fold()
   #
-  # @param tw [Integer] width of terminal, in chars
+  # @param twidth [Integer] width of terminal, in chars
   # @param indent [Integer] hanging indent of following lines
   # @return [String] folded and indented string
   #
-  def opt_fold(tw = TW, indent = 10)
-    fold(tw, indent, '  ')
+  def opt_fold(twidth = TW, indent = 10)
+    fold(twidth, indent, '  ')
   end
 
   # Fold long lines with a hanging indent. Originally a special case
@@ -27,23 +27,25 @@ class String
   # more general. Don't line-break default values, because it also
   # breaks docopt.
   #
-  # @param tw [Integer] terminal width
+  # @param twidth [Integer] terminal width
   # @param indent [Integer] size of hanging indent, in chars
   # @param prefix [String] prepended to every line
   # @return [String] the folded line
   #
-  def fold(tw = TW, indent = 10, prefix = '')
-    chunks = gsub(/default: /, 'default:^').scan_line(tw - 8)
+  # rubocop:disable Metrics/AbcSize
+  def fold(twidth = TW, indent = 10, prefix = '')
+    chunks = gsub(/default: /, 'default:^').scan_line(twidth - 8)
     first_line = format("%s%s\n", prefix, chunks.shift)
 
     return first_line.restored if chunks.empty?
 
-    rest = chunks.join(' ').scan_line(tw - indent - 5).map do |l|
+    rest = chunks.join(' ').scan_line(twidth - indent - 5).map do |l|
       prefix + ' ' * indent + l
     end
 
     (first_line + rest.join("\n") + "\n").restored
   end
+  # rubocop:enable Metrics/AbcSize
 
   # We use a carat as a temporary whitespace character to avoid
   # undesirable line breaking. This puts it back
@@ -84,7 +86,9 @@ class String
   # @return [String]
   #
   def to_snake
-    self.gsub(/(.)([A-Z])/) { Regexp.last_match[1] + '_' +
-                              Regexp.last_match[2].downcase }
+    gsub(/(.)([A-Z])/) do
+      Regexp.last_match[1] + '_' +
+        Regexp.last_match[2].downcase
+    end
   end
 end
