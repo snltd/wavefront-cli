@@ -18,6 +18,7 @@ class WavefrontCommandLink < WavefrontCommandBase
   def _commands
     ["list #{CMN} [-l] [-f format] [-o offset] [-L limit]",
      "describe #{CMN} [-f format] <id>",
+     "create #{CMN} <name> <description> <template>",
      "delete #{CMN} <id>",
      "import #{CMN} <file>",
      "update #{CMN} <key=value> <id>",
