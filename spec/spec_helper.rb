@@ -94,6 +94,7 @@ def cmd_to_call(word, args, call, sdk_class = nil)
             ),
             :respond
           ).and_return({})
+
           d = Spy.on_instance_method(sdk_class, :display)
           WavefrontCliController.new(cmd.split)
           assert d.has_been_called?
