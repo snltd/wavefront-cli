@@ -41,4 +41,35 @@ describe "#{word} command" do
                 }.to_json,
                 headers: JSON_POST_HEADERS },
               WavefrontCli::ExternalLink)
+
+  cmd_to_call(word, 'create -m metricregex -s sourceregex name ' \
+                    'description template',
+              { method: :post,
+                path:   '/api/v2/extlink',
+                body: {
+                  name:              'name',
+                  template:          'template',
+                  description:       'description',
+                  metricFilterRegex: 'metricregex',
+                  sourceFilterRegex: 'sourceregex'
+                }.to_json,
+                headers: JSON_POST_HEADERS },
+              WavefrontCli::ExternalLink)
+
+  cmd_to_call(word, 'create -p key1=reg1 -p key2=reg2 ' \
+                    '-m metricregex name description template',
+              { method: :post,
+                path:   '/api/v2/extlink',
+                body: {
+                  name:              'name',
+                  template:          'template',
+                  description:       'description',
+                  metricFilterRegex: 'metricregex',
+                  pointFilterRegex: {
+                    key1: 'reg1',
+                    key2: 'reg2'
+                  }
+                }.to_json,
+                headers: JSON_POST_HEADERS },
+              WavefrontCli::ExternalLink)
 end
