@@ -18,7 +18,8 @@ class WavefrontCommandLink < WavefrontCommandBase
   def _commands
     ["list #{CMN} [-l] [-f format] [-o offset] [-L limit]",
      "describe #{CMN} [-f format] <id>",
-     "create #{CMN} <name> <description> <template>",
+     "create #{CMN} [-m regex] [-s regex] [-p str=regex...] <name> " \
+     '<description> <template>',
      "delete #{CMN} <id>",
      "import #{CMN} <file>",
      "update #{CMN} <key=value> <id>",
@@ -30,6 +31,9 @@ class WavefrontCommandLink < WavefrontCommandBase
      '-l, --long               list external links in detail',
      '-o, --offset=n           start from nth external link',
      '-L, --limit=COUNT        number of external link to list',
+     '-m, --metric-regex=REGEX metric filter regular expression',
+     '-s, --source-regex=REGEX source filter regular expression',
+     '-p, --point-regex=REGEX  point filter regular expression',
      '-f, --format=STRING      output format']
   end
 end
