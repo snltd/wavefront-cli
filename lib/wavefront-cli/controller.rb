@@ -31,8 +31,8 @@ class WavefrontCliController
     cmd, opts = parse_args
     @opts = parse_opts(opts)
     pp @opts if @opts[:debug]
-    hook = load_sdk(cmd, @opts)
-    run_command(hook)
+    cli_class_obj = load_cli_class(cmd, @opts)
+    run_command(cli_class_obj)
   end
 
   # What you see when you do 'wf --help'
@@ -79,29 +79,52 @@ class WavefrontCliController
     WavefrontCli::OptHandler.new(options).opts
   end
 
-  # Get the SDK class we need to run the command we've been given.
+  # Get the CLI class we need to run the command we've been given.
   #
   # @param cmd [String]
-  def load_sdk(cmd, opts)
+  # @return WavefrontCli::cmd
+  #
+  # rubocop:disable Metrics/AbcSize
+  def load_cli_class(cmd, opts)
     require_relative File.join('.', cmds[cmd].sdk_file)
     Object.const_get('WavefrontCli').const_get(cmds[cmd].sdk_class).new(opts)
   rescue WavefrontCli::Exception::UnhandledCommand
-    abort 'Fatal error. Unsupported command.'
-  rescue StandardError => e
-    p e
+    abort 'Fatal error. Unsupported command. Please open a Github issue.'
+  rescue RuntimeError => e
+    puts e.message
+    abort 'Unable to run command.'
   end
+  # rubocop:enable Metrics/AbcSize
 
-  def run_command(hook)
-    hook.validate_opts
-    hook.run
+  # rubocop:disable Metrics/AbcSize
+  # rubocop:disable Metrics/MethodLength
+  def run_command(cli_class_obj)
+    cli_class_obj.validate_opts
+    cli_class_obj.run
+  rescue WavefrontCli::Exception::CredentialError => e
+    abort "Credential error. #{e.message}"
   rescue WavefrontCli::Exception::UnsupportedOutput => e
     abort e.message
+  rescue WavefrontCli::Exception::InsufficientData => e
+    abort "Insufficient data. #{e.message}"
+  rescue WavefrontCli::Exception::UnsupportedFileFormat
+    abort 'Unsupported file format.'
+  rescue WavefrontCli::Exception::UnparseableInput
+    abort 'Cannot parse input.'
+  rescue WavefrontCli::Exception::FileNotFound
+    abort 'File not found.'
+  rescue WavefrontCli::Exception::UnparseableInput
+    abort 'Cannot parse input.'
+  rescue WavefrontCli::Exception::SystemError
+    abort "Host system error. #{e.message}"
   rescue StandardError => e
     warn "general error: #{e}"
     warn "re-run with '-D' for stack trace." unless opts[:debug]
     warn "Backtrace:\n\t#{e.backtrace.join("\n\t")}" if opts[:debug]
     abort
   end
+  # rubocop:enable Metrics/MethodLength
+  # rubocop:enable Metrics/AbcSize
 
   # Each command is defined in its own file. Dynamically load all
   # those commands.

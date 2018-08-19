@@ -40,11 +40,19 @@ module WavefrontCli
       if file == '-'
         read_stdin
       else
-        data = load_data(Pathname.new(file)).split("\n").map do |l|
-          process_line(l)
-        end
-
+        data = process_input_file(load_data(Pathname.new(file)).split("\n"))
         call_write(data)
+      end
+    end
+
+    def process_input_file(data)
+      data.each_with_object([]) do |l, a|
+        begin
+          a.<< process_line(l)
+        rescue WavefrontCli::Exception::UnparseableInput => e
+          puts "Bad input. #{e.message}."
+          next
+        end
       end
     end
 
@@ -82,10 +90,9 @@ module WavefrontCli
 
     # Find and return the source in a chunked line of input.
     #
-    # param chunks [Array] a chunked line of input from #process_line
-    # return [Float] the timestamp, if it is there, or the current
+    # @param chunks [Array] a chunked line of input from #process_line
+    # @return [Float] the timestamp, if it is there, or the current
     #   UTC time if it is not.
-    # raise TypeError if field does not exist
     #
     def extract_ts(chunks)
       ts = chunks[fmt.index('t')]
@@ -134,24 +141,31 @@ module WavefrontCli
     # what they define is always assumed to be point tags.  This is
     # because you can have arbitrarily many of those for each point.
     #
+    # @raise WavefrontCli::Exception::UnparseableInput if the line
+    #   doesn't look right
+    #
     # rubocop:disable Metrics/AbcSize
+    # rubocop:disable Metrics/MethodLength
     def process_line(line)
       return true if line.empty?
       chunks = line.split(/\s+/, fmt.length)
-      raise 'wrong number of fields' unless enough_fields?(line)
+      enough_fields? # can raise exception
 
       begin
         point = { path:  extract_path(chunks),
+                  tags:  line_tags(chunks),
                   value: extract_value(chunks) }
-        point[:ts] = extract_ts(chunks) if fmt.include?('t')
+
+        point[:ts]     = extract_ts(chunks)     if fmt.include?('t')
         point[:source] = extract_source(chunks) if fmt.include?('s')
-        point[:tags] = line_tags(chunks)
       rescue TypeError
-        raise "could not process #{line}"
+        raise(WavefrontCli::Exception::UnparseableInput,
+              "could not process #{line}")
       end
 
       point
     end
+    # rubocop:enable Metrics/MethodLength
     # rubocop:enable Metrics/AbcSize
 
     # We can get tags from the file, from the -T option, or both.
@@ -194,7 +208,9 @@ module WavefrontCli
         return true
       end
 
-      raise 'Invalid format string.'
+      raise WavefrontCli::Exception::UnparseableInput(
+        'Invalid format string.'
+      )
     end
 
     # Make sure we have the right number of columns, according to
@@ -207,14 +223,9 @@ module WavefrontCli
     #
     def enough_fields?(line)
       ncols = line.split.length
-
-      if fmt.include?('T')
-        return false unless ncols >= fmt.length
-      else
-        return false unless ncols == fmt.length
-      end
-
-      true
+      return true if fmt.include?('T') && ncols >= fmt.length
+      return true if ncols == fmt.length
+      raise WavefrontCli::Exception::UnparseableInput, 'wrong number of fields'
     end
 
     # Although the SDK does value checking, we'll add another layer
@@ -235,8 +246,9 @@ module WavefrontCli
     end
 
     def load_data(file)
-      raise "Cannot open file '#{file}'." unless file.exist?
       IO.read(file)
+    rescue StandardError
+      raise WavefrontCli::Exception::FileNotFound
     end
   end
 end

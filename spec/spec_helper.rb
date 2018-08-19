@@ -153,7 +153,7 @@ def missing_creds(cmd, subcmds)
     subcmds.each do |subcmd|
       it "'#{subcmd}' errors and tells the user to use a token" do
         out, err = fail_command("#{cmd} #{subcmd} -c /f")
-        assert_match(/supply an API token/, err)
+        assert_equal("Credential error. Missing API token.\n", err)
         assert_match(%r{config file '/f' not found.}, out)
       end
     end
