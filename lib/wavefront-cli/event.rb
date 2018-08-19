@@ -9,7 +9,7 @@ module WavefrontCli
   #
   # CLI coverage for the v2 'event' API.
   #
-  class Event < WavefrontCli::Base
+  class Event < Base
     attr_reader :state_dir
     include Wavefront::Mixins
 
@@ -142,7 +142,8 @@ module WavefrontCli
     def local_event_list
       state_dir.children
     rescue Errno::ENOENT
-      raise 'There is no event state directory on this host.'
+      raise(WavefrontCli::Exception::SystemError,
+            'There is no event state directory on this host.')
     end
 
     # Run a command, stream stderr and stdout to the screen (they
@@ -172,21 +173,19 @@ module WavefrontCli
     #
     def create_state_file(id, hosts = [])
       fname = state_dir + id
-
-      begin
-        File.open(fname, 'w') { hosts.to_s }
-      rescue StandardError
-        raise 'Event was created but state file was not.'
-      end
-
+      File.open(fname, 'w') { hosts.to_s }
       puts "Event state recorded at #{fname}."
+    rescue StandardError
+      puts 'NOTICE: event was created but state file was not.'
     end
 
     def create_state_dir
       FileUtils.mkdir_p(state_dir)
-      return true if state_dir.exist? && state_dir.directory? &&
-                     state_dir.writable?
-      raise 'Cannot create state directory.'
+      raise unless state_dir.exist? && state_dir.directory? &&
+                   state_dir.writable?
+    rescue StandardError
+      raise(WavefrontCli::Exception::SystemError,
+            "Cannot create writable system directory at '#{state_dir}'.")
     end
 
     def validate_input

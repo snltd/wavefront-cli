@@ -245,10 +245,9 @@ module WavefrontCli
                                        format.to_s.capitalize))
       oclass.new(resp, options).run
     rescue LoadError
-      raise WavefrontCli::Exception::UnsupportedOutput,
+      raise(WavefrontCli::Exception::UnsupportedOutput,
             format("The '%s' command does not support '%s' output.",
-                   options[:class],
-                   format)
+                   options[:class], format))
     end
     # rubocop:enable Metrics/AbcSize
 
@@ -269,14 +268,13 @@ module WavefrontCli
     #
     def validate_opts
       unless options[:token]
-        raise WavefrontCli::Exception::CredentialError.new(
-          'Missing API token.')
+        raise(WavefrontCli::Exception::CredentialError,
+              'Missing API token.')
       end
 
-      unless options[:endpoint]
-        raise WavefrontCli::Exception::CredentialError.new(
-          'Missing API endpoint.')
-      end
+      return true if options[:endpoint]
+      raise(WavefrontCli::Exception::CredentialError,
+            'Missing API endpoint.')
     end
 
     # Give it a path to a file (as a string) and it will return the
@@ -286,7 +284,8 @@ module WavefrontCli
     #
     # @param path [String] the file to load
     # @return [Hash] a Ruby object of the loaded file
-    # @raise 'Unsupported file format.' if the filetype is unknown.
+    # @raise WavefrontCli::Exception::UnsupportedFileFormat if the
+    #   filetype is unknown.
     # @raise pass through any error loading or parsing the file
     #
     # rubocop:disable Metrics/AbcSize
@@ -294,14 +293,15 @@ module WavefrontCli
       return load_from_stdin if path == '-'
 
       file = Pathname.new(path)
-      raise 'Import file does not exist.' unless file.exist?
+
+      raise WavefrontCli::Exception::FileNotFound unless file.exist?
 
       if file.extname == '.json'
         JSON.parse(IO.read(file))
       elsif file.extname == '.yaml' || file.extname == '.yml'
         YAML.safe_load(IO.read(file))
       else
-        raise 'Unsupported file format.'
+        raise WavefrontCli::Exception::UnsupportedFileFormat
       end
     end
     # rubocop:enable Metrics/AbcSize
@@ -312,7 +312,8 @@ module WavefrontCli
     # appears to be a valid assumption for use-cases of this CLI.
     #
     # @return [Object]
-    # @raise 'cannot parse stdin' if it, well you know.
+    # @raise Wavefront::Exception::UnparseableInput if the input
+    #   does not parse
     #
     def load_from_stdin
       raw = STDIN.read
@@ -323,7 +324,7 @@ module WavefrontCli
         JSON.parse(raw)
       end
     rescue RuntimeError
-      raise 'Cannot parse stdin.'
+      raise Wavefront::Exception::UnparseableInput
     end
 
     # Below here are common methods. Most are used by most classes,
@@ -346,7 +347,7 @@ module WavefrontCli
         prepped = import_to_create(raw)
       rescue StandardError => e
         puts e if options[:debug]
-        raise 'could not parse input.'
+        raise Wavefront::Exception::UnparseableInput
       end
 
       wf.create(prepped)
