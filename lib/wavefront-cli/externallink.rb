@@ -12,5 +12,13 @@ module WavefrontCli
     def validator_exception
       Wavefront::Exception::InvalidExternalLinkId
     end
+
+    def do_create
+      body = { name:        options[:'<name>'],
+               template:    options[:'<template>'],
+               description: options[:'<description>'] }
+
+      wf.create(body)
+    end
   end
 end
