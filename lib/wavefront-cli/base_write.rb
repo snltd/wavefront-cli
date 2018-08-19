@@ -40,16 +40,19 @@ module WavefrontCli
       if file == '-'
         read_stdin
       else
-        data = load_data(Pathname.new(file)).split("\n").map do |l|
-          begin
-            process_line(l)
-          rescue WavefrontCli::Exception::UnparseableInput => e
-            puts "Bad input. #{e.message}."
-            next
-          end
-        end
-
+        data = process_input_file(load_data(Pathname.new(file)).split("\n"))
         call_write(data)
+      end
+    end
+
+    def process_input_file(data)
+      data.each_with_object([]) do |l, a|
+        begin
+          a.<< process_line(l)
+        rescue WavefrontCli::Exception::UnparseableInput => e
+          puts "Bad input. #{e.message}."
+          next
+        end
       end
     end
 
@@ -150,10 +153,11 @@ module WavefrontCli
 
       begin
         point = { path:  extract_path(chunks),
+                  tags:  line_tags(chunks),
                   value: extract_value(chunks) }
-        point[:ts] = extract_ts(chunks) if fmt.include?('t')
+
+        point[:ts]     = extract_ts(chunks)     if fmt.include?('t')
         point[:source] = extract_source(chunks) if fmt.include?('s')
-        point[:tags] = line_tags(chunks)
       rescue TypeError
         raise(WavefrontCli::Exception::UnparseableInput,
               "could not process #{line}")
