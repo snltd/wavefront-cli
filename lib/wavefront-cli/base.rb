@@ -372,9 +372,16 @@ module WavefrontCli
 
       query = conds_to_query(cond)
 
-      wfs.search(klass_word, query, limit: options[:limit],
+      wfs.search(search_key, query, limit:  options[:limit],
                                     offset: options[:offset] ||
                                             options[:cursor])
+    end
+
+    # The search URI pattern doesn't always match the command name,
+    # or class name. Override this method if this is the case.
+    #
+    def search_key
+      klass_word
     end
 
     # Turn a list of search conditions into an API query
