@@ -1,5 +1,6 @@
 module WavefrontCli
   class Exception
+    class UnsupportedOperation < RuntimeError; end
     class UnhandledCommand < RuntimeError; end
     class UnparseableInput < RuntimeError; end
     class UnsupportedOutput < RuntimeError; end

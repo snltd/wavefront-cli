@@ -1,7 +1,7 @@
 # For development against a local checkout of the SDK, uncomment
 # this definition
 #
-# DEVELOPMENT = true
+DEVELOPMENT = true
 
 if defined?(DEVELOPMENT)
   dir = Pathname.new(__FILE__).dirname.realpath.parent.parent.parent
@@ -115,8 +115,10 @@ class WavefrontCliController
     abort 'File not found.'
   rescue WavefrontCli::Exception::UnparseableInput
     abort 'Cannot parse input.'
-  rescue WavefrontCli::Exception::SystemError
+  rescue WavefrontCli::Exception::SystemError => e
     abort "Host system error. #{e.message}"
+  rescue WavefrontCli::Exception::UnsupportedOperation => e
+    abort "Unsupported operation.\n#{e.message}"
   rescue StandardError => e
     warn "general error: #{e}"
     warn "re-run with '-D' for stack trace." unless opts[:debug]
