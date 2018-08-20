@@ -22,7 +22,7 @@ describe "#{word} command" do
 
   cmd_to_call(word, "search -L 100 id~#{id}",
               { method: :post,
-                path:   '/api/v2/search/externallink',
+                path:   '/api/v2/search/extlink',
                 body:   { limit: '100',
                           offset: 0,
                           query: [{ key: 'id',
