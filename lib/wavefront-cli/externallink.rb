@@ -24,6 +24,10 @@ module WavefrontCli
       wf.create(body.select { |_k, v| v })
     end
 
+    def search_key
+      :extlink
+    end
+
     private
 
     def point_filter_regexes
