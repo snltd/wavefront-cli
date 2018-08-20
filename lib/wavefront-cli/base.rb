@@ -84,7 +84,8 @@ module WavefrontCli
         begin
           send(:wf_tag?, t)
         rescue Wavefront::Exception::InvalidTag
-          abort "'#{t}' is not a valid tag."
+          raise(WavefrontCli::Exception::InvalidInput,
+                "'#{t}' is not a valid tag.")
         end
       end
     end
@@ -347,7 +348,7 @@ module WavefrontCli
         prepped = import_to_create(raw)
       rescue StandardError => e
         puts e if options[:debug]
-        raise Wavefront::Exception::UnparseableInput
+        raise WavefrontCli::Exception::UnparseableInput
       end
 
       wf.create(prepped)
@@ -364,6 +365,10 @@ module WavefrontCli
     def do_update
       k, v = options[:'<key=value>'].split('=', 2)
       wf.update(options[:'<id>'], k => v)
+    rescue NoMethodError
+      raise(WavefrontCli::Exception::UnsupportedOperation,
+            'Updates require two API calls. We cannot do the second ' \
+            'when -n is set.')
     end
 
     def do_search(cond = options[:'<condition>'])

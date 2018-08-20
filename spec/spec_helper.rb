@@ -132,7 +132,7 @@ def invalid_tags(cmd, subcmds)
   subcmds.each do |sc|
     it "fails '#{sc}' because of an invalid tag" do
       _out, err = fail_command("#{cmd} #{sc}")
-      assert_equal(err, "'#{BAD_TAG}' is not a valid tag.\n")
+      assert_equal(err, "Invalid input. '#{BAD_TAG}' is not a valid tag.\n")
     end
   end
 end

@@ -90,9 +90,10 @@ class WavefrontCliController
     Object.const_get('WavefrontCli').const_get(cmds[cmd].sdk_class).new(opts)
   rescue WavefrontCli::Exception::UnhandledCommand
     abort 'Fatal error. Unsupported command. Please open a Github issue.'
+  rescue WavefrontCli::Exception::InvalidInput => e
+    abort "Invalid input. #{e.message}"
   rescue RuntimeError => e
-    puts e.message
-    abort 'Unable to run command.'
+    abort "Unable to run command. #{e.message}."
   end
   # rubocop:enable Metrics/AbcSize
 
@@ -115,8 +116,10 @@ class WavefrontCliController
     abort 'File not found.'
   rescue WavefrontCli::Exception::UnparseableInput
     abort 'Cannot parse input.'
-  rescue WavefrontCli::Exception::SystemError
+  rescue WavefrontCli::Exception::SystemError => e
     abort "Host system error. #{e.message}"
+  rescue WavefrontCli::Exception::UnsupportedOperation => e
+    abort "Unsupported operation.\n#{e.message}"
   rescue StandardError => e
     warn "general error: #{e}"
     warn "re-run with '-D' for stack trace." unless opts[:debug]
