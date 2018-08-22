@@ -1,10 +1,19 @@
 # Changelog
 
+## 2.9.0 (22/08/2018)
+* Create external links with new `link create` sub-command.
+* Fix bug which stopped you writing points without a `.wavefront`
+  configuration file.
+* Improved error reporting.
+* Bugfix on external link searching.
+* Modify external link filters.
+* Use 1.6.1 of [wavefront-sdk](https://github.com/snltd/wavefront-sdk).
+
 ## 2.8.0 (08/08/2018)
 * Add `wavefront` format to the `query` command. This outputs the
   result of a raw or timeseries query in a format which can be fed
   back into Wavefront via a proxy.
-* Use 1.6.0 of * [wavefront-sdk](https://github.com/snltd/wavefront-sdk).
+* Use 1.6.0 of [wavefront-sdk](https://github.com/snltd/wavefront-sdk).
 * Restructure the way different output formats are handled in a
   better, more flexible way.
 
