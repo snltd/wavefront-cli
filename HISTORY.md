@@ -1,5 +1,8 @@
 # Changelog
 
+## 2.9.1 (22/08/2018)
+* Use 1.6.2 of [wavefront-sdk](https://github.com/snltd/wavefront-sdk).
+
 ## 2.9.0 (22/08/2018)
 * Create external links with new `link create` sub-command.
 * Fix bug which stopped you writing points without a `.wavefront`
