@@ -12,14 +12,19 @@ module WavefrontCli
     end
 
     def validate_opts
-      unless options[:metric] || options[:format].include?('m')
-        raise(WavefrontCli::Exception::InsufficientData,
-              "Supply a metric path in the file or with '-m'.")
-      end
+      validate_opts_file if options[:file]
 
       return true if options[:proxy]
       raise(WavefrontCli::Exception::CredentialError,
             'Missing proxy address.')
+    end
+
+    def validate_opts_file
+      unless options[:metric] || (options.key?(:infileformat) &&
+                                  options[:infileformat].include?('m'))
+        raise(WavefrontCli::Exception::InsufficientData,
+              "Supply a metric path in the file or with '-m'.")
+      end
     end
 
     def open_connection

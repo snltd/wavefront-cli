@@ -11,7 +11,7 @@ class WavefrontCommandWrite < WavefrontCommandBase
     ['point [-DnViq] [-c file] [-P profile] [-E proxy] [-t time] ' \
      '[-p port] [-H host] [-T tag...] <metric> <value>',
      'file [-DnViq] [-c file] [-P profile] [-E proxy] [-H host] ' \
-     '[-p port] [-F format] [-m metric] [-T tag...] <file>']
+     '[-p port] [-F infileformat] [-m metric] [-T tag...] <file>']
   end
 
   def _options

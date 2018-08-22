@@ -110,8 +110,8 @@ class WavefrontCliController
     abort "Insufficient data. #{e.message}"
   rescue WavefrontCli::Exception::UnsupportedFileFormat
     abort 'Unsupported file format.'
-  rescue WavefrontCli::Exception::UnparseableInput
-    abort 'Cannot parse input.'
+  rescue WavefrontCli::Exception::UnparseableInput => e
+    abort "Cannot parse input. #{e.message}"
   rescue WavefrontCli::Exception::FileNotFound
     abort 'File not found.'
   rescue WavefrontCli::Exception::UnparseableInput
