@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.9.2 (22/08/2018)
+* Fix regression which broke the `wf` command when it ran without a
+  tty.
+
 ## 2.9.1 (22/08/2018)
 * Use 1.6.2 of [wavefront-sdk](https://github.com/snltd/wavefront-sdk).
 
