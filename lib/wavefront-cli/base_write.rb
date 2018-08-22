@@ -149,7 +149,7 @@ module WavefrontCli
     def process_line(line)
       return true if line.empty?
       chunks = line.split(/\s+/, fmt.length)
-      enough_fields? # can raise exception
+      enough_fields?(line) # can raise exception
 
       begin
         point = { path:  extract_path(chunks),
@@ -208,9 +208,8 @@ module WavefrontCli
         return true
       end
 
-      raise WavefrontCli::Exception::UnparseableInput(
-        'Invalid format string.'
-      )
+      raise(WavefrontCli::Exception::UnparseableInput,
+            'Invalid format string.')
     end
 
     # Make sure we have the right number of columns, according to
