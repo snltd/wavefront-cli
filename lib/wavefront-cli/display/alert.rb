@@ -16,13 +16,13 @@ module WavefrontDisplay
     end
 
     def do_firing
-      readable_time_arr(:startTime)
-      multicolumn(:id, :name, :startTime)
+      readable_time_arr(:time)
+      multicolumn(:id, :time, :name)
     end
 
     def do_snoozed
-      readable_time_arr(:startTime)
-      multicolumn(:id, :name, :startTime)
+      readable_time_arr(:time)
+      multicolumn(:id, :time, :name)
     end
 
     def do_describe
