@@ -53,10 +53,21 @@ module WavefrontCli
       search = do_search([format('status=%s', status)])
 
       items = search.response.items.map do |i|
-        { name: i.name, id: i.id, startTime: i.event.startTime }
+        { name: i.name, id: i.id, time: state_time(i) }
       end
 
       search.tap { |s| s.response[:items] = items }
+    end
+
+    # Snoozed alerts don't have a start time, they have a "snoozed"
+    # time. This is -1 if they are snoozed forever: the formatting
+    # methods know what to do with that.
+    # @return [Integer]
+    #
+    def state_time(item)
+      return item[:event][:startTime] if item.key?(:event)
+      return item[:snoozed] if item.key?(:snoozed)
+      nil
     end
 
     # Take a previously exported alert, and construct a hash which

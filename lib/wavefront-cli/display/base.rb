@@ -267,27 +267,32 @@ module WavefrontDisplay
     #   used for unit tests.
     # return [String] a human-readable timestamp
     #
-    # rubocop:disable Metrics/MethodLength
     def human_time(time, force_utc = false)
       raise ArgumentError unless time.is_a?(Numeric) || time.is_a?(String)
+
+      return 'FOREVER' if time == -1
+
       str = time.to_s
-
-      if str =~ /^\d{13}$/
-        fmt = '%Q'
-        out_fmt = HUMAN_TIME_FORMAT_MS
-      elsif str =~ /^\d{10}$/
-        fmt = '%s'
-        out_fmt = HUMAN_TIME_FORMAT
-      else
-        raise ArgumentError
-      end
-
+      fmt, out_fmt = time_formats(str)
       # rubocop:disable Style/DateTime
       ret = DateTime.strptime(str, fmt).to_time
       # rubocop:enable Style/DateTime
       ret = ret.utc if force_utc
       ret.strftime(out_fmt)
     end
-    # rubocop:enable Metrics/MethodLength
+
+    # How do we format a timestamp?
+    # @param str [String] an epoch timestamp, as a string
+    # @return [String, String] DateTime formatter, strptime formatter
+    #
+    def time_formats(str)
+      if str =~ /^\d{13}$/
+        ['%Q', HUMAN_TIME_FORMAT_MS]
+      elsif str =~ /^\d{10}$/
+        ['%s', HUMAN_TIME_FORMAT]
+      else
+        raise ArgumentError
+      end
+    end
   end
 end

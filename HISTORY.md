@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.9.3 (03/09/2018)
+* Fix a bug where indefinitely snoozed alerts broke `wf alert
+  snoozed`.
+
 ## 2.9.2 (22/08/2018)
 * Fix regression which broke the `wf` command when it ran without a
   tty.

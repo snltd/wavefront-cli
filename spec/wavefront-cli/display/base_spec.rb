@@ -157,5 +157,6 @@ class WavefrontDisplayBaseTest < MiniTest::Test
                  wf.human_time(Time.now.to_i))
     assert_equal('2017-07-07 11:23:35.123', wf.human_time(1_499_426_615_123,
                                                           true))
+    assert_equal('FOREVER', wf.human_time(-1))
   end
 end
