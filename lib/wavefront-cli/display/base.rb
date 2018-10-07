@@ -277,7 +277,7 @@ module WavefrontDisplay
       # rubocop:disable Style/DateTime
       ret = DateTime.strptime(str, fmt).to_time
       # rubocop:enable Style/DateTime
-      ret = ret.utc if force_utc
+      ret = force_utc ? ret.utc : ret.localtime
       ret.strftime(out_fmt)
     end
 
