@@ -1,6 +1,7 @@
 require 'yaml'
 require 'json'
 require 'wavefront-sdk/validators'
+require_relative 'constants'
 require_relative 'exception'
 
 module WavefrontCli
@@ -22,6 +23,7 @@ module WavefrontCli
     attr_accessor :wf, :options, :klass, :klass_word
 
     include Wavefront::Validators
+    include WavefrontCli::Constants
 
     def initialize(options)
       @options = options
@@ -50,7 +52,13 @@ module WavefrontCli
     end
 
     def options_and_exit
-      puts options
+      ok_exit(options)
+    end
+
+    # Print a message and exit 0
+    #
+    def ok_exit(message)
+      puts message
       exit 0
     end
 
@@ -334,6 +342,7 @@ module WavefrontCli
     # harm inheriting unneeded things. Some classes override them.
     #
     def do_list
+      return wf.list(ALL_PAGE_SIZE, :all) if options[:all]
       wf.list(options[:offset] || 0, options[:limit] || 100)
     end
 
@@ -374,12 +383,23 @@ module WavefrontCli
     def do_search(cond = options[:'<condition>'])
       require 'wavefront-sdk/search'
       wfs = Wavefront::Search.new(mk_creds, mk_opts)
-
       query = conds_to_query(cond)
+      wfs.search(search_key, query, range_hash)
+    end
 
-      wfs.search(search_key, query, limit:  options[:limit],
-                                    offset: options[:offset] ||
-                                            options[:cursor])
+    # If the user has specified --all, override any limit and offset
+    # values
+    #
+    def range_hash
+      if options[:all]
+        limit  = :all
+        offset = ALL_PAGE_SIZE
+      else
+        limit  = options[:limit]
+        offset = options[:offset] || options[:cursor]
+      end
+
+      { limit: limit, offset: offset }
     end
 
     # The search URI pattern doesn't always match the command name,

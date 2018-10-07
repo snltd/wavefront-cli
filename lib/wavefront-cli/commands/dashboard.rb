@@ -8,20 +8,21 @@ class WavefrontCommandDashboard < WavefrontCommandBase
   end
 
   def _commands
-    ["list #{CMN} [-l] [-f format] [-o offset] [-L limit]",
+    ["list #{CMN} [-al] [-f format] [-o offset] [-L limit]",
      "describe #{CMN} [-f format] [-v version] <id>",
      "import #{CMN} [-f format] <file>",
      "update #{CMN} <key=value> <id>",
      "delete #{CMN} <id>",
      "undelete #{CMN} <id>",
      "history #{CMN} [-f format] [-o offset] [-L limit] <id>",
-     "search #{CMN} [-f format] [-o offset] [-L limit] [-l] <condition>...",
+     "search #{CMN} [-al] [-f format] [-o offset] [-L limit] <condition>...",
      tag_commands]
   end
 
   def _options
     [common_options,
      '-l, --long               list dashboards in detail',
+     '-a, --all                list all dashboards',
      '-o, --offset=n           start list from nth dashboard or revision',
      '-L, --limit=COUNT        number of dashboards or revisions to list',
      '-v, --version=INTEGER    version of dashboard',

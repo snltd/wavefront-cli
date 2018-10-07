@@ -1,6 +1,6 @@
 require 'fileutils'
 require 'open3'
-require 'wavefront-sdk/mixins'
+require 'wavefront-sdk/support/mixins'
 require_relative 'base'
 
 EVENT_STATE_DIR = Pathname.new('/var/tmp/wavefront')
