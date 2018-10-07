@@ -89,10 +89,7 @@ def cmd_to_call(word, args, call, sdk_class = nil)
 
           require "wavefront-sdk/#{sdk_class.name.split('::').last.downcase}"
           Spy.on_instance_method(
-            Object.const_get(
-              "Wavefront::#{sdk_class.name.split('::').last}"
-            ),
-            :respond
+            Object.const_get('Wavefront::ApiCaller'), :respond
           ).and_return({})
 
           d = Spy.on_instance_method(sdk_class, :display)

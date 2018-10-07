@@ -1,4 +1,4 @@
-require 'wavefront-sdk/mixins'
+require 'wavefront-sdk/support/mixins'
 require_relative 'base'
 
 module WavefrontCli
