@@ -9,8 +9,8 @@ module WavefrontCli
   class Write < BaseWrite
     def do_distribution
       p = { path:     options[:'<metric>'],
-            interval: options[:'<interval>'],
-            values:   mk_dist,
+            interval: options[:interval] || 'M',
+            value:    mk_dist,
             tags:     tags_to_hash(options[:tag]) }
 
       p[:source] = options[:host] if options[:host]
@@ -28,8 +28,13 @@ module WavefrontCli
     # class. Write can use `write` or `distribution`.
     #
     def _sdk_class
-      return 'Wavefront::Distribution' if options[:distribution]
+      return 'Wavefront::Distribution' if distribution?
       'Wavefront::Write'
+    end
+
+    def distribution?
+      return true if options[:distribution]
+      options[:infileformat] && options[:infileformat].include?('d')
     end
 
     def mk_creds
@@ -37,15 +42,14 @@ module WavefrontCli
     end
 
     def default_port
-      options[:distribution] ? 40000 : 2878
+      distribution? ? 40000 : 2878
     end
 
     def validate_opts
       validate_opts_file if options[:file]
 
       return true if options[:proxy]
-      raise(WavefrontCli::Exception::CredentialError,
-            'Missing proxy address.')
+      raise(WavefrontCli::Exception::CredentialError, 'No proxy address.')
     end
 
     def validate_opts_file

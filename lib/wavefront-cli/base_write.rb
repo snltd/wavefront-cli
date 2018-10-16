@@ -86,8 +86,12 @@ module WavefrontCli
     # raise Wavefront::Exception::InvalidValue if it's not a value
     #
     def extract_value(chunks)
-      v = chunks[fmt.index('v')]
-      v.to_f
+      if fmt.include?('v')
+        v = chunks[fmt.index('v')]
+        v.to_f
+      else
+        wf.mk_distribution(chunks[fmt.index('d')].tr(',', ' '))
+      end
     end
 
     # Find and return the source in a chunked line of input.
@@ -158,8 +162,9 @@ module WavefrontCli
                   tags:  line_tags(chunks),
                   value: extract_value(chunks) }
 
-        point[:ts]     = extract_ts(chunks)     if fmt.include?('t')
-        point[:source] = extract_source(chunks) if fmt.include?('s')
+        point[:ts]       = extract_ts(chunks)        if fmt.include?('t')
+        point[:source]   = extract_source(chunks)    if fmt.include?('s')
+        point[:interval] = options[:interval] || 'm' if fmt.include?('d')
       rescue TypeError
         raise(WavefrontCli::Exception::UnparseableInput,
               "could not process #{line}")
@@ -197,21 +202,32 @@ module WavefrontCli
       end
     end
 
-    # The format string must contain a 'v'. It must not contain
-    # anything other than 'm', 't', 'T', 's', or 'v', and the 'T',
-    # if there, must be at the end. No letter must appear more than
-    # once.
+    # The format string must contain values. They can be single
+    # values or distributions. So we must have 'v' xor 'd'. It must
+    # not contain anything other than 'm', 't', 'T', 's', 'd', or
+    # 'v', and the 'T', if there, must be at the end. No letter must
+    # appear more than once.
     #
     # @param fmt [String] format of input file
     #
     def valid_format?(fmt)
-      if fmt.include?('v') && fmt.match(/^[mstv]+T?$/) &&
-         fmt == fmt.split('').uniq.join
-        return true
-      end
+      err = if fmt.include?('v') && fmt.include?('d')
+              "'v' and 'd' are mutually exclusive"
+            elsif !fmt.include?('v') && !fmt.include?('d')
+              "format string must include 'v' or 'd'"
+            elsif !fmt.match(/^[dmstTv]+$/)
+              'unsupported field in format string'
+            elsif !fmt == fmt.split('').uniq.join
+              'repeated field in format string'
+            elsif fmt.include?('T') && !fmt.end_with?('T')
+              "if used, 'T' must come at end of format string"
+            else
+              nil
+            end
 
-      raise(WavefrontCli::Exception::UnparseableInput,
-            'Invalid format string.')
+      return true if err.nil?
+
+      raise(WavefrontCli::Exception::UnparseableInput, err)
     end
 
     # Make sure we have the right number of columns, according to
