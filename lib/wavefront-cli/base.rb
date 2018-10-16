@@ -27,7 +27,7 @@ module WavefrontCli
 
     def initialize(options)
       @options = options
-      sdk_class = self.class.name.sub(/Cli/, '')
+      sdk_class = _sdk_class
       @klass_word = sdk_class.split('::').last.downcase
       validate_input
 
@@ -37,6 +37,13 @@ module WavefrontCli
       @klass = Object.const_get(sdk_class)
 
       send(:post_initialize, options) if respond_to?(:post_initialize)
+    end
+
+    # Normally we map the class name to a similar one in the SDK.
+    # Overriding his method lets you map to something else.
+    #
+    def _sdk_class
+      self.class.name.sub(/Cli/, '')
     end
 
     # Some subcommands don't make an API call, so they don't return

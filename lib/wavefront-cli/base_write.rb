@@ -24,7 +24,8 @@ module WavefrontCli
     def send_point(point)
       call_write(point)
     rescue Wavefront::Exception::InvalidEndpoint
-      abort "could not speak to proxy #{options[:proxy]}:#{options[:port]}."
+      abort format("Could not connect to proxy '%s:%s'.",
+                   options[:proxy], options[:port])
     end
 
     def do_file
@@ -56,7 +57,8 @@ module WavefrontCli
       end
     end
 
-    # A wrapper which lets us send normal points or deltas
+    # A wrapper which lets us send normal points, deltas, or
+    # distributions
     #
     def call_write(data)
       options[:delta] ? wf.write_delta(data) : wf.write(data)
