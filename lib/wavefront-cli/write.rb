@@ -18,8 +18,12 @@ module WavefrontCli
       send_point(p)
     end
 
+    # Turn our user's representation of a distribution into one
+    # which suits Wavefront. The SDK can do this for us.
+    #
     def mk_dist
-      wf.mk_distribution(options[:'<val>'].map(&:to_f))
+      xpanded = expand_dist(options[:'<val>'])
+      wf.mk_distribution(xpanded.map(&:to_f))
     end
 
     # I chose to prioritise UI consistency over internal elegance

@@ -10,7 +10,10 @@ class WavefrontCliBaseTest < MiniTest::Test
     @wf = WavefrontCli::Write.new({})
   end
 
-  def test_dist_values
-    assert_equal([[5, 12], [7, 1.1]], wf.dist_values(%w[5x12 7x1.1]))
+  def test_expand_dist
+    assert_equal(wf.expand_dist([1, 1, 1]), [1, 1, 1])
+    assert_equal(wf.expand_dist(['3x1']), [1, 1, 1])
+    assert_equal(wf.expand_dist(['3x1', '1x4']), [1, 1, 1, 4])
+    assert_equal(wf.expand_dist([1, 1, 1, '2x2']).sort, [2, 2, 1, 1, 1].sort)
   end
 end

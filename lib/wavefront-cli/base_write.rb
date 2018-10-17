@@ -90,8 +90,24 @@ module WavefrontCli
         v = chunks[fmt.index('v')]
         v.to_f
       else
-        wf.mk_distribution(chunks[fmt.index('d')].tr(',', ' '))
+        raw = chunks[fmt.index('d')].split(',')
+        xpanded = expand_dist(raw)
+        wf.mk_distribution(xpanded)
       end
+    end
+
+    # We will let users write a distribution as '1 1 1' or '3x1' or
+    # even a mix of the two
+    #
+    def expand_dist(dist)
+      dist.map do |v|
+        if v.is_a?(String) && v.include?('x')
+          x, val = v.split('x', 2)
+          Array.new(x.to_i, val.to_f)
+        else
+          v.to_f
+        end
+      end.flatten
     end
 
     # Find and return the source in a chunked line of input.
