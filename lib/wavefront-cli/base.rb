@@ -128,9 +128,12 @@ module WavefrontCli
     # @return [Hash] containing `debug`, `verbose`, and `noop`.
     #
     def mk_opts
-      { debug:   options[:debug],
-        verbose: options[:verbose],
-        noop:    options[:noop] }
+      ret = { debug:   options[:debug],
+              verbose: options[:verbose],
+              noop:    options[:noop] }
+
+      ret.merge!(extra_options) if respond_to?(:extra_options)
+      ret
     end
 
     # To allow a user to default to different output formats for
