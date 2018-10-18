@@ -262,7 +262,8 @@ module WavefrontCli
       ncols = line.split.length
       return true if fmt.include?('T') && ncols >= fmt.length
       return true if ncols == fmt.length
-      raise WavefrontCli::Exception::UnparseableInput, 'wrong number of fields'
+      raise(WavefrontCli::Exception::UnparseableInput,
+        format('Expected %s fields, got %s', fmt.length, ncols))
     end
 
     # Although the SDK does value checking, we'll add another layer
