@@ -120,6 +120,8 @@ class WavefrontCliController
     abort "Host system error. #{e.message}"
   rescue WavefrontCli::Exception::UnsupportedOperation => e
     abort "Unsupported operation.\n#{e.message}"
+  rescue Wavefront::Exception::UnsupportedWriter => e
+    abort "Unsupported writer '#{e.message}'."
   rescue StandardError => e
     warn "general error: #{e}"
     warn "re-run with '-D' for stack trace." unless opts[:debug]

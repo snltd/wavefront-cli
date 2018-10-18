@@ -26,6 +26,10 @@ module WavefrontCli
       wf.mk_distribution(xpanded.map(&:to_f))
     end
 
+    def extra_options
+      options[:using] ? { writer: options[:using] } : {}
+    end
+
     # I chose to prioritise UI consistency over internal elegance
     # here. The `write` command doesn't follow the age-old
     # assumption that each command maps 1:1 to a similarly named SDK
