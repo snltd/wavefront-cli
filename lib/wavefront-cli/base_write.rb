@@ -60,8 +60,12 @@ module WavefrontCli
     # A wrapper which lets us send normal points, deltas, or
     # distributions
     #
-    def call_write(data)
-      options[:delta] ? wf.write_delta(data) : wf.write(data)
+    def call_write(data, openclose = true)
+      if options[:delta]
+        wf.write_delta(data, openclose)
+      else
+        wf.write(data, openclose)
+      end
     end
 
     # Read from standard in and stream points through an open
@@ -70,7 +74,7 @@ module WavefrontCli
     #
     def read_stdin
       open_connection
-      STDIN.each_line { |l| call_write(process_line(l.strip)) }
+      STDIN.each_line { |l| call_write(process_line(l.strip), false) }
       close_connection
     rescue SystemExit, Interrupt
       puts 'ctrl-c. Exiting.'
