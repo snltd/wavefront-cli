@@ -55,7 +55,6 @@ end
 #  command
 # @param call [Hash]
 #
-# rubocop:disable Metrics/AbcSize
 def cmd_to_call(word, args, call, sdk_class = nil)
   headers = { 'Accept':          /.*/,
               'Accept-Encoding': /.*/,
@@ -102,7 +101,6 @@ def cmd_to_call(word, args, call, sdk_class = nil)
     end
   end
 end
-# rubocop:enable Metrics/AbcSize
 
 # Run a command we expect to fail, returning stdout and stderr
 #

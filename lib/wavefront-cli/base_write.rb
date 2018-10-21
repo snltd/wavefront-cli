@@ -172,6 +172,7 @@ module WavefrontCli
     #
     # rubocop:disable Metrics/AbcSize
     # rubocop:disable Metrics/MethodLength
+    # rubocop:disable Metrics/CyclomaticComplexity
     def process_line(line)
       return true if line.empty?
       chunks = line.split(/\s+/, fmt.length)
@@ -192,6 +193,7 @@ module WavefrontCli
 
       point
     end
+    # rubocop:enable Metrics/CyclomaticComplexity
     # rubocop:enable Metrics/MethodLength
     # rubocop:enable Metrics/AbcSize
 
@@ -230,6 +232,9 @@ module WavefrontCli
     #
     # @param fmt [String] format of input file
     #
+    # rubocop:disable Metrics/PerceivedComplexity
+    # rubocop:disable Metrics/CyclomaticComplexity
+    # rubocop:disable Metrics/AbcSize
     def valid_format?(fmt)
       err = if fmt.include?('v') && fmt.include?('d')
               "'v' and 'd' are mutually exclusive"
@@ -241,14 +246,15 @@ module WavefrontCli
               'repeated field in format string'
             elsif fmt.include?('T') && !fmt.end_with?('T')
               "if used, 'T' must come at end of format string"
-            else
-              nil
             end
 
       return true if err.nil?
 
       raise(WavefrontCli::Exception::UnparseableInput, err)
     end
+    # rubocop:enable Metrics/PerceivedComplexity
+    # rubocop:enable Metrics/CyclomaticComplexity
+    # rubocop:enable Metrics/AbcSize
 
     # Make sure we have the right number of columns, according to
     # the format string. We want to take every precaution we can to
@@ -263,7 +269,7 @@ module WavefrontCli
       return true if fmt.include?('T') && ncols >= fmt.length
       return true if ncols == fmt.length
       raise(WavefrontCli::Exception::UnparseableInput,
-        format('Expected %s fields, got %s', fmt.length, ncols))
+            format('Expected %s fields, got %s', fmt.length, ncols))
     end
 
     # Although the SDK does value checking, we'll add another layer

@@ -9,3 +9,5 @@ Metrics/ClassLength:
 Metrics/MethodLength:
   Max: 13
 
+Style/NumericLiterals:
+  Enabled: false

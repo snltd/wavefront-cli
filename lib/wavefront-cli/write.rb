@@ -7,6 +7,7 @@ module WavefrontCli
   # speaks to a proxy rather than to the API.
   #
   class Write < BaseWrite
+    # rubocop:disable Metrics/AbcSize
     def do_distribution
       p = { path:     options[:'<metric>'],
             interval: options[:interval] || 'M',
@@ -17,6 +18,7 @@ module WavefrontCli
       p[:ts] = parse_time(options[:time]) if options[:time]
       send_point(p)
     end
+    # rubocop:enable Metrics/AbcSize
 
     # Turn our user's representation of a distribution into one
     # which suits Wavefront. The SDK can do this for us.

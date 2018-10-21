@@ -96,7 +96,7 @@ module WavefrontCli
 
       if w.empty?
         ok_exit(format('No maintenance windows in the next %s hours.',
-                range))
+                       range))
       end
       w
     end

@@ -27,8 +27,7 @@ class WavefrontCommandWindow < WavefrontCommandBase
      "update #{CMN} <key=value> <id>",
      "search #{CMN} [-al] [-f format] [-o offset] [-L limit] <condition>...",
      "ongoing #{CMN}",
-     "pending #{CMN} [<hours>]"
-    ]
+     "pending #{CMN} [<hours>]"]
   end
 
   def _options
