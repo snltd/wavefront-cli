@@ -2,7 +2,7 @@ require_relative 'base'
 
 module WavefrontDisplay
   #
-  # Format human-readable output for cloud integrations.
+  # Format human-readable output for integrations.
   #
   class Integration < Base
     def do_list_brief
