@@ -29,6 +29,7 @@
 * Improve quality of `--verbose` output when writing points.
 * Improved usage error messages.
 * Use a single connection when streaming data to a proxy from STDIN.
+* Don't list hidden sources unless specifically asked.
 
 ## 2.9.3 (03/09/2018)
 * Fix a bug where indefinitely snoozed alerts broke `wf alert
