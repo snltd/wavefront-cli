@@ -15,5 +15,14 @@ module WavefrontDisplay
     def do_list_brief
       multicolumn(:id, :title)
     end
+
+    def do_pending
+      do_ongoing
+    end
+
+    def do_ongoing
+      readable_time_arr(:startTimeInSeconds, :endTimeInSeconds)
+      multicolumn(:id, :reason, :startTimeInSeconds, :endTimeInSeconds)
+    end
   end
 end

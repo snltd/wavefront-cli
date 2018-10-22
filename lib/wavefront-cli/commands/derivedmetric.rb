@@ -16,7 +16,7 @@ class WavefrontCommandDerivedmetric < WavefrontCommandBase
   end
 
   def _commands
-    ["list #{CMN} [-l] [-f format] [-o offset] [-L limit]",
+    ["list #{CMN} [-al] [-f format] [-o offset] [-L limit]",
      "describe #{CMN} [-f format] [-v version] <id>",
      "create #{CMN} [-d description] [-T tag...] [-O] [-i interval] " \
      '[-r range] <name> <query>',
@@ -25,13 +25,14 @@ class WavefrontCommandDerivedmetric < WavefrontCommandBase
      "delete #{CMN} <id>",
      "undelete #{CMN} <id>",
      "history #{CMN} [-f format] [-o offset] [-L limit] <id>",
-     "search #{CMN} [-f format] [-o offset] [-L limit] [-l] <condition>...",
+     "search #{CMN} [-al] [-f format] [-o offset] [-L limit] <condition>...",
      tag_commands]
   end
 
   def _options
     [common_options,
      '-l, --long              list derived metrics in detail',
+     '-a, --all               list all derived metrics',
      '-o, --offset=n          start list from nth derived metrics or ' \
                               'revision',
      '-L, --limit=COUNT       number of derived metrics or revisions to ' \

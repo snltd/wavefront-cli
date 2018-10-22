@@ -12,5 +12,10 @@ module WavefrontCli
       endpoint: 'metrics.wavefront.com',
       format:   :human
     }.freeze
+
+    # How many objects to get in each request when we are asked for
+    # --all
+    #
+    ALL_PAGE_SIZE = 999
   end
 end

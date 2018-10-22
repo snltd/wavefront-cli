@@ -4,7 +4,7 @@ word = 'query'
 
 require_relative '../spec_helper'
 require_relative "../../lib/wavefront-cli/#{word}"
-require 'wavefront-sdk/mixins'
+require 'wavefront-sdk/support/mixins'
 # rubocop:disable Style/MixinUsage
 include Wavefront::Mixins
 # rubocop:enable Style/MixinUsage
