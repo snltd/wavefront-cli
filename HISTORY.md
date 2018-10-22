@@ -1,6 +1,6 @@
 # Changelog
 
-## 2.10.0
+## 2.10.0 (22/10/2018)
 * Most `list` subcommands accept `-a / --all`, and will show all
   objects of the given type, with no pagination. (Exceptions are
   `user`, which never paginated because the API doesn't, and
