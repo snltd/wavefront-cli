@@ -2,6 +2,9 @@ require 'securerandom'
 require 'json'
 
 module WavefrontHclOutput
+  #
+  # Output stuff for Hashicorp Configuration Language
+  #
   class Base
     attr_reader :resp, :options
 
@@ -49,43 +52,43 @@ module WavefrontHclOutput
     end
 
     # Format each key-value pair
-    # @param k [String] key
-    # @param v [Any] value
+    # @param key [String] key
+    # @param val [Any] value
     # @return [String]
     #
-    def handler(k, v)
-      key_handler = "khandle_#{k}".to_sym
-      value_handler = "vhandle_#{k}".to_sym
-      quote_handler = "qhandle_#{k}".to_sym
-      k = send(key_handler) if respond_to?(key_handler)
-      v = send(value_handler, v) if respond_to?(value_handler)
+    def handler(key, val)
+      key_handler = "khandle_#{key}".to_sym
+      value_handler = "vhandle_#{key}".to_sym
+      quote_handler = "qhandle_#{key}".to_sym
+      key = send(key_handler) if respond_to?(key_handler)
+      val = send(value_handler, val) if respond_to?(value_handler)
 
       quote_handler = :quote_value unless respond_to?(quote_handler)
 
-      format('  %s = %s', k.to_snake, send(quote_handler, v))
+      format('  %s = %s', key.to_snake, send(quote_handler, val))
     end
 
     # Tags need to be in an array. They aren't always called "tags"
     # by the API.
-    # @param v [Array,Hash,String] tags
+    # @param val [Array,Hash,String] tags
     # @return [Array] of soft-quoted tags
     #
-    def vhandle_tags(v)
-      v = v.values if v.is_a?(Hash)
-      Array(v).flatten
+    def vhandle_tags(val)
+      val = val.values if val.is_a?(Hash)
+      Array(val).flatten
     end
 
     # Some values need to be quoted, some need to be escaped etc
     # etc.
-    # @param v [Object] value
+    # @param val [Object] value
     # @return [String]
     #
-    def quote_value(v)
-      case v.class.to_s.to_sym
+    def quote_value(val)
+      case val.class.to_s.to_sym
       when :String
-        format('"%s"', v.gsub(/\"/, '\"'))
+        format('"%s"', val.gsub(/\"/, '\"'))
       else
-        v
+        val
       end
     end
   end

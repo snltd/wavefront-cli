@@ -1,4 +1,4 @@
-require 'wavefront-sdk/mixins'
+require 'wavefront-sdk/support/mixins'
 require_relative 'base'
 
 module WavefrontCli
@@ -9,6 +9,7 @@ module WavefrontCli
     attr_reader :fmt
     include Wavefront::Mixins
 
+    # rubocop:disable Metrics/AbcSize
     def do_point
       p = { path:  options[:'<metric>'],
             value: options[:'<value>'].delete('\\').to_f,
@@ -18,11 +19,13 @@ module WavefrontCli
       p[:ts] = parse_time(options[:time]) if options[:time]
       send_point(p)
     end
+    # rubocop:enable Metrics/AbcSize
 
-    def send_point(p)
-      wf.write(p)
+    def send_point(point)
+      call_write(point)
     rescue Wavefront::Exception::InvalidEndpoint
-      abort "could not speak to proxy #{options[:proxy]}:#{options[:port]}."
+      abort format("Could not connect to proxy '%s:%s'.",
+                   options[:proxy], options[:port])
     end
 
     def do_file
@@ -38,11 +41,30 @@ module WavefrontCli
       if file == '-'
         read_stdin
       else
-        data = load_data(Pathname.new(file)).split("\n").map do |l|
-          process_line(l)
-        end
+        data = process_input_file(load_data(Pathname.new(file)).split("\n"))
+        call_write(data)
+      end
+    end
 
-        wf.write(data)
+    def process_input_file(data)
+      data.each_with_object([]) do |l, a|
+        begin
+          a.<< process_line(l)
+        rescue WavefrontCli::Exception::UnparseableInput => e
+          puts "Bad input. #{e.message}."
+          next
+        end
+      end
+    end
+
+    # A wrapper which lets us send normal points, deltas, or
+    # distributions
+    #
+    def call_write(data, openclose = true)
+      if options[:delta]
+        wf.write_delta(data, openclose)
+      else
+        wf.write(data, openclose)
       end
     end
 
@@ -52,7 +74,7 @@ module WavefrontCli
     #
     def read_stdin
       open_connection
-      STDIN.each_line { |l| wf.write(process_line(l.strip), false) }
+      STDIN.each_line { |l| call_write(process_line(l.strip), false) }
       close_connection
     rescue SystemExit, Interrupt
       puts 'ctrl-c. Exiting.'
@@ -68,16 +90,35 @@ module WavefrontCli
     # raise Wavefront::Exception::InvalidValue if it's not a value
     #
     def extract_value(chunks)
-      v = chunks[fmt.index('v')]
-      v.to_f
+      if fmt.include?('v')
+        v = chunks[fmt.index('v')]
+        v.to_f
+      else
+        raw = chunks[fmt.index('d')].split(',')
+        xpanded = expand_dist(raw)
+        wf.mk_distribution(xpanded)
+      end
+    end
+
+    # We will let users write a distribution as '1 1 1' or '3x1' or
+    # even a mix of the two
+    #
+    def expand_dist(dist)
+      dist.map do |v|
+        if v.is_a?(String) && v.include?('x')
+          x, val = v.split('x', 2)
+          Array.new(x.to_i, val.to_f)
+        else
+          v.to_f
+        end
+      end.flatten
     end
 
     # Find and return the source in a chunked line of input.
     #
-    # param chunks [Array] a chunked line of input from #process_line
-    # return [Float] the timestamp, if it is there, or the current
+    # @param chunks [Array] a chunked line of input from #process_line
+    # @return [Float] the timestamp, if it is there, or the current
     #   UTC time if it is not.
-    # raise TypeError if field does not exist
     #
     def extract_ts(chunks)
       ts = chunks[fmt.index('t')]
@@ -101,7 +142,7 @@ module WavefrontCli
     #
     def extract_path(chunks)
       m = chunks[fmt.index('m')]
-      return options[:metric] ? [options[:metric], m].join('.') : m
+      options[:metric] ? [options[:metric], m].join('.') : m
     rescue TypeError
       return options[:metric] if options[:metric]
       raise
@@ -114,7 +155,7 @@ module WavefrontCli
     #   value passed through by -H, or the local hostname.
     #
     def extract_source(chunks)
-      return chunks[fmt.index('s')]
+      chunks[fmt.index('s')]
     rescue TypeError
       options[:source] || Socket.gethostname
     end
@@ -126,23 +167,35 @@ module WavefrontCli
     # what they define is always assumed to be point tags.  This is
     # because you can have arbitrarily many of those for each point.
     #
-    def process_line(l)
-      return true if l.empty?
-      chunks = l.split(/\s+/, fmt.length)
-      raise 'wrong number of fields' unless enough_fields?(l)
+    # @raise WavefrontCli::Exception::UnparseableInput if the line
+    #   doesn't look right
+    #
+    # rubocop:disable Metrics/AbcSize
+    # rubocop:disable Metrics/MethodLength
+    # rubocop:disable Metrics/CyclomaticComplexity
+    def process_line(line)
+      return true if line.empty?
+      chunks = line.split(/\s+/, fmt.length)
+      enough_fields?(line) # can raise exception
 
       begin
         point = { path:  extract_path(chunks),
+                  tags:  line_tags(chunks),
                   value: extract_value(chunks) }
-        point[:ts] = extract_ts(chunks) if fmt.include?('t')
-        point[:source] = extract_source(chunks) if fmt.include?('s')
-        point[:tags] = line_tags(chunks)
+
+        point[:ts]       = extract_ts(chunks)        if fmt.include?('t')
+        point[:source]   = extract_source(chunks)    if fmt.include?('s')
+        point[:interval] = options[:interval] || 'm' if fmt.include?('d')
       rescue TypeError
-        raise "could not process #{l}"
+        raise(WavefrontCli::Exception::UnparseableInput,
+              "could not process #{line}")
       end
 
       point
     end
+    # rubocop:enable Metrics/CyclomaticComplexity
+    # rubocop:enable Metrics/MethodLength
+    # rubocop:enable Metrics/AbcSize
 
     # We can get tags from the file, from the -T option, or both.
     # Merge them, making the -T win if there is a collision.
@@ -171,21 +224,37 @@ module WavefrontCli
       end
     end
 
-    # The format string must contain a 'v'. It must not contain
-    # anything other than 'm', 't', 'T', 's', or 'v', and the 'T',
-    # if there, must be at the end. No letter must appear more than
-    # once.
+    # The format string must contain values. They can be single
+    # values or distributions. So we must have 'v' xor 'd'. It must
+    # not contain anything other than 'm', 't', 'T', 's', 'd', or
+    # 'v', and the 'T', if there, must be at the end. No letter must
+    # appear more than once.
     #
     # @param fmt [String] format of input file
     #
+    # rubocop:disable Metrics/PerceivedComplexity
+    # rubocop:disable Metrics/CyclomaticComplexity
+    # rubocop:disable Metrics/AbcSize
     def valid_format?(fmt)
-      if fmt.include?('v') && fmt.match(/^[mstv]+T?$/) &&
-         fmt == fmt.split('').uniq.join
-        return true
-      end
+      err = if fmt.include?('v') && fmt.include?('d')
+              "'v' and 'd' are mutually exclusive"
+            elsif !fmt.include?('v') && !fmt.include?('d')
+              "format string must include 'v' or 'd'"
+            elsif !fmt.match(/^[dmstTv]+$/)
+              'unsupported field in format string'
+            elsif !fmt == fmt.split('').uniq.join
+              'repeated field in format string'
+            elsif fmt.include?('T') && !fmt.end_with?('T')
+              "if used, 'T' must come at end of format string"
+            end
 
-      raise 'Invalid format string.'
+      return true if err.nil?
+
+      raise(WavefrontCli::Exception::UnparseableInput, err)
     end
+    # rubocop:enable Metrics/PerceivedComplexity
+    # rubocop:enable Metrics/CyclomaticComplexity
+    # rubocop:enable Metrics/AbcSize
 
     # Make sure we have the right number of columns, according to
     # the format string. We want to take every precaution we can to
@@ -195,16 +264,12 @@ module WavefrontCli
     # If the format string says we are expecting point tags, we
     # may have more columns than the length of the format string.
     #
-    def enough_fields?(l)
-      ncols = l.split.length
-
-      if fmt.include?('T')
-        return false unless ncols >= fmt.length
-      else
-        return false unless ncols == fmt.length
-      end
-
-      true
+    def enough_fields?(line)
+      ncols = line.split.length
+      return true if fmt.include?('T') && ncols >= fmt.length
+      return true if ncols == fmt.length
+      raise(WavefrontCli::Exception::UnparseableInput,
+            format('Expected %s fields, got %s', fmt.length, ncols))
     end
 
     # Although the SDK does value checking, we'll add another layer
@@ -212,9 +277,10 @@ module WavefrontCli
     # assume anything before 2000/01/01 or after a year from now is
     # wrong.  Arbitrary, but there has to be a cut-off somewhere.
     #
-    def valid_timestamp?(ts)
-      (ts.is_a?(Integer) || ts.match(/^\d+$/)) &&
-        ts.to_i > 946_684_800 && ts.to_i < (Time.now.to_i + 31_557_600)
+    def valid_timestamp?(timestamp)
+      (timestamp.is_a?(Integer) || timestamp.match(/^\d+$/)) &&
+        timestamp.to_i > 946_684_800 &&
+        timestamp.to_i < (Time.now.to_i + 31_557_600)
     end
 
     private
@@ -224,8 +290,9 @@ module WavefrontCli
     end
 
     def load_data(file)
-      raise "Cannot open file '#{file}'." unless file.exist?
       IO.read(file)
+    rescue StandardError
+      raise WavefrontCli::Exception::FileNotFound
     end
   end
 end

@@ -6,8 +6,9 @@ class WavefrontCommandAlert < WavefrontCommandBase
   def description
     'view and manage alerts'
   end
+
   def _commands
-    ["list #{CMN} [-l] [-f format] [-o offset] [-L limit]",
+    ["list #{CMN} [-al] [-f format] [-o offset] [-L limit]",
      "firing #{CMN} [-o offset] [-L limit]",
      "snoozed #{CMN} [-o offset] [-L limit]",
      "describe #{CMN} [-f format] [-v version] <id>",
@@ -18,12 +19,13 @@ class WavefrontCommandAlert < WavefrontCommandBase
      "snooze #{CMN} [-T time] <id>",
      "update #{CMN} <key=value> <id>",
      "unsnooze #{CMN} <id>",
-     "search #{CMN} [-f format] [-o offset] [-L limit] [-l] <condition>...",
+     "search #{CMN} [-al] [-f format] [-o offset] [-L limit] <condition>...",
      "tags #{CMN} [-f format] <id>",
      "tag set #{CMN} <id> <tag>...",
      "tag clear #{CMN} <id>",
      "tag add #{CMN} <id> <tag>",
      "tag delete #{CMN} <id> <tag>",
+     "currently #{CMN} <state>",
      "summary #{CMN} [-a]"]
   end
 

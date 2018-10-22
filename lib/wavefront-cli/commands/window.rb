@@ -14,8 +14,9 @@ class WavefrontCommandWindow < WavefrontCommandBase
   def sdk_class
     'MaintenanceWindow'
   end
+
   def _commands
-    ["list #{CMN} [-l] [-f format] [-o offset] [-L limit]",
+    ["list #{CMN} [-al] [-f format] [-o offset] [-L limit]",
      "describe #{CMN} [-f format] <id>",
      "create #{CMN} -d reason [-s time] [-e time] " \
      '[-A alert_tag...] [-T host_tag...] [-H host...] <title>',
@@ -24,12 +25,15 @@ class WavefrontCommandWindow < WavefrontCommandBase
      "delete #{CMN} <id>",
      "import #{CMN} <file>",
      "update #{CMN} <key=value> <id>",
-     "search #{CMN} [-f format] [-o offset] [-L limit] [-l] <condition>..."]
+     "search #{CMN} [-al] [-f format] [-o offset] [-L limit] <condition>...",
+     "ongoing #{CMN}",
+     "pending #{CMN} [<hours>]"]
   end
 
   def _options
     [common_options,
      '-l, --long           list maintenance windows in detail',
+     '-a, --all            list all maintenance windows',
      '-o, --offset=n       start from nth maintenance window',
      '-L, --limit=COUNT    number of maintenance windows to list',
      '-d, --desc=STRING    reason for maintenance window',

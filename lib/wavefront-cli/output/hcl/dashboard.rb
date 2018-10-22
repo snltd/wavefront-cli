@@ -1,4 +1,6 @@
 require_relative 'base'
+require_relative 'stdlib/string'
+require_relative 'stdlib/array'
 
 module WavefrontHclOutput
   #
@@ -11,7 +13,7 @@ module WavefrontHclOutput
   # in https://github.com/spaceapegames/terraform-provider-wavefront/blob/master/wavefront/resource_dashboard.go
   #
   class Dashboard < Base
-
+    #
     # Top-level fields
     #
     def hcl_fields
@@ -23,16 +25,16 @@ module WavefrontHclOutput
     end
 
     # @param vals [Array] an array of objects
-    # @param fn [Symbol] a method which knows how to deal with one
+    # @param method [Symbol] a method which knows how to deal with one
     #   of the objects in vals
     # @return [String] HCL list of vals
     #
-    def listmaker(vals, fn)
-      vals.each_with_object([]) { |v, a| a.<< send(fn, v) }.to_hcl_list
+    def listmaker(vals, method)
+      vals.each_with_object([]) { |v, a| a.<< send(method, v) }.to_hcl_list
     end
 
-    def vhandle_sections(v)
-      v.each_with_object([]) do |section, a|
+    def vhandle_sections(vals)
+      vals.each_with_object([]) do |section, a|
         a.<< ("name = \"#{section[:name]}\"\n      row = " +
               handle_rows(section[:rows])).braced(4)
       end.to_hcl_list
@@ -40,7 +42,7 @@ module WavefrontHclOutput
 
     def handle_rows(rows)
       rows.each_with_object([]) do |row, a|
-        a.<< ("chart = " + handle_charts(row[:charts]).to_s).braced(8)
+        a.<< ('chart = ' + handle_charts(row[:charts]).to_s).braced(8)
       end.to_hcl_list
     end
 
@@ -75,40 +77,13 @@ module WavefrontHclOutput
       end.to_hcl_obj(14)
     end
 
-    def qhandle_sections(v)
-      v
+    def qhandle_sections(val)
+      val
     end
 
-    def quote_value(v)
-      v.gsub!(/\$/, '$$') if v.is_a?(String)
+    def quote_value(val)
+      val.gsub!(/\$/, '$$') if v.is_a?(String)
       super
     end
-  end
-end
-
-class String
-  def braced(indent = 0)
-    pad = ' ' * indent
-    "\n#{pad}{#{self}\n#{pad}}"
-  end
-end
-
-class Array
-  #
-  # Turn an array into a string which represents an HCL list
-  # @return [String]
-  #
-  def to_hcl_list
-    '[' + self.join(',') + ']'
-  end
-
-  # Turn an array into a string which represents an HCL object
-  # @return [String]
-  #
-  def to_hcl_obj(indent = 0)
-    outpad = ' ' * indent
-    inpad = ' ' * (indent + 2)
-
-    "\n#{outpad}{\n#{inpad}" + self.join("\n#{inpad}") + "\n#{outpad}}"
   end
 end

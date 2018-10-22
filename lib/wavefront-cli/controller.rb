@@ -31,8 +31,8 @@ class WavefrontCliController
     cmd, opts = parse_args
     @opts = parse_opts(opts)
     pp @opts if @opts[:debug]
-    hook = load_sdk(cmd, @opts)
-    run_command(hook)
+    cli_class_obj = load_cli_class(cmd, @opts)
+    run_command(cli_class_obj)
   end
 
   # What you see when you do 'wf --help'
@@ -57,6 +57,7 @@ class WavefrontCliController
   # Parse the input. The first Docopt.docopt handles the default
   # options, the second works on the command.
   #
+  # rubocop:disable Metrics/AbcSize
   def parse_args
     Docopt.docopt(usage[:default], version: WF_CLI_VERSION, argv: args)
   rescue Docopt::Exit => e
@@ -72,32 +73,63 @@ class WavefrontCliController
       abort e.message
     end
   end
+  # rubocop:enable Metrics/AbcSize
 
-  def parse_opts(o)
-    WavefrontCli::OptHandler.new(o).opts
+  def parse_opts(options)
+    WavefrontCli::OptHandler.new(options).opts
   end
 
-  # Get the SDK class we need to run the command we've been given.
+  # Get the CLI class we need to run the command we've been given.
   #
   # @param cmd [String]
-  def load_sdk(cmd, opts)
+  # @return WavefrontCli::cmd
+  #
+  # rubocop:disable Metrics/AbcSize
+  def load_cli_class(cmd, opts)
     require_relative File.join('.', cmds[cmd].sdk_file)
     Object.const_get('WavefrontCli').const_get(cmds[cmd].sdk_class).new(opts)
   rescue WavefrontCli::Exception::UnhandledCommand
-    abort 'Fatal error. Unsupported command.'
-  rescue StandardError => e
-    p e
+    abort 'Fatal error. Unsupported command. Please open a Github issue.'
+  rescue WavefrontCli::Exception::InvalidInput => e
+    abort "Invalid input. #{e.message}"
+  rescue RuntimeError => e
+    abort "Unable to run command. #{e.message}."
   end
+  # rubocop:enable Metrics/AbcSize
 
-  def run_command(hook)
-    hook.validate_opts
-    hook.run
+  # rubocop:disable Metrics/AbcSize
+  # rubocop:disable Metrics/MethodLength
+  def run_command(cli_class_obj)
+    cli_class_obj.validate_opts
+    cli_class_obj.run
+  rescue WavefrontCli::Exception::CredentialError => e
+    abort "Credential error. #{e.message}"
+  rescue WavefrontCli::Exception::UnsupportedOutput => e
+    abort e.message
+  rescue WavefrontCli::Exception::InsufficientData => e
+    abort "Insufficient data. #{e.message}"
+  rescue WavefrontCli::Exception::UnsupportedFileFormat
+    abort 'Unsupported file format.'
+  rescue WavefrontCli::Exception::UnparseableInput => e
+    abort "Cannot parse input. #{e.message}"
+  rescue WavefrontCli::Exception::FileNotFound
+    abort 'File not found.'
+  rescue WavefrontCli::Exception::UnparseableInput
+    abort 'Cannot parse input.'
+  rescue WavefrontCli::Exception::SystemError => e
+    abort "Host system error. #{e.message}"
+  rescue WavefrontCli::Exception::UnsupportedOperation => e
+    abort "Unsupported operation.\n#{e.message}"
+  rescue Wavefront::Exception::UnsupportedWriter => e
+    abort "Unsupported writer '#{e.message}'."
   rescue StandardError => e
-    $stderr.puts "general error: #{e}"
-    $stderr.puts "re-run with '-D' for stack trace." unless opts[:debug]
-    $stderr.puts "Backtrace:\n\t#{e.backtrace.join("\n\t")}" if opts[:debug]
+    warn "general error: #{e}"
+    warn "re-run with '-D' for stack trace." unless opts[:debug]
+    warn "Backtrace:\n\t#{e.backtrace.join("\n\t")}" if opts[:debug]
     abort
   end
+  # rubocop:enable Metrics/MethodLength
+  # rubocop:enable Metrics/AbcSize
 
   # Each command is defined in its own file. Dynamically load all
   # those commands.
@@ -115,9 +147,9 @@ class WavefrontCliController
   # @param f [Pathname] path of file to load
   # return [Class] new class object defining command.
   #
-  def import_command(f)
-    return if f.extname != '.rb' || f.basename.to_s == 'base.rb'
-    k_name = f.basename.to_s[0..-4]
+  def import_command(path)
+    return if path.extname != '.rb' || path.basename.to_s == 'base.rb'
+    k_name = path.basename.to_s[0..-4]
     require(CMD_DIR + k_name)
     Object.const_get("WavefrontCommand#{k_name.capitalize}").new
   end
@@ -127,7 +159,9 @@ class WavefrontCliController
   # @param h [Hash] options hash
   # return [Hash] h with modified keys
   #
-  def sanitize_keys(h)
-    h.each_with_object({}) { |(k, v), r| r[k.to_s.delete('-').to_sym] = v }
+  def sanitize_keys(options)
+    options.each_with_object({}) do |(k, v), r|
+      r[k.to_s.delete('-').to_sym] = v
+    end
   end
 end

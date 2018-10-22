@@ -6,7 +6,7 @@ require_relative '../lib/wavefront-cli/controller'
 
 begin
   tw = IO.console.winsize.last
-rescue
+rescue StandardError
   tw = 80
 end
 

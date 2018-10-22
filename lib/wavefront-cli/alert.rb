@@ -36,15 +36,35 @@ module WavefrontCli
       wf.history(options[:'<id>'], options[:offset], options[:limit])
     end
 
+    def do_currently
+      state = options[:'<state>'].to_s
+
+      if wf.respond_to?(state)
+        in_state(state)
+      else
+        abort format("'%s' is not a valid alert state.", state)
+      end
+    end
+
     def do_firing
-      find_in_state(:firing)
+      in_state(:firing)
     end
 
     def do_snoozed
-      find_in_state(:snoozed)
+      in_state(:firing)
     end
 
-    # Does the work for #do_firing() and #do_snoozed()
+    # How many alerts are in the given state? If none, say so,
+    # rather than just printing nothing.
+    #
+    def in_state(status)
+      options[:all] = true
+      ret = find_in_state(status)
+      ok_exit(format('No alerts are currently %s.', status)) if ret.empty?
+      ret
+    end
+
+    # Does the work for #in_state
     # @param status [Symbol,String] the alert status you wish to
     #   find
     # @return Wavefront::Response
@@ -53,10 +73,21 @@ module WavefrontCli
       search = do_search([format('status=%s', status)])
 
       items = search.response.items.map do |i|
-        { name: i.name, id: i.id, startTime: i.event.startTime }
+        { name: i.name, id: i.id, time: state_time(i) }
       end
 
       search.tap { |s| s.response[:items] = items }
+    end
+
+    # Snoozed alerts don't have a start time, they have a "snoozed"
+    # time. This is -1 if they are snoozed forever: the formatting
+    # methods know what to do with that.
+    # @return [Integer]
+    #
+    def state_time(item)
+      return item[:event][:startTime] if item.key?(:event)
+      return item[:snoozed] if item.key?(:snoozed)
+      nil
     end
 
     # Take a previously exported alert, and construct a hash which

@@ -7,7 +7,18 @@ require 'minitest/spec'
 require 'pathname'
 require_relative '../lib/wavefront-cli/controller'
 
+def all_commands
+  cmd_dir = ROOT + 'lib' + 'wavefront-cli' + 'commands'
+
+  files = cmd_dir.children.select do |f|
+    f.extname == '.rb' && f.basename.to_s != 'base.rb'
+  end
+
+  files.each.with_object([]) { |c, a| a.<< c.basename.to_s.chomp('.rb') }
+end
+
 unless defined?(CMD)
+  ROOT = Pathname.new(__FILE__).dirname.parent
   CMD = 'wavefront'.freeze
   ENDPOINT = 'metrics.wavefront.com'.freeze
   TOKEN = '0123456789-ABCDEF'.freeze
@@ -17,10 +28,7 @@ unless defined?(CMD)
   JSON_POST_HEADERS = {
     'Content-Type': 'application/json', Accept: 'application/json'
   }.freeze
-
-  CMDS = %w[alert integration dashboard event link message metric
-            proxy query savedsearch source user window webhook write].freeze
-
+  CMDS = all_commands.freeze
   BAD_TAG = '*BAD_TAG*'.freeze
   TW = 80
 end
@@ -47,7 +55,6 @@ end
 #  command
 # @param call [Hash]
 #
-# rubocop:disable Metrics/AbcSize
 def cmd_to_call(word, args, call, sdk_class = nil)
   headers = { 'Accept':          /.*/,
               'Accept-Encoding': /.*/,
@@ -71,19 +78,19 @@ def cmd_to_call(word, args, call, sdk_class = nil)
         it "runs #{cmd} and makes the correct API call" do
           if call.key?(:body)
             stub_request(method, uri).with(headers: h, body: call[:body])
-                                     .to_return(body: {}.to_json, status: 200)
+                                     .to_return(body: {}.to_json,
+                                                status: 200)
           else
             stub_request(method, uri).with(headers: h)
-                                     .to_return(body: {}.to_json, status: 200)
+                                     .to_return(body: {}.to_json,
+                                                status: 200)
           end
 
           require "wavefront-sdk/#{sdk_class.name.split('::').last.downcase}"
           Spy.on_instance_method(
-            Object.const_get(
-              "Wavefront::#{sdk_class.name.split('::').last}"
-            ),
-            :respond
+            Object.const_get('Wavefront::ApiCaller'), :respond
           ).and_return({})
+
           d = Spy.on_instance_method(sdk_class, :display)
           WavefrontCliController.new(cmd.split)
           assert d.has_been_called?
@@ -120,7 +127,7 @@ def invalid_tags(cmd, subcmds)
   subcmds.each do |sc|
     it "fails '#{sc}' because of an invalid tag" do
       _out, err = fail_command("#{cmd} #{sc}")
-      assert_equal(err, "'#{BAD_TAG}' is not a valid tag.\n")
+      assert_equal(err, "Invalid input. '#{BAD_TAG}' is not a valid tag.\n")
     end
   end
 end
@@ -142,7 +149,7 @@ def missing_creds(cmd, subcmds)
     subcmds.each do |subcmd|
       it "'#{subcmd}' errors and tells the user to use a token" do
         out, err = fail_command("#{cmd} #{subcmd} -c /f")
-        assert_match(/supply an API token/, err)
+        assert_equal("Credential error. Missing API token.\n", err)
         assert_match(%r{config file '/f' not found.}, out)
       end
     end
@@ -151,41 +158,62 @@ end
 
 # Generic list tests, needed by most commands
 #
-def list_tests(cmd, pth = nil, k = nil)
+def list_tests(cmd, pth = nil, klass = nil)
   pth ||= cmd
-  cmd_to_call(cmd, 'list', { path: "/api/v2/#{pth}?limit=100&offset=0" }, k)
-  cmd_to_call(cmd, 'list -L 50', { path: "/api/v2/#{pth}?limit=50&offset=0" },
-              k)
+  cmd_to_call(cmd, 'list', { path: "/api/v2/#{pth}?limit=100&offset=0" },
+              klass)
+  cmd_to_call(cmd, 'list -L 50',
+              { path: "/api/v2/#{pth}?limit=50&offset=0" },
+              klass)
   cmd_to_call(cmd, 'list -L 20 -o 8',
-              { path: "/api/v2/#{pth}?limit=20&offset=8" }, k)
-  cmd_to_call(cmd, 'list -o 60', { path: "/api/v2/#{pth}?limit=100&offset=60" },
-              k)
+              { path: "/api/v2/#{pth}?limit=20&offset=8" }, klass)
+  cmd_to_call(cmd, 'list -o 60',
+              { path: "/api/v2/#{pth}?limit=100&offset=60" },
+              klass)
 end
 
-def tag_tests(cmd, id, bad_id, pth = nil, k = nil)
+def tag_tests(cmd, id, bad_id, pth = nil, klass = nil)
   pth ||= cmd
-  cmd_to_call(cmd, "tags #{id}", { path: "/api/v2/#{pth}/#{id}/tag" }, k)
+  cmd_to_call(cmd, "tags #{id}", { path: "/api/v2/#{pth}/#{id}/tag" },
+              klass)
   cmd_to_call(cmd, "tag set #{id} mytag",
               { method: :post,
                 path:    "/api/v2/#{pth}/#{id}/tag",
                 body:    %w[mytag].to_json,
-                headers: JSON_POST_HEADERS }, k)
+                headers: JSON_POST_HEADERS }, klass)
   cmd_to_call(cmd, "tag set #{id} mytag1 mytag2",
               { method: :post,
                 path: "/api/v2/#{pth}/#{id}/tag",
                 body: %w[mytag1 mytag2].to_json,
-                headers: JSON_POST_HEADERS }, k)
+                headers: JSON_POST_HEADERS }, klass)
   cmd_to_call(cmd, "tag add #{id} mytag",
-              { method: :put, path: "/api/v2/#{pth}/#{id}/tag/mytag" }, k)
+              { method: :put, path: "/api/v2/#{pth}/#{id}/tag/mytag" },
+              klass)
   cmd_to_call(cmd, "tag delete #{id} mytag",
-              { method: :delete, path: "/api/v2/#{pth}/#{id}/tag/mytag" }, k)
+              { method: :delete, path: "/api/v2/#{pth}/#{id}/tag/mytag" },
+              klass)
   cmd_to_call(cmd, "tag clear #{id}", { method:  :post,
                                         path:    "/api/v2/#{pth}/#{id}/tag",
                                         body:    [].to_json,
-                                        headers: JSON_POST_HEADERS }, k)
-  invalid_ids(cmd, ["tags #{bad_id}", "tag clear #{bad_id}",
-                    "tag add #{bad_id} mytag", "tag delete #{bad_id} mytag"])
-  invalid_tags(cmd, ["tag add #{id} #{BAD_TAG}", "tag delete #{id} #{BAD_TAG}"])
+                                        headers: JSON_POST_HEADERS }, klass)
+  invalid_ids(cmd, ["tags #{bad_id}",
+                    "tag clear #{bad_id}",
+                    "tag add #{bad_id} mytag",
+                    "tag delete #{bad_id} mytag"])
+  invalid_tags(cmd, ["tag add #{id} #{BAD_TAG}",
+                     "tag delete #{id} #{BAD_TAG}"])
+end
+
+# Load in a canned query response
+#
+def load_query_response
+  JSON.parse(IO.read(RES_DIR + 'sample_query_response.json'),
+             symbolize_names: true)
+end
+
+def load_raw_query_response
+  JSON.parse(IO.read(RES_DIR + 'sample_raw_query_response.json'),
+             symbolize_names: true)
 end
 
 # stdlib extensions

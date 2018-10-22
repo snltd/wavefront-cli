@@ -30,7 +30,7 @@ describe "#{word} command" do
                        'User-Agent': /wavefront.*/ })
       .to_return(status: 200, body: '', headers: {})
     cmd_to_call(word, "delete #{id}",
-                {  method: :delete, path: "/api/v2/#{word}/#{id}" }, k)
+                { method: :delete, path: "/api/v2/#{word}/#{id}" }, k)
   end
 
   cmd_to_call(word, "search id=#{id}",
@@ -73,7 +73,7 @@ describe "#{word} command" do
                         name:                   'test_dm',
                         includeObsoleteMetrics: false,
                         processRateMinutes:     3,
-                        tags:                   ['tag1', 'tag2'],
+                        tags:                   %w[tag1 tag2],
                         query:                  'ts(series)' },
                 headers: JSON_POST_HEADERS }, k)
 end

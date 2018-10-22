@@ -5,8 +5,8 @@ module WavefrontOutput
   # Display as JSON
   #
   class Json < Base
-    def run
-      puts resp.to_json
+    def _run
+      resp.to_json
     end
   end
 end

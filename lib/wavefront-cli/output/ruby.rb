@@ -6,7 +6,11 @@ module WavefrontOutput
   #
   class Ruby < Base
     def run
-      p resp
+      p _run
+    end
+
+    def _run
+      resp
     end
   end
 end
