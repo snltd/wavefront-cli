@@ -1,11 +1,10 @@
 #!/usr/bin/env ruby
 
-require_relative '../spec_helper'
 require_relative '../../lib/wavefront-cli/write'
 
 # Test base writer
 #
-class WavefrontCliBaseTest < MiniTest::Test
+class WavefrontCliWriteTest < MiniTest::Test
   attr_reader :wf
 
   def setup

@@ -38,14 +38,13 @@ class WavefrontCliBaseTest < MiniTest::Test
 
   def setup
     @wf = WavefrontCli::Alert.new(OPTS)
-    @wf_cmd = WavefrontCli::Alert.new(OPTS_CMD)
-    wf_cmd.define_singleton_method(:do_test_cmd) { true }
   end
 
   def test_mk_creds
-    assert_equal wf.mk_creds, endpoint: 'test.wavefront.com',
-                              token:    '0123456789-ABCDEF',
-                              agent:    "wavefront-cli-#{WF_CLI_VERSION}"
+    assert_equal({ endpoint: 'test.wavefront.com',
+                   token:    '0123456789-ABCDEF',
+                   agent:    "wavefront-cli-#{WF_CLI_VERSION}" },
+                 wf.mk_creds)
   end
 
   def test_dispatch
