@@ -48,7 +48,10 @@ module WavefrontCli
     end
 
     def mk_creds
-      { proxy: options[:proxy], port: options[:port] || default_port }
+      { proxy:    options[:proxy],
+        port:     options[:port] || default_port,
+        endpoint: options[:endpoint],
+        token:    options[:token] }
     end
 
     def default_port
