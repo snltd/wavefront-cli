@@ -1,6 +1,12 @@
 # Changelog
 
 ## 2.10.0
+* Most `list` subcommands accept `-a / --all`, and will show all
+  objects of the given type, with no pagination. (Exceptions are
+  `user`, which never paginated because the API doesn't, and
+  `source`, where the operation would take a prohibitively long
+  time.)
+* `search` operations also accept `-a / --all`.
 * Add `window ongoing` subcommand, to show currently open
   maintenance windows.
 * Add `window pending` subcommand, to show upcoming
@@ -8,6 +14,21 @@
   takes a decimal hour as an argument.
 * Add `alert currently <state>` subcommand to list all alerts in any
   allowable state.
+* Use version 2 of [wavefront-sdk](https://github.com/snltd/wavefront-sdk).
+* Write
+  [distributions](https://docs.wavefront.com/proxies_histograms.html)
+  to a proxy. Distributions can be specified singly, or streamed
+  from a file. Please see [this
+  page](https://sysdef.xyz/post/2018-04-08-wavefront-writer) for
+  more information.
+* Add `-u / --using` option to `write` command. This lets you send
+  points to proxies using alternate transport methods. At the moment
+  only `-u http` is supported, but other mechanisms will be added as
+  they are made available by Wavefront.
+* Display local times by default, in the same way as the UI.
+* Improve quality of `--verbose` output when writing points.
+* Improved usage error messages.
+* Use a single connection when streaming data to a proxy from STDIN.
 
 ## 2.9.3 (03/09/2018)
 * Fix a bug where indefinitely snoozed alerts broke `wf alert
