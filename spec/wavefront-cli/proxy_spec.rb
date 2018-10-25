@@ -8,10 +8,11 @@ require_relative '../spec_helper'
 require_relative "../../lib/wavefront-cli/#{word}"
 
 describe "#{word} command" do
-  missing_creds(word, ['list', "describe #{id}", "delete #{id}",
+  missing_creds(word, ['list', 'versions', "describe #{id}", "delete #{id}",
                        "undelete #{id}", "rename #{id} newname"])
   list_tests(word)
   cmd_to_call(word, "describe #{id}", path: "/api/v2/#{word}/#{id}")
+  cmd_to_call(word, "versions", path: "/api/v2/#{word}?limit=999&offset=0")
   cmd_to_call(word, "rename #{id} newname",
               method: :put,
               path:   "/api/v2/#{word}/#{id}",
