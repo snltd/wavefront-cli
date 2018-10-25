@@ -13,7 +13,8 @@ class WavefrontCommandProxy < WavefrontCommandBase
      "delete #{CMN} <id>",
      "undelete #{CMN} <id>",
      "rename #{CMN} <id> <name>",
-     "search #{CMN} [-al] [-f format] [-o offset] [-L limit] <condition>..."]
+     "search #{CMN} [-al] [-f format] [-o offset] [-L limit] <condition>...",
+     "versions #{CMN}"]
   end
 
   def _options

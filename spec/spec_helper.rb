@@ -47,9 +47,24 @@ def permutations
                                  e: ENDPOINT }]]
 end
 
-# Match a command to the final API call it should produce, applying options in
-# as many combinations as possible, and ensuring the requisite display methods
-# are called.
+# Object returned by cmd_to_call. Has just enough methods to satisy
+# the SDK
+#
+class DummyResponse
+  def more_items?
+    false
+  end
+
+  def response
+    Map.new(items: [])
+  end
+end
+
+CANNED_RESPONSE = DummyResponse.new
+
+# Match a command to the final API call it should produce, applying
+# options in as many combinations as possible, and ensuring the
+# requisite display methods are called.
 #
 # @param cmd [String] command line args to supply to the Wavefront
 #  command
@@ -89,7 +104,7 @@ def cmd_to_call(word, args, call, sdk_class = nil)
           require "wavefront-sdk/#{sdk_class.name.split('::').last.downcase}"
           Spy.on_instance_method(
             Object.const_get('Wavefront::ApiCaller'), :respond
-          ).and_return({})
+          ).and_return(CANNED_RESPONSE)
 
           d = Spy.on_instance_method(sdk_class, :display)
           WavefrontCliController.new(cmd.split)
