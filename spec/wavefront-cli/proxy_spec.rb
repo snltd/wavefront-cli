@@ -12,7 +12,7 @@ describe "#{word} command" do
                        "undelete #{id}", "rename #{id} newname"])
   list_tests(word)
   cmd_to_call(word, "describe #{id}", path: "/api/v2/#{word}/#{id}")
-  cmd_to_call(word, "versions", path: "/api/v2/#{word}?limit=999&offset=0")
+  cmd_to_call(word, 'versions', path: "/api/v2/#{word}?limit=999&offset=0")
   cmd_to_call(word, "rename #{id} newname",
               method: :put,
               path:   "/api/v2/#{word}/#{id}",
