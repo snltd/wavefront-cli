@@ -19,7 +19,7 @@ module WavefrontCli
         { id: i.id, version: i.version, name: i.name }
       end
 
-      raw.sort_by { |p| p[:version] }.reverse
+      raw.sort_by { |p| Gem::Version.new(p[:version]) }.reverse
     end
 
     def extra_validation
