@@ -9,5 +9,9 @@ module WavefrontDisplay
       readable_time(:lastCheckInTime)
       long_output
     end
+
+    def do_versions
+      multicolumn(:id, :version, :name)
+    end
   end
 end

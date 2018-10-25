@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.11.0 (24/10/2018)
+* Add `proxy versions` subcommand. Lists proxies and their versions,
+  newest to oldest.
+
 ## 2.10.1 (22/10/2018)
 * Fix bug seen when listing events with `-s` AND `-L`.
 
