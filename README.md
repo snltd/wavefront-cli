@@ -94,12 +94,14 @@ $ wf proxy list
 926dfb4c-23c6-4fb9-8c8d-833625ab8f6f  Agent on shark-wavefront
 ```
 
-You can get more verbose listings with the `-l` flag.
+You can get more verbose listings with the `-l` flag. Results may be
+paginated. You can progress through pages with the `-L` and `-o`
+options, or user `--all` to get everything in one go.
 
 ### Describing Things
 
-Most commands have a `describe` subcommand which will tell you more about the
-object.
+Most commands have a `describe` subcommand which will tell you more
+about the object.
 
 ```
 $ wf proxy describe 917102d1-a10e-497b-ba63-95058f98d4fb
@@ -247,7 +249,9 @@ $ while true; do echo $RANDOM; sleep 1; done | wf write file -m cli.demo -Fv -
 ```
 
 If you wish to write points directly via the API, and you have the
-"direct ingestion" privilege, just swap `write` for `report`.
+"direct ingestion" privilege, just swap `write` for `report`, or add
+`-u api` to your `write` command. To send points to a proxy over
+HTTP, use `-u http`.
 
 Due to limitations in [docopt](https://github.com/docopt/docopt.rb),
 writing negative values is a bit of a mess.
@@ -255,3 +259,5 @@ writing negative values is a bit of a mess.
 ```
 $ wf write point cli.example "\-10"
 ```
+
+You can write delta metrics with `-i` (for increment),
