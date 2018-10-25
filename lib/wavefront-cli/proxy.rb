@@ -15,7 +15,7 @@ module WavefrontCli
     end
 
     def do_versions
-      raw = wf.list.response.items.map do |i|
+      raw = wf.list(0, :all).response.items.map do |i|
         { id: i.id, version: i.version, name: i.name }
       end
 
