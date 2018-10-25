@@ -15,10 +15,12 @@ module WavefrontCli
     end
 
     def do_versions
-      wf.list.response.items.map do |i|
+      raw = wf.list.response.items.map do |i|
         { id: i.id, version: i.version, name: i.name }
-      end.sort_by { |p| p[:version] }.reverse
-     end
+      end
+
+      raw.sort_by { |p| p[:version] }.reverse
+    end
 
     def extra_validation
       return unless options[:'<name>']
