@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.12.0 (26/11/2018)
+* Support SDK's new `unix` writer, which lets you write points to a
+  local Unix datagram socket. This requires `-u unix` and `-S
+  filename`.
+
 ## 2.11.0 (24/10/2018)
 * Add `proxy versions` subcommand. Lists proxies and their versions,
   newest to oldest.

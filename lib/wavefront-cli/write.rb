@@ -50,6 +50,7 @@ module WavefrontCli
     def mk_creds
       { proxy:    options[:proxy],
         port:     options[:port] || default_port,
+        socket:   options[:socket],
         endpoint: options[:endpoint],
         token:    options[:token] }
     end
@@ -60,6 +61,11 @@ module WavefrontCli
 
     def validate_opts
       validate_opts_file if options[:file]
+
+      if options[:using] == 'unix'
+        return true if options[:socket]
+        raise(WavefrontCli::Exception::CredentialError, 'No socket path.')
+      end
 
       return true if options[:proxy]
       raise(WavefrontCli::Exception::CredentialError, 'No proxy address.')

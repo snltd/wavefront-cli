@@ -9,12 +9,14 @@ class WavefrontCommandWrite < WavefrontCommandBase
 
   def _commands
     ['point [-DnViq] [-c file] [-P profile] [-E proxy] [-t time] ' \
-     '[-p port] [-H host] [-T tag...] [-u method] <metric> <value>',
+     '[-p port] [-H host] [-T tag...] [-u method] [-S socket] <metric> ' \
+     '<value>',
      'distribution [-DnViq] [-c file] [-P profile] [-E proxy] [-H host] ' \
-     '[-p port] [-T tag...] [-u method] [-I interval] <metric> <val>...',
+     '[-p port] [-T tag...] [-u method] [-S socket] [-I interval] ' \
+     '<metric> <val>...',
      'file [-DnViq] [-c file] [-P profile] [-E proxy] [-H host] ' \
      '[-p port] [-F infileformat] [-m metric] [-T tag...] [-I interval] ' \
-     '[-u method] <file>']
+     '[-u method] [-S socket] <file>']
   end
 
   def _options
@@ -31,6 +33,7 @@ class WavefrontCommandWrite < WavefrontCommandBase
      '-i, --delta                increment metric by given value',
      "-I, --interval=INTERVAL    interval of distribution (default 'm')",
      '-u, --using=METHOD         method by which to send points',
+     '-S, --socket=FILE          Unix datagram socket',
      "-q, --quiet                don't report the points sent summary " \
      '(unless there were errors)']
   end
