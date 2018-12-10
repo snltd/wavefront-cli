@@ -1,6 +1,6 @@
 require_relative 'base'
 
-module CsvOutput
+module WavefrontOutput
   #
   # Display query results in CSV format.
   #
