@@ -9,8 +9,8 @@ class WavefrontCommandAlert < WavefrontCommandBase
 
   def _commands
     ["list #{CMN} [-al] [-f format] [-o offset] [-L limit]",
-     "firing #{CMN} [-o offset] [-L limit]",
-     "snoozed #{CMN} [-o offset] [-L limit]",
+     "firing #{CMN} [-f format] [-o offset] [-L limit]",
+     "snoozed #{CMN} [-f format] [-o offset] [-L limit]",
      "describe #{CMN} [-f format] [-v version] <id>",
      "delete #{CMN} <id>",
      "undelete #{CMN} <id>",
@@ -25,8 +25,9 @@ class WavefrontCommandAlert < WavefrontCommandBase
      "tag clear #{CMN} <id>",
      "tag add #{CMN} <id> <tag>",
      "tag delete #{CMN} <id> <tag>",
-     "currently #{CMN} <state>",
-     "summary #{CMN} [-a]"]
+     "currently #{CMN} [-f format] <state>",
+     "queries #{CMN} [-f format] [-b]",
+     "summary #{CMN} [-f format] [-a]"]
   end
 
   def _options
@@ -37,6 +38,7 @@ class WavefrontCommandAlert < WavefrontCommandBase
      '-o, --offset=n           start from nth alert',
      '-L, --limit=COUNT        number of alerts to list',
      '-T, --time=SECONDS       how long to snooze (default 3600)',
+     '-b, --brief              do not show alert names',
      '-f, --format=STRING      output format']
   end
 end
