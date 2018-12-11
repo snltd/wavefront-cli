@@ -32,7 +32,8 @@ class WavefrontCommandQuery < WavefrontCommandBase
      '-O, --obsolete            include metrics unreported for > 4 weeks',
      '-H, --host=STRING         host or source to query on',
      '-f, --format=STRING       output format',
-     '-F, --format-opts=STRING  options to pass to output formatter',
+     '-F, --format-opts=STRING  comma-separated options to pass to ' \
+                                'output formatter',
      '-k, --nospark             do not show sparkline',
      '-W, --nowarn              do not show API warning messages']
   end
@@ -41,6 +42,8 @@ class WavefrontCommandQuery < WavefrontCommandBase
     'The query command has an additional output format. Using ' \
     "'-f wavefront' produces output suitable for feeding back into a " \
     "proxy. Other output formats are 'yaml', 'json', 'ruby', "\
-    "and 'csv'.".cmd_fold(TW, 0)
+    "and 'csv'. CSV format options are 'header' (print column headers); " \
+    "'tagkeys' (print tags as key=value rather than value); and 'quote' " \
+    "(force quoting of every CSV element).".cmd_fold(TW, 0)
   end
 end
