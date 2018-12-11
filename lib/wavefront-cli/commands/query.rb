@@ -44,6 +44,6 @@ class WavefrontCommandQuery < WavefrontCommandBase
     "proxy. Other output formats are 'yaml', 'json', 'ruby', "\
     "and 'csv'. CSV format options are 'header' (print column headers); " \
     "'tagkeys' (print tags as key=value rather than value); and 'quote' " \
-    "(force quoting of every CSV element).".cmd_fold(TW, 0)
+    '(force quoting of every CSV element).'.cmd_fold(TW, 0)
   end
 end

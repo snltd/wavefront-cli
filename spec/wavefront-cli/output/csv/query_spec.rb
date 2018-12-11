@@ -19,15 +19,15 @@ class WavefrontOutputCsvTest < MiniTest::Test
     @wfqq = WavefrontCsvOutput::Query.new(load_query_response,
                                           formatopts: 'quote')
     @wfh = WavefrontCsvOutput::Query.new(load_query_response,
-                                          formatopts: 'headers')
+                                         formatopts: 'headers')
     @wft = WavefrontCsvOutput::Query.new(load_query_response,
-                                          formatopts: 'tagkeys')
+                                         formatopts: 'tagkeys')
   end
 
   def test_all_keys
     assert_equal(%i[a b c d e],
                  wfq.all_keys([{ a: 1, b: 2 }, { a: 3, c: 3 },
-                               { d: 4, e: 5 }, { a:1 } ]))
+                               { d: 4, e: 5 }, { a: 1 }]))
   end
 
   def test_csv_value
@@ -57,39 +57,39 @@ class WavefrontOutputCsvTest < MiniTest::Test
   end
 
   def test_map_row_to_csv
-    assert_equal(',,,,,,,,,,', wfq.map_row_to_csv({merp: 1}))
+    assert_equal(',,,,,,,,,,', wfq.map_row_to_csv(merp: 1))
     assert_equal('test.path,1,1544529523,testsource,,"unit test",,,,,',
-                 wfq.map_row_to_csv({ path:        'test.path',
-                                      value:       1,
-                                      timestamp:   1544529523,
-                                      source:      'testsource',
-                                      environment: 'unit test' }))
+                 wfq.map_row_to_csv(path:        'test.path',
+                                    value:       1,
+                                    timestamp:   1_544_529_523,
+                                    source:      'testsource',
+                                    environment: 'unit test'))
     assert_equal('"test.path","1","1544529523","testsource",,"unit test",,,,,',
-                 wfqq.map_row_to_csv({ path:        'test.path',
-                                       value:       1,
-                                       timestamp:   1544529523,
-                                       source:      'testsource',
-                                       environment: 'unit test' }))
+                 wfqq.map_row_to_csv(path:        'test.path',
+                                     value:       1,
+                                     timestamp:   1_544_529_523,
+                                     source:      'testsource',
+                                     environment: 'unit test'))
   end
 
   def test_csv_format
     assert_equal({ path:        'test.path',
                    value:       1,
-                   timestamp:   1544529523,
+                   timestamp:   1_544_529_523,
                    source:      'testsource',
                    environment: 'test',
                    dc:          'travis' },
-                 wfq.csv_format('test.path', 1, 1544529523, 'testsource',
-                                { environment: 'test', dc: 'travis'} ))
+                 wfq.csv_format('test.path', 1, 1_544_529_523, 'testsource',
+                                environment: 'test', dc: 'travis'))
 
     assert_equal({ path:        'test.path',
                    value:       1,
-                   timestamp:   1544529523,
+                   timestamp:   1_544_529_523,
                    source:      'testsource',
                    environment: 'environment=test',
                    dc:          'dc=travis' },
-                 wft.csv_format('test.path', 1, 1544529523, 'testsource',
-                                { environment: 'test', dc: 'travis'} ))
+                 wft.csv_format('test.path', 1, 1_544_529_523, 'testsource',
+                                environment: 'test', dc: 'travis'))
   end
 
   def test_tag_val
@@ -112,7 +112,8 @@ class WavefrontOutputCsvTest < MiniTest::Test
     out_h = wfh._run
     assert_equal(
       'path,value,timestamp,source,colour,environment,product,role,' \
-      'nic,platform,dc', out_h.first)
+      'nic,platform,dc', out_h.first
+    )
     assert_equal(
       'solaris.network.obytes64,20910.38968253968,1533679200,' \
       'wavefront-blue,blue,production,websites,wavefront-proxy,net0,' \

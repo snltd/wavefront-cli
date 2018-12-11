@@ -19,7 +19,7 @@ module WavefrontCsvOutput
     end
 
     def post_initialize
-      @headers     = []
+      @headers = []
       @formatopts = extract_formatopts
       @data_map    = options[:raw] ? raw_output : query_output
       @columns     = all_keys.freeze
@@ -78,8 +78,8 @@ module WavefrontCsvOutput
     # Do escaping and quoting
     #
     def csv_value(value)
-      if (formatopts.include?('quote') || value =~ /[,\s"]/ ) &&
-          !value.to_s.empty?
+      if (formatopts.include?('quote') || value =~ /[,\s"]/) &&
+         !value.to_s.empty?
         quote_value(value)
       else
         value
