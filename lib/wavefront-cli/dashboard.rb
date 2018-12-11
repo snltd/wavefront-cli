@@ -23,5 +23,36 @@ module WavefrontCli
     def do_history
       wf.history(options[:'<id>'])
     end
+
+    def do_queries
+      resp = wf.list(0, :all)
+
+      queries = resp.response.items.each_with_object({}) do |d, a|
+        a[d.id] = extract_values(d, 'query')
+      end
+
+      resp.tap { |r| r.response.items = queries }
+    end
+
+    # @param obj [Object] the thing to search
+    # @param key [String, Symbol] the key to search for
+    # @param aggr [Array] values of matched keys
+    # @return [Array]
+    #
+    def extract_values(obj, key, aggr = [])
+      if obj.is_a?(Hash)
+        obj.each_pair do |k, v|
+          if k == key && !v.to_s.empty?
+            aggr.<< v
+          else
+            extract_values(v, key, aggr)
+          end
+        end
+      elsif obj.is_a?(Array)
+        obj.each { |e| extract_values(e, key, aggr) }
+      end
+
+      aggr
+    end
   end
 end

@@ -54,6 +54,12 @@ module WavefrontCli
       in_state(:firing)
     end
 
+    def do_queries
+      resp = wf.list(0, :all).tap do |r|
+        r.response.items.map! { |a| { id: a.id, condition: a.condition } }
+      end
+    end
+
     # How many alerts are in the given state? If none, say so,
     # rather than just printing nothing.
     #

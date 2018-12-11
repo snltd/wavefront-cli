@@ -17,6 +17,7 @@ module WavefrontDisplayPrinter
     # @return [String] a Ruby format string for each line
     #
     def format_string
+      return '%s' if keys.length == 1
       lk = longest_keys
       keys.each_with_object('') { |k, out| out.<< "%-#{lk[k]}s  " }
     end

@@ -16,6 +16,7 @@ class WavefrontCommandDashboard < WavefrontCommandBase
      "undelete #{CMN} <id>",
      "history #{CMN} [-f format] [-o offset] [-L limit] <id>",
      "search #{CMN} [-al] [-f format] [-o offset] [-L limit] <condition>...",
+     "queries #{CMN} [-f format] [-b]",
      tag_commands]
   end
 
@@ -26,6 +27,7 @@ class WavefrontCommandDashboard < WavefrontCommandBase
      '-o, --offset=n           start list from nth dashboard or revision',
      '-L, --limit=COUNT        number of dashboards or revisions to list',
      '-v, --version=INTEGER    version of dashboard',
+     '-b, --brief              do not show dashboard names',
      '-f, --format=STRING      output format']
   end
 end

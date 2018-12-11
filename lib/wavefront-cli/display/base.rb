@@ -220,6 +220,14 @@ module WavefrontDisplay
       end
     end
 
+    def do_queries
+      if options[:brief]
+        multicolumn(:condition)
+      else
+        multicolumn(:id, :condition)
+      end
+    end
+
     # Modify, in-place, the data structure to remove fields which
     # we deem not of interest to the user.
     #

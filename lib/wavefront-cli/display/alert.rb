@@ -55,5 +55,13 @@ module WavefrontDisplay
       data.sort.each { |k, v| puts format("%-#{kw}s%s", k, v) }
     end
     # rubocop:enable Metrics/AbcSize
+
+    def do_queries
+      if options[:brief]
+        multicolumn(:condition)
+      else
+        multicolumn(:id, :condition)
+      end
+    end
   end
 end
