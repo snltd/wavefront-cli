@@ -55,7 +55,7 @@ module WavefrontCli
     end
 
     def do_queries
-      resp = wf.list(0, :all).tap do |r|
+      wf.list(0, :all).tap do |r|
         r.response.items.map! { |a| { id: a.id, condition: a.condition } }
       end
     end
