@@ -1,5 +1,8 @@
 # Changelog
 
+## 2.13.0 (11/12/2018)
+* Add CSV output.
+
 ## 2.12.0 (26/11/2018)
 * Support SDK's new `unix` writer, which lets you write points to a
   local Unix datagram socket. This requires `-u unix` and `-S
