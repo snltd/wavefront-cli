@@ -1,5 +1,4 @@
 require 'set'
-require 'wavefront-sdk/stdlib/hash'
 require_relative 'base'
 
 module WavefrontCsvOutput
@@ -13,16 +12,21 @@ module WavefrontCsvOutput
   #             the CSV data. This option puts key=value in the CSV.
   #
   class Query < Base
-    attr_reader :columns, :output_opts
+    attr_reader :columns, :formatopts, :headers, :data_map
 
     def _run
-      @output_opts = extract_output_opts
-      data_map = options[:raw] ? raw_output : query_output
-
-      @columns = all_keys(data_map).to_a.flatten.freeze
-      csv_headers + csv_body(data_map)
+      csv_headers + csv_body
     end
 
+    def post_initialize
+      @headers     = []
+      @formatopts = extract_formatopts
+      @data_map    = options[:raw] ? raw_output : query_output
+      @columns     = all_keys.freeze
+    end
+
+    # @return [Array[Hash]] which goes in the @data_map
+    #
     def raw_output
       resp.each_with_object([]) do |point, a|
         point[:points].each do |p|
@@ -35,6 +39,8 @@ module WavefrontCsvOutput
       end
     end
 
+    # @return [Array[Hash]] which goes in the @data_map
+    #
     def query_output
       resp[:timeseries].each_with_object([]) do |ts, a|
         ts[:data].each do |point|
@@ -47,27 +53,33 @@ module WavefrontCsvOutput
       end
     end
 
-    def all_keys(data_map)
-      data_map.each_with_object(Set.new) { |row, a| a.<< row.keys }
+    # @return [Array] unique list of all keys in an array of hashes
+    #
+    def all_keys(data = data_map)
+      data.each_with_object(Set.new) { |row, a| a.merge(row.keys) }.to_a
     end
 
+    # @return [Array] single element of comma-separated CSV column
+    #   headers if requested, otherwise []
+    #
     def csv_headers
-      return [] unless output_opts.include?('headers')
-      [columns.map { |c| mk_csv_element(c) }.join(',')]
+      return [] unless formatopts.include?('headers')
+      [columns.map { |c| csv_value(c) }.join(',')]
     end
 
-    def csv_body(data_map)
+    def csv_body
       data_map.map { |r| map_row_to_csv(r) }
     end
 
     def map_row_to_csv(row)
-      columns.map { |col| mk_csv_element(row[col]) }.join(',')
+      columns.map { |col| csv_value(row[col]) }.join(',')
     end
 
     # Do escaping and quoting
     #
-    def mk_csv_element(value)
-      if output_opts.include?('quote') || value =~ /[,\s"]/
+    def csv_value(value)
+      if (formatopts.include?('quote') || value =~ /[,\s"]/ ) &&
+          !value.to_s.empty?
         quote_value(value)
       else
         value
@@ -80,7 +92,7 @@ module WavefrontCsvOutput
 
     # Turn a string of output options into an easy-to-query array
     #
-    def extract_output_opts
+    def extract_formatopts
       options[:formatopts].nil? ? [] : options[:formatopts].split(',')
     end
 
@@ -99,7 +111,7 @@ module WavefrontCsvOutput
     # We may be doing key=val or just val, depending on the formatter options
     #
     def tag_val(key, val)
-      output_opts.include?('tagkeys') ? format('%s=%s', key, val) : val
+      formatopts.include?('tagkeys') ? format('%s=%s', key, val) : val
     end
   end
 end
