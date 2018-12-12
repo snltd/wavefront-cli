@@ -1,7 +1,12 @@
 # Changelog
 
 ## 2.13.0 (11/12/2018)
-* Add CSV output.
+* Add CSV output for `query` command.
+* Add multiple format outputs for all applicable `alert`
+  subcommands.
+* Add `queries` subcommand for `alert` and `dashboard` subcommands,
+  to quickly see which queries (and therefore timeseries) are being
+  used.
 
 ## 2.12.0 (26/11/2018)
 * Support SDK's new `unix` writer, which lets you write points to a
