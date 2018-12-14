@@ -54,7 +54,6 @@ module WavefrontCli
       in_state(:firing)
     end
 
-    # rubocop:disable Metrics/AbcSize
     def do_queries
       resp, data = one_or_all
 
@@ -64,7 +63,6 @@ module WavefrontCli
         end
       end
     end
-    # rubocop:enable Metrics/AbcSize
 
     # How many alerts are in the given state? If none, say so,
     # rather than just printing nothing.
