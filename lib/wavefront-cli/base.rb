@@ -457,5 +457,20 @@ module WavefrontCli
     def import_to_create(raw)
       raw.delete_if { |k, _v| k == 'id' }
     end
+
+    # Return a detailed description of one item, if an ID has been
+    # given, or all items if it has not.
+    #
+    def one_or_all
+      if options[:'<id>']
+        resp = wf.describe(options[:'<id>'])
+        data = [resp.response]
+      else
+        resp = wf.list(0, :all)
+        data = resp.response.items
+      end
+
+      [resp, data]
+    end
   end
 end

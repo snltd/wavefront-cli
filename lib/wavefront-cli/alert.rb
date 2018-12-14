@@ -54,11 +54,17 @@ module WavefrontCli
       in_state(:firing)
     end
 
+    # rubocop:disable Metrics/AbcSize
     def do_queries
-      wf.list(0, :all).tap do |r|
-        r.response.items.map! { |a| { id: a.id, condition: a.condition } }
+      resp, data = one_or_all
+
+      resp.tap do |r|
+        r.response.items = data.map do |a|
+          { id: a.id, condition: a.condition }
+        end
       end
     end
+    # rubocop:enable Metrics/AbcSize
 
     # How many alerts are in the given state? If none, say so,
     # rather than just printing nothing.

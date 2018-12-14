@@ -25,9 +25,9 @@ module WavefrontCli
     end
 
     def do_queries
-      resp = wf.list(0, :all)
+      resp, data = one_or_all
 
-      queries = resp.response.items.each_with_object({}) do |d, a|
+      queries = data.each_with_object({}) do |d, a|
         a[d.id] = extract_values(d, 'query')
       end
 
