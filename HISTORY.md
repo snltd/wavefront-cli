@@ -1,5 +1,8 @@
 # Changelog
 
+## 2.14.0
+* Let `queries` subcommand accept an optional ID.
+
 ## 2.13.0 (11/12/2018)
 * Add CSV output for `query` command.
 * Add multiple format outputs for all applicable `alert`
