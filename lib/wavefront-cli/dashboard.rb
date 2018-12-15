@@ -5,6 +5,14 @@ module WavefrontCli
   # CLI coverage for the v2 'dashboard' API.
   #
   class Dashboard < WavefrontCli::Base
+    def do_list
+      list = super
+
+      return super unless options[:nosystem]
+
+      list.tap { |l| l.response.items.delete_if { |d| d[:systemOwned] } }
+    end
+
     def do_describe
       wf.describe(options[:'<id>'], options[:version])
     end

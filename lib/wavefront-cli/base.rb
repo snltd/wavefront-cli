@@ -466,7 +466,8 @@ module WavefrontCli
         resp = wf.describe(options[:'<id>'])
         data = [resp.response]
       else
-        resp = wf.list(0, :all)
+        options[:all] = true
+        resp = do_list
         data = resp.response.items
       end
 
