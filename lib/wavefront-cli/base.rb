@@ -352,8 +352,13 @@ module WavefrontCli
     # harm inheriting unneeded things. Some classes override them.
     #
     def do_list
-      return wf.list(ALL_PAGE_SIZE, :all) if options[:all]
-      wf.list(options[:offset] || 0, options[:limit] || 100)
+      list = if options[:all]
+               wf.list(ALL_PAGE_SIZE, :all)
+             else
+               wf.list(options[:offset] || 0, options[:limit] || 100)
+             end
+
+      respond_to?(:list_filter) ? list_filter(list) : list
     end
 
     def do_describe
