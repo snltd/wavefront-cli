@@ -1,6 +1,9 @@
 # Changelog
 
-## 2.14.0
+## 2.15.0 (17/12/2018)
+* Add `dashboard fav` and `unfav` subcommands.
+
+## 2.14.0 (14/12/2018)
 * Let `queries` subcommand accept an optional ID.
 
 ## 2.13.0 (11/12/2018)
