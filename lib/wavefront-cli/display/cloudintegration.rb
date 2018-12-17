@@ -14,5 +14,13 @@ module WavefrontDisplay
       drop_fields(:forceSave, :inTrash, :deleted)
       long_output
     end
+
+    def do_enable
+      puts "Enabled #{options[:'<id>']}."
+    end
+
+    def do_disable
+      puts "Disabled #{options[:'<id>']}."
+    end
   end
 end
