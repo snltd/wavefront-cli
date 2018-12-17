@@ -47,9 +47,14 @@ describe "#{word} command" do
               path:   "/api/v2/#{word}/#{id}/snooze?seconds=800")
   cmd_to_call(word, "unsnooze #{id}",
               method: :post, path: "/api/v2/#{word}/#{id}/unsnooze")
+  cmd_to_call(word, "install #{id}",
+              method: :post, path: "/api/v2/#{word}/#{id}/install")
+  cmd_to_call(word, "uninstall #{id}",
+              method: :post, path: "/api/v2/#{word}/#{id}/uninstall")
   cmd_to_call(word, 'summary', path: "/api/v2/#{word}/summary")
   invalid_ids(word, ["describe #{bad_id}", "delete #{bad_id}",
                      "undelete #{bad_id}", "snooze #{bad_id}",
+                     "install #{bad_id}", "uninstall #{bad_id}",
                      "snooze -T 500 #{bad_id}"])
   tag_tests(word, id, bad_id)
 end
