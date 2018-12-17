@@ -26,5 +26,13 @@ module WavefrontDisplay
         long_output
       end
     end
+
+    def do_fav
+      puts "Added #{options[:'<id>']} to favourites."
+    end
+
+    def do_unfav
+      puts "Removed #{options[:'<id>']} from favourites."
+    end
   end
 end

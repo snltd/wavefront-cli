@@ -34,6 +34,14 @@ module WavefrontCli
       resp.tap { |r| r.response.items = queries }
     end
 
+    def do_fav
+      wf.favorite(options[:'<id>'])
+    end
+
+    def do_unfav
+      wf.unfavorite(options[:'<id>'])
+    end
+
     # @param obj [Object] the thing to search
     # @param key [String, Symbol] the key to search for
     # @param aggr [Array] values of matched keys

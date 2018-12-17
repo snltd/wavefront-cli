@@ -17,6 +17,8 @@ class WavefrontCommandDashboard < WavefrontCommandBase
      "history #{CMN} [-f format] [-o offset] [-L limit] <id>",
      "search #{CMN} [-al] [-f format] [-o offset] [-L limit] <condition>...",
      "queries #{CMN} [-f format] [-b] [<id>]",
+     "fav #{CMN} <id>",
+     "unfav #{CMN} <id>",
      tag_commands]
   end
 
