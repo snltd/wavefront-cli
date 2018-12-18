@@ -102,6 +102,8 @@ class WavefrontCliController
   def run_command(cli_class_obj)
     cli_class_obj.validate_opts
     cli_class_obj.run
+  rescue Interrupt
+    abort "\nOperation aborted at user request."
   rescue WavefrontCli::Exception::CredentialError => e
     abort "Credential error. #{e.message}"
   rescue WavefrontCli::Exception::UnsupportedOutput => e
