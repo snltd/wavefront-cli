@@ -39,6 +39,10 @@ describe "#{word} command" do
                         sort: { field: 'id', ascending: true } },
               headers: JSON_POST_HEADERS)
 
+  cmd_to_call(word, "fav #{id}",
+              method: :post, path: "/api/v2/#{word}/#{id}/favorite")
+  cmd_to_call(word, "unfav #{id}",
+              method: :post, path: "/api/v2/#{word}/#{id}/unfavorite")
   cmd_to_call(word, "undelete #{id}",
               method: :post, path: "/api/v2/#{word}/#{id}/undelete")
   invalid_ids(word, ["describe #{bad_id}", "delete #{bad_id}",

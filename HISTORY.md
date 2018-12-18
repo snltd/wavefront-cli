@@ -1,5 +1,8 @@
 # Changelog
 
+## 2.15.0 (17/12/2018)
+* Add `dashboard fav` and `unfav` subcommands.
+
 ## 2.14.0 (15/12/2018)
 * Add `-n` to `dashboard`'s `list` and `queries` commands to omit
   system-owned dashboards.
