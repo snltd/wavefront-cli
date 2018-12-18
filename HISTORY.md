@@ -1,6 +1,8 @@
 # Changelog
 
-## 2.14.0
+## 2.14.0 (15/12/2018)
+* Add `-n` to `dashboard`'s `list` and `queries` commands to omit
+  system-owned dashboards.
 * Let `queries` subcommand accept an optional ID.
 
 ## 2.13.0 (11/12/2018)
