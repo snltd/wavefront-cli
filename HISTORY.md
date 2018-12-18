@@ -1,12 +1,12 @@
 # Changelog
 
-## 2.15.0
+## 2.15.0 (18/12/2018)
 * Gracefully handle ctrl-c.
 * Add `install` and `uninstall` subcommands to `wf alert`.
 * Add `enable` and `disable` subcommands to `wf cloudintegration`.
 * Add `fav` and `unfav` commands to `wf dashboard`.
 * Add `alert install`, `alert uninstall`, `installed`, and
-* `manifest` commands to `wf integration`.
+  `manifest` commands to `wf integration`.
 * Require 2.2.0 of [wavefront-sdk](https://github.com/snltd/wavefront-sdk).
 
 ## 2.14.0 (15/12/2018)
