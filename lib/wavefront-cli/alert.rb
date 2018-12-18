@@ -64,6 +64,14 @@ module WavefrontCli
       end
     end
 
+    def do_install
+      wf.install(options[:'<id>'])
+    end
+
+    def do_uninstall
+      wf.uninstall(options[:'<id>'])
+    end
+
     # How many alerts are in the given state? If none, say so,
     # rather than just printing nothing.
     #

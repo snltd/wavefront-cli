@@ -27,6 +27,8 @@ class WavefrontCommandAlert < WavefrontCommandBase
      "tag delete #{CMN} <id> <tag>",
      "currently #{CMN} [-f format] <state>",
      "queries #{CMN} [-f format] [-b] [<id>]",
+     "install #{CMN} <id>",
+     "uninstall #{CMN} <id>",
      "summary #{CMN} [-f format] [-a]"]
   end
 

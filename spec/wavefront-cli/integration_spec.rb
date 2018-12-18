@@ -12,12 +12,33 @@ describe "#{word} command" do
                        "uninstall #{id}", "status #{id}", 'statuses',
                        'manifests'])
   list_tests(word)
-  cmd_to_call(word, "describe #{id}", path: "/api/v2/#{word}/#{id}")
+
+  cmd_to_call(word, "status #{id}", path: "/api/v2/#{word}/#{id}/status")
+
   cmd_to_call(word, "install #{id}",
               method: :post, path: "/api/v2/#{word}/#{id}/install")
+
   cmd_to_call(word, "uninstall #{id}",
               method: :post, path: "/api/v2/#{word}/#{id}/uninstall")
+
+  cmd_to_call(word, "alert install #{id}",
+              method: :post,
+              path:   "/api/v2/#{word}/#{id}/install-all-alerts")
+
+  cmd_to_call(word, "alert uninstall #{id}",
+              method: :post,
+              path:   "/api/v2/#{word}/#{id}/uninstall-all-alerts")
+
+  cmd_to_call(word, "describe #{id}", path: "/api/v2/#{word}/#{id}")
+
   cmd_to_call(word, "status #{id}", path: "/api/v2/#{word}/#{id}/status")
+
+  cmd_to_call(word, 'installed', path: "/api/v2/#{word}/installed")
+
+  cmd_to_call(word, 'manifests', path: "/api/v2/#{word}/manifests")
+
   invalid_ids(word, ["describe #{bad_id}", "install #{bad_id}",
+                     "alert install #{bad_id}",
+                     "alert uninstall #{bad_id}",
                      "uninstall #{bad_id}", "status #{bad_id}"])
 end
