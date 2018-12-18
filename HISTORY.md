@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.15.0
+* Add `install` and `uninstall` subcommands to `wf alert`.
+* Add `enable` and `disable` subcommands to `wf cloudintegration`.
+* Add `fav` and `unfav` commands to `wf dashboard`.
+* Add `alert install`, `alert uninstall`, `installed`, and
+* `manifest` commands to `wf integration`.
+* Require 2.2.0 of [wavefront-sdk](https://github.com/snltd/wavefront-sdk).
+
 ## 2.14.0
 * Let `queries` subcommand accept an optional ID.
 
