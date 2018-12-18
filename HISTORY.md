@@ -1,6 +1,7 @@
 # Changelog
 
 ## 2.15.0
+* Gracefully handle ctrl-c.
 * Add `install` and `uninstall` subcommands to `wf alert`.
 * Add `enable` and `disable` subcommands to `wf cloudintegration`.
 * Add `fav` and `unfav` commands to `wf dashboard`.
@@ -8,7 +9,9 @@
 * `manifest` commands to `wf integration`.
 * Require 2.2.0 of [wavefront-sdk](https://github.com/snltd/wavefront-sdk).
 
-## 2.14.0
+## 2.14.0 (15/12/2018)
+* Add `-n` to `dashboard`'s `list` and `queries` commands to omit
+  system-owned dashboards.
 * Let `queries` subcommand accept an optional ID.
 
 ## 2.13.0 (11/12/2018)

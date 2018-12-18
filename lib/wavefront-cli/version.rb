@@ -1,1 +1,1 @@
-WF_CLI_VERSION = '2.13.0'.freeze
+WF_CLI_VERSION = '2.14.0'.freeze
