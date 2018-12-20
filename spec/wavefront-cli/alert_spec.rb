@@ -5,14 +5,14 @@ bad_id = '__bad_id__'
 word = 'alert'
 
 def search_body(val)
-  { limit:  999,
+  { limit: 999,
     offset: 0,
-    query:  [
-      { key:   'status',
+    query: [
+      { key: 'status',
         value: val,
         matchingMethod: 'EXACT' }
     ],
-     sort: { field: 'status', ascending: true } }
+    sort: { field: 'status', ascending: true } }
 end
 
 require_relative '../spec_helper'
@@ -49,16 +49,16 @@ describe "#{word} command" do
               method: :post, path: "/api/v2/#{word}/#{id}/snooze")
   cmd_to_call(word, "search id=#{id}",
               method: :post, path: "/api/v2/search/#{word}",
-              body:   { limit: 10,
-                        offset: 0,
-                        query: [{ key: 'id',
-                                  value: id,
-                                  matchingMethod: 'EXACT' }],
-                        sort: { field: 'id', ascending: true } },
+              body: { limit: 10,
+                      offset: 0,
+                      query: [{ key: 'id',
+                                value: id,
+                                matchingMethod: 'EXACT' }],
+                      sort: { field: 'id', ascending: true } },
               headers: JSON_POST_HEADERS)
   cmd_to_call(word, "snooze -T 800 #{id}",
               method: :post,
-              path:   "/api/v2/#{word}/#{id}/snooze?seconds=800")
+              path: "/api/v2/#{word}/#{id}/snooze?seconds=800")
   cmd_to_call(word, "unsnooze #{id}",
               method: :post, path: "/api/v2/#{word}/#{id}/unsnooze")
   cmd_to_call(word, "install #{id}",
@@ -72,20 +72,20 @@ describe "#{word} command" do
                      "snooze -T 500 #{bad_id}"])
   cmd_to_call(word, 'snoozed',
               method: :post,
-              path:   "/api/v2/search/#{word}",
-              body:   search_body('snoozed'))
+              path: "/api/v2/search/#{word}",
+              body: search_body('snoozed'))
   cmd_to_call(word, 'firing',
               method: :post,
-              path:   "/api/v2/search/#{word}",
-              body:   search_body('firing'))
+              path: "/api/v2/search/#{word}",
+              body: search_body('firing'))
   cmd_to_call(word, 'currently firing',
               method: :post,
-              path:   "/api/v2/search/#{word}",
-              body:   search_body('firing'))
+              path: "/api/v2/search/#{word}",
+              body: search_body('firing'))
   cmd_to_call(word, 'currently in_maintenance',
               method: :post,
-              path:   "/api/v2/search/#{word}",
-              body:   search_body('in_maintenance'))
-  cmd_to_call(word, "queries", path: "/api/v2/#{word}?limit=999&offset=0")
+              path: "/api/v2/search/#{word}",
+              body: search_body('in_maintenance'))
+  cmd_to_call(word, 'queries', path: "/api/v2/#{word}?limit=999&offset=0")
   tag_tests(word, id, bad_id)
 end
