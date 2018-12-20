@@ -51,7 +51,7 @@ module WavefrontCli
     end
 
     def do_snoozed
-      in_state(:firing)
+      in_state(:snoozed)
     end
 
     def do_queries
