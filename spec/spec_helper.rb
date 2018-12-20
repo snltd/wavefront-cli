@@ -58,6 +58,10 @@ class DummyResponse
   def response
     Map.new(items: [])
   end
+
+  def empty?
+    false
+  end
 end
 
 CANNED_RESPONSE = DummyResponse.new
