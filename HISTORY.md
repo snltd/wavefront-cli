@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.15.1 (20/12/2018)
+
+* Fix bug where `alert snoozed` and `alert firing` did the same
+  thing.
+
 ## 2.15.0 (18/12/2018)
 * Gracefully handle ctrl-c.
 * Add `install` and `uninstall` subcommands to `wf alert`.
