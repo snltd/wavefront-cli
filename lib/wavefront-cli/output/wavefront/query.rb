@@ -8,6 +8,11 @@ module WavefrontWavefrontOutput
   #
   class Query < Base
     def _run
+      if resp[:timeseries].nil?
+        puts 'No points match query.'
+        exit 0
+      end
+
       if options[:raw]
         raw_output
       else

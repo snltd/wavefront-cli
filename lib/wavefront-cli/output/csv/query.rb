@@ -19,6 +19,11 @@ module WavefrontCsvOutput
     end
 
     def post_initialize
+      if resp[:timeseries].nil?
+        puts 'No points match query.'
+        exit 0
+      end
+
       @headers = []
       @formatopts = extract_formatopts
       @data_map    = options[:raw] ? raw_output : query_output
