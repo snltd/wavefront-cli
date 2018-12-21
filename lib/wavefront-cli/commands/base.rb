@@ -88,9 +88,15 @@ class WavefrontCommandBase
   #
   def options(term_width = TW)
     width = option_column_width
-    ret = "Global options:\n"
-    global_options.each { |o| ret.<< opt_row(o, width, term_width) }
-    ret.<< "\nOptions:\n"
+    ret = ''
+
+    unless global_options.empty?
+      ret.<< "Global options:\n"
+      global_options.each { |o| ret.<< opt_row(o, width, term_width) }
+      ret.<< "\n"
+    end
+
+    ret.<< "Options:\n"
     _options.flatten.each { |o| ret.<< opt_row(o, width, term_width) }
     ret
   end

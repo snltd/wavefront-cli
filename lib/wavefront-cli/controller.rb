@@ -13,6 +13,7 @@ require 'pathname'
 require 'pp'
 require 'docopt'
 require_relative 'version'
+require_relative 'constants'
 require_relative 'exception'
 require_relative 'opt_handler'
 
@@ -23,6 +24,8 @@ CMD_DIR = Pathname.new(__FILE__).dirname + 'commands'
 #
 class WavefrontCliController
   attr_reader :args, :usage, :opts, :cmds, :tw
+
+  include WavefrontCli::Constants
 
   def initialize(args)
     @args = args
@@ -105,23 +108,21 @@ class WavefrontCliController
   rescue Interrupt
     abort "\nOperation aborted at user request."
   rescue WavefrontCli::Exception::CredentialError => e
-    abort "Credential error. #{e.message}"
-  rescue WavefrontCli::Exception::UnsupportedOutput => e
-    abort e.message
-  rescue WavefrontCli::Exception::InsufficientData => e
-    abort "Insufficient data. #{e.message}"
-  rescue WavefrontCli::Exception::UnsupportedFileFormat
-    abort 'Unsupported file format.'
-  rescue WavefrontCli::Exception::UnparseableInput => e
-    abort "Cannot parse input. #{e.message}"
+    handle_missing_credentials(e)
   rescue WavefrontCli::Exception::FileNotFound
     abort 'File not found.'
-  rescue WavefrontCli::Exception::UnparseableInput
-    abort 'Cannot parse input.'
+  rescue WavefrontCli::Exception::InsufficientData => e
+    abort "Insufficient data. #{e.message}"
   rescue WavefrontCli::Exception::SystemError => e
     abort "Host system error. #{e.message}"
+  rescue WavefrontCli::Exception::UnparseableInput => e
+    abort "Cannot parse input. #{e.message}"
+  rescue WavefrontCli::Exception::UnsupportedFileFormat
+    abort 'Unsupported file format.'
   rescue WavefrontCli::Exception::UnsupportedOperation => e
     abort "Unsupported operation.\n#{e.message}"
+  rescue WavefrontCli::Exception::UnsupportedOutput => e
+    abort e.message
   rescue Wavefront::Exception::UnsupportedWriter => e
     abort "Unsupported writer '#{e.message}'."
   rescue StandardError => e
@@ -132,6 +133,20 @@ class WavefrontCliController
   end
   # rubocop:enable Metrics/MethodLength
   # rubocop:enable Metrics/AbcSize
+
+  #
+  # @param error [WavefrontCli::Exception::CredentialError]
+  #
+  def handle_missing_credentials(error)
+    if DEFAULT_CONFIG.exist?
+      abort "Credential error. #{error.message}"
+    else
+      puts 'No credentials supplied on the command line or via ' \
+           'environment variables, and no configuration file found. ' \
+           "Please run 'wf config setup' to create configuration."
+        .fold(TW, 0)
+    end
+  end
 
   # Each command is defined in its own file. Dynamically load all
   # those commands.
