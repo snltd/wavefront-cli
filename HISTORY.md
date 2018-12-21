@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.15.2 (21/12/2018)
+* Fix bug which caused an unhandled exception if CSV or Wavefront
+  query outputs tried to process an empty data set.
+
 ## 2.15.1 (20/12/2018)
 
 * Fix bug where `alert snoozed` and `alert firing` did the same

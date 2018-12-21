@@ -42,6 +42,8 @@ module WavefrontCsvOutput
     # @return [Array[Hash]] which goes in the @data_map
     #
     def query_output
+      check_query_response
+
       resp[:timeseries].each_with_object([]) do |ts, a|
         ts[:data].each do |point|
           a.<< csv_format(ts[:label],

@@ -14,5 +14,14 @@ module WavefrontCsvOutput
     def run
       puts _run
     end
+
+    def check_query_response
+      return true unless resp[:timeseries].nil?
+
+      puts 'No points match query.'
+      exit 0
+    rescue StandardError
+      raise WavefrontCli::Exception::UnparseableResponse
+    end
   end
 end

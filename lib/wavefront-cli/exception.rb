@@ -7,6 +7,7 @@ module WavefrontCli
     class SystemError < RuntimeError; end
     class UnhandledCommand < RuntimeError; end
     class UnparseableInput < RuntimeError; end
+    class UnparseableResponse < RuntimeError; end
     class UnsupportedFileFormat < RuntimeError; end
     class UnsupportedOperation < RuntimeError; end
     class UnsupportedOutput < RuntimeError; end
