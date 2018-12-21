@@ -1,18 +1,13 @@
 require 'wavefront-sdk/stdlib/hash'
-require_relative 'base'
+require_relative '../csv/base'
 
 module WavefrontWavefrontOutput
   #
   # Display query results in Wavefront wire format. We have to
   # handle raw and normal output in different ways.
   #
-  class Query < Base
+  class Query < WavefrontCsvOutput::Base
     def _run
-      if resp[:timeseries].nil?
-        puts 'No points match query.'
-        exit 0
-      end
-
       if options[:raw]
         raw_output
       else
@@ -33,6 +28,8 @@ module WavefrontWavefrontOutput
     end
 
     def query_output
+      check_query_response
+
       resp[:timeseries].each_with_object('') do |ts, a|
         ts[:data].each do |point|
           a.<< wavefront_format(ts[:label],

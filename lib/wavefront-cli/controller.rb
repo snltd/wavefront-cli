@@ -114,6 +114,8 @@ class WavefrontCliController
     abort 'Unsupported file format.'
   rescue WavefrontCli::Exception::UnparseableInput => e
     abort "Cannot parse input. #{e.message}"
+  rescue WavefrontCli::Exception::UnparseableResponse => e
+    abort "Bad response from Wavefront. #{e.message}"
   rescue WavefrontCli::Exception::FileNotFound
     abort 'File not found.'
   rescue WavefrontCli::Exception::UnparseableInput

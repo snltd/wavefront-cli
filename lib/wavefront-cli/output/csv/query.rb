@@ -19,11 +19,6 @@ module WavefrontCsvOutput
     end
 
     def post_initialize
-      if resp[:timeseries].nil?
-        puts 'No points match query.'
-        exit 0
-      end
-
       @headers = []
       @formatopts = extract_formatopts
       @data_map    = options[:raw] ? raw_output : query_output
@@ -47,6 +42,8 @@ module WavefrontCsvOutput
     # @return [Array[Hash]] which goes in the @data_map
     #
     def query_output
+      check_query_response
+
       resp[:timeseries].each_with_object([]) do |ts, a|
         ts[:data].each do |point|
           a.<< csv_format(ts[:label],
