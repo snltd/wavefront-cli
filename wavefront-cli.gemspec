@@ -23,7 +23,8 @@ Gem::Specification.new do |gem|
   gem.require_paths = %w[lib]
 
   gem.add_runtime_dependency 'docopt', '~> 0.6.0'
-  gem.add_runtime_dependency 'wavefront-sdk', '~> 2.2', '>= 2.2.0'
+  gem.add_runtime_dependency 'wavefront-sdk', '~> 2.2', '>= 2.2.1'
+  gem.add_runtime_dependency 'inifile', '~> 3.0'
 
   gem.add_development_dependency 'bundler', '~> 1.3'
   gem.add_development_dependency 'minitest', '~> 5.11', '>= 5.11.0'
