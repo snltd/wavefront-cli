@@ -160,6 +160,7 @@ class WavefrontCliConfigTest < MiniTest::Test
     out, err = capture_io { wfo.do_envvars }
     assert_empty(err)
     out.each_line { |l| assert_match(/WAVEFRONT_[A-Z]+\s+unset$/, l) }
+    blank_envvars
   end
 
   def test_do_envvars_2
@@ -171,6 +172,7 @@ class WavefrontCliConfigTest < MiniTest::Test
     assert_match(/WAVEFRONT_ENDPOINT+\s+unset$/, out)
     assert_match(/WAVEFRONT_TOKEN+\s+unset$/, out)
     assert_match(/WAVEFRONT_PROXY+\s+myproxy$/, out)
+    blank_envvars
   end
 
   def test_do_envvars_3
@@ -183,6 +185,7 @@ class WavefrontCliConfigTest < MiniTest::Test
     assert_match(/WAVEFRONT_ENDPOINT+\s+unset$/, out)
     assert_match(/WAVEFRONT_TOKEN+\s+token$/, out)
     assert_match(/WAVEFRONT_PROXY+\s+myproxy$/, out)
+    blank_envvars
   end
 
   def test_read_thing; end
