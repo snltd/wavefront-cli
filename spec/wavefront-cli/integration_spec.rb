@@ -35,7 +35,7 @@ describe "#{word} command" do
 
   cmd_to_call(word, 'installed', path: "/api/v2/#{word}/installed")
 
-  cmd_to_call(word, 'manifests', path: "/api/v2/#{word}/manifests")
+  cmd_to_call(word, 'manifests -f json', path: "/api/v2/#{word}/manifests")
 
   invalid_ids(word, ["describe #{bad_id}", "install #{bad_id}",
                      "alert install #{bad_id}",
