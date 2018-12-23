@@ -16,6 +16,7 @@ require_relative 'version'
 require_relative 'constants'
 require_relative 'exception'
 require_relative 'opt_handler'
+require_relative 'stdlib/string'
 
 CMD_DIR = Pathname.new(__FILE__).dirname + 'commands'
 
@@ -109,9 +110,8 @@ class WavefrontCliController
     abort "\nOperation aborted at user request."
   rescue WavefrontCli::Exception::ConfigFileNotFound => e
     abort "Configuration file '#{e}' not found."
-  rescue WavefrontCli::Exception::CredentialError
-    abort 'Credential error. Missing API token.'
-    # handle_missing_credentials(e)
+  rescue WavefrontCli::Exception::CredentialError => e
+    handle_missing_credentials(e)
   rescue WavefrontCli::Exception::MandatoryValue
     abort 'A value must be supplied.'
   rescue WavefrontCli::Exception::InvalidValue => e
