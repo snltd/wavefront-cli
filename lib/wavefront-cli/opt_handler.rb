@@ -1,4 +1,3 @@
-require 'inifile'
 require 'pathname'
 require 'wavefront-sdk/credentials'
 require_relative 'constants.rb'

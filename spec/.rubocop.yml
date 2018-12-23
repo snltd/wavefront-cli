@@ -1,6 +1,9 @@
 AllCops:
   TargetRubyVersion: 2.2
 
+Style/FormatStringToken:
+  Enabled: false
+
 # Allow long blocks of tests
 #
 Metrics/BlockLength:

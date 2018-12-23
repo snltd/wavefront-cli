@@ -1,3 +1,5 @@
+require 'pathname'
+
 module WavefrontCli
   # Universal truths
   #
@@ -17,5 +19,9 @@ module WavefrontCli
     # --all
     #
     ALL_PAGE_SIZE = 999
+
+    # Default configuration file
+    #
+    DEFAULT_CONFIG = (Pathname.new(ENV['HOME']) + '.wavefront').freeze
   end
 end
