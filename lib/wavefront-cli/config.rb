@@ -67,7 +67,7 @@ module WavefrontCli
         raise(WavefrontCli::Exception::ProfileExists, profile)
       end
 
-      new_section = create_profile
+      new_section = create_profile(profile)
 
       config = config.merge(new_section)
       config.write(filename: config_file)
