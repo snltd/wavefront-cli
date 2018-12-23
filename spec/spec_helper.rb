@@ -31,6 +31,7 @@ unless defined?(CMD)
   CMDS = all_commands.freeze
   BAD_TAG = '*BAD_TAG*'.freeze
   TW = 80
+  HOME_CONFIG = Pathname.new(ENV['HOME']) + '.wavefront'
 end
 
 # Return an array of CLI permutations and the values to which they relate
@@ -160,16 +161,23 @@ def invalid_ids(cmd, subcmds)
   end
 end
 
-# Without a token, you should get an error. If you don't supply an endpoint, it
-# will default to 'metrics.wavefront.com'.
+# Without a token, you should get an error. If you don't supply an
+# endpoint, it will default to 'metrics.wavefront.com'. The
+# behaviour is different now, depending on whether you have
+# ~/.wavefront or not.
 #
 def missing_creds(cmd, subcmds)
   describe 'commands with missing credentials' do
     subcmds.each do |subcmd|
       it "'#{subcmd}' errors and tells the user to use a token" do
         out, err = fail_command("#{cmd} #{subcmd} -c /f")
-        assert_equal("Credential error. Missing API token.\n", err)
-        assert_match(%r{config file '/f' not found.}, out)
+
+        if HOME_CONFIG.exist?
+          assert_equal("Credential error. Missing API token.\n", err)
+          assert_match(%r{config file '/f' not found.}, out)
+        else
+          assert_match(/Please run 'wf config setup'/, out)
+        end
       end
     end
   end
