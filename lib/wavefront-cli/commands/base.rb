@@ -85,7 +85,7 @@ class WavefrontCommandBase
   #   testing far simpler.
   # @return [String] the options the command understands.
   #
-  #
+  # rubocop:disable Metrics/AbcSize
   def options(term_width = TW)
     width = option_column_width
     ret = ''
@@ -100,6 +100,7 @@ class WavefrontCommandBase
     _options.flatten.each { |o| ret.<< opt_row(o, width, term_width) }
     ret
   end
+  # rubocop:enable Metrics/AbcSize
 
   # Formats an option string.
   #

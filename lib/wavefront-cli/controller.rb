@@ -107,8 +107,18 @@ class WavefrontCliController
     cli_class_obj.run
   rescue Interrupt
     abort "\nOperation aborted at user request."
+  rescue WavefrontCli::Exception::ConfigFileNotFound => e
+    abort "Configuration file '#{e}' not found."
   rescue WavefrontCli::Exception::CredentialError => e
     handle_missing_credentials(e)
+  rescue WavefrontCli::Exception::MandatoryValue
+    abort 'A value must be supplied.'
+  rescue WavefrontCli::Exception::InvalidValue => e
+    abort "Invalid value for #{e}."
+  rescue WavefrontCli::Exception::ProfileExists => e
+    abort "Profile '#{e}' already exists."
+  rescue WavefrontCli::Exception::ProfileNotFound => e
+    abort "Profile '#{e}' not found."
   rescue WavefrontCli::Exception::FileNotFound
     abort 'File not found.'
   rescue WavefrontCli::Exception::InsufficientData => e

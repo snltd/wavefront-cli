@@ -1,4 +1,5 @@
 require 'inifile'
+require_relative 'exception'
 require_relative 'base'
 
 module WavefrontCli
@@ -16,19 +17,19 @@ module WavefrontCli
       { key: :token,
         text: 'Wavefront API token',
         default: nil,
-        ok?: proc { |v| v =~ RX } },
+        test: proc { |v| v =~ RX } },
       { key: :endpoint,
         text: 'Wavefront API endpoint',
         default: 'metrics.wavefront.com',
-        ok?: proc { |v| v.end_with?('.wavefront.com') } },
+        test: proc { |v| v.end_with?('.wavefront.com') } },
       { key: :proxy,
         text: 'Wavefront proxy endpoint',
         default: 'wavefront',
-        ok?: proc { true } },
+        test: proc { true } },
       { key: :format,
         text: 'default output format',
         default: 'human',
-        ok?: proc { |v| %w[human json yaml].include?(v) } }
+        test: proc { |v| %w[human json yaml].include?(v) } }
     ].freeze
 
     RX = /^[\da-f]{8}-[\da-f]{4}-[\da-f]{4}-[\da-f]{4}-[\da-f]{12}$/
@@ -52,33 +53,49 @@ module WavefrontCli
       puts IO.read(config_file)
     end
 
+    def base_config
+      return read_config if config_file.exist?
+
+      puts "Creating new configuration file at #{config_file}."
+      IniFile.new
+    end
+
     def do_setup
-      if config_file.exist?
-        raw = read_config
-      else
-        puts "Creating new configuration file at #{config_file}."
-        raw = IniFile.new
+      config = base_config
+
+      if config.has_section?(profile)
+        raise(WavefrontCli::Exception::ProfileExists, profile)
       end
 
-      abort "'#{profile}' profile already exists." if raw.has_section?(profile)
+      new_section = create_profile
 
+      config = config.merge(new_section)
+      config.write(filename: config_file)
+    end
+
+    def create_profile(profile)
       puts "Creating profile '#{profile}'."
 
       str = CONFIGURABLES.each_with_object("[#{profile}]") do |t, a|
         a.<< format("\n%s=%s", t[:key], read_thing(t))
       end
 
-      new = IniFile.new(content: str)
-      raw = raw.merge(new)
-      raw.write(filename: config_file)
+      IniFile.new(content: str)
     end
 
     def do_delete
+      delete_section(profile, config_file)
+    end
+
+    def delete_section(profile, file)
       raw = read_config
-      abort 'Profile not found.' unless raw.has_section?(profile)
+
+      unless raw.has_section?(profile)
+        raise(WavefrontCli::Exception::ProfileNotFound, profile)
+      end
 
       raw.delete_section(profile)
-      raw.write(filename: config_file)
+      raw.write(filename: file)
     end
 
     def do_envvars
@@ -95,29 +112,47 @@ module WavefrontCli
       dispatch
     end
 
-    def read_thing(thing)
-      print format('  %s', thing[:text])
-      print format(' [%s]', thing[:default]) unless thing[:default].nil?
-      print ':> '
-      selection = STDIN.gets.chomp.strip
+    def input_prompt(label, default)
+      ret = format('  %s', label)
+      ret.<< format(' [%s]', default) unless default.nil?
+      ret + ':> '
+    end
 
-      if selection.empty?
-        abort 'Value must be supplied.' if thing[:default].nil?
-        selection = thing[:default]
+    # Read STDIN and strip the whitespace. The rescue is there to
+    # catch a ctrl-d
+    #
+    def read_input
+      STDIN.gets.strip
+    rescue NoMethodError
+      abort "\nInput aborted at user request."
+    end
+
+    # Read something, and return its checked, sanitized value
+    # @return [String]
+    #
+    def read_thing(thing)
+      print input_prompt(thing[:text], thing[:default])
+      validate_input(read_input, thing[:default], thing[:test])
+    end
+
+    def validate_input(input, default, test)
+      if input.empty?
+        raise WavefrontCli::Exception::MandatoryValue if default.nil?
+        input = default
       end
 
-      abort "Invalid #{thing[:text]}." unless thing[:ok?].call(selection)
-
-      selection
-    rescue NoMethodError # probably ctrl-d
-      puts
-      abort
+      return input if test.call(input)
+      raise WavefrontCli::Exception::InvalidValue
     end
 
     def present?
-      abort 'No configuration file.' unless config_file.exist?
+      return true if config_file.exist?
+      raise WavefrontCli::Exception::ConfigFileNotFound
     end
 
+    # @return [Pathname] path to config file, from options, or from
+    #   a constant if not supplied.
+    #
     def _config_file
       Pathname.new(options[:config] || DEFAULT_CONFIG)
     end

@@ -1,3 +1,5 @@
+require 'pathname'
+
 module WavefrontCli
   # Universal truths
   #
