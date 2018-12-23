@@ -156,6 +156,7 @@ class WavefrontCliController
            'environment variables, and no configuration file found. ' \
            "Please run 'wf config setup' to create configuration."
         .fold(TW, 0)
+      exit 1
     end
   end
 
