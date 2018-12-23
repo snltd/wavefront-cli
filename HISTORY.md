@@ -1,5 +1,8 @@
 # Changelog
 
+## 2.16.0 (23/12/2018)
+* Add `config` command to quickly set up and manage profiles.
+
 ## 2.15.2 (21/12/2018)
 * Fix bug which caused an unhandled exception if CSV or Wavefront
   query outputs tried to process an empty data set.
