@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.16.2 (29/12/2018)
+* Fix typo in `query` help. CSV headers are produced with `-F
+  headers`, not `-F header`.
+
 ## 2.16.1 (29/12/2018)
 
 * Fix regression which broke query time ranges.
