@@ -91,7 +91,15 @@ def cmd_to_call(word, args, call, sdk_class = nil)
     describe "with #{word} #{args}" do
       fmts.each do |fmt|
         cmd = "#{word} #{args} #{opts} #{fmt}"
-        uri = 'https://' + vals[:e] + call[:path]
+
+        if call[:regex]
+          uri = Regexp.new(call[:path])
+        else
+          uri = 'https://' + vals[:e] + call[:path]
+        end
+
+        #uri = Regexp.new(uri) if call[:regex]
+
         h = headers.dup
         h[:Authorization] = "Bearer #{vals[:t]}"
 
