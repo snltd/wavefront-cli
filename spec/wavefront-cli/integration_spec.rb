@@ -12,7 +12,7 @@ describe "#{word} command" do
                        "uninstall #{id}", "status #{id}", 'statuses',
                        'manifests'])
   list_tests(word)
-
+  noop_tests(word, id, :skip, 'integration')
   cmd_to_call(word, "status #{id}", path: "/api/v2/#{word}/#{id}/status")
 
   cmd_to_call(word, "install #{id}",

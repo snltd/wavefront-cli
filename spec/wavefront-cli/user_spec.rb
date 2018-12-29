@@ -28,4 +28,8 @@ describe "#{word} command" do
               headers: hdrs)
 
   invalid_ids(word, ["describe #{bad_id}", "delete #{bad_id}"])
+  cmd_noop(word, 'list',
+           ["GET https://metrics.wavefront.com/api/v2/#{word}"])
+  cmd_noop(word, 'describe rob@a.com',
+           ["GET https://metrics.wavefront.com/api/v2/#{word}/rob@a.com"])
 end

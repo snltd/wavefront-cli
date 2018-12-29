@@ -123,14 +123,16 @@ module WavefrontCli
     end
 
     # Make a common wavefront-sdk options object from standard CLI
-    # options.
+    # options. We force verbosity on for a noop, otherwise we get no
+    # output.
     #
     # @return [Hash] containing `debug`, `verbose`, and `noop`.
     #
     def mk_opts
       ret = { debug:   options[:debug],
-              verbose: options[:verbose],
               noop:    options[:noop] }
+
+      ret[:verbose] = options[:noop] ? true : options[:verbose]
 
       ret.merge!(extra_options) if respond_to?(:extra_options)
       ret
@@ -387,12 +389,9 @@ module WavefrontCli
     end
 
     def do_update
+      cannot_noop!
       k, v = options[:'<key=value>'].split('=', 2)
       wf.update(options[:'<id>'], k => v)
-    rescue NoMethodError
-      raise(WavefrontCli::Exception::UnsupportedOperation,
-            'Updates require two API calls. We cannot do the second ' \
-            'when -n is set.')
     end
 
     def do_search(cond = options[:'<condition>'])
@@ -477,6 +476,14 @@ module WavefrontCli
       end
 
       [resp, data]
+    end
+
+    # Operations which do require multiple operations cannot be
+    # perormed as a no-op. Drop in a call to this method for those
+    # things. The exception is caught in controller.rb
+    #
+    def cannot_noop!
+      raise WavefrontCli::Exception::UnsupportedNoop if options[:noop]
     end
   end
 end

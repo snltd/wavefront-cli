@@ -1,5 +1,11 @@
 # Changelog
 
+* Fix regression which made `--noop` silent unless `--verbose` was
+  also specified.
+* Add much more comprehensive `--noop` tests.
+* Better handling of `--noop` on commands which cannot support it.
+* Fix crash if `wf metric` matched no series.
+
 ## 2.16.0 (23/12/2018)
 * Add `config` command to quickly set up and manage profiles.
 

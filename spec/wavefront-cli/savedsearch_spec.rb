@@ -11,6 +11,7 @@ k = WavefrontCli::SavedSearch
 describe "#{word} command" do
   missing_creds(word, ['list', "describe #{id}", "delete #{id}"])
   list_tests(word, 'savedsearch', k)
+  noop_tests(word, id, false, 'savedsearch', k)
   cmd_to_call(word, "describe #{id}", { path: "/api/v2/#{word}/#{id}" }, k)
   cmd_to_call(word, "delete #{id}",
               { method: :delete, path: "/api/v2/#{word}/#{id}" }, k)

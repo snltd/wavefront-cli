@@ -48,7 +48,7 @@ def permutations
                                  e: ENDPOINT }]]
 end
 
-# Object returned by cmd_to_call. Has just enough methods to satisy
+# Object returned by cmd_to_call. Has just enough methods to satisfy
 # the SDK
 #
 class DummyResponse
@@ -119,6 +119,63 @@ def cmd_to_call(word, args, call, sdk_class = nil)
         end
       end
     end
+  end
+end
+
+# Test no-ops
+#
+# @param output [Array] [URI, params]
+#
+def cmd_noop(word, cmd, output, sdk_class = nil)
+  cmd = [word] + cmd.split + ['--noop']
+
+  exit_code = output == :impossible ? 1 : 0
+
+  it "runs #{cmd.join(' ')} and gets output without an API call" do
+    out, err = capture_io do
+      sdk_class ||= Object.const_get("WavefrontCli::#{word.capitalize}")
+      require "wavefront-sdk/#{sdk_class.name.split('::').last.downcase}"
+      begin
+        WavefrontCliController.new(cmd).run
+      rescue SystemExit => e
+        assert_equal(exit_code, e.status)
+      end
+    end
+
+    if output == :impossible
+      assert_equal('Multiple API call operations cannot be performed ' \
+                   "as no-ops.\n", err)
+      assert_empty(out)
+    else
+      out = out.split("\n")
+      refute_empty(out)
+      assert_equal("SDK INFO: uri: #{output.first}", out.first)
+      if output.size > 1
+        assert_equal("SDK INFO: params: #{output.last}", out.last)
+      end
+      assert_empty(err)
+    end
+  end
+end
+
+# Wrapper to standard noop tests
+#
+def noop_tests(cmd, id, nodelete = false, pth = nil, sdk_class = nil)
+  pth ||= cmd
+  cmd_noop(cmd, 'list',
+           ["GET https://metrics.wavefront.com/api/v2/#{pth}",
+            offset: 0, limit: 100], sdk_class)
+  cmd_noop(cmd, "describe #{id}",
+           ["GET https://metrics.wavefront.com/api/v2/#{pth}/#{id}"],
+           sdk_class)
+
+  if nodelete == :skip
+  elsif nodelete
+    cmd_noop(cmd, "delete #{id}", :impossible, sdk_class)
+  else
+    cmd_noop(cmd, "delete #{id}",
+             ["DELETE https://metrics.wavefront.com/api/v2/#{pth}/#{id}"],
+             sdk_class)
   end
 end
 

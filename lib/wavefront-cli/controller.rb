@@ -1,7 +1,7 @@
 # For development against a local checkout of the SDK, uncomment
 # this definition
 #
-# DEVELOPMENT = true
+DEVELOPMENT = true
 
 if defined?(DEVELOPMENT)
   dir = Pathname.new(__FILE__).dirname.realpath.parent.parent.parent
@@ -134,6 +134,8 @@ class WavefrontCliController
     abort "Unsupported operation.\n#{e.message}"
   rescue WavefrontCli::Exception::UnsupportedOutput => e
     abort e.message
+  rescue WavefrontCli::Exception::UnsupportedNoop
+    abort 'Multiple API call operations cannot be performed as no-ops.'
   rescue Wavefront::Exception::UnsupportedWriter => e
     abort "Unsupported writer '#{e.message}'."
   rescue StandardError => e

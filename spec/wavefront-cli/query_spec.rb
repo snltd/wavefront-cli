@@ -17,6 +17,15 @@ o = '-g m -s 12:00'
 describe "#{word} command" do
   missing_creds(word, ["-g m -s 12:00 '#{q}'", "raw #{q}"])
 
+  cmd_noop(word, "-s #{t1} #{q}",
+           ['GET https://metrics.wavefront.com/api/v2/chart/api',
+            i: false, summarization: 'mean', listMode: true, strict: true,
+            sorted: true, q: q, g: :d, s: t1])
+
+  cmd_noop(word, 'raw dev.cli.test',
+           ['GET https://metrics.wavefront.com/api/v2/chart/raw',
+            metric: 'dev.cli.test'])
+
   cmd_to_call(word, "#{o} #{q}",
               path: '/api/v2/chart/api?g=m&i=false&listMode=true' \
                     "&q=ts(%22dev.cli.test%22)&s=#{t1}&sorted=true" \

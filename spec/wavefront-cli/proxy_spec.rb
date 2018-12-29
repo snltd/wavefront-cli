@@ -11,6 +11,7 @@ describe "#{word} command" do
   missing_creds(word, ['list', 'versions', "describe #{id}", "delete #{id}",
                        "undelete #{id}", "rename #{id} newname"])
   list_tests(word)
+  noop_tests(word, id)
   cmd_to_call(word, "describe #{id}", path: "/api/v2/#{word}/#{id}")
   cmd_to_call(word, 'versions', path: "/api/v2/#{word}?limit=999&offset=0")
   cmd_to_call(word, "rename #{id} newname",

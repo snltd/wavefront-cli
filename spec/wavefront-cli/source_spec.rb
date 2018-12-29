@@ -27,4 +27,8 @@ describe "#{word} command" do
                                   matchingMethod: 'STARTSWITH' }],
                         sort: { field: 'id', ascending: true } },
               headers: JSON_POST_HEADERS)
+  cmd_noop(word, 'list',
+           ['GET https://metrics.wavefront.com/api/v2/source'])
+  cmd_noop(word, 'describe src',
+           ['GET https://metrics.wavefront.com/api/v2/source/src'])
 end

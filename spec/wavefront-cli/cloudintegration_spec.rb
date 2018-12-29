@@ -12,6 +12,7 @@ describe 'cloudintegration command' do
   missing_creds(word, ['list', "describe #{id}", "delete #{id}",
                        "undelete #{id}"])
   list_tests(word, 'cloudintegration', k)
+  noop_tests(word, id, false, 'cloudintegration', k)
   cmd_to_call(word, "describe #{id}",
               { path: "/api/v2/cloudintegration/#{id}" }, k)
   cmd_to_call(word, "delete #{id}",
