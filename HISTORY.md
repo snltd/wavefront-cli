@@ -1,9 +1,11 @@
 # Changelog
 
+## 2.16.1 (29/12/2018)
+
+* Fix regression which broke query time ranges.
 * Fix regression which made `--noop` silent unless `--verbose` was
   also specified.
 * Fix crash if `wf metric` matched no series.
-* Fix regression which broke query time ranges.
 * Fix bug calculating query granularity when only one end of a
   time range is specified.
 * Add much more comprehensive `--noop` tests.
