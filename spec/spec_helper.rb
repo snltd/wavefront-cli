@@ -127,7 +127,7 @@ end
 # @param output [Array] [URI, params]
 #
 def cmd_noop(word, cmd, output, sdk_class = nil)
-  cmd = [word] + cmd.split + ['--noop']
+  cmd = [word] + cmd.split + ['--noop'] + ["-t #{TOKEN} -E #{ENDPOINT}"]
 
   exit_code = output == :impossible ? 1 : 0
 
