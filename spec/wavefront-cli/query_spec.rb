@@ -20,7 +20,7 @@ describe "#{word} command" do
   cmd_noop(word, "-s #{t1} #{q}",
            ['GET https://metrics.wavefront.com/api/v2/chart/api',
             i: false, summarization: 'mean', listMode: true, strict: true,
-            sorted: true, q: q, g: :d, s: t1])
+            sorted: true, q: q, g: :h, s: t1])
 
   cmd_noop(word, 'raw dev.cli.test',
            ['GET https://metrics.wavefront.com/api/v2/chart/raw',
@@ -71,4 +71,36 @@ describe "#{word} command" do
   cmd_to_call(word, 'raw -s 12:00 -e 12:10 -H h1 dev.cli.test',
               path: '/api/v2/chart/raw?metric=dev.cli.test&source=h1' \
                     "&startTime=#{t1}&endTime=#{t2}")
+end
+
+class QueryTest < MiniTest::Test
+  attr_reader :wf
+
+  def setup
+    @wf = WavefrontCli::Query.new(endpoint: ENDPOINT)
+  end
+
+  def test_window_start
+    assert_kind_of(Numeric, wf.window_start)
+    assert_equal(13, wf.window_start.to_s.length)
+  end
+
+  def test_window_end
+    assert_kind_of(Numeric, wf.window_start)
+    assert_equal(13, wf.window_start.to_s.length)
+  end
+
+  def test_default_granularity
+    minute = 60_000
+    assert_equal(:s, wf.default_granularity(100))
+    assert_equal(:s, wf.default_granularity(10_000))
+    assert_equal(:m, wf.default_granularity(120 * minute))
+    assert_equal(:h, wf.default_granularity(4 * 60 * minute))
+    assert_equal(:d, wf.default_granularity(4 * 24 * 60 * minute))
+    assert_equal(:s, wf.default_granularity(-100))
+    assert_equal(:s, wf.default_granularity(-10_000))
+    assert_equal(:m, wf.default_granularity(-120 * minute))
+    assert_equal(:h, wf.default_granularity(-4 * 60 * minute))
+    assert_equal(:d, wf.default_granularity(-4 * 24 * 60 * minute))
+  end
 end
