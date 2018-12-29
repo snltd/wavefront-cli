@@ -2,9 +2,12 @@
 
 * Fix regression which made `--noop` silent unless `--verbose` was
   also specified.
+* Fix crash if `wf metric` matched no series.
+* Fix regression which broke query time ranges.
+* Fix bug calculating query granularity when only one end of a
+  time range is specified.
 * Add much more comprehensive `--noop` tests.
 * Better handling of `--noop` on commands which cannot support it.
-* Fix crash if `wf metric` matched no series.
 
 ## 2.16.0 (23/12/2018)
 * Add `config` command to quickly set up and manage profiles.
