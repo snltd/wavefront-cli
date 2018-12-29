@@ -74,7 +74,8 @@ CANNED_RESPONSE = DummyResponse.new
 # @param cmd [String] command line args to supply to the Wavefront
 #  command
 # @param call [Hash]
-#
+# rubocop:disable Metrics/AbcSize
+# rubocop:disable Metrics/PerceivedComplexity
 def cmd_to_call(word, args, call, sdk_class = nil)
   headers = { 'Accept':          /.*/,
               'Accept-Encoding': /.*/,
@@ -92,13 +93,11 @@ def cmd_to_call(word, args, call, sdk_class = nil)
       fmts.each do |fmt|
         cmd = "#{word} #{args} #{opts} #{fmt}"
 
-        if call[:regex]
-          uri = Regexp.new(call[:path])
-        else
-          uri = 'https://' + vals[:e] + call[:path]
-        end
-
-        #uri = Regexp.new(uri) if call[:regex]
+        uri = if call[:regex]
+                Regexp.new(call[:path])
+              else
+                'https://' + vals[:e] + call[:path]
+              end
 
         h = headers.dup
         h[:Authorization] = "Bearer #{vals[:t]}"
@@ -129,6 +128,8 @@ def cmd_to_call(word, args, call, sdk_class = nil)
     end
   end
 end
+# rubocop:enable Metrics/PerceivedComplexity
+# rubocop:enable Metrics/AbcSize
 
 # Test no-ops
 #

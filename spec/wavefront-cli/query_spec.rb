@@ -16,9 +16,9 @@ o = '-g m -s 12:00'
 
 describe "#{word} command" do
   cmd_to_call(word, "-s -2h #{q}",
-              path: "/api/v2/chart/api\\?g=m&i=false" \
+              path: '/api/v2/chart/api\\?g=m&i=false' \
                     '&listMode=true&q=ts\(%22dev.cli.test%22\)' \
-                    "&s=[0-9]{13}&sorted=true&strict=true&summarization=mean",
+                    '&s=[0-9]{13}&sorted=true&strict=true&summarization=mean',
               regex: true)
 
   missing_creds(word, ["-g m -s 12:00 '#{q}'", "raw #{q}"])
