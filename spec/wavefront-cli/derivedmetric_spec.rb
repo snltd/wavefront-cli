@@ -14,6 +14,7 @@ describe "#{word} command" do
   missing_creds(word, ['list', "describe #{id}", "delete #{id}",
                        "undelete #{id}", "history #{id}"])
   list_tests(word, nil, k)
+  noop_tests(word, id, true, word, k)
   cmd_to_call(word, "describe #{id}", { path: "/api/v2/#{word}/#{id}" }, k)
   cmd_to_call(word, "describe -v 7 #{id}",
               { path: "/api/v2/#{word}/#{id}/history/7" }, k)

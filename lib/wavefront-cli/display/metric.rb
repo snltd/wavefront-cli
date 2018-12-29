@@ -6,7 +6,7 @@ module WavefrontDisplay
   #
   class Metric < Base
     def do_describe
-      bail_out if no_data
+      bail_out if no_data?
 
       @data = data['hosts'].map do |h, _aggr|
         { host: h[:host], last_update: human_time(h[:last_update]) }

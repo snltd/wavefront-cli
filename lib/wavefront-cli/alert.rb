@@ -17,7 +17,10 @@ module WavefrontCli
       wf.unsnooze(options[:'<id>'])
     end
 
+    # rubocop:disable Metrics/AbcSize
     def do_delete
+      cannot_noop!
+
       word = if wf.describe(options[:'<id>']).status.code == 200
                'Soft'
              else
@@ -27,6 +30,7 @@ module WavefrontCli
       puts "#{word} deleting alert '#{options[:'<id>']}'."
       wf.delete(options[:'<id>'])
     end
+    # rubocop:enable Metrics/AbcSize
 
     def do_summary
       wf.summary

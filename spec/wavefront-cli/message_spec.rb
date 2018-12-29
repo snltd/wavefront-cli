@@ -9,6 +9,11 @@ require_relative "../../lib/wavefront-cli/#{word}"
 
 describe "#{word} command" do
   missing_creds(word, ['list', "mark #{id}"])
+  cmd_noop(word, 'list',
+           ["GET https://metrics.wavefront.com/api/v2/#{word}",
+            offset: 0, limit: 100, unreadOnly: true])
+  cmd_noop(word, "mark #{id}",
+           ["POST https://metrics.wavefront.com/api/v2/#{word}/#{id}/read"])
 
   cmd_to_call(word, 'list',
               path: "/api/v2/#{word}?limit=100&offset=0&unreadOnly=true")

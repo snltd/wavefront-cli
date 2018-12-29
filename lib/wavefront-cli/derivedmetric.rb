@@ -15,6 +15,8 @@ module WavefrontCli
 
     # rubocop:disable Metrics/AbcSize
     def do_delete
+      cannot_noop!
+
       word = if wf.describe(options[:'<id>']).status.code == 200
                'Soft'
              else
