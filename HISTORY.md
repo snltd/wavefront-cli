@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.17.0 (19/02/2019)
+* Add `-O field,field` to all `list` commands. This lets you select
+  the fields displayed in the output.
+
 ## 2.16.2 (29/12/2018)
 * Fix typo in `query` help. CSV headers are produced with `-F
   headers`, not `-F header`.

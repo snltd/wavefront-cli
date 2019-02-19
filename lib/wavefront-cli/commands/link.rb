@@ -16,7 +16,7 @@ class WavefrontCommandLink < WavefrontCommandBase
   end
 
   def _commands
-    ["list #{CMN} [-al] [-f format] [-o offset] [-L limit]",
+    ["list #{CMN} [-al] [-O fields] [-f format] [-o offset] [-L limit]",
      "describe #{CMN} [-f format] <id>",
      "create #{CMN} [-m regex] [-s regex] [-p str=regex...] <name> " \
      '<description> <template>',
@@ -31,6 +31,7 @@ class WavefrontCommandLink < WavefrontCommandBase
      '-l, --long               list external links in detail',
      '-a, --all                list all external links',
      '-o, --offset=n           start from nth external link',
+     '-O, --fields=F1,F2,...   only show given fields',
      '-L, --limit=COUNT        number of external link to list',
      '-m, --metric-regex=REGEX metric filter regular expression',
      '-s, --source-regex=REGEX source filter regular expression',

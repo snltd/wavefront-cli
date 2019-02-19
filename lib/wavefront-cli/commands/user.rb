@@ -8,7 +8,7 @@ class WavefrontCommandUser < WavefrontCommandBase
   end
 
   def _commands
-    ["list #{CMN} [-l]",
+    ["list #{CMN} [-l] [-O fields]",
      "describe #{CMN} [-f format] <id>",
      "delete #{CMN} <id>",
      "import #{CMN} <file>",
@@ -19,6 +19,7 @@ class WavefrontCommandUser < WavefrontCommandBase
   def _options
     [common_options,
      '-l, --long                list users in detail',
+     '-O, --fields=F1,F2,...    only show given fields',
      '-f, --format=STRING       output format']
   end
 end

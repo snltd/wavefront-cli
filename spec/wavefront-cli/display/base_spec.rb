@@ -14,10 +14,11 @@ S_OPTIONS = { '<id>': 'abc123' }.freeze
 # Test base class for display methods
 #
 class WavefrontDisplayBaseTest < MiniTest::Test
-  attr_reader :wf
+  attr_reader :wf, :wff
 
   def setup
     @wf = WavefrontDisplay::Base.new(S_DATA, S_OPTIONS)
+    @wff = WavefrontDisplay::Base.new(S_DATA, S_OPTIONS.merge(fields: 'id'))
   end
 
   def test_put_id_first
@@ -35,6 +36,16 @@ class WavefrontDisplayBaseTest < MiniTest::Test
     assert_equal(wf.friendly_name, 'base')
   end
 
+  def test_filter_data
+    x = [{ a: 1, b: 2, c: 3 }, { a: 10, b: 11, c: 12 }]
+
+    assert_equal([{ b: 2, a: 1 }, { b: 11, a: 10 }],
+                 wf.filter_data(x, %i[b a]))
+
+    assert_equal([{ b: 2, a: 1 }, { b: 11, a: 10 }],
+                 wf.filter_data(x, %i[e b a f]))
+  end
+
   def test_do_list
     out = Spy.on(wf, :long_output)
     wf.do_list
@@ -44,6 +55,14 @@ class WavefrontDisplayBaseTest < MiniTest::Test
   def test_do_list_brief
     out = Spy.on(wf, :multicolumn)
     wf.do_list_brief
+    assert_equal(%i[id name], out.calls.first.args)
+    assert out.has_been_called?
+  end
+
+  def test_do_list_fields
+    out = Spy.on(wff, :multicolumn)
+    wff.do_list_fields
+    assert_equal(%i[id], out.calls.first.args)
     assert out.has_been_called?
   end
 

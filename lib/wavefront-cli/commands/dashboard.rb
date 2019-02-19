@@ -8,7 +8,7 @@ class WavefrontCommandDashboard < WavefrontCommandBase
   end
 
   def _commands
-    ["list #{CMN} [-alN] [-f format] [-o offset] [-L limit]",
+    ["list #{CMN} [-alN] [-O fields] [-f format] [-o offset] [-L limit]",
      "describe #{CMN} [-f format] [-v version] <id>",
      "import #{CMN} [-f format] <file>",
      "update #{CMN} <key=value> <id>",
@@ -27,6 +27,7 @@ class WavefrontCommandDashboard < WavefrontCommandBase
      '-l, --long               list dashboards in detail',
      '-a, --all                list all dashboards',
      '-o, --offset=n           start list from nth dashboard or revision',
+     '-O, --fields=F1,F2,...   only show given fields',
      '-L, --limit=COUNT        number of dashboards or revisions to list',
      '-v, --version=INTEGER    version of dashboard',
      '-b, --brief              do not show dashboard names',

@@ -16,7 +16,7 @@ class WavefrontCommandSavedsearch < WavefrontCommandBase
   end
 
   def _commands
-    ["list #{CMN} [-al] [-f format] [-o offset] [-L limit]",
+    ["list #{CMN} [-al] [-O fields] [-f format] [-o offset] [-L limit]",
      "describe #{CMN} [-f format] <id>",
      "delete #{CMN} <id>",
      "import #{CMN} <file>",
@@ -28,6 +28,7 @@ class WavefrontCommandSavedsearch < WavefrontCommandBase
      '-l, --long                list saved searches in detail',
      '-a, --all                 list all saved searches',
      '-o, --offset=n            start from nth saved search',
+     '-O, --fields=F1,F2,...    only show given fields',
      '-L, --limit=COUNT         number of saved searches to list',
      '-f, --format=STRING       output format']
   end

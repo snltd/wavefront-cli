@@ -8,7 +8,7 @@ class WavefrontCommandWebhook < WavefrontCommandBase
   end
 
   def _commands
-    ["list #{CMN} [-al] [-f format] [-o offset] [-L limit]",
+    ["list #{CMN} [-al] [-O fields] [-f format] [-o offset] [-L limit]",
      "describe #{CMN} [-f format] <id>",
      "delete #{CMN} <id>",
      "import #{CMN} <file>",
@@ -21,6 +21,7 @@ class WavefrontCommandWebhook < WavefrontCommandBase
      '-l, --long                list webhooks in detail',
      '-a, --all                 list all webhooks',
      '-o, --offset=n            start list from nth webhook',
+     '-O, --fields=F1,F2,...    only show given fields',
      '-L, --limit=COUNT         number of webhooks to list',
      '-f, --format=STRING       output format']
   end

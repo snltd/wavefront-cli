@@ -11,6 +11,6 @@ require_relative 'base_spec'
 class WavefrontCommmandDashboardTest < WavefrontCommmandBaseTest
   def setup
     @wf = WavefrontCommandDashboard.new
-    @col_width = 21
+    @col_width = 22
   end
 end

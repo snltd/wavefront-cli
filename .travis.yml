@@ -6,7 +6,7 @@ rvm:
   - 2.4.5
   - 2.5.3
   - 2.6.0
-before_install: gem install bundler --no-document
+before_install: gem install bundler -v 1.17.3 --no-document
 deploy:
   provider: rubygems
   api_key:
