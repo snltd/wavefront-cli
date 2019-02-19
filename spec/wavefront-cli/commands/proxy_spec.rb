@@ -11,6 +11,6 @@ require_relative 'base_spec'
 class WavefrontCommmandProxyTest < WavefrontCommmandBaseTest
   def setup
     @wf = WavefrontCommandProxy.new
-    @col_width = 19
+    @col_width = 22
   end
 end

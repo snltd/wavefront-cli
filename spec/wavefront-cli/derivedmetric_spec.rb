@@ -59,7 +59,7 @@ describe "#{word} command" do
                         query:                  'ts(series)' },
                 headers: JSON_POST_HEADERS }, k)
 
-  cmd_to_call(word, 'create -i 3 -r 7 -O test_dm ts(series)',
+  cmd_to_call(word, 'create -i 3 -r 7 -b test_dm ts(series)',
               { method: :post, path: '/api/v2/derivedmetric',
                 body: { minutes:                7,
                         name:                   'test_dm',

@@ -8,7 +8,7 @@ class WavefrontCommandNotificant < WavefrontCommandBase
   end
 
   def _commands
-    ["list #{CMN} [-al] [-f format] [-o offset] [-L limit]",
+    ["list #{CMN} [-al] [-O fields] [-f format] [-o offset] [-L limit]",
      "describe #{CMN} [-f format] <id>",
      "import #{CMN} <file>",
      "delete #{CMN} <id>",
@@ -22,6 +22,7 @@ class WavefrontCommandNotificant < WavefrontCommandBase
      '-l, --long                list alert targets in detail',
      '-a, --all                 list all alert targets',
      '-o, --offset=n            start from nth alert target',
+     '-O, --fields=F1,F2,...    only show given fields',
      '-f, --format=STRING       output format',
      '-L, --limit=COUNT         number of alert targets to list']
   end

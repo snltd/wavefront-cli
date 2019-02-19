@@ -8,7 +8,7 @@ class WavefrontCommandAlert < WavefrontCommandBase
   end
 
   def _commands
-    ["list #{CMN} [-al] [-f format] [-o offset] [-L limit]",
+    ["list #{CMN} [-al] [-O fields] [-f format] [-o offset] [-L limit]",
      "firing #{CMN} [-f format] [-o offset] [-L limit]",
      "snoozed #{CMN} [-f format] [-o offset] [-L limit]",
      "describe #{CMN} [-f format] [-v version] <id>",
@@ -38,6 +38,7 @@ class WavefrontCommandAlert < WavefrontCommandBase
      '-a, --all                list all alerts',
      '-v, --version=INTEGER    describe only this version of alert',
      '-o, --offset=n           start from nth alert',
+     '-O, --fields=F1,F2,...   only show given fields',
      '-L, --limit=COUNT        number of alerts to list',
      '-T, --time=SECONDS       how long to snooze (default 3600)',
      '-b, --brief              do not show alert names',

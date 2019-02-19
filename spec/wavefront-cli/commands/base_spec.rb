@@ -112,7 +112,7 @@ class WavefrontCommmandBaseTest < MiniTest::Test
   end
 
   def test_option_column_width
-    assert_equal(wf.option_column_width, col_width)
+    assert_equal(col_width, wf.option_column_width)
   end
 
   def test_postscript

@@ -8,7 +8,7 @@ require_relative 'base_spec'
 class WavefrontCommmandCloudIntegrationTest < WavefrontCommmandBaseTest
   def setup
     @wf = WavefrontCommandCloudintegration.new
-    @col_width = 19
+    @col_width = 22
   end
 
   def word

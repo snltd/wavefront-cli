@@ -16,9 +16,9 @@ class WavefrontCommandDerivedmetric < WavefrontCommandBase
   end
 
   def _commands
-    ["list #{CMN} [-al] [-f format] [-o offset] [-L limit]",
+    ["list #{CMN} [-al] [-O fields] [-f format] [-o offset] [-L limit]",
      "describe #{CMN} [-f format] [-v version] <id>",
-     "create #{CMN} [-d description] [-T tag...] [-O] [-i interval] " \
+     "create #{CMN} [-d description] [-T tag...] [-b] [-i interval] " \
      '[-r range] <name> <query>',
      "import #{CMN} [-f format] <file>",
      "update #{CMN} <key=value> <id>",
@@ -35,10 +35,11 @@ class WavefrontCommandDerivedmetric < WavefrontCommandBase
      '-a, --all               list all derived metrics',
      '-o, --offset=n          start list from nth derived metrics or ' \
                               'revision',
+     '-O, --fields=F1,F2,...  only show given fields',
      '-L, --limit=COUNT       number of derived metrics or revisions to ' \
                               'list',
      '-v, --version=INTEGER   version of derived metrics',
-     '-O, --obsolete          include obsolete metrics',
+     '-b, --obsolete          include obsolete metrics',
      '-T, --ctag=STRING       add customer tag',
      '-d, --desc=STRING       additional information about query',
      '-i, --interval=INTEGER  execute query every n minutes [default: 1]',

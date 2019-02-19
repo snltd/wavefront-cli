@@ -11,6 +11,6 @@ require_relative 'base_spec'
 class WavefrontCommmandAlertTest < WavefrontCommmandBaseTest
   def setup
     @wf = WavefrontCommandAlert.new
-    @col_width = 21
+    @col_width = 22
   end
 end

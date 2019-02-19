@@ -55,9 +55,24 @@ module WavefrontDisplay
     #
     def run_list
       if options[:long]
+        @data = filter_data(data, filter_fields_as_arr) if options[:fields]
         do_list
+      elsif options[:fields]
+        do_list_fields
       else
         do_list_brief
+      end
+    end
+
+    # @return [Array[Hash]] modified version of data. Each hash will
+    #   contain only the fields given in `fields`, in the given
+    #   order
+    # @param data [Array[Hash]]
+    # @param fields [Array]
+    #
+    def filter_data(data, fields)
+      data.map! do |d|
+        fields.each_with_object({}) { |f, a| a[f] = d[f] if d.key?(f) }
       end
     end
 
@@ -65,11 +80,7 @@ module WavefrontDisplay
     # listing with the --long options.
     #
     def run_search
-      if options[:long]
-        do_search
-      else
-        do_search_brief
-      end
+      options[:long] ? do_search : do_search_brief
     end
 
     # Display classes can provide a do_method_code() method, which
@@ -150,6 +161,12 @@ module WavefrontDisplay
           .downcase
     end
 
+    # @return [Array] filter fields from -O option
+    #
+    def filter_fields_as_arr
+      options[:fields].split(',')
+    end
+
     # The following do_ methods are default handlers called
     # following their namesake operation in the corresponding
     # WavefrontCli class. They can be overriden in the inheriting
@@ -157,6 +174,10 @@ module WavefrontDisplay
     #
     def do_list
       long_output
+    end
+
+    def do_list_fields
+      multicolumn(*filter_fields_as_arr.map(&:to_sym))
     end
 
     def do_list_brief
