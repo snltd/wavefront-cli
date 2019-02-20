@@ -229,7 +229,7 @@ module WavefrontCli
     #
     def display_api_error(status)
       msg = status.message || 'No further information'
-      abort format('ERROR: API code %s: %s.', status.code, msg)
+      abort format('ERROR: API code %s: %s.', status.code, msg.chomp('.'))
     end
 
     def display_no_api_response(data, method)
