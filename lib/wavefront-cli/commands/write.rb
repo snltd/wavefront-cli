@@ -4,7 +4,7 @@ require_relative 'base'
 #
 class WavefrontCommandWrite < WavefrontCommandBase
   def description
-    'send data to a Wavefront proxy'
+    'send data to Wavefront'
   end
 
   def _commands
