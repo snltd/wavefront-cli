@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.18.0 (22/02/2019)
+* Add `usergroup` command, and extend `user` command to cover new
+  RBAC features.
+* Require 2.5.0 of [the SDK](https://github.com/snltd/wavefront-sdk).
+
 ## 2.17.0 (19/02/2019)
 * Add `-O field,field` to all `list` commands. This lets you select
   the fields displayed in the output.
@@ -27,7 +32,6 @@
   query outputs tried to process an empty data set.
 
 ## 2.15.1 (20/12/2018)
-
 * Fix bug where `alert snoozed` and `alert firing` did the same
   thing.
 

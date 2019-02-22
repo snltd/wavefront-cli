@@ -108,7 +108,11 @@ module WavefrontCli
     def validate_id
       send(validator_method, options[:'<id>'])
     rescue validator_exception
-      abort "'#{options[:'<id>']}' is not a valid #{klass_word} ID."
+      abort failed_validation_message(options[:'<id>'])
+    end
+
+    def failed_validation_message(input)
+      format("'%s' is not a valid %s ID.", input, klass_word)
     end
 
     # Make a wavefront-sdk credentials object from standard
@@ -175,7 +179,7 @@ module WavefrontCli
       # matches. The order will ensure we match "do_delete_tags" before
       # we match "do_delete".
       #
-      m_list.sort_by(&:length).reverse.each do |m|
+      m_list.sort_by(&:length).reverse_each do |m|
         if m.reject { |w| options[w.to_sym] }.empty?
           method = (%w[do] + m).join('_')
           return display(public_send(method), method)

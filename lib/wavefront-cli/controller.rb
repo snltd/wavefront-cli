@@ -67,7 +67,7 @@ class WavefrontCliController
   rescue Docopt::Exit => e
     cmd = args.empty? ? nil : args.first.to_sym
 
-    abort e.message unless usage.keys.include?(cmd)
+    abort e.message unless usage.key?(cmd)
 
     begin
       [cmd, sanitize_keys(Docopt.docopt(usage[cmd], argv: args))]
