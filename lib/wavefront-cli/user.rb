@@ -42,8 +42,13 @@ module WavefrontCli
     end
 
     def import_to_create(raw)
-      raw['emailAddress'] = raw['identifier']
-      raw.delete_if { |k, _v| k == 'customer' || k == 'identifier' }
+      { emailAddress: raw['items']['identifier'],
+        groups:       raw['items']['groups'] }.tap do |r|
+
+        if raw['items'].key?('userGroups')
+          r['userGroups'] = raw['items']['userGroups'].map { |g| g['id'] }
+        end
+      end
     end
 
     # Object used to create and invite users.
