@@ -79,7 +79,7 @@ module WavefrontCli
       if events.size.zero?
         puts 'No open events.'
       else
-        events.sort.reverse.each { |e| puts e.basename }
+        events.sort.reverse_each { |e| puts e.basename }
       end
 
       exit
@@ -208,7 +208,7 @@ module WavefrontCli
       list = local_events_with_name(name)
       return false if list.empty?
 
-      ev_file = list.sort.last
+      ev_file = list.max
       File.unlink(ev_file)
       ev_file.basename.to_s
     end
