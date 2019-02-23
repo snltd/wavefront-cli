@@ -32,6 +32,7 @@ Usage:
 Commands:
   alert              view and manage alerts
   cloudintegration   view and manage cloud integrations
+  config             create and manage local configuration
   dashboard          view and manage dashboards
   derivedmetric      view and manage derived metrics
   event              open, close, view, and manage events
@@ -39,16 +40,17 @@ Commands:
   link               view and manage external links
   message            read and mark user messages
   metric             view metrics
-  notificant         view and manage Wavefront notification targets
+  notificant         view and manage Wavefront alert targets
   proxy              view and manage Wavefront proxies
   query              query the Wavefront API
   report             send data directly to Wavefront
   savedsearch        view and manage saved searches
   source             view and manage source tags and descriptions
   user               view and manage Wavefront users
+  usergroup          view and manage Wavefront user groups
   webhook            view and manage webhooks
   window             view and manage maintenance windows
-  write              send data to a Wavefront proxy
+  write              send data to Wavefront
 
 Use 'wf <command> --help' for further information.
 ```

@@ -38,8 +38,8 @@ class WavefrontCommandAlert < WavefrontCommandBase
      '-a, --all                list all alerts',
      '-v, --version=INTEGER    describe only this version of alert',
      '-o, --offset=n           start from nth alert',
-     '-O, --fields=F1,F2,...   only show given fields',
      '-L, --limit=COUNT        number of alerts to list',
+     '-O, --fields=F1,F2,...   only show given fields',
      '-T, --time=SECONDS       how long to snooze (default 3600)',
      '-b, --brief              do not show alert names',
      '-f, --format=STRING      output format']
