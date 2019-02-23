@@ -1,6 +1,7 @@
 require_relative '../stdlib/string'
 
-CMN = '[-DnV] [-c file] [-P profile] [-E endpoint] [-t token]'.freeze
+CMN = '[-DnV] [-c file] [-P profile] [-E endpoint] [-t token] ' \
+      '[-f format]'.freeze
 
 # A base class which all command classes extend.
 #

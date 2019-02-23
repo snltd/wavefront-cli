@@ -16,8 +16,8 @@ class WavefrontCommandWindow < WavefrontCommandBase
   end
 
   def _commands
-    ["list #{CMN} [-al] [-O fields] [-f format] [-o offset] [-L limit]",
-     "describe #{CMN} [-f format] <id>",
+    ["list #{CMN} [-al] [-O fields] [-o offset] [-L limit]",
+     "describe #{CMN} <id>",
      "create #{CMN} -d reason [-s time] [-e time] " \
      '[-A alert_tag...] [-T host_tag...] [-H host...] <title>',
      "close #{CMN} <id>",
@@ -25,7 +25,7 @@ class WavefrontCommandWindow < WavefrontCommandBase
      "delete #{CMN} <id>",
      "import #{CMN} <file>",
      "update #{CMN} <key=value> <id>",
-     "search #{CMN} [-al] [-f format] [-o offset] [-L limit] <condition>...",
+     "search #{CMN} [-al] [-o offset] [-L limit] <condition>...",
      "ongoing #{CMN}",
      "pending #{CMN} [<hours>]"]
   end

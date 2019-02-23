@@ -13,9 +13,9 @@ class WavefrontCommandUser < WavefrontCommandBase
   #
   def _commands
     ["list #{CMN} [-l] [-O fields]",
-     "describe #{CMN} [-f format] <id>",
-     "create #{CMN} [-e] [-m permission...] [-g group...] [-f format] <id>",
-     "invite #{CMN} [-m permission...] [-g group...] [-f format] <id>",
+     "describe #{CMN} <id>",
+     "create #{CMN} [-e] [-m permission...] [-g group...] <id>",
+     "invite #{CMN} [-m permission...] [-g group...] <id>",
      "update #{CMN} <key=value> <id>",
      "delete #{CMN} <user>...",
      "import #{CMN} <file>",
@@ -24,7 +24,7 @@ class WavefrontCommandUser < WavefrontCommandBase
      "leave #{CMN} <id> <group>...",
      "grant #{CMN} <privilege> to <id>",
      "revoke #{CMN} <privilege> from <id>",
-     "search #{CMN} [-al] [-f format] [-o offset] [-L limit] <condition>..."]
+     "search #{CMN} [-al] [-o offset] [-L limit] <condition>..."]
   end
 
   def _options

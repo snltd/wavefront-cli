@@ -8,12 +8,12 @@ class WavefrontCommandProxy < WavefrontCommandBase
   end
 
   def _commands
-    ["list #{CMN} [-al] [-O fields] [-f format] [-o offset] [-L limit]",
-     "describe #{CMN} [-f format] <id>",
+    ["list #{CMN} [-al] [-O fields] [-o offset] [-L limit]",
+     "describe #{CMN} <id>",
      "delete #{CMN} <id>",
      "undelete #{CMN} <id>",
      "rename #{CMN} <id> <name>",
-     "search #{CMN} [-al] [-f format] [-o offset] [-L limit] <condition>...",
+     "search #{CMN} [-al] [-o offset] [-L limit] <condition>...",
      "versions #{CMN}"]
   end
 

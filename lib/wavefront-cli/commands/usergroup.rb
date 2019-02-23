@@ -16,8 +16,8 @@ class WavefrontCommandUsergroup < WavefrontCommandBase
   end
 
   def _commands
-    ["list #{CMN} [-al] [-O fields] [-f format] [-o offset] [-L limit]",
-     "describe #{CMN} [-f format] <id>",
+    ["list #{CMN} [-al] [-O fields] [-o offset] [-L limit]",
+     "describe #{CMN} <id>",
      "create #{CMN} [-p permission...] <name>",
      "delete #{CMN} <id>",
      "import #{CMN} <file>",
@@ -28,7 +28,7 @@ class WavefrontCommandUsergroup < WavefrontCommandBase
      "remove user #{CMN} <id> <user>...",
      "grant #{CMN} <permission> to <id>",
      "revoke #{CMN} <permission> from <id>",
-     "search #{CMN} [-al] [-f format] [-o offset] [-L limit] <condition>..."]
+     "search #{CMN} [-al] [-o offset] [-L limit] <condition>..."]
   end
 
   def _options

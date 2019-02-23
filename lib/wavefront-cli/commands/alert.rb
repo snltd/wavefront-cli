@@ -8,28 +8,28 @@ class WavefrontCommandAlert < WavefrontCommandBase
   end
 
   def _commands
-    ["list #{CMN} [-al] [-O fields] [-f format] [-o offset] [-L limit]",
-     "firing #{CMN} [-f format] [-o offset] [-L limit]",
-     "snoozed #{CMN} [-f format] [-o offset] [-L limit]",
-     "describe #{CMN} [-f format] [-v version] <id>",
+    ["list #{CMN} [-al] [-O fields] [-o offset] [-L limit]",
+     "firing #{CMN} [-o offset] [-L limit]",
+     "snoozed #{CMN} [-o offset] [-L limit]",
+     "describe #{CMN} [-v version] <id>",
      "delete #{CMN} <id>",
      "undelete #{CMN} <id>",
-     "history #{CMN} [-f format] [-o offset] [-L limit] <id>",
+     "history #{CMN} [-o offset] [-L limit] <id>",
      "import #{CMN} <file>",
      "snooze #{CMN} [-T time] <id>",
      "update #{CMN} <key=value> <id>",
      "unsnooze #{CMN} <id>",
-     "search #{CMN} [-al] [-f format] [-o offset] [-L limit] <condition>...",
-     "tags #{CMN} [-f format] <id>",
+     "search #{CMN} [-al] [-o offset] [-L limit] <condition>...",
+     "tags #{CMN} <id>",
      "tag set #{CMN} <id> <tag>...",
      "tag clear #{CMN} <id>",
      "tag add #{CMN} <id> <tag>",
      "tag delete #{CMN} <id> <tag>",
-     "currently #{CMN} [-f format] <state>",
-     "queries #{CMN} [-f format] [-b] [<id>]",
+     "currently #{CMN} <state>",
+     "queries #{CMN} [-b] [<id>]",
      "install #{CMN} <id>",
      "uninstall #{CMN} <id>",
-     "summary #{CMN} [-f format] [-a]"]
+     "summary #{CMN} [-a]"]
   end
 
   def _options

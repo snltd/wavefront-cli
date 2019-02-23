@@ -9,11 +9,11 @@ class WavefrontCommandQuery < WavefrontCommandBase
 
   def _commands
     ['aliases [-DV] [-c file] [-P profile]',
-     "#{CMN} [-g granularity] [-s time] [-e time] [-f format] " \
+     "#{CMN} [-g granularity] [-s time] [-e time] " \
            '[-WikvO] [-S mode] [-N name] [-p points] [-F options] <query>',
-     "raw #{CMN} [-H host] [-s time] [-e time] [-f format] " \
+     "raw #{CMN} [-H host] [-s time] [-e time] " \
            '[-F options] <metric>',
-     "run #{CMN} [-g granularity] [-s time] [-e time] [-f format] " \
+     "run #{CMN} [-g granularity] [-s time] [-e time] " \
            '[-F options] [-WkivO] [-S mode] [-N name] [-p points] <alias>']
   end
 

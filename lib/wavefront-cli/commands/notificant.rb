@@ -8,13 +8,13 @@ class WavefrontCommandNotificant < WavefrontCommandBase
   end
 
   def _commands
-    ["list #{CMN} [-al] [-O fields] [-f format] [-o offset] [-L limit]",
-     "describe #{CMN} [-f format] <id>",
+    ["list #{CMN} [-al] [-O fields] [-o offset] [-L limit]",
+     "describe #{CMN} <id>",
      "import #{CMN} <file>",
      "delete #{CMN} <id>",
      "test #{CMN} <id>",
      "update #{CMN} <key=value> <id>",
-     "search #{CMN} [-al] [-f format] [-o offset] [-L limit] <condition>..."]
+     "search #{CMN} [-al] [-o offset] [-L limit] <condition>..."]
   end
 
   def _options
