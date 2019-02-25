@@ -6,10 +6,11 @@ class WavefrontCommandAlert < WavefrontCommandBase
   def description
     'view and manage alerts'
   end
+
   def _commands
-    ["list #{CMN} [-l] [-f format] [-o offset] [-L limit]",
-     "firing #{CMN} [-o offset] [-L limit]",
-     "snoozed #{CMN} [-o offset] [-L limit]",
+    ["list #{CMN} [-al] [-O fields] [-f format] [-o offset] [-L limit]",
+     "firing #{CMN} [-f format] [-o offset] [-L limit]",
+     "snoozed #{CMN} [-f format] [-o offset] [-L limit]",
      "describe #{CMN} [-f format] [-v version] <id>",
      "delete #{CMN} <id>",
      "undelete #{CMN} <id>",
@@ -18,13 +19,17 @@ class WavefrontCommandAlert < WavefrontCommandBase
      "snooze #{CMN} [-T time] <id>",
      "update #{CMN} <key=value> <id>",
      "unsnooze #{CMN} <id>",
-     "search #{CMN} [-f format] [-o offset] [-L limit] [-l] <condition>...",
+     "search #{CMN} [-al] [-f format] [-o offset] [-L limit] <condition>...",
      "tags #{CMN} [-f format] <id>",
      "tag set #{CMN} <id> <tag>...",
      "tag clear #{CMN} <id>",
      "tag add #{CMN} <id> <tag>",
      "tag delete #{CMN} <id> <tag>",
-     "summary #{CMN} [-a]"]
+     "currently #{CMN} [-f format] <state>",
+     "queries #{CMN} [-f format] [-b] [<id>]",
+     "install #{CMN} <id>",
+     "uninstall #{CMN} <id>",
+     "summary #{CMN} [-f format] [-a]"]
   end
 
   def _options
@@ -34,7 +39,9 @@ class WavefrontCommandAlert < WavefrontCommandBase
      '-v, --version=INTEGER    describe only this version of alert',
      '-o, --offset=n           start from nth alert',
      '-L, --limit=COUNT        number of alerts to list',
+     '-O, --fields=F1,F2,...   only show given fields',
      '-T, --time=SECONDS       how long to snooze (default 3600)',
+     '-b, --brief              do not show alert names',
      '-f, --format=STRING      output format']
   end
 end

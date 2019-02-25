@@ -7,14 +7,5 @@ module WavefrontOutput
   # different resource types need various amounts of massaging. Args
   # are passed through to the child class.
   #
-  class Hcl < Base
-    def run
-      require_relative File.join('hcl', options[:class])
-      oclass = Object.const_get(format('WavefrontHclOutput::%s',
-                              options[:class].to_s.capitalize))
-      oclass.new(resp, options).run
-    rescue LoadError
-      abort "no HCL output for #{options[:class]}."
-    end
-  end
+  class Hcl < Base; end
 end

@@ -8,23 +8,30 @@ class WavefrontCommandDashboard < WavefrontCommandBase
   end
 
   def _commands
-    ["list #{CMN} [-l] [-f format] [-o offset] [-L limit]",
+    ["list #{CMN} [-alN] [-O fields] [-f format] [-o offset] [-L limit]",
      "describe #{CMN} [-f format] [-v version] <id>",
-     "import #{CMN} [-f format] [-F] <file>",
+     "import #{CMN} [-f format] <file>",
      "update #{CMN} <key=value> <id>",
      "delete #{CMN} <id>",
      "undelete #{CMN} <id>",
-     "history #{CMN} [-b] [-f format] [-o offset] [-L limit] <id>",
-     "search #{CMN} [-f format] [-o offset] [-L limit] [-l] <condition>...",
+     "history #{CMN} [-f format] [-o offset] [-L limit] <id>",
+     "search #{CMN} [-al] [-f format] [-o offset] [-L limit] <condition>...",
+     "queries #{CMN} [-f format] [-b] [<id>]",
+     "fav #{CMN} <id>",
+     "unfav #{CMN} <id>",
      tag_commands]
   end
 
   def _options
     [common_options,
      '-l, --long               list dashboards in detail',
+     '-a, --all                list all dashboards',
      '-o, --offset=n           start list from nth dashboard or revision',
+     '-O, --fields=F1,F2,...   only show given fields',
      '-L, --limit=COUNT        number of dashboards or revisions to list',
      '-v, --version=INTEGER    version of dashboard',
+     '-b, --brief              do not show dashboard names',
+     '-N, --no-system          do not show system-owned dashboards',
      '-f, --format=STRING      output format']
   end
 end

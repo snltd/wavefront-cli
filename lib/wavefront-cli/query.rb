@@ -1,4 +1,4 @@
-require 'wavefront-sdk/mixins'
+require 'wavefront-sdk/support/mixins'
 require_relative 'base'
 
 module WavefrontCli
@@ -47,10 +47,9 @@ module WavefrontCli
       all_aliases
     end
 
-    private
-
     # @return [Hash] options for the SDK query method
     #
+    # rubocop:disable Metrics/AbcSize
     def q_opts
       ret = { autoEvents:             options[:events],
               i:                      options[:inclusive],
@@ -64,27 +63,22 @@ module WavefrontCli
       ret[:p] = options[:points] if options[:points]
       ret
     end
+    # rubocop:enable Metrics/AbcSize
 
     # @return [Integer] start of query window. If one has been
     #   given, that; if not, ten minutes ago
     #
     def window_start
-      if options[:start]
-        parse_time(options[:start], true)
-      else
-        (Time.now - 600).to_i
-      end
+      t = options[:start] ? options[:start].dup : Time.now - 600
+      parse_time(t, true)
     end
 
     # @return [Integer] end of query window. If one has been
     #   given, that; if not, now
     #
     def window_end
-      if options[:end]
-        parse_time(options[:end], true)
-      else
-        Time.now.to_i
-      end
+      t = options[:end] ? options[:end].dup : Time.now
+      parse_time(t, true)
     end
 
     def granularity(t_start, t_end)
@@ -94,6 +88,8 @@ module WavefrontCli
     # Work out a sensible granularity based on the time window
     #
     def default_granularity(window)
+      window = window.abs / 1000
+
       if window < 300
         :s
       elsif window < 10_800

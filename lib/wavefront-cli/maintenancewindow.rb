@@ -1,4 +1,4 @@
-require 'wavefront-sdk/mixins'
+require 'wavefront-sdk/support/mixins'
 require_relative 'base'
 
 module WavefrontCli
@@ -78,8 +78,27 @@ module WavefrontCli
       change_end_time(Time.now.to_i)
     end
 
-    def change_end_time(ts)
-      wf.update(options[:'<id>'], endTimeInSeconds: ts)
+    def change_end_time(timestamp)
+      wf.update(options[:'<id>'], endTimeInSeconds: timestamp)
+    end
+
+    def do_ongoing
+      w = wf.ongoing
+      ok_exit('No maintenance windows currently ongoing.') if w.empty?
+      w
+    end
+
+    def do_pending
+      range = options[:'<hours>'].to_f
+      range = 24 unless range.positive?
+
+      w = wf.pending(range)
+
+      if w.empty?
+        ok_exit(format('No maintenance windows in the next %s hours.',
+                       range))
+      end
+      w
     end
   end
 end

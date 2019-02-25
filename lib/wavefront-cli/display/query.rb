@@ -6,22 +6,29 @@ module WavefrontDisplay
   # Format human-readable output for queries.
   #
   class Query < Base
+    # rubocop:disable Metrics/AbcSize
     def do_default
-      @data = { name:       data.name,
+      d_obj = { name:       data.name,
                 query:      data.query,
                 timeseries: mk_timeseries(data),
                 events:     mk_events(data) }
 
+      if data.key?(:warnings) && !options[:nowarn]
+        d_obj[:warnings] = data[:warnings]
+      end
+
+      @data = d_obj
       long_output
     end
+    # rubocop:enable Metrics/AbcSize
 
     def mk_timeseries(data)
-      return []  unless data.key?(:timeseries)
+      return [] unless data.key?(:timeseries)
 
       data[:timeseries].each do |s|
         unless options[:nospark]
           s[:sparkline] = WavefrontSparkline.new(s[:data]).sparkline
-          s.reorder!({label: nil, sparkline: nil})
+          s.reorder!(label: nil, sparkline: nil)
         end
 
         s[:data] = humanize_series(s[:data])
@@ -49,7 +56,7 @@ module WavefrontDisplay
       if data.empty?
         puts 'No aliases defined.'
       else
-        data.each { |k, _v| puts k.to_s[2..-1] }
+        data.each_key { |k| puts k.to_s[2..-1] }
       end
     end
 
@@ -62,6 +69,7 @@ module WavefrontDisplay
       data
     end
 
+    # rubocop:disable Metrics/MethodLength
     def humanize_series(data)
       last_date = nil
 
@@ -79,6 +87,7 @@ module WavefrontDisplay
         last_date = date
         format('%-12s %s    %s', ds, time, val)
       end
+      # rubocop:enable Metrics/MethodLength
     end
   end
 end

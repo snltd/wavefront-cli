@@ -55,9 +55,24 @@ module WavefrontDisplay
     #
     def run_list
       if options[:long]
+        @data = filter_data(data, filter_fields_as_arr) if options[:fields]
         do_list
+      elsif options[:fields]
+        do_list_fields
       else
         do_list_brief
+      end
+    end
+
+    # @return [Array[Hash]] modified version of data. Each hash will
+    #   contain only the fields given in `fields`, in the given
+    #   order
+    # @param data [Array[Hash]]
+    # @param fields [Array]
+    #
+    def filter_data(data, fields)
+      data.map! do |d|
+        fields.each_with_object({}) { |f, a| a[f] = d[f] if d.key?(f) }
       end
     end
 
@@ -65,11 +80,7 @@ module WavefrontDisplay
     # listing with the --long options.
     #
     def run_search
-      if options[:long]
-        do_search
-      else
-        do_search_brief
-      end
+      options[:long] ? do_search : do_search_brief
     end
 
     # Display classes can provide a do_method_code() method, which
@@ -118,17 +129,17 @@ module WavefrontDisplay
 
     # if this is a section of a larger dataset, say so
     #
+    # rubocop:disable Metrics/AbcSize
     def pagination_line
-      if raw.respond_to?(:moreItems) && raw.moreItems == true
-        if raw.respond_to?(:offset) && raw.respond_to?(:limit)
-          enditem = raw.limit > 0 ? raw.offset + raw.limit - 1 : 0
-          puts format('List shows items %d to %d. Use -o and -L for more.',
-                      raw.offset, enditem)
-        else
-          puts 'List shows paginated output. Use -o and -L for more.'
-        end
-      end
+      return unless raw.respond_to?(:moreItems) && raw.moreItems == true
+
+      enditem = raw.limit > 0 ? raw.offset + raw.limit - 1 : 0
+      puts format('List shows items %d to %d. Use -o and -L for more.',
+                  raw.offset, enditem)
+    rescue StandardError
+      puts 'List shows paginated output. Use -o and -L for more.'
     end
+    # rubocop:enable Metrics/AbcSize
 
     # Give it a key-value hash, and it will return the size of the first
     # column to use when formatting that data.
@@ -150,6 +161,12 @@ module WavefrontDisplay
           .downcase
     end
 
+    # @return [Array] filter fields from -O option
+    #
+    def filter_fields_as_arr
+      options[:fields].split(',')
+    end
+
     # The following do_ methods are default handlers called
     # following their namesake operation in the corresponding
     # WavefrontCli class. They can be overriden in the inheriting
@@ -157,6 +174,10 @@ module WavefrontDisplay
     #
     def do_list
       long_output
+    end
+
+    def do_list_fields
+      multicolumn(*filter_fields_as_arr.map(&:to_sym))
     end
 
     def do_list_brief
@@ -220,6 +241,14 @@ module WavefrontDisplay
       end
     end
 
+    def do_queries
+      if options[:brief]
+        multicolumn(:condition)
+      else
+        multicolumn(:id, :condition)
+      end
+    end
+
     # Modify, in-place, the data structure to remove fields which
     # we deem not of interest to the user.
     #
@@ -264,23 +293,32 @@ module WavefrontDisplay
     #   used for unit tests.
     # return [String] a human-readable timestamp
     #
-    def human_time(t, force_utc = false)
-      raise ArgumentError unless t.is_a?(Numeric) || t.is_a?(String)
-      str = t.to_s
+    def human_time(time, force_utc = false)
+      raise ArgumentError unless time.is_a?(Numeric) || time.is_a?(String)
 
+      return 'FOREVER' if time == -1
+
+      str = time.to_s
+      fmt, out_fmt = time_formats(str)
+      # rubocop:disable Style/DateTime
+      ret = DateTime.strptime(str, fmt).to_time
+      # rubocop:enable Style/DateTime
+      ret = force_utc ? ret.utc : ret.localtime
+      ret.strftime(out_fmt)
+    end
+
+    # How do we format a timestamp?
+    # @param str [String] an epoch timestamp, as a string
+    # @return [String, String] DateTime formatter, strptime formatter
+    #
+    def time_formats(str)
       if str =~ /^\d{13}$/
-        fmt = '%Q'
-        out_fmt = HUMAN_TIME_FORMAT_MS
+        ['%Q', HUMAN_TIME_FORMAT_MS]
       elsif str =~ /^\d{10}$/
-        fmt = '%s'
-        out_fmt = HUMAN_TIME_FORMAT
+        ['%s', HUMAN_TIME_FORMAT]
       else
         raise ArgumentError
       end
-
-      ret = DateTime.strptime(str, fmt).to_time
-      ret = ret.utc if force_utc
-      ret.strftime(out_fmt)
     end
   end
 end

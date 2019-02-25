@@ -4,16 +4,21 @@ require_relative 'base'
 #
 class WavefrontCommandWrite < WavefrontCommandBase
   def description
-    'send data to a Wavefront proxy'
+    'send data to Wavefront'
   end
 
   def _commands
     ['point [-DnViq] [-c file] [-P profile] [-E proxy] [-t time] ' \
-     '[-p port] [-H host] [-T tag...] <metric> <value>',
+     '[-p port] [-H host] [-T tag...] [-u method] [-S socket] <metric> ' \
+     '<value>',
+     'distribution [-DnViq] [-c file] [-P profile] [-E proxy] [-H host] ' \
+     '[-p port] [-T tag...] [-u method] [-S socket] [-I interval] ' \
+     '<metric> <val>...',
      'file [-DnViq] [-c file] [-P profile] [-E proxy] [-H host] ' \
-     '[-p port] [-F format] [-m metric] [-T tag...] ' \
-     '[-r rate] <file>']
+     '[-p port] [-F infileformat] [-m metric] [-T tag...] [-I interval] ' \
+     '[-u method] [-S socket] <file>']
   end
+
   def _options
     ['-E, --proxy=URI            proxy endpoint',
      '-t, --time=TIME            time of data point (omit to use ' \
@@ -26,16 +31,19 @@ class WavefrontCommandWrite < WavefrontCommandBase
      'a file will be assigned. If the file contains a metric name, ' \
      'the two will be dot-concatenated, with this value first',
      '-i, --delta                increment metric by given value',
+     "-I, --interval=INTERVAL    interval of distribution (default 'm')",
+     '-u, --using=METHOD         method by which to send points',
+     '-S, --socket=FILE          Unix datagram socket',
      "-q, --quiet                don't report the points sent summary " \
-     '(unless there were errors)',
-     '-r, --rate=INTEGER         throttle point sending to this many ' \
-     'points per second']
+     '(unless there were errors)']
   end
 
   def postscript
     'Files are whitespace separated, and fields can be defined ' \
-    "with the '-F' option.  Use 't' for timestamp; 'm' for metric " \
-    "name; 'v' for value, 's' for source, and 'T' for tags. Put 'T' " \
-    'last.'.cmd_fold(TW, 0)
+    "with the '-F' option.  Use 't' for timestamp, 'm' for metric " \
+    "name, 'v' for value, 's' for source, 'd' for a comma-separated " \
+    "distribution, and 'T' for tags. Put 'T' last.  Currently " \
+    "supported transport methods are 'socket' (the default) " \
+    "and 'http'.".cmd_fold(TW, 0)
   end
 end

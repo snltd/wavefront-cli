@@ -1,5 +1,5 @@
 require_relative 'base'
-require_relative '../../string'
+require_relative '../../stdlib/string'
 
 module WavefrontDisplayPrinter
   #
@@ -30,11 +30,12 @@ module WavefrontDisplayPrinter
     # @kw [Integer] the width of the first (key) column.
     # @returns [Nil]
     #
-    def _two_columns(data, kw = nil, fields = nil)
+    # rubocop:disable Metrics/AbcSize
+    def _two_columns(data, key_col_width = nil, fields = nil)
       [data].flatten.each do |item|
         preen_fields(item, fields)
-        kw = key_width(item) unless kw
-        @kw = kw unless @kw
+        key_col_width ||= key_width(item)
+        @kw ||= key_col_width
         mk_indent(indent)
         item.each { |k, v| handle_pair(k, v) }
         add_line(nil) if indent.zero?
@@ -44,6 +45,7 @@ module WavefrontDisplayPrinter
       @kw += 2
       mk_indent(indent)
     end
+    # rubocop:enable Metrics/AbcSize
 
     # Drop any fields not required.
     #
@@ -152,8 +154,8 @@ module WavefrontDisplayPrinter
     # Add a horizontal rule, from the start of the second column to
     # just shy of the end of the terminal
     #
-    def add_rule(kw)
-      add_line(nil, '-' * (TW - kw - 4))
+    def add_rule(key_col_width)
+      add_line(nil, '-' * (TW - key_col_width - 4))
     end
 
     # Make the string which is prepended to each line.  Stepping is
@@ -173,12 +175,14 @@ module WavefrontDisplayPrinter
     # @param val [String, Numeric] what to print in the second column
     # @param tw [Integer] terminal width
     #
-    def mk_line(key, value = '', tw = TW)
+    # rubocop:disable Metrics/AbcSize
+    def mk_line(key, value = '', term_width = TW)
       return indent_str + ' ' * kw + value if !key || key.empty?
 
       indent_str + format("%-#{kw}s%s", key, value)
-                   .fold(tw, kw + indent_str.size, '').rstrip
+                   .fold(term_width, kw + indent_str.size, '').rstrip
     end
+    # rubocop:enable Metrics/AbcSize
 
     # Add a line, prepped by #mk_line() to the out array.
     #

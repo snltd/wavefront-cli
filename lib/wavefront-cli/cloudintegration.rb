@@ -8,5 +8,13 @@ module WavefrontCli
     def validator_exception
       Wavefront::Exception::InvalidCloudIntegrationId
     end
+
+    def do_enable
+      wf.enable(options[:'<id>'])
+    end
+
+    def do_disable
+      wf.disable(options[:'<id>'])
+    end
   end
 end

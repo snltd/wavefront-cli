@@ -9,6 +9,9 @@ require_relative "../../lib/wavefront-cli/#{word}"
 
 describe "#{word} command" do
   missing_creds(word, ["describe #{id}"])
+  cmd_noop(word, "describe #{id}",
+           ["GET https://metrics.wavefront.com/api/v2/chart/#{word}/detail",
+            [[:m, 'dev.cli.test']]])
   cmd_to_call(word, "describe #{id}",
               path: "/api/v2/chart/#{word}/detail?m=#{id}")
   cmd_to_call(word, "describe -g ptn1 #{id}",

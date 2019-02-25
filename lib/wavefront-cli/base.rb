@@ -1,6 +1,7 @@
 require 'yaml'
 require 'json'
 require 'wavefront-sdk/validators'
+require_relative 'constants'
 require_relative 'exception'
 
 module WavefrontCli
@@ -22,10 +23,11 @@ module WavefrontCli
     attr_accessor :wf, :options, :klass, :klass_word
 
     include Wavefront::Validators
+    include WavefrontCli::Constants
 
     def initialize(options)
       @options = options
-      sdk_class = self.class.name.sub(/Cli/, '')
+      sdk_class = _sdk_class
       @klass_word = sdk_class.split('::').last.downcase
       validate_input
 
@@ -35,6 +37,13 @@ module WavefrontCli
       @klass = Object.const_get(sdk_class)
 
       send(:post_initialize, options) if respond_to?(:post_initialize)
+    end
+
+    # Normally we map the class name to a similar one in the SDK.
+    # Overriding his method lets you map to something else.
+    #
+    def _sdk_class
+      self.class.name.sub(/Cli/, '')
     end
 
     # Some subcommands don't make an API call, so they don't return
@@ -50,7 +59,13 @@ module WavefrontCli
     end
 
     def options_and_exit
-      puts options
+      ok_exit(options)
+    end
+
+    # Print a message and exit 0
+    #
+    def ok_exit(message)
+      puts message
       exit 0
     end
 
@@ -84,7 +99,8 @@ module WavefrontCli
         begin
           send(:wf_tag?, t)
         rescue Wavefront::Exception::InvalidTag
-          abort "'#{t}' is not a valid tag."
+          raise(WavefrontCli::Exception::InvalidInput,
+                "'#{t}' is not a valid tag.")
         end
       end
     end
@@ -92,7 +108,11 @@ module WavefrontCli
     def validate_id
       send(validator_method, options[:'<id>'])
     rescue validator_exception
-      abort "'#{options[:'<id>']}' is not a valid #{klass_word} ID."
+      abort failed_validation_message(options[:'<id>'])
+    end
+
+    def failed_validation_message(input)
+      format("'%s' is not a valid %s ID.", input, klass_word)
     end
 
     # Make a wavefront-sdk credentials object from standard
@@ -107,14 +127,19 @@ module WavefrontCli
     end
 
     # Make a common wavefront-sdk options object from standard CLI
-    # options.
+    # options. We force verbosity on for a noop, otherwise we get no
+    # output.
     #
     # @return [Hash] containing `debug`, `verbose`, and `noop`.
     #
     def mk_opts
-      { debug:   options[:debug],
-        verbose: options[:verbose],
-        noop:    options[:noop] }
+      ret = { debug:   options[:debug],
+              noop:    options[:noop] }
+
+      ret[:verbose] = options[:noop] ? true : options[:verbose]
+
+      ret.merge!(extra_options) if respond_to?(:extra_options)
+      ret
     end
 
     # To allow a user to default to different output formats for
@@ -135,9 +160,10 @@ module WavefrontCli
     # method, and displays whatever it returns.
     #
     # @return [nil]
-    # @raise 'unsupported command', if the command does not match a
-    #   `do_` method.
+    # @raise WavefrontCli::Exception::UnhandledCommand if the
+    #   command does not match a `do_` method.
     #
+    # rubocop:disable Metrics/AbcSize
     def dispatch
       #
       # Take a list of do_ methods, remove the 'do_' from their name,
@@ -153,7 +179,7 @@ module WavefrontCli
       # matches. The order will ensure we match "do_delete_tags" before
       # we match "do_delete".
       #
-      m_list.sort_by(&:length).reverse.each do |m|
+      m_list.sort_by(&:length).reverse_each do |m|
         if m.reject { |w| options[w.to_sym] }.empty?
           method = (%w[do] + m).join('_')
           return display(public_send(method), method)
@@ -166,6 +192,7 @@ module WavefrontCli
 
       raise WavefrontCli::Exception::UnhandledCommand
     end
+    # rubocop:enable Metrics/AbcSize
 
     # Display a Ruby object as JSON, YAML, or human-readable.  We
     # provide a default method to format human-readable output, but
@@ -180,6 +207,7 @@ module WavefrontCli
     # @param method [String] the name of the method which produced
     #   this output. Used to find a suitable humanize method.
     #
+    # rubocop:disable Metrics/AbcSize
     def display(data, method)
       if no_api_response.include?(method)
         return display_no_api_response(data, method)
@@ -198,13 +226,14 @@ module WavefrontCli
 
       handle_response(data.response, format_var, method)
     end
+    # rubocop:enable Metrics/AbcSize
 
     # @param status [Map] status object from SDK response
     # @return System exit
     #
     def display_api_error(status)
       msg = status.message || 'No further information'
-      abort format('ERROR: API code %s: %s.', status.code, msg)
+      abort format('ERROR: API code %s: %s.', status.code, msg.chomp('.'))
     end
 
     def display_no_api_response(data, method)
@@ -232,16 +261,20 @@ module WavefrontCli
       end
     end
 
+    # rubocop:disable Metrics/AbcSize
     def parseable_output(format, resp)
       options[:class] = klass_word
       options[:hcl_fields] = hcl_fields
       require_relative File.join('output', format.to_s)
       oclass = Object.const_get(format('WavefrontOutput::%s',
-                              format.to_s.capitalize))
+                                       format.to_s.capitalize))
       oclass.new(resp, options).run
     rescue LoadError
-      raise "Unsupported output format '#{format}'."
+      raise(WavefrontCli::Exception::UnsupportedOutput,
+            format("The '%s' command does not support '%s' output.",
+                   options[:class], format))
     end
+    # rubocop:enable Metrics/AbcSize
 
     def hcl_fields
       []
@@ -259,31 +292,64 @@ module WavefrontCli
     # writer, for instance, uses a proxy and has no token.
     #
     def validate_opts
-      raise 'Please supply an API token.' unless options[:token]
-      raise 'Please supply an API endpoint.' unless options[:endpoint]
+      unless options[:token]
+        raise(WavefrontCli::Exception::CredentialError,
+              'Missing API token.')
+      end
+
+      return true if options[:endpoint]
+      raise(WavefrontCli::Exception::CredentialError,
+            'Missing API endpoint.')
     end
 
     # Give it a path to a file (as a string) and it will return the
     # contents of that file as a Ruby object. Automatically detects
     # JSON and YAML. Raises an exception if it doesn't look like
-    # either.
+    # either. If path is '-' then it will read STDIN.
     #
     # @param path [String] the file to load
     # @return [Hash] a Ruby object of the loaded file
-    # @raise 'Unsupported file format.' if the filetype is unknown.
+    # @raise WavefrontCli::Exception::UnsupportedFileFormat if the
+    #   filetype is unknown.
     # @raise pass through any error loading or parsing the file
     #
+    # rubocop:disable Metrics/AbcSize
     def load_file(path)
+      return load_from_stdin if path == '-'
+
       file = Pathname.new(path)
-      raise 'Import file does not exist.' unless file.exist?
+
+      raise WavefrontCli::Exception::FileNotFound unless file.exist?
 
       if file.extname == '.json'
         JSON.parse(IO.read(file))
       elsif file.extname == '.yaml' || file.extname == '.yml'
         YAML.safe_load(IO.read(file))
       else
-        raise 'Unsupported file format.'
+        raise WavefrontCli::Exception::UnsupportedFileFormat
       end
+    end
+    # rubocop:enable Metrics/AbcSize
+
+    # Read STDIN and return a Ruby object, assuming that STDIN is
+    # valid JSON or YAML. This is a dumb method, it does no
+    # buffering, so STDIN must be a single block of data. This
+    # appears to be a valid assumption for use-cases of this CLI.
+    #
+    # @return [Object]
+    # @raise Wavefront::Exception::UnparseableInput if the input
+    #   does not parse
+    #
+    def load_from_stdin
+      raw = STDIN.read
+
+      if raw.start_with?('---')
+        YAML.safe_load(raw)
+      else
+        JSON.parse(raw)
+      end
+    rescue RuntimeError
+      raise Wavefront::Exception::UnparseableInput
     end
 
     # Below here are common methods. Most are used by most classes,
@@ -292,7 +358,13 @@ module WavefrontCli
     # harm inheriting unneeded things. Some classes override them.
     #
     def do_list
-      wf.list(options[:offset] || 0, options[:limit] || 100)
+      list = if options[:all]
+               wf.list(ALL_PAGE_SIZE, :all)
+             else
+               wf.list(options[:offset] || 0, options[:limit] || 100)
+             end
+
+      respond_to?(:list_filter) ? list_filter(list) : list
     end
 
     def do_describe
@@ -306,7 +378,7 @@ module WavefrontCli
         prepped = import_to_create(raw)
       rescue StandardError => e
         puts e if options[:debug]
-        raise 'could not parse input.'
+        raise WavefrontCli::Exception::UnparseableInput
       end
 
       wf.create(prepped)
@@ -321,6 +393,7 @@ module WavefrontCli
     end
 
     def do_update
+      cannot_noop!
       k, v = options[:'<key=value>'].split('=', 2)
       wf.update(options[:'<id>'], k => v)
     end
@@ -328,12 +401,30 @@ module WavefrontCli
     def do_search(cond = options[:'<condition>'])
       require 'wavefront-sdk/search'
       wfs = Wavefront::Search.new(mk_creds, mk_opts)
-
       query = conds_to_query(cond)
+      wfs.search(search_key, query, range_hash)
+    end
 
-      wfs.search(klass_word, query, limit: options[:limit],
-                                    offset: options[:offset] ||
-                                            options[:cursor])
+    # If the user has specified --all, override any limit and offset
+    # values
+    #
+    def range_hash
+      if options[:all]
+        limit  = :all
+        offset = ALL_PAGE_SIZE
+      else
+        limit  = options[:limit]
+        offset = options[:offset] || options[:cursor]
+      end
+
+      { limit: limit, offset: offset }
+    end
+
+    # The search URI pattern doesn't always match the command name,
+    # or class name. Override this method if this is the case.
+    #
+    def search_key
+      klass_word
     end
 
     # Turn a list of search conditions into an API query
@@ -373,6 +464,30 @@ module WavefrontCli
     #
     def import_to_create(raw)
       raw.delete_if { |k, _v| k == 'id' }
+    end
+
+    # Return a detailed description of one item, if an ID has been
+    # given, or all items if it has not.
+    #
+    def one_or_all
+      if options[:'<id>']
+        resp = wf.describe(options[:'<id>'])
+        data = [resp.response]
+      else
+        options[:all] = true
+        resp = do_list
+        data = resp.response.items
+      end
+
+      [resp, data]
+    end
+
+    # Operations which do require multiple operations cannot be
+    # perormed as a no-op. Drop in a call to this method for those
+    # things. The exception is caught in controller.rb
+    #
+    def cannot_noop!
+      raise WavefrontCli::Exception::UnsupportedNoop if options[:noop]
     end
   end
 end

@@ -8,7 +8,7 @@ require_relative 'base_spec'
 class WavefrontCommmandWindowTest < WavefrontCommmandBaseTest
   def setup
     @wf = WavefrontCommandWindow.new
-    @col_width = 19
+    @col_width = 22
   end
 
   def word

@@ -8,18 +8,21 @@ class WavefrontCommandProxy < WavefrontCommandBase
   end
 
   def _commands
-    ["list #{CMN} [-l] [-f format] [-o offset] [-L limit]",
+    ["list #{CMN} [-al] [-O fields] [-f format] [-o offset] [-L limit]",
      "describe #{CMN} [-f format] <id>",
      "delete #{CMN} <id>",
      "undelete #{CMN} <id>",
      "rename #{CMN} <id> <name>",
-     "search #{CMN} [-f format] [-o offset] [-L limit] [-l] <condition>..."]
+     "search #{CMN} [-al] [-f format] [-o offset] [-L limit] <condition>...",
+     "versions #{CMN}"]
   end
 
   def _options
     [common_options,
      '-l, --long                list proxies in detail',
+     '-a, --all                 list all proxies',
      '-o, --offset=n            start from nth proxy',
+     '-O, --fields=F1,F2,...    only show given fields',
      '-f, --format=STRING       output format',
      '-L, --limit=COUNT         number of proxies to list']
   end

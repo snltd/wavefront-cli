@@ -11,6 +11,7 @@ describe "#{word} command" do
   missing_creds(word, ['list', "describe #{id}", "delete #{id}",
                        "undelete #{id}", "history #{id}"])
   list_tests(word)
+  noop_tests(word, id, true)
   cmd_to_call(word, "describe #{id}", path: "/api/v2/#{word}/#{id}")
   cmd_to_call(word, "describe -v 7 #{id}",
               path: "/api/v2/#{word}/#{id}/history/7")
@@ -39,6 +40,10 @@ describe "#{word} command" do
                         sort: { field: 'id', ascending: true } },
               headers: JSON_POST_HEADERS)
 
+  cmd_to_call(word, "fav #{id}",
+              method: :post, path: "/api/v2/#{word}/#{id}/favorite")
+  cmd_to_call(word, "unfav #{id}",
+              method: :post, path: "/api/v2/#{word}/#{id}/unfavorite")
   cmd_to_call(word, "undelete #{id}",
               method: :post, path: "/api/v2/#{word}/#{id}/undelete")
   invalid_ids(word, ["describe #{bad_id}", "delete #{bad_id}",

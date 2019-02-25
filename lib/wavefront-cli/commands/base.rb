@@ -1,4 +1,4 @@
-require_relative '../string'
+require_relative '../stdlib/string'
 
 CMN = '[-DnV] [-c file] [-P profile] [-E endpoint] [-t token]'.freeze
 
@@ -85,15 +85,22 @@ class WavefrontCommandBase
   #   testing far simpler.
   # @return [String] the options the command understands.
   #
-  #
+  # rubocop:disable Metrics/AbcSize
   def options(term_width = TW)
     width = option_column_width
-    ret = "Global options:\n"
-    global_options.each { |o| ret.<< opt_row(o, width, term_width) }
-    ret.<< "\nOptions:\n"
+    ret = ''
+
+    unless global_options.empty?
+      ret.<< "Global options:\n"
+      global_options.each { |o| ret.<< opt_row(o, width, term_width) }
+      ret.<< "\n"
+    end
+
+    ret.<< "Options:\n"
     _options.flatten.each { |o| ret.<< opt_row(o, width, term_width) }
     ret
   end
+  # rubocop:enable Metrics/AbcSize
 
   # Formats an option string.
   #

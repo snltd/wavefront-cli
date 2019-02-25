@@ -8,8 +8,8 @@ class WavefrontCommandEvent < WavefrontCommandBase
   end
 
   def _commands
-    ["list #{CMN} [-l] [-f format] [-s start] [-e end] [-L limit] " \
-      '[-o cursor]',
+    ["list #{CMN} [-l] [-O fields] [-f format] [-s start] [-e end] " \
+     '[-L limit] [-o cursor]',
      "describe #{CMN} [-f format] <id>",
      "create #{CMN} [-d description] [-s time] [-i | -e time] " \
      '[-S severity] [-T type] [-H host...] [-g tag...] [-N] <event>',
@@ -27,6 +27,7 @@ class WavefrontCommandEvent < WavefrontCommandBase
     [common_options,
      '-l, --long                list events in detail',
      '-o, --cursor=EVENT        start listing from given event',
+     '-O, --fields=F1,F2,...    only show given fields',
      '-L, --limit=COUNT         number of events to list',
      '-s, --start=TIME          time at which event begins',
      '-e, --end=TIME            time at which event ends',
