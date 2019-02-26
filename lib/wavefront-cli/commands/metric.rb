@@ -8,7 +8,7 @@ class WavefrontCommandMetric < WavefrontCommandBase
   end
 
   def _commands
-    ["describe #{CMN} [-f format] [-o offset] [-g glob...] <metric>"]
+    ["describe #{CMN} [-o offset] [-g glob...] <metric>"]
   end
 
   def _options

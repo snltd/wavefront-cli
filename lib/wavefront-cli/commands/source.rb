@@ -8,12 +8,12 @@ class WavefrontCommandSource < WavefrontCommandBase
   end
 
   def _commands
-    ["list #{CMN} [-l] [-O fields] [-f format] [-o cursor] [-L limit] [-a]",
-     "describe #{CMN} [-f format] <id>",
+    ["list #{CMN} [-l] [-O fields] [-o cursor] [-L limit] [-a]",
+     "describe #{CMN} <id>",
      "description set  #{CMN} <id> <description>",
      "description clear  #{CMN} <id>",
      "clear  #{CMN} <id>",
-     "search #{CMN} [-f format] [-o offset] [-L limit] [-l] <condition>...",
+     "search #{CMN} [-o offset] [-L limit] [-l] <condition>...",
      tag_commands]
   end
 

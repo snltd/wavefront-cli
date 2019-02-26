@@ -8,15 +8,15 @@ class WavefrontCommandDashboard < WavefrontCommandBase
   end
 
   def _commands
-    ["list #{CMN} [-alN] [-O fields] [-f format] [-o offset] [-L limit]",
-     "describe #{CMN} [-f format] [-v version] <id>",
-     "import #{CMN} [-f format] <file>",
+    ["list #{CMN} [-alN] [-O fields] [-o offset] [-L limit]",
+     "describe #{CMN} [-v version] <id>",
+     "import #{CMN} <file>",
      "update #{CMN} <key=value> <id>",
      "delete #{CMN} <id>",
      "undelete #{CMN} <id>",
-     "history #{CMN} [-f format] [-o offset] [-L limit] <id>",
-     "search #{CMN} [-al] [-f format] [-o offset] [-L limit] <condition>...",
-     "queries #{CMN} [-f format] [-b] [<id>]",
+     "history #{CMN} [-o offset] [-L limit] <id>",
+     "search #{CMN} [-al] [-o offset] [-L limit] <condition>...",
+     "queries #{CMN} [-b] [<id>]",
      "fav #{CMN} <id>",
      "unfav #{CMN} <id>",
      tag_commands]

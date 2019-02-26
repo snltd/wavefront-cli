@@ -8,15 +8,15 @@ class WavefrontCommandEvent < WavefrontCommandBase
   end
 
   def _commands
-    ["list #{CMN} [-l] [-O fields] [-f format] [-s start] [-e end] " \
+    ["list #{CMN} [-l] [-O fields] [-s start] [-e end] " \
      '[-L limit] [-o cursor]',
-     "describe #{CMN} [-f format] <id>",
+     "describe #{CMN} <id>",
      "create #{CMN} [-d description] [-s time] [-i | -e time] " \
      '[-S severity] [-T type] [-H host...] [-g tag...] [-N] <event>',
      "close #{CMN} [<id>]",
      "delete #{CMN} <id>",
      "update #{CMN} <key=value> <id>",
-     "search #{CMN} [-f format] [-o offset] [-L limit] [-l] <condition>...",
+     "search #{CMN} [-o offset] [-L limit] [-l] <condition>...",
      "wrap #{CMN} [-C command] [-d description] [-S severity] [-T type] " \
      '[-H host...] [-g tag...] <event>',
      tag_commands,
