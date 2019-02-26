@@ -14,11 +14,14 @@ class TestWavefrontDisplayPrinterLong < MiniTest::Test
   end
 
   def test_preened_data
-    assert_equal({ k1: 1 }, wf.preened_data({ k1: 1, k2: 2 }, [:k1]))
-    assert_equal({ k1: 1, k2: 2 }, wf.preened_data(k1: 1, k2: 2))
-    assert_equal({}, wf.preened_data({ k1: 1, k2: 2 }, [:k3]))
-    assert_equal({ k1: 1, k2: 2 }, wf.preened_data({ k1: 1, k2: 2 },
-                                                   %i[k1 k2]))
+    assert_equal([{ k1: 1 }], wf.preened_data([{ k1: 1, k2: 2 }], [:k1]))
+    assert_equal([{ k1: 1, k2: 2 }], wf.preened_data([{ k1: 1, k2: 2 }]))
+    assert_equal([{}], wf.preened_data([{ k1: 1, k2: 2 }], [:k3]))
+    assert_equal([{ k1: 1, k2: 2 }], wf.preened_data([{ k1: 1, k2: 2 }],
+                                                     %i[k1 k2]))
+    assert_equal([{ k1: 1 }, { k1: 10 }],
+                 wf.preened_data([{ k1: 1, k2: 2 }, { k1: 10, k2: 12 }],
+                                 [:k1]))
   end
 
   def test_preened_value

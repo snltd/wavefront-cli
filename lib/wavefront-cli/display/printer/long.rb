@@ -39,7 +39,7 @@ module WavefrontDisplayPrinter
     #
     def preened_data(data, fields = nil)
       return data if fields.nil?
-      data.keep_if { |k, _v| fields.include?(k.to_sym) }
+      data.map { |d| d.select { |k| fields.include?(k.to_sym) } }
     end
 
     # Remove HTML and stuff
