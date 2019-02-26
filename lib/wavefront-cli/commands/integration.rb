@@ -8,8 +8,8 @@ class WavefrontCommandIntegration < WavefrontCommandBase
   end
 
   def _commands
-    ["list #{CMN} [-al] [-O fields] [-f format] [-o offset] [-L limit]",
-     "describe #{CMN} [-f format] <id>",
+    ["list #{CMN} [-al] [-O fields] [-o offset] [-L limit]",
+     "describe #{CMN} <id>",
      "install #{CMN} <id>",
      "uninstall #{CMN} <id>",
      "manifests #{CMN}",
@@ -17,9 +17,9 @@ class WavefrontCommandIntegration < WavefrontCommandBase
      "statuses #{CMN}",
      "alert install #{CMN} <id>",
      "alert uninstall #{CMN} <id>",
-     "installed #{CMN} [-f format]",
-     "manifests #{CMN} [-f format]",
-     "search #{CMN} [-al] [-f format] [-o offset] [-L limit] <condition>..."]
+     "installed #{CMN}",
+     "manifests #{CMN}",
+     "search #{CMN} [-al] [-o offset] [-L limit] <condition>..."]
   end
 
   def _options

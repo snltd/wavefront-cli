@@ -8,8 +8,8 @@ class WavefrontCommandMessage < WavefrontCommandBase
   end
 
   def _commands
-    ["list #{CMN} [-al] [-O fields] [-f format] [-o offset] [-L limit]",
-     "mark #{CMN} [-f format] <id>"]
+    ["list #{CMN} [-al] [-O fields] [-o offset] [-L limit]",
+     "mark #{CMN} <id>"]
   end
 
   def _options

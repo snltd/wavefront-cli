@@ -16,16 +16,16 @@ class WavefrontCommandDerivedmetric < WavefrontCommandBase
   end
 
   def _commands
-    ["list #{CMN} [-al] [-O fields] [-f format] [-o offset] [-L limit]",
-     "describe #{CMN} [-f format] [-v version] <id>",
+    ["list #{CMN} [-al] [-O fields] [-o offset] [-L limit]",
+     "describe #{CMN} [-v version] <id>",
      "create #{CMN} [-d description] [-T tag...] [-b] [-i interval] " \
      '[-r range] <name> <query>',
-     "import #{CMN} [-f format] <file>",
+     "import #{CMN} <file>",
      "update #{CMN} <key=value> <id>",
      "delete #{CMN} <id>",
      "undelete #{CMN} <id>",
-     "history #{CMN} [-f format] [-o offset] [-L limit] <id>",
-     "search #{CMN} [-al] [-f format] [-o offset] [-L limit] <condition>...",
+     "history #{CMN} [-o offset] [-L limit] <id>",
+     "search #{CMN} [-al] [-o offset] [-L limit] <condition>...",
      tag_commands]
   end
 

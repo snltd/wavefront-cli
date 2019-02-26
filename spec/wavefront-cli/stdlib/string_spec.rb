@@ -8,7 +8,8 @@ require_relative '../../../lib/wavefront-cli/commands/base'
 #
 class StringTest < MiniTest::Test
   def test_cmd_fold
-    str = "command subcommand #{CMN} [-a alpha] [-b beta] [-c gamma] <id>"
+    cmn = '[-DnV] [-c file] [-P profile] [-E endpoint] [-t token]'
+    str = "command subcommand #{cmn} [-a alpha] [-b beta] [-c gamma] <id>"
     assert_equal(str.cmd_fold,
                  'command subcommand [-DnV] [-c file] [-P profile] ' \
                  "[-E endpoint]\n          [-t token] [-a alpha] " \
