@@ -1,57 +1,34 @@
-require_relative 'base'
+require_relative '../../stdlib/array'
 
 module WavefrontDisplayPrinter
   #
   # Print things which are per-row. The terse listings, primarily
   #
-  class Terse < Base
-    attr_reader :data, :keys, :fmt_string
+  class Terse
+    attr_reader :data, :fmt
 
-    def initialize(data, *keys)
-      @data = data
-      @keys = keys
-      @fmt_string = format_string.rstrip
-      @out = prep_output
+    # @param data [Hash] data to display, from a response object
+    # @param keys [Array[Symbol]] keys to display, in order
+    #
+    def initialize(data, keys)
+      @data = stringify(data, keys)
+      @fmt  = format_string(data, keys)
     end
 
-    # @return [String] a Ruby format string for each line
-    #
-    def format_string
-      return '%s' if keys.length == 1
-      lk = longest_keys
-      keys.each_with_object('') { |k, out| out.<< "%-#{lk[k]}s  " }
+    def format_string(data, keys)
+      keys.map { |k| "%-#{data.longest_value_of(k)}<#{k}>s" }.join('  ')
     end
 
-    # Find the length of the longest value for each member of @keys,
-    # in @data.
-    #
-    # @return [Hash] with the same keys as :keys and Integer values
-    #
-    # rubocop:disable Metrics/AbcSize
-    def longest_keys
-      keys.each_with_object(Hash[*keys.map { |k| [k, 0] }.flatten]) \
-      do |k, aggr|
-        data.each do |obj|
-          next unless obj.key?(k)
-          val = obj[k]
-          val = val.join(', ') if val.is_a?(Array)
-          aggr[k] = val.size if val.size > aggr[k]
-        end
-      end
+    def stringify(data, keys)
+      data.map { |e| e.tap { keys.each { |k| e[k] = to_list(e[k]) } } }
     end
-    # rubocop:enable Metrics/AbcSize
 
-    # Print multiple column output. This method does no word
-    # wrapping.
-    #
-    # @param keys [Symbol] the keys you want in the output. They
-    #   will be printed in the order given.
-    #
-    def prep_output
-      data.each_with_object([]) do |o, aggr|
-        args = keys.map { |k| o[k].is_a?(Array) ? o[k].join(', ') : o[k] }
-        aggr.<< format(fmt_string, *args).rstrip
-      end
+    def to_list(thing)
+      thing.is_a?(Array) ? thing.join(', ') : thing
+    end
+
+    def to_s
+      data.map { |e| format(fmt, e).rstrip }.join("\n")
     end
   end
 end

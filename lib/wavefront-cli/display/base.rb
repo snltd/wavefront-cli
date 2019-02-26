@@ -123,7 +123,7 @@ module WavefrontDisplay
 
     def multicolumn(*columns)
       require_relative 'printer/terse'
-      puts WavefrontDisplayPrinter::Terse.new(data, *columns)
+      puts WavefrontDisplayPrinter::Terse.new(data, columns)
       pagination_line
     end
 

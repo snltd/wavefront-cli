@@ -13,7 +13,7 @@ module WavefrontDisplay
 
     def do_describe
       drop_fields(:parameterDetails)
-      readable_time(:updatedEpochMillis)
+      readable_time(:createdEpochMillis, :updatedEpochMillis)
       data[:sections] = data[:sections].map { |s| s[:name] }
       long_output
     end

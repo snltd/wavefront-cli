@@ -1,0 +1,19 @@
+identifier                services@example.com
+customer                  sysdef
+groups                    <none>
+userGroups
+  id                      2659191e-ab35-41df-a94e-9667e1517127
+  name                    Everyone
+  permissions             <none>
+  customer                sysdef
+  properties
+    nameEditable          false
+    permissionsEditable   true
+    usersEditable         false
+                          ------------------------------------------------------
+  id                      cb61dae7-b476-43e6-a596-a6b514e71969
+  name                    normal users
+  permissions             alerts_management
+                          dashboard_management
+                          events_management
+  customer                sysdef
