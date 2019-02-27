@@ -380,7 +380,7 @@ def test_list_output(word, klass = nil)
   end
 
   it 'tests long output' do
-    out, err = command_output(word, :do_list, klass)
+    out, err = command_output(word, :do_list_long, klass)
     refute_empty(out)
     assert_empty(err)
   end

@@ -22,12 +22,24 @@ class TestWavefrontDisplayPrinterLong < MiniTest::Test
     assert_equal([{ k1: 1 }, { k1: 10 }],
                  wf.preened_data([{ k1: 1, k2: 2 }, { k1: 10, k2: 12 }],
                                  [:k1]))
+
+    assert_equal([{ 'k1' => 1 }, { 'k1' => 10 }],
+                 wf.preened_data([{ 'k1' => 1,  'k2' => 2 },
+                                  { 'k1' => 10, 'k2' => 12 }],
+                                 [:k1]))
   end
 
   def test_preened_value
     assert_equal('test', wf.preened_value('test'))
     assert_equal('test', wf.preened_value('<b>test</b>'))
     assert_equal('test test', wf.preened_value('<b>test</b> <i>test</i>'))
+  end
+
+  def test_smart_value
+    wf1 = WavefrontDisplayPrinter::Long.new({}, nil, nil, none: false)
+    assert_equal('value', wf.smart_value('value'))
+    assert_equal('<none>', wf.smart_value(''))
+    assert_equal('', wf1.smart_value(''))
   end
 
   def test_opts

@@ -6,9 +6,7 @@ module WavefrontDisplay
   #
   class Dashboard < Base
     def do_list
-      long_output %i[id minutes target status tags hostsUsed
-                     condition displayExpression severity
-                     additionalInformation]
+      long_output
     end
 
     def do_describe

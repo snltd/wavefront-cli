@@ -39,7 +39,7 @@ module WavefrontDisplayPrinter
     #
     def preened_data(data, fields = nil)
       return data if fields.nil?
-      data.map { |d| d.select { |k| fields.include?(k.to_sym) } }
+      data.map { |d| d.select { |k| fields.include?(k.to_sym) }.to_h }
     end
 
     # Remove HTML and stuff
@@ -68,54 +68,19 @@ module WavefrontDisplayPrinter
     #
     # Make an array of hashes: { key, value, depth }
     #
-    # rubocop:disable Metrics/CyclomaticComplexity
-    # rubocop:disable Metrics/AbcSize
-    # rubocop:disable Metrics/PerceivedComplexity
-    # rubocop:disable Metrics/MethodLength
     def make_list(data, aggr = [], depth = 0, last_key = nil)
       if data.is_a?(Hash)
-        data.each_pair do |k, v|
-          if v.is_a?(Hash)
-            if v.empty? && opts[:none]
-              aggr.<< [k, '<none>', depth]
-            else
-              aggr.<< [k, nil, depth]
-              make_list(v, aggr, depth + 1)
-            end
-          elsif v.is_a?(Array)
-            if v.empty? && opts[:none]
-              aggr.<< [k, '<none>', depth]
-            elsif v.all? { |w| w.is_a?(String) }
-              v.sort!
-              aggr.<< [k, preened_value(v.shift), depth]
-              make_list(v, aggr, depth, k)
-            else
-              aggr.<< [k, nil, depth]
-              make_list(v, aggr, depth + 1, k)
-            end
-          else
-            val = v.to_s.empty? && opts[:none] ? '<none>' : preened_value(v)
-            aggr.<< [k, val, depth]
-          end
-        end
+        append_hash(data, aggr, depth)
       elsif data.is_a?(Array)
-        data.each.with_index(1) do |element, i|
-          make_list(element, aggr, depth, last_key)
-
-          if opts[:separator] && element.is_a?(Hash) && i < data.size
-            aggr.<< ['', :separator, depth]
-          end
-        end
+        append_array(data, aggr, depth, last_key)
       else
         aggr.<< ['', preened_value(data), depth]
       end
-
-      aggr
     end
-    # rubocop:enable Metrics/CyclomaticComplexity
-    # rubocop:enable Metrics/AbcSize
-    # rubocop:enable Metrics/PerceivedComplexity
-    # rubocop:enable Metrics/MethodLength
+
+    def smart_value(val)
+      val.to_s.empty? && opts[:none] ? '<none>' : preened_value(val)
+    end
 
     # Works out what the width of the left-hand (key) column needs to
     # be. This considers indentation and padding.
@@ -139,5 +104,86 @@ module WavefrontDisplayPrinter
       end.join("\n")
     end
     # rubocop:enable Metrics/AbcSize
+
+    private
+
+    # Part of the #make_list recursion. Deals with a hash.
+    #
+    # @param data [Hash]
+    # @param aggr [Array[Array]]
+    # @param depth [Integer]
+    # @return [Array[Array]]
+    #
+    def append_hash(data, aggr, depth)
+      data.each_pair do |k, v|
+        if v.is_a?(Hash)
+          aggr = append_hash_values(k, v, aggr, depth)
+        elsif v.is_a?(Array)
+          aggr = append_array_values(k, v, aggr, depth)
+        else
+          aggr.<< [k, smart_value(v), depth]
+        end
+      end
+
+      aggr
+    end
+
+    # Part of the #make_list recursion. Deals with arrays.
+    #
+    # @param data [Array]
+    # @param aggr [Array[Array]]
+    # @param depth [Integer]
+    # @return [Array[Array]]
+    #
+    def append_array(data, aggr, depth, last_key)
+      data.each.with_index(1) do |element, i|
+        aggr = make_list(element, aggr, depth, last_key)
+
+        if opts[:separator] && element.is_a?(Hash) && i < data.size
+          aggr.<< ['', :separator, depth]
+        end
+      end
+
+      aggr
+    end
+
+    # Part of the #make_list recursion. Appends the key name of a
+    # hash. May be paired with '<none>' if the hash is empty,
+    # otherwise indent another level and go back into the recursive
+    # loop with the values.
+    #
+    # @param key [String] key of hash
+    # @param values [Hash] values of hash
+    # @param depth [Integer]
+    # @return [Array[Array]]
+    #
+    def append_hash_values(key, values, aggr, depth)
+      if values.empty? && opts[:none]
+        aggr.<< [key, '<none>', depth]
+      else
+        aggr.<< [key, nil, depth]
+        make_list(values, aggr, depth + 1)
+      end
+    end
+
+    # Part of the #make_list recursion.
+    #
+    # @param data [Hash]
+    # @param aggr [Array[Array]]
+    # @param depth [Integer]
+    # @return [Array[Array]]
+    #
+    def append_array_values(key, values, aggr, depth)
+      if values.empty? && opts[:none]
+        aggr.<< [key, '<none>', depth]
+      elsif values.all? { |w| w.is_a?(String) }
+        values.sort!
+        aggr.<< [key, preened_value(values.shift), depth]
+        make_list(values, aggr, depth, key)
+      else
+        aggr.<< [key, nil, depth]
+        make_list(values, aggr, depth + 1, key)
+      end
+    end
   end
 end

@@ -29,7 +29,7 @@ module WavefrontDisplay
                raw_response
              end
 
-      @data = data.is_a?(Map) ? Map(put_id_first(data)) : data
+      @data = prioritize_keys(data, priority_keys)
       @options = options
     end
 
@@ -95,10 +95,31 @@ module WavefrontDisplay
       exit 1
     end
 
-    # If the data contains an 'id' key, move it to the start.
+    # Keys which we wish to float to the top of descriptions and
+    # long listing objects. Subclasses may define their own.
     #
-    def put_id_first(data)
-      data.key?(:id) ? { id: data[:id] }.merge(data) : data
+    def priority_keys
+      %i[id name]
+    end
+
+    def prioritize_keys(data, keys)
+      return _prioritize_keys(data, keys) if data.is_a?(Hash)
+      data.map { |e| _prioritize_keys(e, keys) }
+    end
+
+    # Move the given fields to the start of a Hash or Map
+    # @param data [Hash, Map]
+    # @param keys [Array[Symbol]] keys to float
+    # @return [Hash, Map]
+    #
+    def _prioritize_keys(data, keys)
+      keys.each.with_object({}) do |k, a|
+        next unless data.key?(k)
+        a[k] = data[k]
+        data.delete(k)
+      end.merge(data)
+    rescue NoMethodError
+      data
     end
 
     # Default display method for 'describe' and long-list methods.

@@ -21,16 +21,23 @@ class WavefrontDisplayBaseTest < MiniTest::Test
     @wff = WavefrontDisplay::Base.new(S_DATA, S_OPTIONS.merge(fields: 'id'))
   end
 
-  def test_put_id_first
-    assert_equal(wf.put_id_first(k1: 1, k2: 2, id: 3, k4: 4),
-                 id: 3, k1: 1, k2: 2, k4: 4)
-    assert_equal(wf.put_id_first(id: 3, k1: 1, k2: 2, k4: 4),
-                 id: 3, k1: 1, k2: 2, k4: 4)
-    assert_equal(wf.put_id_first(k2: 1, k1: 2, k4: 4),
-                 k2: 1, k1: 2, k4: 4)
-  end
+  def test_prioritise_keys
+    assert_equal({ a: 1, b: 2, c: 3, d: 4 },
+                 wf.prioritize_keys({ b: 2, c: 3, a: 1, d: 4 }, %i[a b]))
 
-  def test_run; end
+    assert_equal({ id: 'my id', name: 'my name', numbers: [1, 2, 3] },
+                 wf.prioritize_keys({ name: 'my name',
+                                      numbers: [1, 2, 3],
+                                      id: 'my id' }, %i[id name]))
+
+    assert_equal({ name: 'my name', id: 'my id', numbers: [1, 2, 3] },
+                 wf.prioritize_keys({ name: 'my name',
+                                      numbers: [1, 2, 3],
+                                      id: 'my id' }, %i[name id]))
+    assert_equal([{ a: 1, b: 2, c: 3, d: 4 }, { a: 5, b: 6 }],
+                 wf.prioritize_keys([{ b: 2, c: 3, a: 1, d: 4 },
+                                     { b: 6, a: 5 }], %i[a b]))
+  end
 
   def test_friendly_name
     assert_equal(wf.friendly_name, 'base')
