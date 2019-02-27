@@ -4,6 +4,7 @@
 * Drop support for Ruby 2.2.
 * New, improved `human` output. Finally fixes bug where heavily
   indented columns could run into one another.
+* Move `id` and `name` to the top of objects in long listings.
 
 ## 2.18.0 (22/02/2019)
 * Add `usergroup` command, and extend `user` command to cover new
