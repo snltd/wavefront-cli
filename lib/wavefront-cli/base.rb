@@ -152,7 +152,8 @@ module WavefrontCli
     #
     def format_var
       options[:format].to_sym
-      # (self.class.name.split('::').last.downcase + 'format').to_sym
+    rescue NoMethodError
+      :human
     end
 
     # Works out the user's command by matching any options docopt has
