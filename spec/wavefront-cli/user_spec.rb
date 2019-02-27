@@ -115,4 +115,5 @@ describe "#{word} command" do
            ["GET https://metrics.wavefront.com/api/v2/#{word}"])
   cmd_noop(word, 'describe rob@a.com',
            ["GET https://metrics.wavefront.com/api/v2/#{word}/rob@a.com"])
+  test_list_output(word)
 end

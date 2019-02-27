@@ -34,4 +34,6 @@ describe "#{word} command" do
                                   matchingMethod: 'EXACT' }],
                         sort: { field: 'id', ascending: true } },
               headers: JSON_POST_HEADERS)
+
+  test_list_output(word)
 end

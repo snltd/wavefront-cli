@@ -25,4 +25,5 @@ describe "#{word} command" do
                                     matchingMethod: 'CONTAINS' }],
                           sort: { field: 'id', ascending: true } },
                 headers: JSON_POST_HEADERS }, WavefrontCli::SavedSearch)
+  test_list_output(word, k)
 end

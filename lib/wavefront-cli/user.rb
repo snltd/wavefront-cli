@@ -65,7 +65,7 @@ module WavefrontCli
     # ourselves.
     #
     def extra_validation
-      options[:'<user>'].each { |u| validate_user(u) }
+      options[:'<user>'].each { |u| validate_user(u) } if options[:'<user>']
     end
 
     def validate_user(user)

@@ -349,3 +349,39 @@ class Hash
     Marshal.load(Marshal.dump(self))
   end
 end
+
+require 'wavefront-sdk/core/response'
+require_relative '../lib/wavefront-cli/base'
+
+# For the given command word, loads up a canned API response and
+# feeds it in to the appropriate display class, running the given
+# method and returning standard out and standard error.
+#
+# @param word [String] command word, e.g. 'alert'
+# @param method [Symbol] display method to run, e.g. :do_list
+# @param klass [Class, Nil] CLI class. Worked out from the command
+#   word in most cases, but must be overriden for two-word things.
+# @return [Array] [stdout, stderr]
+#
+def command_output(word, method, klass = nil)
+  json = IO.read(RES_DIR + 'responses' + "#{word}-list.json")
+  resp = Wavefront::Response.new(json, 200)
+  klass ||= Object.const_get(format('WavefrontCli::%s', word.capitalize))
+  klass = klass.new(format: :human)
+
+  capture_io { klass.display(resp, method) }
+end
+
+def test_list_output(word, klass = nil)
+  it 'tests terse output' do
+    out, err = command_output(word, :do_list_brief, klass)
+    refute_empty(out)
+    assert_empty(err)
+  end
+
+  it 'tests long output' do
+    out, err = command_output(word, :do_list, klass)
+    refute_empty(out)
+    assert_empty(err)
+  end
+end

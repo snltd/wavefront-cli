@@ -38,4 +38,5 @@ describe 'cloudintegration command' do
   invalid_ids(word, ["describe #{bad_id}", "delete #{bad_id}",
                      "undelete #{bad_id}", "disable #{bad_id}",
                      "enable #{bad_id}"])
+  test_list_output(word, k)
 end

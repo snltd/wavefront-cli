@@ -77,4 +77,5 @@ describe "#{word} command" do
                         tags:                   %w[tag1 tag2],
                         query:                  'ts(series)' },
                 headers: JSON_POST_HEADERS }, k)
+  test_list_output(word, k)
 end

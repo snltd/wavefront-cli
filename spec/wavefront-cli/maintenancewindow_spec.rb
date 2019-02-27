@@ -34,4 +34,5 @@ describe "#{word} command" do
                 },
                 headers: JSON_POST_HEADERS },
               WavefrontCli::MaintenanceWindow)
+  test_list_output(word, k)
 end
