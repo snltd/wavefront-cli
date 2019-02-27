@@ -202,7 +202,7 @@ module WavefrontCli
     # instance variable.
     #
     # @param data [WavefrontResponse] an object returned by a
-    #   Wavefront SDK method. This will contain a 'response'
+    #   Wavefront SDK method. This will contain 'response'
     #   and 'status' structures.
     # @param method [String] the name of the method which produced
     #   this output. Used to find a suitable humanize method.
