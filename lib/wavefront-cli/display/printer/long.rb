@@ -100,10 +100,20 @@ module WavefrontDisplayPrinter
         indent = ' ' * opts[:indent] * e.last
         key_str = (indent + e.first.to_s + '  ' * kw)[0..kw]
         val = e[1] == :separator ? '-' * (TW - key_str.length) : e[1]
-        format('%s%s', key_str, val).rstrip
+        line(key_str, val)
       end.join("\n")
     end
     # rubocop:enable Metrics/AbcSize
+
+    def line(key, val)
+      line_length = key.to_s.size + val.to_s.size
+
+      if line_length > TW && val.is_a?(String)
+        val = val.value_fold(key.to_s.size)
+      end
+
+      format('%s%s', key, val).rstrip
+    end
 
     private
 

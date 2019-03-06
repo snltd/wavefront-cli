@@ -99,4 +99,11 @@ class TestWavefrontDisplayPrinterLong < MiniTest::Test
                                                separator: false).to_s
     assert_equal(expected, output + "\n")
   end
+
+  def test_end_to_end_fold
+    input, expected = OUTPUT_TESTER.in_and_out('alert-input.json',
+                                               'alert-human-long')
+    output = WavefrontDisplayPrinter::Long.new(input).to_s
+    assert_equal(expected, output + "\n")
+  end
 end

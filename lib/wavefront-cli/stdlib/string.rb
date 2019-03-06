@@ -54,6 +54,14 @@ class String
     tr('^', ' ')
   end
 
+  # Fold long value lines in two-column output. The returned string
+  # is appended to a key, so the first line is not indented.
+  #
+  def value_fold(indent = 0, twidth = TW)
+    max_line_length = twidth - indent - 4
+    scan_line(max_line_length).join("\n" + ' ' * indent)
+  end
+
   # @param width [Integer] length of longest string (width of
   #   terminal less some margin)
   # @return [Array] original string chunked into an array width

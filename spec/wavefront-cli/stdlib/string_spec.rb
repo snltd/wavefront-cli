@@ -67,4 +67,15 @@ class StringTest < MiniTest::Test
     assert_equal('unchanged', 'unchanged'.to_snake)
     assert_equal('Unchanged', 'Unchanged'.to_snake)
   end
+
+  def test_value_fold
+    input = 'A reasonably long string which might for instance be a ' \
+            'descripton of an alert. Perhaps an embedded runbook.'
+
+    expected = 'A reasonably long string which might for
+                                      instance be a descripton of an alert.
+                                      Perhaps an embedded runbook.'
+
+    assert_equal(expected, input.value_fold(38))
+  end
 end
