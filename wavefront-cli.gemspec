@@ -12,7 +12,7 @@ Gem::Specification.new do |gem|
   gem.description   = 'CLI for Wavefront (wavefront.com) API v2 '
 
   gem.authors       = ['Robert Fisher']
-  gem.email         = 'slackboy@gmail.com'
+  gem.email         = 'rob@sysdef.xyz'
   gem.homepage      = 'https://github.com/snltd/wavefront-cli'
   gem.license       = 'BSD-2-Clause'
 
@@ -26,7 +26,6 @@ Gem::Specification.new do |gem|
   gem.add_runtime_dependency 'inifile', '~> 3.0'
   gem.add_runtime_dependency 'wavefront-sdk', '~> 2.5', '>= 2.5.0'
 
-  gem.add_development_dependency 'bundler', '~> 1.3'
   gem.add_development_dependency 'minitest', '~> 5.11', '>= 5.11.0'
   gem.add_development_dependency 'rake', '~> 12.0'
   gem.add_development_dependency 'rubocop', '~> 0.54.0'
@@ -34,5 +33,5 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'webmock', '~> 3.0'
   gem.add_development_dependency 'yard', '~> 0.9.5'
 
-  gem.required_ruby_version = Gem::Requirement.new('>= 2.2.0')
+  gem.required_ruby_version = Gem::Requirement.new('>= 2.3.0')
 end

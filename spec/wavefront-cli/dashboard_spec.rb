@@ -49,4 +49,5 @@ describe "#{word} command" do
   invalid_ids(word, ["describe #{bad_id}", "delete #{bad_id}",
                      "undelete #{bad_id}"])
   tag_tests(word, id, bad_id)
+  test_list_output(word)
 end

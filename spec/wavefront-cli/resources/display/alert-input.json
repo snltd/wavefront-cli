@@ -1,0 +1,37 @@
+{
+  "items": {
+    "id": "1459508340708",
+    "name": "Point Rate",
+    "lastEventTime": 1547088327000,
+    "created": 1459508340708,
+    "severity": "SEVERE",
+    "hidden": false,
+    "target": "target:EKdKFv1rJ6iPahqI",
+    "minutes": 5,
+    "tags": {
+      "customerTags": []
+    },
+    "status": [
+      "CHECKING"
+    ],
+    "updated": 1518908410462,
+    "displayExpression": "sum(deriv(ts(~collector.points.valid)))",
+    "condition": "sum(deriv(ts(~collector.points.valid))) > 500",
+    "includeObsoleteMetrics": false,
+    "additionalInformation": "Wavefront kindly gave me an allowance of 500points/sec. It's not polite to go over that.",
+    "metricsUsed": [
+      "~collector.points.valid"
+    ],
+    "hostsUsed": [
+      "cube-wavefront"
+    ],
+    "systemOwned": false,
+    "targetInfo": [
+      {
+        "method": "EMAIL",
+        "id": "EKdKFv1rJ6iPahqI",
+        "name": "Home"
+      }
+    ]
+  }
+}

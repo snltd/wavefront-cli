@@ -41,4 +41,5 @@ describe "#{word} command" do
                      "alert install #{bad_id}",
                      "alert uninstall #{bad_id}",
                      "uninstall #{bad_id}", "status #{bad_id}"])
+  test_list_output(word)
 end

@@ -107,4 +107,5 @@ describe "#{word} command" do
            ["GET https://metrics.wavefront.com/api/v2/#{word}"], k)
   cmd_noop(word, "describe #{gid1}",
            ["GET https://metrics.wavefront.com/api/v2/#{word}/#{gid1}"], k)
+  test_list_output(word, k)
 end

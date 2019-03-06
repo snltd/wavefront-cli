@@ -152,7 +152,8 @@ module WavefrontCli
     #
     def format_var
       options[:format].to_sym
-      # (self.class.name.split('::').last.downcase + 'format').to_sym
+    rescue NoMethodError
+      :human
     end
 
     # Works out the user's command by matching any options docopt has
@@ -202,7 +203,7 @@ module WavefrontCli
     # instance variable.
     #
     # @param data [WavefrontResponse] an object returned by a
-    #   Wavefront SDK method. This will contain a 'response'
+    #   Wavefront SDK method. This will contain 'response'
     #   and 'status' structures.
     # @param method [String] the name of the method which produced
     #   this output. Used to find a suitable humanize method.

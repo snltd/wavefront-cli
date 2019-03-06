@@ -6,14 +6,12 @@ module WavefrontDisplay
   #
   class Dashboard < Base
     def do_list
-      long_output %i[id minutes target status tags hostsUsed
-                     condition displayExpression severity
-                     additionalInformation]
+      long_output
     end
 
     def do_describe
       drop_fields(:parameterDetails)
-      readable_time(:updatedEpochMillis)
+      readable_time(:createdEpochMillis, :updatedEpochMillis)
       data[:sections] = data[:sections].map { |s| s[:name] }
       long_output
     end

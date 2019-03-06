@@ -89,4 +89,5 @@ describe "#{word} command" do
   cmd_to_call(word, 'queries', path: "/api/v2/#{word}?limit=999&offset=0")
   tag_tests(word, id, bad_id)
   noop_tests(word, id, true)
+  test_list_output(word)
 end

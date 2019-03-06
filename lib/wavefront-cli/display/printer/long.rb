@@ -1,58 +1,45 @@
-require_relative 'base'
-require_relative '../../stdlib/string'
-
 module WavefrontDisplayPrinter
   #
   # Print the long indented descriptions of things
   #
-  class Long < Base
-    attr_reader :indent, :indent_str, :indent_step, :kw, :hide_blank
-
-    def initialize(data, fields = nil, modified_data = nil)
-      @out = []
-      @indent = 0
-      @indent_step = 2
-      @hide_blank = true
-      _two_columns(modified_data || data, nil, fields)
+  class Long
+    attr_reader :opts, :list, :kw
+    #
+    # @param data [Hash] of data to display
+    # @param fields [Array[Symbol]] requred fields
+    # @param modified_data [Hash] an override for @data
+    # @param options [Hash] keys can be
+    #   indent:    [Integer] by how many spaces nested objects should indent
+    #   padding:   [Integer] number of spaces between columns
+    #   separator: [Bool] whether or not to print a line of dashes
+    #              between objects in an array of objects
+    #   none       [Bool] whether or not to put '<none>' for empty arrays
+    #
+    def initialize(data, fields = nil, modified_data = nil, options = {})
+      @opts = default_opts.merge(options)
+      data  = preened_data(data, fields)
+      @list = make_list(modified_data || data)
+      @kw   = longest_key_col(list)
     end
 
-    # A recursive function which displays a key-value hash in two
-    # columns. The key column width is automatically calculated.
-    # Multiple-value 'v's are printed one per line. Hashes are nested.
+    # Default options. Can all be overridden by passing them in the
+    # initializer options hash.
     #
-    # @param data [Array] and array of objects to display. Each object
-    #   should be a hash.
-    # @param indent [Integer] how many characters to indent the current
-    #   data.
-    # @kw [Integer] the width of the first (key) column.
-    # @returns [Nil]
-    #
-    # rubocop:disable Metrics/AbcSize
-    def _two_columns(data, key_col_width = nil, fields = nil)
-      [data].flatten.each do |item|
-        preen_fields(item, fields)
-        key_col_width ||= key_width(item)
-        @kw ||= key_col_width
-        mk_indent(indent)
-        item.each { |k, v| parse_line(k, v) }
-        add_line(nil) if indent.zero?
-      end
-
-      @indent -= indent_step if indent > 0
-      @kw += 2
-      mk_indent(indent)
+    def default_opts
+      { indent:    2,
+        padding:   2,
+        separator: true,
+        none:      true }
     end
-    # rubocop:enable Metrics/AbcSize
 
-    # Drop any fields not required.
+    # @param data [Hash] raw data
+    # @param fields [Array, Nil] fields to keep in @data. Nil means
+    #   everything
+    # @return [Hash]
     #
-    # @param item [Hash, Map] the raw data
-    # @param fields [Array[Symbol]] the fields we wish to keep
-    # @return [Hash, Map]
-    #
-    def preen_fields(item, fields = nil)
-      return item unless fields
-      item.keep_if { |k, _v| fields.include?(k.to_sym) }
+    def preened_data(data, fields = nil)
+      return data if fields.nil?
+      data.map { |d| d.select { |k| fields.include?(k.to_sym) }.to_h }
     end
 
     # Remove HTML and stuff
@@ -60,131 +47,153 @@ module WavefrontDisplayPrinter
     # @param [String] raw value
     # @return [String] value with all HTML stripped out
     #
-    def preen_value(value)
+    def preened_value(value)
       return value unless value.is_a?(String) && value =~ /<.*>/
       value.gsub(%r{<\/?[^>]*>}, '').delete("\n")
     end
 
-    # Return true if this line is blank and we don't want to print
-    # blank lines
+    # A recursive function which takes a structure, most likely a
+    # hash, and turns it into an array of arrays. This output is
+    # easily formatted into nicely laid-out columns by #to_s. Most of
+    # the parameters are used by the function itself.
+    # @param data [Object] the thing you wish to present
+    # @param aggr [Array] aggregates the output array. Don't set this
+    #   yourself
+    # @param depth [Integer] how many layers of indentation are
+    #   required. Don't set this yourself.
+    # @param last_key [String, Nil] a memo used for printing arrays.
+    #   Don't set this yourself.
+    # @return [Array[Array]] where each sub-array is of the form
+    #   [key, value, depth]
     #
-    # @param value [Object] thing to check
-    # @return [Boolean]
+    # Make an array of hashes: { key, value, depth }
     #
-    def blank?(value)
-      value.respond_to?(:empty?) && value.empty? && hide_blank
-    end
-
-    # Parse a line and add it to the output or pass it on to another
-    # method which knows how to add it to the output.
-    #
-    # @param key [String] a key
-    # @param value [Object] the value: could be anything
-    # @return [Nil]
-    #
-    def parse_line(key, value)
-      return if blank?(value)
-
-      value = preen_value(value)
-
-      if value.is_a?(Hash)
-        add_hash(key, value)
-      elsif value.is_a?(Array)
-        add_array(key, value)
+    def make_list(data, aggr = [], depth = 0, last_key = nil)
+      if data.is_a?(Hash)
+        append_hash(data, aggr, depth)
+      elsif data.is_a?(Array)
+        append_array(data, aggr, depth, last_key)
       else
-        add_line(key, value)
+        aggr.<< ['', preened_value(data), depth]
       end
     end
 
-    # Add a key-value pair to the output when value is an array. It
-    # will put the key and the first value element on the first
-    # line, with subsequent value elements aligned at the same
-    # offset, but with no key. If any value element is a hash, it is
-    # handled by a separate method. For instance:
-    #
-    # key    value1
-    #        value2
-    #        value3
-    #
-    # @param key [String] the key
-    # @param value_arr [Array] an array of values
-    # @return [Nil]
-    #
-    def add_array(key, value_arr)
-      value_arr.each_with_index do |element, index|
-        if element.is_a?(Hash)
-          add_hash(key, element, value_arr.size, index)
-        else
-          add_line(index.zero? ? key : nil, element)
-        end
-      end
+    def smart_value(val)
+      val.to_s.empty? && opts[:none] ? '<none>' : preened_value(val)
     end
 
-    # Add a hash to the output. It will put the key on a line on its
-    # own, followed by other keys indented. All values are aligned
-    # to the same point.  If this hash is a member of an array, we
-    # are able to print a horizontal rule at the end of it. We don't
-    # do this if it is the final member of the array.
+    # Works out what the width of the left-hand (key) column needs to
+    # be. This considers indentation and padding.
+    # @param data [Array] of the form returned by #make_list
+    # @return [Integer]
     #
-    # For instance:
-    #
-    #  key
-    #    subkey1    value1
-    #    subkey2    value2
-    #
-    # @param key [String] the key
-    # @param value [Hash] hash of values to display
-    # @param size [Integer] the size of the parent array, if there
-    #   is one
-    # @param index [Integer] the index of this element in parent
-    #   array, if there is one.
-    # @return [Nil]
-    #
-    def add_hash(key, value, arr_size = 0, arr_index = 0)
-      add_line(key) if arr_index.zero?
-      @indent += indent_step
-      @kw -= 2
-      _two_columns([value], kw - indent_step)
-      add_rule(kw) if arr_index + 1 < arr_size
+    def longest_key_col(data)
+      data.map { |d| d[0].size + opts[:padding] + opts[:indent] * d[2] }.max
     end
 
-    # Add a horizontal rule, from the start of the second column to
-    # just shy of the end of the terminal
-    #
-    def add_rule(key_col_width)
-      add_line(nil, '-' * (TW - key_col_width - 4))
-    end
-
-    # Make the string which is prepended to each line.  Stepping is
-    # controlled by @indent_step.
-    #
-    # @param indent [Integer] how many characters to indent by.
-    #
-    def mk_indent(indent)
-      @indent_str = ' ' * indent
-    end
-
-    # Print a single line of output, handling the necessary
-    # indentation and tabulation.
-    #
-    # @param key [String] what to print in the first (key) column.
-    #   Make this an empty string to print
-    # @param val [String, Numeric] what to print in the second column
-    # @param tw [Integer] terminal width
+    # Turn the list made by #make_list into user output
+    # @return [String]
     #
     # rubocop:disable Metrics/AbcSize
-    def mk_line(key, value = '', term_width = TW)
-      return indent_str + ' ' * kw + value if !key || key.empty?
-
-      indent_str + format("%-#{kw}s%s", key, value)
-                   .fold(term_width, kw + indent_str.size, '').rstrip
+    def to_s
+      list.map do |e|
+        indent = ' ' * opts[:indent] * e.last
+        key_str = (indent + e.first.to_s + '  ' * kw)[0..kw]
+        val = e[1] == :separator ? '-' * (TW - key_str.length) : e[1]
+        line(key_str, val)
+      end.join("\n")
     end
     # rubocop:enable Metrics/AbcSize
 
-    # Add a line, prepped by #mk_line() to the out array.
+    def line(key, val)
+      line_length = key.to_s.size + val.to_s.size
+
+      if line_length > TW && val.is_a?(String)
+        val = val.value_fold(key.to_s.size)
+      end
+
+      format('%s%s', key, val).rstrip
+    end
+
+    private
+
+    # Part of the #make_list recursion. Deals with a hash.
     #
-    def add_line(*args)
-      @out.<< mk_line(*args)
+    # @param data [Hash]
+    # @param aggr [Array[Array]]
+    # @param depth [Integer]
+    # @return [Array[Array]]
+    #
+    def append_hash(data, aggr, depth)
+      data.each_pair do |k, v|
+        if v.is_a?(Hash)
+          aggr = append_hash_values(k, v, aggr, depth)
+        elsif v.is_a?(Array)
+          aggr = append_array_values(k, v, aggr, depth)
+        else
+          aggr.<< [k, smart_value(v), depth]
+        end
+      end
+
+      aggr
+    end
+
+    # Part of the #make_list recursion. Deals with arrays.
+    #
+    # @param data [Array]
+    # @param aggr [Array[Array]]
+    # @param depth [Integer]
+    # @return [Array[Array]]
+    #
+    def append_array(data, aggr, depth, last_key)
+      data.each.with_index(1) do |element, i|
+        aggr = make_list(element, aggr, depth, last_key)
+
+        if opts[:separator] && element.is_a?(Hash) && i < data.size
+          aggr.<< ['', :separator, depth]
+        end
+      end
+
+      aggr
+    end
+
+    # Part of the #make_list recursion. Appends the key name of a
+    # hash. May be paired with '<none>' if the hash is empty,
+    # otherwise indent another level and go back into the recursive
+    # loop with the values.
+    #
+    # @param key [String] key of hash
+    # @param values [Hash] values of hash
+    # @param depth [Integer]
+    # @return [Array[Array]]
+    #
+    def append_hash_values(key, values, aggr, depth)
+      if values.empty? && opts[:none]
+        aggr.<< [key, '<none>', depth]
+      else
+        aggr.<< [key, nil, depth]
+        make_list(values, aggr, depth + 1)
+      end
+    end
+
+    # Part of the #make_list recursion.
+    #
+    # @param data [Hash]
+    # @param aggr [Array[Array]]
+    # @param depth [Integer]
+    # @return [Array[Array]]
+    #
+    def append_array_values(key, values, aggr, depth)
+      if values.empty? && opts[:none]
+        aggr.<< [key, '<none>', depth]
+      elsif values.all? { |w| w.is_a?(String) }
+        values.sort!
+        aggr.<< [key, preened_value(values.shift), depth]
+        make_list(values, aggr, depth, key)
+      else
+        aggr.<< [key, nil, depth]
+        make_list(values, aggr, depth + 1, key)
+      end
     end
   end
 end

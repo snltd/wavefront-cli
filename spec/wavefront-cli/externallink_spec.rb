@@ -68,4 +68,5 @@ describe "#{word} command" do
                 }.to_json,
                 headers: JSON_POST_HEADERS },
               WavefrontCli::ExternalLink)
+  test_list_output(word, k)
 end

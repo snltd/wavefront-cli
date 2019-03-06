@@ -1,3 +1,4 @@
+require 'json'
 require 'webmock/minitest'
 require 'spy/integration'
 require 'inifile'
@@ -309,6 +310,36 @@ def load_raw_query_response
              symbolize_names: true)
 end
 
+# We keep a bunch of Wavefront API responses as text files alongside
+# canned responses in various formats. This class groups helpers for
+# doing that.
+#
+class OutputTester
+  # @param file [String] filename to load
+  # @param only_items [Bool] true for the items hash, false for the
+  #   whole loadedobject
+  # @return [Object] canned raw responses used to test outputs
+  #
+  def load_input(file, only_items = true)
+    ret = JSON.parse(IO.read(RES_DIR + 'display' + file),
+                     symbolize_names: true)
+    only_items ? ret[:items] : ret
+  end
+
+  # @param file [String] file to load
+  # @return [String]
+  #
+  def load_expected(file)
+    IO.read(RES_DIR + 'display' + file)
+  end
+
+  def in_and_out(input, expected, only_items = true)
+    [load_input(input, only_items), load_expected(expected)]
+  end
+end
+
+OUTPUT_TESTER = OutputTester.new
+
 # stdlib extensions
 #
 class Hash
@@ -316,5 +347,41 @@ class Hash
   #
   def dup
     Marshal.load(Marshal.dump(self))
+  end
+end
+
+require 'wavefront-sdk/core/response'
+require_relative '../lib/wavefront-cli/base'
+
+# For the given command word, loads up a canned API response and
+# feeds it in to the appropriate display class, running the given
+# method and returning standard out and standard error.
+#
+# @param word [String] command word, e.g. 'alert'
+# @param method [Symbol] display method to run, e.g. :do_list
+# @param klass [Class, Nil] CLI class. Worked out from the command
+#   word in most cases, but must be overriden for two-word things.
+# @return [Array] [stdout, stderr]
+#
+def command_output(word, method, klass = nil)
+  json = IO.read(RES_DIR + 'responses' + "#{word}-list.json")
+  resp = Wavefront::Response.new(json, 200)
+  klass ||= Object.const_get(format('WavefrontCli::%s', word.capitalize))
+  klass = klass.new(format: :human)
+
+  capture_io { klass.display(resp, method) }
+end
+
+def test_list_output(word, klass = nil)
+  it 'tests terse output' do
+    out, err = command_output(word, :do_list_brief, klass)
+    refute_empty(out)
+    assert_empty(err)
+  end
+
+  it 'tests long output' do
+    out, err = command_output(word, :do_list_long, klass)
+    refute_empty(out)
+    assert_empty(err)
   end
 end

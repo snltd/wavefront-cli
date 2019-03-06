@@ -2,6 +2,7 @@
 
 require_relative '../../../../lib/wavefront-cli/display/printer/terse'
 require_relative '../spec_helper'
+require_relative '../../../spec_helper'
 
 TERSE_DATA = [{ id: 'id1', name: 'name1', fa: 1, fb: 2, fc: 3 },
               { id: 'id2', name: 'name2', fa: 11, fb: 21, fc: 31 }].freeze
@@ -9,38 +10,49 @@ TERSE_DATA = [{ id: 'id1', name: 'name1', fa: 1, fb: 2, fc: 3 },
 # Test terse printer
 #
 class WavefrontDisplayPrinterTerse < MiniTest::Test
-  attr_reader :wf
+  attr_reader :wf, :out
 
   def setup
-    @wf = WavefrontDisplayPrinter::Terse.new(TERSE_DATA, :id, :name)
+    @wf = WavefrontDisplayPrinter::Terse.new(TERSE_DATA, %i[id name])
   end
 
-  def test_format_string
-    assert_equal(wf.fmt_string, '%-3s  %-5s')
+  def test_fmt
+    assert_equal('%-3<id>s', wf.format_string(TERSE_DATA, [:id]))
+    assert_equal('%-3<id>s  %-5<name>s',
+                 wf.format_string(TERSE_DATA, %i[id name]))
+    assert_equal('%-5<name>s', wf.format_string(TERSE_DATA, [:name]))
   end
 
-  def test_longest_keys
-    assert_equal(wf.longest_keys, id: 3, name: 5)
+  def test_to_s
+    assert_equal("id1  name1\nid2  name2", wf.to_s)
+    input = [{ id: 'id1', names: %w[Rob Robert], num: 67 },
+             { id: 'id2', names: %w[Katharine Kate], num: 3 }]
+
+    wf2 = WavefrontDisplayPrinter::Terse.new(input, %i[id names num])
+    assert_equal("id1  Rob, Robert      67\nid2  Katharine, Kate  3",
+                 wf2.to_s)
+
+    wf3 = WavefrontDisplayPrinter::Terse.new(input, %i[id names])
+    assert_equal("id1  Rob, Robert\nid2  Katharine, Kate", wf3.to_s)
   end
 
-  def test_prep_output_1
-    x = wf.prep_output
-    assert_equal(x[0], 'id1  name1')
-    assert_equal(x[1], 'id2  name2')
+  def test_stringify
+    assert_equal([{ id: 'id1', things: 'a, b, c', num: 5 },
+                  { id: 'id2', things: 'letters', num: 3 }],
+                 wf.stringify([{ id: 'id1', things: %w[a b c], num: 5 },
+                               { id: 'id2', things: 'letters', num: 3 }],
+                              [:things]))
   end
 
-  def test_prep_output_2
-    wf.instance_variable_set(:@fmt_string, '%-10s %-100s')
-    wf.instance_variable_set(:@keys, %i[name fb])
-    x = wf.prep_output
-    assert_equal(x[0], 'name1      2')
-    assert_equal(x[1], 'name2      21')
+  def test_to_list
+    assert_equal('a, b, c', wf.to_list(%w[a b c]))
+    assert_equal('abc', wf.to_list('abc'))
   end
 
-  def test_prep_output_3
-    wf.instance_variable_set(:@keys, %i[name nokey])
-    x = wf.prep_output
-    assert_equal(x[0], 'name1')
-    assert_equal(x[1], 'name2')
+  def test_end_to_end
+    input, expected = OUTPUT_TESTER.in_and_out('alerts-input.json',
+                                               'alerts-human-terse')
+    out = WavefrontDisplayPrinter::Terse.new(input, %i[id status name]).to_s
+    assert_equal(expected, out + "\n")
   end
 end
