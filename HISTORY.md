@@ -2,7 +2,8 @@
 
 ## 3.0.0 (06/03/2019)
 * Drop support for Ruby 2.2.
-* Remove the (deprecated) `report` command. Use `write -u api`.
+* Remove the (deprecated) `report` command. Send points directly to
+  Wavefront with `write --use api`.
 * All commands now accept the `-f` (`--format`) option.
 * New, improved `human` output. Finally fixes a very old bug where
   heavily indented columns could run into one another.
