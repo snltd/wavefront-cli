@@ -1,9 +1,9 @@
 # Wavefront CLI
 [![Build Status](https://travis-ci.org/snltd/wavefront-cli.svg?branch=master)](https://travis-ci.org/snltd/wavefront-cli) [![Maintainability](https://api.codeclimate.com/v1/badges/9b712047af0b2dafc146/maintainability)](https://codeclimate.com/github/snltd/wavefront-cli/maintainability) [![Gem Version](https://badge.fury.io/rb/wavefront-cli.svg)](https://badge.fury.io/rb/wavefront-cli) ![](http://ruby-gem-downloads-badge.herokuapp.com/wavefront-cli?type=total)
 
-This package provides a complete command-line interface to
+This is a complete command-line interface to
 [Wavefront](https://www.wavefront.com/)'s API. It also provides easy
-ways to write data through a proxy.
+ways to get data into Wavefront.
 
 The gem is hosted [on
 Rubygems](https://rubygems.org/gems/wavefront-cli) and can be
@@ -130,13 +130,16 @@ something.
 
 ### Formats, Importing, and Exporting
 
-Most commands and sub-commands support the `-f` option. This takes
-one of `json`, `yaml`, `human` and `raw`, and tells the CLI to
-present the information it fetches from the Wavefront API in that
-format. (`raw` is the raw Ruby representation, which, for instance,
-you could paste into `irb`.) Some object types can be exported in
-HCL, for easy integration with Space Ape's Wavefront Terraform
-provider.
+All commands support the `-f` option. This takes one of `json`,
+`yaml`, `human` and `raw`, and tells the CLI to present the
+information it fetches from the Wavefront API in that format. (`raw`
+is the raw Ruby representation, which, for instance, you could paste
+into `irb`.) Some object types can be exported in other formats.
+Alerts, notificants and dashboards can be exported as HCL, for easy
+integration with [Space Ape's Wavefront Terraform
+provider](https://tech.spaceapegames.com/2017/09/28/building-a-custom-terraform-provider-for-wavefront/).
+Query results can be presented as CSV files, or in the native
+Wavefront data format.
 
 Human output can be selective. As well as the time formatting
 mentioned above, human-readable listings and desctiptions may omit
@@ -192,21 +195,55 @@ that in the morning, the time would be invalid, and you would get a
 
 There is no need to include a timezone in your time: the `wf`
 CLI will automatically use your local timezone when it parses the
-string.
+string. You can also specify relative times: for instance '-10m' for
+the last ten minutes.
 
-The following options are valid in almost all contexts.
+## Querying Data
+
+Use the `query` subcommand with any timeseries expression.
 
 ```
--c, --config=FILE    path to configuration file [default: ~/.wavefront]
--P, --profile=NAME   profile in configuration file [default: default]
--D, --debug          enable debug mode
--V, --verbose        enable verbose mode
--h, --help           show help for command
+ ./wf query "ts(cpu.*.pc.user, source=cube)" | more
+name          ts(cpu.*.pc.user, source=cube)
+query         ts(cpu.*.pc.user, source=cube)
+timeseries
+  label       cpu.0.pc.user
+  sparkline   > ▇▅     █<
+  host        cube
+  tags
+    env       lab
+  data                     13:39:00    26.081756828668336
+                           13:40:00    20.37380923087
+                           13:41:00    4.086552186471667
+                           13:42:00    2.5642049289966664
+                           13:43:00    2.542284133615
+                           13:44:00    2.6524157880366666
+                           13:45:00    2.1158611431600005
+                           13:46:00    27.911804005566665
+              2019-03-07   13:38:00    3.8412758439216668
+              ------------------------------------------------------------------
+  label       cpu.1.pc.user
+  sparkline   > █▅     ▇<
+  host        cube
+  tags
+    env       lab
+  data                     13:39:00    27.45281202666833
+                           13:40:00    19.441659754188333
+                           13:41:00    3.96397654233
+                           13:42:00    2.49657063456
+                           13:43:00    2.4946187951783334
+                           13:44:00    2.8966526517783335
+                           13:45:00    2.636301021795
+                           13:46:00    25.407542657531668
+              2019-03-07   13:38:00    4.655340261835
+...
+events        <none>
+warnings      <none>
+
 ```
 
-Debug mode will show you combined options, and debug output from
-`faraday`. It also shows the full stack trace should a command
-fail. This output can be very verbose.
+By default you get the last ten minutes of data, but the time
+windowing rules can be used to specify any range.
 
 ## Writing Points
 
@@ -250,9 +287,15 @@ $ while true; do echo $RANDOM; sleep 1; done | wf write file -m cli.demo -Fv -
 ```
 
 If you wish to write points directly via the API, and you have the
-"direct ingestion" privilege, just swap `write` for `report`, or add
-`-u api` to your `write` command. To send points to a proxy over
-HTTP, use `-u http`.
+"direct ingestion" privilege, just add `-u api` to your `write`
+command. To send points to a proxy over HTTP, use `-u http`, and to
+write to a Unix socket use `-u unix`.
+
+You can write delta metrics with `-i` (for increment).
+
+```
+$ wf write point -i counter.example 4
+```
 
 Due to limitations in [docopt](https://github.com/docopt/docopt.rb),
 writing negative values is a bit of a mess.
@@ -261,4 +304,11 @@ writing negative values is a bit of a mess.
 $ wf write point cli.example "\-10"
 ```
 
-You can write delta metrics with `-i` (for increment),
+You can even write distibutions. Either list every number
+individually, or use `x` to specify multiples of any value.
+
+```
+$ wf write distribution dist.example 3 1 4 1 1 2 3 6 4 1 3 2
+$ wf write distribution dist.example 3x3 4x1 2x4 2x2 1x6
+```
+
