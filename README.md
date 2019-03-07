@@ -219,8 +219,7 @@ $ wf write point cli.example 10
 and you can add point tags, if you like.
 
 ```
-$ wf write point cli.example 9.4 -E wavefront -T proxy=wavefront \
-  -T from=README
+$ wf write point cli.example 9.4 -E wavefront -T proxy=wavefront -T from=README
 ```
 
 or force a timestamp:
