@@ -89,6 +89,16 @@ describe "#{word} command" do
   cmd_to_call(word, "raw #{s_and_e_opts} -H h1 dev.cli.test",
               path: '/api/v2/chart/raw?metric=dev.cli.test&source=h1' \
                     "&startTime=#{t1}&endTime=#{t2}")
+
+end
+
+describe 'output formatting' do
+  it 'tests query output' do
+    out, err = command_output(word, :do_default, nil, 'query-cpu.json')
+    refute_empty(out)
+    assert_empty(err)
+    assert out.start_with?('name ')
+  end
 end
 
 class QueryTest < MiniTest::Test
