@@ -22,6 +22,12 @@ module WavefrontDisplay
     end
     # rubocop:enable Metrics/AbcSize
 
+    # Prioritizing keys does not make sense in this context
+    #
+    def prioritize_keys(data, _keys)
+      data
+    end
+
     def mk_timeseries(data)
       return [] unless data.key?(:timeseries)
 

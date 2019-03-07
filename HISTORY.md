@@ -6,6 +6,7 @@
   indented columns could run into one another.
 * Move `id` and `name` to the top of objects in long listings.
 * Improved output testing
+* Fix ugly output when a raw query did not specify a host.
 
 ## 2.18.0 (22/02/2019)
 * Add `usergroup` command, and extend `user` command to cover new

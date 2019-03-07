@@ -91,6 +91,15 @@ describe "#{word} command" do
                     "&startTime=#{t1}&endTime=#{t2}")
 end
 
+describe 'output formatting' do
+  it 'tests query output' do
+    out, err = command_output(word, :do_default, nil, 'query-cpu.json')
+    refute_empty(out)
+    assert_empty(err)
+    assert out.start_with?('name ')
+  end
+end
+
 class QueryTest < MiniTest::Test
   attr_reader :wf
 

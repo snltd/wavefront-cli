@@ -363,8 +363,9 @@ require_relative '../lib/wavefront-cli/base'
 #   word in most cases, but must be overriden for two-word things.
 # @return [Array] [stdout, stderr]
 #
-def command_output(word, method, klass = nil)
-  json = IO.read(RES_DIR + 'responses' + "#{word}-list.json")
+def command_output(word, method, klass = nil, infile = nil)
+  infile ||= "#{word}-list.json"
+  json = IO.read(RES_DIR + 'responses' + infile)
   resp = Wavefront::Response.new(json, 200)
   klass ||= Object.const_get(format('WavefrontCli::%s', word.capitalize))
   klass = klass.new(format: :human)
