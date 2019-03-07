@@ -43,7 +43,6 @@ Commands:
   notificant         view and manage Wavefront alert targets
   proxy              view and manage Wavefront proxies
   query              query the Wavefront API
-  report             send data directly to Wavefront
   savedsearch        view and manage saved searches
   source             view and manage source tags and descriptions
   user               view and manage Wavefront users
