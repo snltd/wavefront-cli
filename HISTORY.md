@@ -1,12 +1,17 @@
 # Changelog
 
 ## 3.0.0 (06/03/2019)
-* Drop support for Ruby 2.2. This is the only breaking change.
-* New, improved `human` output. Finally fixes bug where heavily
-  indented columns could run into one another.
-* Move `id` and `name` to the top of objects in long listings.
+* Drop support for Ruby 2.2.
+* Remove the (deprecated) `report` command. Send points directly to
+  Wavefront with `write --use api`.
+* All commands now accept the `-f` (`--format`) option.
+* New, improved `human` output. Finally fixes a very old bug where
+  heavily indented columns could run into one another.
+* Move `id` and `name` to the top of objects in long listings, for
+  easier reading.
 * Improved output testing
 * Fix ugly output when a raw query did not specify a host.
+* Require 2.5.1 of [the SDK](https://github.com/snltd/wavefront-sdk).
 
 ## 2.18.0 (22/02/2019)
 * Add `usergroup` command, and extend `user` command to cover new
@@ -22,7 +27,6 @@
   headers`, not `-F header`.
 
 ## 2.16.1 (29/12/2018)
-
 * Fix regression which broke query time ranges.
 * Fix regression which made `--noop` silent unless `--verbose` was
   also specified.
