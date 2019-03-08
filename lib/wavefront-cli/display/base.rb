@@ -103,13 +103,8 @@ module WavefrontDisplay
     end
 
     def prioritize_keys(data, keys)
-      prioritized = if data.is_a?(Array)
-                      data.map { |e| _prioritize_keys(e, keys) }
-                    else
-                      _prioritize_keys(data, keys)
-                    end
-
-      Map.new(prioritized)
+      return _prioritize_keys(data, keys) unless data.is_a?(Array)
+      data.map { |e| _prioritize_keys(e, keys) }
     end
 
     # Move the given fields to the start of a Hash or Map
@@ -118,7 +113,7 @@ module WavefrontDisplay
     # @return [Hash, Map]
     #
     def _prioritize_keys(data, keys)
-      keys.each.with_object({}) do |k, a|
+      keys.each.with_object(data.is_a?(Map) ? Map.new : {}) do |k, a|
         next unless data.key?(k)
         a[k] = data[k]
         data.delete(k)
