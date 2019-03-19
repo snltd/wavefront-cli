@@ -7,6 +7,8 @@
 * All commands now accept the `-f` (`--format`) option.
 * New, improved `human` output. Finally fixes a very old bug where
   heavily indented columns could run into one another.
+* In long listings, items with empty values now display as `<none`>
+  instead of being omitted.
 * Move `id` and `name` to the top of objects in long listings, for
   easier reading.
 * Improved output testing

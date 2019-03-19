@@ -37,11 +37,22 @@ class WavefrontCommandBase
   # @return [Array]
   #
   def tag_commands
-    ["tags #{CMN} [-f format] <id>",
+    ["tags #{CMN} <id>",
      "tag set #{CMN} <id> <tag>...",
      "tag clear #{CMN} <id>",
      "tag add #{CMN} <id> <tag>",
      "tag delete #{CMN} <id> <tag>"]
+  end
+
+  # Anything which takes ACLs provides the same interface
+  # @return [Array]
+  #
+  def acl_commands
+    ["acls #{CMN} <id>",
+     "acl add view #{CMN} <id> <user>...",
+     "acl add modify #{CMN} <id> <user>...",
+     "acl delete view #{CMN} <id> <user>...",
+     "acl delete modify #{CMN} <id> <user>..."]
   end
 
   # Inheriting classes must override this method

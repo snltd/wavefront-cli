@@ -19,6 +19,7 @@ class WavefrontCommandDashboard < WavefrontCommandBase
      "queries #{CMN} [-b] [<id>]",
      "fav #{CMN} <id>",
      "unfav #{CMN} <id>",
+     acl_commands,
      tag_commands]
   end
 

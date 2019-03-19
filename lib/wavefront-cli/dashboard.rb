@@ -51,6 +51,14 @@ module WavefrontCli
       wf.unfavorite(options[:'<id>'])
     end
 
+    def do_acls
+      wf.acls([options[:'<id>']])
+    end
+
+    def do_acl_add
+      wf.acl_add(options[:'<id>'],
+    end
+
     # @param obj [Object] the thing to search
     # @param key [String, Symbol] the key to search for
     # @param aggr [Array] values of matched keys
