@@ -17,6 +17,7 @@ class WavefrontCommandDashboard < WavefrontCommandBase
      "history #{CMN} [-o offset] [-L limit] <id>",
      "search #{CMN} [-al] [-o offset] [-L limit] <condition>...",
      "queries #{CMN} [-b] [<id>]",
+     "favs #{CMN}",
      "fav #{CMN} <id>",
      "unfav #{CMN} <id>",
      acl_commands,

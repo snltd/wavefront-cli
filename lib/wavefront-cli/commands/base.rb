@@ -49,10 +49,11 @@ class WavefrontCommandBase
   #
   def acl_commands
     ["acls #{CMN} <id>",
-     "acl add view #{CMN} <id> <user>...",
-     "acl add modify #{CMN} <id> <user>...",
-     "acl delete view #{CMN} <id> <user>...",
-     "acl delete modify #{CMN} <id> <user>..."]
+     "acl #{CMN} clear <id>",
+     "acl #{CMN} grant (view | modify) on <id> to " \
+     '(user | group) <name>...',
+     "acl #{CMN} revoke (view | modify) on <id> from " \
+     '(user | group) <name>...']
   end
 
   # Inheriting classes must override this method

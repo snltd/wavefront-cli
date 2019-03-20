@@ -136,6 +136,8 @@ class WavefrontCliController
     abort e.message
   rescue WavefrontCli::Exception::UnsupportedNoop
     abort 'Multiple API call operations cannot be performed as no-ops.'
+  rescue WavefrontCli::Exception::UserGroupNotFound => e
+    abort "Cannot find user group '#{e.message}'."
   rescue Wavefront::Exception::UnsupportedWriter => e
     abort "Unsupported writer '#{e.message}'."
   rescue StandardError => e
