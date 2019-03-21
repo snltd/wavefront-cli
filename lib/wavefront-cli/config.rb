@@ -53,6 +53,20 @@ module WavefrontCli
       puts IO.read(config_file)
     end
 
+    def do_about
+      require 'wavefront-sdk/defs/version'
+      require_relative 'display/base'
+
+      info = { version:        WF_CLI_VERSION,
+               path:           CMD.realpath.to_s,
+               'SDK version':  WF_SDK_VERSION,
+               'SDK location': WF_SDK_LOCATION.to_s,
+               'Ruby version': RUBY_VERSION,
+               platform:       Gem::Platform.local.os }
+
+      WavefrontDisplay::Base.new(info).long_output
+    end
+
     def base_config
       return read_config if config_file.exist?
 
