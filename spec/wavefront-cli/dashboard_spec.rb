@@ -39,11 +39,31 @@ describe "#{word} command" do
                                   matchingMethod: 'EXACT' }],
                         sort: { field: 'id', ascending: true } },
               headers: JSON_POST_HEADERS)
+  cmd_to_call(word,
+              'favs',
+              method: :post,
+              path:   "/api/v2/search/#{word}",
+              body:   { limit:  999,
+                        offset: 0,
+                        query:  [{ key:             'favorite',
+                                   value:           'true',
+                                   matchingMethod: 'EXACT' }],
+                        sort:   { field:     'id',
+                                  ascending: true } }.to_json)
 
-  cmd_to_call(word, "fav #{id}",
-              method: :post, path: "/api/v2/#{word}/#{id}/favorite")
-  cmd_to_call(word, "unfav #{id}",
-              method: :post, path: "/api/v2/#{word}/#{id}/unfavorite")
+  cmd_to_call(word,
+              "fav #{id}",
+              { method: :post,
+                path:   "/api/v2/#{word}/#{id}/favorite" },
+              nil,
+              ['WavefrontCli::Dashboard', :do_favs])
+
+  cmd_to_call(word,
+              "unfav #{id}",
+              { method: :post,
+                path:   "/api/v2/#{word}/#{id}/unfavorite" },
+              nil,
+              ['WavefrontCli::Dashboard', :do_favs])
   cmd_to_call(word, "undelete #{id}",
               method: :post, path: "/api/v2/#{word}/#{id}/undelete")
   invalid_ids(word, ["describe #{bad_id}", "delete #{bad_id}",
