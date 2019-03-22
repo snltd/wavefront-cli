@@ -13,7 +13,8 @@ class WavefrontCommandConfig < WavefrontCommandBase
      'show [-D] [-c file] [<profile>]',
      'setup [-D] [-c file] [<profile>]',
      'delete [-D] [-c file] <profile>',
-     'envvars']
+     'envvars',
+     'about']
   end
 
   def _options

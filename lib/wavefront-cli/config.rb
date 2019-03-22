@@ -57,12 +57,12 @@ module WavefrontCli
       require 'wavefront-sdk/defs/version'
       require_relative 'display/base'
 
-      info = { version:        WF_CLI_VERSION,
-               path:           CMD.realpath.to_s,
-               'SDK version':  WF_SDK_VERSION,
-               'SDK location': WF_SDK_LOCATION.to_s,
-               'Ruby version': RUBY_VERSION,
-               platform:       Gem::Platform.local.os }
+      info = { 'wf version':    WF_CLI_VERSION,
+               'wf path':       CMD.realpath.to_s,
+               'SDK version':   WF_SDK_VERSION,
+               'SDK location':  WF_SDK_LOCATION.to_s,
+               'Ruby version':  RUBY_VERSION,
+               'Ruby platform': Gem::Platform.local.os.capitalize }
 
       WavefrontDisplay::Base.new(info).long_output
     end
