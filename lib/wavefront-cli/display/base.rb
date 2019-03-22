@@ -133,7 +133,7 @@ module WavefrontDisplay
     #   modified_data means that any fields parameter is ignored.
     #
     def long_output(fields = nil, modified_data = nil)
-      if data.empty? || (modified_data && modified_data.empty?)
+      if data.empty? || modified_data&.empty?
         puts 'No data.'
       else
         require_relative 'printer/long'
@@ -154,7 +154,7 @@ module WavefrontDisplay
     def pagination_line
       return unless raw.respond_to?(:moreItems) && raw.moreItems == true
 
-      enditem = raw.limit > 0 ? raw.offset + raw.limit - 1 : 0
+      enditem = raw.limit.positive? ? raw.offset + raw.limit - 1 : 0
       puts format('List shows items %d to %d. Use -o and -L for more.',
                   raw.offset, enditem)
     rescue StandardError

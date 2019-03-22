@@ -66,7 +66,7 @@ module WavefrontCli
 
     def distribution?
       return true if options[:distribution]
-      options[:infileformat] && options[:infileformat].include?('d')
+      options[:infileformat]&.include?('d')
     end
 
     def mk_creds

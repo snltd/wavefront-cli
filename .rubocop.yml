@@ -1,5 +1,12 @@
 ---
 
+AllCops:
+  DisplayStyleGuide: true
+  TargetRubyVersion: 2.3
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
 Style/FormatStringToken:
   Enabled: false
 
