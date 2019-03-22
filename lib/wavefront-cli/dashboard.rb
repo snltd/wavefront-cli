@@ -47,7 +47,7 @@ module WavefrontCli
       require 'wavefront-sdk/search'
       wfs = Wavefront::Search.new(mk_creds, mk_opts)
       query = conds_to_query(['favorite=true'])
-      wfs.search(:dashboard, query)
+      wfs.search(:dashboard, query, limit: :all, sort_field: :id)
     end
 
     def do_fav
@@ -78,15 +78,7 @@ module WavefrontCli
     end
 
     def handle_acls(action)
-      acl_type = options[:modify] ? :modify : :view
-
-      if options[:user]
-        entity_type = :users
-        entities = user_lists(acl_type, options[:'<name>'])
-      else
-        entity_type = :groups
-        entities = group_lists(acl_type, options[:'<name>'])
-      end
+      entity_type, entities = acl_entities
 
       resp = send(format('%s_%s', action, entity_type),
                   options[:'<id>'],
@@ -94,6 +86,16 @@ module WavefrontCli
 
       print_status(resp.status)
       do_acls
+    end
+
+    def acl_entities
+      acl_type = options[:modify] ? :modify : :view
+
+      if options[:user]
+        [:users, user_lists(acl_type, options[:'<name>'])]
+      else
+        [:groups, group_lists(acl_type, options[:'<name>'])]
+      end
     end
 
     # user IDs are the same as their names, so we don't need to do
@@ -119,8 +121,8 @@ module WavefrontCli
     end
 
     def print_status(status)
-      puts resp.status.message unless resp.status.message.empty?
-    rescue
+      puts status.message unless status.message.empty?
+    rescue NoMethodError
       nil
     end
 
@@ -154,7 +156,7 @@ module WavefrontCli
       require 'wavefront-sdk/usergroup'
       wfs = Wavefront::UserGroup.new(mk_creds, mk_opts)
       wfs.describe(group_id).response.name
-    rescue
+    rescue RuntimeError
       nil
     end
 
@@ -167,7 +169,7 @@ module WavefrontCli
       wfs = Wavefront::Search.new(mk_creds, mk_opts)
       query = conds_to_query(['name=Everyone'])
       wfs.search(:usergroup, query).response.items.first.id
-    rescue
+    rescue RuntimeError
       raise WavefrontCli::Exception::UserGroupNotFound, 'Everyone'
     end
 
