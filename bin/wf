@@ -13,6 +13,6 @@ end
 tw = 80 if tw < 60
 
 TW = tw
-
-CMD = Pathname.new(__FILE__).basename
+CMD_PATH = Pathname.new(__FILE__)
+CMD = CMD_PATH.basename
 WavefrontCliController.new(ARGV)

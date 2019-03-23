@@ -58,7 +58,7 @@ module WavefrontCli
       require_relative 'display/base'
 
       info = { 'wf version':    WF_CLI_VERSION,
-               'wf path':       CMD.realpath.to_s,
+               'wf path':       CMD_PATH.realpath.to_s,
                'SDK version':   WF_SDK_VERSION,
                'SDK location':  WF_SDK_LOCATION.to_s,
                'Ruby version':  RUBY_VERSION,
