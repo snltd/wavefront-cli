@@ -10,10 +10,10 @@ class WavefrontCommandWrite < WavefrontCommandBase
   def _commands
     ['point [-DnViq] [-c file] [-P profile] [-E proxy] [-t time] ' \
      '[-p port] [-H host] [-T tag...] [-u method] [-S socket] <metric> ' \
-     '<value>',
+     '[--] <value>',
      'distribution [-DnViq] [-c file] [-P profile] [-E proxy] [-H host] ' \
      '[-p port] [-T tag...] [-u method] [-S socket] [-I interval] ' \
-     '<metric> <val>...',
+     '<metric> [--] <val>...',
      'file [-DnViq] [-c file] [-P profile] [-E proxy] [-H host] ' \
      '[-p port] [-F infileformat] [-m metric] [-T tag...] [-I interval] ' \
      '[-u method] [-S socket] <file>']
@@ -43,7 +43,9 @@ class WavefrontCommandWrite < WavefrontCommandBase
     "with the '-F' option.  Use 't' for timestamp, 'm' for metric " \
     "name, 'v' for value, 's' for source, 'd' for a comma-separated " \
     "distribution, and 'T' for tags. Put 'T' last.  Currently " \
-    "supported transport methods are 'socket' (the default) " \
-    "and 'http'.".cmd_fold(TW, 0)
+    "supported transport methods are 'socket' (write to a proxy: the " \
+    "default); 'api' (write directly to Wavefront); 'http' (write to " \
+    "a proxy over HTTP); and 'unix' (write to a local Unix socket)."
+      .cmd_fold(TW, 0)
   end
 end

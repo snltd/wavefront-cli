@@ -13,7 +13,9 @@
   instead of being omitted.
 * Move `id` and `name` to the top of objects in long listings, for
   easier reading.
-* Improved output testing.
+* Improved output testing
+* `wf write` understands `--`, which makes it easier to send
+  negative values.
 * Fix ugly output when a raw query did not specify a host.
 * New `config about` subcommand gives diagnostic info.
 * Require 3.0.0 of [the SDK](https://github.com/snltd/wavefront-sdk).
