@@ -10,13 +10,16 @@ module WavefrontCli
   class Write < Base
     attr_reader :fmt
     include Wavefront::Mixins
+    SPLIT_PATTERN = /\s(?=(?:[^"]|"[^"]*")*$)/
 
     # rubocop:disable Metrics/AbcSize
     def do_point
       p = { path:  options[:'<metric>'],
-            value: options[:'<value>'].delete('\\').to_f,
-            tags:  tags_to_hash(options[:tag]) }
+            value: options[:'<value>'].delete('\\').to_f }
 
+      tags = tags_to_hash(options[:tag])
+
+      p[:tags] = tags unless tags.empty?
       p[:source] = options[:host] if options[:host]
       p[:ts] = parse_time(options[:time]) if options[:time]
       send_point(p)
@@ -33,9 +36,10 @@ module WavefrontCli
     def do_distribution
       p = { path:     options[:'<metric>'],
             interval: options[:interval] || 'M',
-            value:    mk_dist,
-            tags:     tags_to_hash(options[:tag]) }
+            value:    mk_dist }
 
+      tags = tags_to_hash(options[:tag])
+      p[:tags] = tags unless tags.empty?
       p[:source] = options[:host] if options[:host]
       p[:ts] = parse_time(options[:time]) if options[:time]
       send_point(p)
@@ -94,11 +98,10 @@ module WavefrontCli
     end
 
     def validate_opts_file
-      unless options[:metric] || (options.key?(:infileformat) &&
-                                  options[:infileformat].include?('m'))
-        raise(WavefrontCli::Exception::InsufficientData,
-              "Supply a metric path in the file or with '-m'.")
-      end
+      return true if options[:metric] || options[:infileformat]&.include?('m')
+
+      raise(WavefrontCli::Exception::InsufficientData,
+            "Supply a metric path in the file or with '-m'.")
     end
 
     def open_connection
@@ -123,11 +126,14 @@ module WavefrontCli
       if file == '-'
         read_stdin
       else
-        data = process_input_file(load_data(Pathname.new(file)).split("\n"))
-        call_write(data)
+        call_write(
+          process_input_file(load_data(Pathname.new(file)).split("\n"))
+        )
       end
     end
 
+    # @param data [Array[String]] array of lines
+    #
     def process_input_file(data)
       data.each_with_object([]) do |l, a|
         begin
@@ -209,8 +215,12 @@ module WavefrontCli
       Time.now.utc.to_i
     end
 
+    # @param chunks [Array] an input line broken into tokens. The
+    #   final token will be a space-separated list of point tags.
+    # @return [Hash] of k = v tags.
+    #
     def extract_tags(chunks)
-      tags_to_hash(chunks.last.split(/\s(?=(?:[^"]|"[^"]*")*$)/))
+      tags_to_hash(chunks.last.split(SPLIT_PATTERN))
     end
 
     # Find and return the metric path in a chunked line of input.
@@ -249,34 +259,31 @@ module WavefrontCli
     # what they define is always assumed to be point tags.  This is
     # because you can have arbitrarily many of those for each point.
     #
+    # @param line [String] a line of an input file
+    # @return [Hash]
     # @raise WavefrontCli::Exception::UnparseableInput if the line
     #   doesn't look right
     #
     # rubocop:disable Metrics/AbcSize
-    # rubocop:disable Metrics/MethodLength
     # rubocop:disable Metrics/CyclomaticComplexity
     def process_line(line)
       return true if line.empty?
-      chunks = line.split(/\s+/, fmt.length)
+      chunks = line.split(SPLIT_PATTERN, fmt.length)
       enough_fields?(line) # can raise exception
 
-      begin
-        point = { path:  extract_path(chunks),
-                  tags:  line_tags(chunks),
-                  value: extract_value(chunks) }
+      point = { path:  extract_path(chunks),
+                value: extract_value(chunks) }
 
-        point[:ts]       = extract_ts(chunks)        if fmt.include?('t')
-        point[:source]   = extract_source(chunks)    if fmt.include?('s')
-        point[:interval] = options[:interval] || 'm' if fmt.include?('d')
-      rescue TypeError
-        raise(WavefrontCli::Exception::UnparseableInput,
-              "could not process #{line}")
+      tags = line_tags(chunks)
+
+      point.tap do |p|
+        p[:tags]     = tags unless tags.empty?
+        p[:ts]       = extract_ts(chunks)        if fmt.include?('t')
+        p[:source]   = extract_source(chunks)    if fmt.include?('s')
+        p[:interval] = options[:interval] || 'm' if fmt.include?('d')
       end
-
-      point
     end
     # rubocop:enable Metrics/CyclomaticComplexity
-    # rubocop:enable Metrics/MethodLength
     # rubocop:enable Metrics/AbcSize
 
     # We can get tags from the file, from the -T option, or both.
@@ -284,7 +291,7 @@ module WavefrontCli
     #
     def line_tags(chunks)
       file_tags = fmt.last == 'T' ? extract_tags(chunks) : {}
-      opt_tags = tags_to_hash(options[:tag])
+      opt_tags = tags_to_hash(options[:tag]) || {}
       file_tags.merge(opt_tags)
     end
 
@@ -293,8 +300,8 @@ module WavefrontCli
     # form key=val is dropped.  If key or value are quoted, we
     # remove the quotes.
     #
-    # @param tags [Array]
-    # return Hash
+    # @param tags [Array[String]]
+    # @return [Hash] of k: v tags
     #
     def tags_to_hash(tags)
       return nil unless tags
@@ -302,7 +309,7 @@ module WavefrontCli
       [tags].flatten.each_with_object({}) do |t, ret|
         k, v = t.split('=', 2)
         k.gsub!(/^["']|["']$/, '')
-        ret[k] = v.to_s.gsub(/^["']|["']$/, '') if v
+        ret[k.to_sym] = v.to_s.gsub(/^["']|["']$/, '') if v
       end
     end
 
@@ -324,7 +331,7 @@ module WavefrontCli
               "format string must include 'v' or 'd'"
             elsif !fmt.match(/^[dmstTv]+$/)
               'unsupported field in format string'
-            elsif !fmt == fmt.split('').uniq.join
+            elsif fmt != fmt.squeeze
               'repeated field in format string'
             elsif fmt.include?('T') && !fmt.end_with?('T')
               "if used, 'T' must come at end of format string"
@@ -343,11 +350,13 @@ module WavefrontCli
     # stop users accidentally polluting their metric namespace with
     # junk.
     #
-    # If the format string says we are expecting point tags, we
-    # may have more columns than the length of the format string.
+    # @param line [String] input line
+    # @return [True] if the number of fields is correct
+    # @raise WavefrontCli::Exception::UnparseableInput if there
+    #   are not the right number of fields.
     #
     def enough_fields?(line)
-      ncols = line.split.length
+      ncols = line.split(SPLIT_PATTERN).length
       return true if fmt.include?('T') && ncols >= fmt.length
       return true if ncols == fmt.length
       raise(WavefrontCli::Exception::UnparseableInput,
@@ -355,17 +364,18 @@ module WavefrontCli
     end
 
     # Although the SDK does value checking, we'll add another layer
-    # of input checing here.  See if the time looks valid. We'll
+    # of input checking here.  See if the time looks valid. We'll
     # assume anything before 2000/01/01 or after a year from now is
     # wrong.  Arbitrary, but there has to be a cut-off somewhere.
+    # @param timestamp [String, Integer] epoch timestamp
+    # @return [Bool]
     #
     def valid_timestamp?(timestamp)
-      (timestamp.is_a?(Integer) || timestamp.match(/^\d+$/)) &&
+      (timestamp.is_a?(Integer) ||
+        timestamp.is_a?(String) && timestamp.match(/^\d+$/)) &&
         timestamp.to_i > 946_684_800 &&
         timestamp.to_i < (Time.now.to_i + 31_557_600)
     end
-
-    private
 
     def setup_fmt(fmt)
       @fmt = fmt.split('')
