@@ -1,5 +1,8 @@
 # Changelog
 
+## 3.0.1 (23/03/2019)
+* Fix `config about` bug.
+
 ## 3.0.0 (23/03/2019)
 * Drop support for Ruby 2.2. (Potentially breaking change.)
 * Remove the (deprecated) `report` command. Send points directly to
