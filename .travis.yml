@@ -14,7 +14,7 @@ deploy:
   on:
     tags: true
     repo: snltd/wavefront-cli
-    ruby: 2.6.1
+    ruby: 2.6.2
 notifications:
   email: false
   slack:
