@@ -2,21 +2,28 @@ require_relative 'base'
 
 module WavefrontDisplay
   # Format human-readable output when writing points.
+  # In this context data is a Hash of the form
+  # { sent: 1, rejected: 0, unsent: 0 }
   #
   class Write < Base
-    # rubocop:disable Metrics/AbcSize
+    attr_reader :not_sent
+
     def do_point
-      report unless options[:quiet] || (data[:unsent] + data[:rejected] > 0)
-      exit(data.rejected.zero? && data.unsent.zero? ? 0 : 1)
+      @not_sent = data['rejected'] + data['unsent']
+      report unless nothing_to_say?
+      exit not_sent.zero? ? 0 : 1
     end
-    # rubocop:enable Metrics/AbcSize
+
+    def nothing_to_say?
+      options[:quiet] || not_sent.positive?
+    end
 
     def do_file
       do_point
     end
 
     def report
-      %i[sent rejected unsent].each do |k|
+      %w[sent rejected unsent].each do |k|
         puts format('  %12s %d', k.to_s, data[k])
       end
     end

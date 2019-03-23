@@ -296,18 +296,20 @@ You can write delta metrics with `-i` (for increment).
 $ wf write point -i counter.example 4
 ```
 
-Due to limitations in [docopt](https://github.com/docopt/docopt.rb),
-writing negative values is a bit of a mess.
+To sent negative values, you must use `--` to tell `wf` that you
+have finished declaring options, or get creative with your quoting.
 
 ```
+$ wf write point cli.example -- -10
 $ wf write point cli.example "\-10"
 ```
 
 You can even write distibutions. Either list every number
-individually, or use `x` to specify multiples of any value.
+individually, or use `x` to specify multiples of any value. You can
+mix and match within the same line.
 
 ```
 $ wf write distribution dist.example 3 1 4 1 1 2 3 6 4 1 3 2
 $ wf write distribution dist.example 3x3 4x1 2x4 2x2 1x6
+$ wf write distribution dist.example 3x3 4x1 4 4 2x2 6
 ```
-
