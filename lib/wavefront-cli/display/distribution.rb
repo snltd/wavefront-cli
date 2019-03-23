@@ -6,7 +6,10 @@ module WavefrontDisplay
   class Distribution < Write
     # rubocop:disable Metrics/AbcSize
     def do_distribution
-      report unless options[:quiet] || (data[:unsent] + data[:rejected] > 0)
+      unless options[:quiet] || (data[:unsent] + data[:rejected].positive?)
+        report
+      end
+
       exit(data.rejected.zero? && data.unsent.zero? ? 0 : 1)
     end
     # rubocop:enable Metrics/AbcSize

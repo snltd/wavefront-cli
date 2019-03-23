@@ -68,7 +68,7 @@ module WavefrontCli
       abort "No locally stored event matches '#{id}'." unless ev
 
       res = wf.close(ev)
-      ev_file.unlink if ev_file && ev_file.exist? && res.status.code == 200
+      ev_file.unlink if ev_file&.exist? && res.status.code == 200
       res
     end
     # rubocop:enable Metrics/AbcSize

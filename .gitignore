@@ -4,5 +4,6 @@ Gemfile.lock
 .*swp
 *.gem
 .ruby-version
+.nfs*
 spec/gen_test.sh
 spec/parabola.rb

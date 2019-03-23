@@ -12,7 +12,7 @@ Gem::Specification.new do |gem|
   gem.description   = 'CLI for Wavefront (wavefront.com) API v2 '
 
   gem.authors       = ['Robert Fisher']
-  gem.email         = 'rob@sysdef.xyz'
+  gem.email         = 'services@id264.net'
   gem.homepage      = 'https://github.com/snltd/wavefront-cli'
   gem.license       = 'BSD-2-Clause'
 
@@ -24,7 +24,7 @@ Gem::Specification.new do |gem|
 
   gem.add_runtime_dependency 'docopt', '~> 0.6.0'
   gem.add_runtime_dependency 'inifile', '~> 3.0'
-  gem.add_runtime_dependency 'wavefront-sdk', '~> 2.5', '>= 2.5.1'
+  gem.add_runtime_dependency 'wavefront-sdk', '~> 3.0', '>= 3.0.0'
 
   gem.add_development_dependency 'minitest', '~> 5.11', '>= 5.11.0'
   gem.add_development_dependency 'rake', '~> 12.0'

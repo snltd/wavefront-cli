@@ -25,12 +25,38 @@ module WavefrontDisplay
       end
     end
 
-    def do_fav
-      puts "Added #{options[:'<id>']} to favourites."
+    def do_favs
+      if data.empty?
+        puts 'No favourites.'
+      else
+        multicolumn(:id)
+      end
     end
 
-    def do_unfav
-      puts "Removed #{options[:'<id>']} from favourites."
+    alias do_fav do_favs
+    alias do_unfav do_favs
+
+    def do_acls
+      data.each do |dash|
+        display_acl('view and modify', dash[:modifyAcl])
+        display_acl('view', dash[:viewAcl])
+      end
+    end
+
+    alias do_acl_grant do_acls
+    alias do_acl_revoke do_acls
+    alias do_acl_clear do_acls
+
+    private
+
+    def display_acl(title, acl_data)
+      puts title
+
+      if acl_data.empty?
+        puts '  <none>'
+      else
+        acl_data.each { |e| puts format('  %<name>s (%<id>s)', e) }
+      end
     end
   end
 end

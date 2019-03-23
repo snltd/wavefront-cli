@@ -77,7 +77,7 @@ CANNED_RESPONSE = DummyResponse.new
 # @param call [Hash]
 # rubocop:disable Metrics/AbcSize
 # rubocop:disable Metrics/PerceivedComplexity
-def cmd_to_call(word, args, call, sdk_class = nil)
+def cmd_to_call(word, args, call, sdk_class = nil, extra_method = nil)
   headers = { 'Accept':          /.*/,
               'Accept-Encoding': /.*/,
               'Authorization':  'Bearer 0123456789-ABCDEF',
@@ -115,6 +115,18 @@ def cmd_to_call(word, args, call, sdk_class = nil)
           end
 
           require "wavefront-sdk/#{sdk_class.name.split('::').last.downcase}"
+          # This lets us mock out methods which happen after the
+          # thing we're interested in. For instance when you
+          # favourite a dashboard, the CLI calls do_favs to display
+          # the new favourite list, sending another API call, which
+          # has been tested elsewhere.
+          #
+          if extra_method
+            Spy.on_instance_method(
+              Object.const_get(extra_method.first), extra_method.last
+            ).and_return(true)
+          end
+
           Spy.on_instance_method(
             Object.const_get('Wavefront::ApiCaller'), :respond
           ).and_return(CANNED_RESPONSE)

@@ -17,5 +17,6 @@ module WavefrontCli
     class UnsupportedNoop < RuntimeError; end
     class UnsupportedOperation < RuntimeError; end
     class UnsupportedOutput < RuntimeError; end
+    class UserGroupNotFound < RuntimeError; end
   end
 end

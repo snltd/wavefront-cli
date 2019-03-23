@@ -43,10 +43,7 @@ class WavefrontCommandUsergroup < WavefrontCommandBase
   end
 
   def postscript
-    'Valid permissions at the time of writing are: agent_management, ' \
-    'alerts_management, dashboard_management, embedded_charts, ' \
-    'events_management, external_links_management, host_tag_management, ' \
-    'metrics_management, and user_management. Check the API docs for ' \
-    'an up-to-date list.'.fold(TW, 0)
+    "'wf settings list permissions' will give you a list of all " \
+    'currently supported permissions.'.fold(TW, 0)
   end
 end
