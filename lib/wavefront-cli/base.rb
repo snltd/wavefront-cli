@@ -490,5 +490,28 @@ module WavefrontCli
     def cannot_noop!
       raise WavefrontCli::Exception::UnsupportedNoop if options[:noop]
     end
+
+    # A recursive function which fetches list of values from a
+    # nested hash. Used by WavefrontCli::Dashboard#do_queries
+    # @param obj [Object] the thing to search
+    # @param key [String, Symbol] the key to search for
+    # @param aggr [Array] values of matched keys
+    # @return [Array]
+    #
+    def extract_values(obj, key, aggr = [])
+      if obj.is_a?(Hash)
+        obj.each_pair do |k, v|
+          if k == key && !v.to_s.empty?
+            aggr.<< v
+          else
+            extract_values(v, key, aggr)
+          end
+        end
+      elsif obj.is_a?(Array)
+        obj.each { |e| extract_values(e, key, aggr) }
+      end
+
+      aggr
+    end
   end
 end

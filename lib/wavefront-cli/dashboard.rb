@@ -70,24 +70,18 @@ module WavefrontCli
     end
 
     def do_acl_grant
-      handle_acls(:grant_to)
+      acl_action(:grant_to)
     end
 
     def do_acl_revoke
-      handle_acls(:revoke_from)
+      acl_action(:revoke_from)
     end
 
-    def handle_acls(action)
-      entity_type, entities = acl_entities
-
-      resp = send(format('%s_%s', action, entity_type),
-                  options[:'<id>'],
-                  entities)
-
-      print_status(resp.status)
-      do_acls
-    end
-
+    # Based on command-line options, return an array describing the
+    # users or groups (entities) which will be granted or revoked a
+    # privilege.
+    # @return [Array] [type_of_entity, [Hash]...]
+    #
     def acl_entities
       acl_type = options[:modify] ? :modify : :view
 
@@ -98,34 +92,12 @@ module WavefrontCli
       end
     end
 
-    # user IDs are the same as their names, so we don't need to do
-    # any kind of lookup
+    # Make a list of users to be given to the SDK ACL methods. Users
+    # are defined as a Hash, with keys :id and :name.
+    # @param acl_type [Symbol] :view or :modify
+    # @param users [Array] user names
+    # @return [Array[Hash]]
     #
-    def grant_to_users(id, lists)
-      wf.acl_add(id, lists[:view], lists[:modify])
-    end
-
-    def revoke_from_users(id, lists)
-      wf.acl_delete(id, lists[:view], lists[:modify])
-    end
-
-    # User groups must be supplied by their ID, but we need to give
-    # the API the ID and name.
-    #
-    def grant_to_groups(id, lists)
-      wf.acl_add(id, lists[:view], lists[:modify])
-    end
-
-    def revoke_from_groups(id, lists)
-      wf.acl_delete(id, lists[:view], lists[:modify])
-    end
-
-    def print_status(status)
-      puts status.message unless status.message.empty?
-    rescue NoMethodError
-      nil
-    end
-
     def user_lists(acl_type, users)
       { view: [], modify: [] }.tap do |l|
         l[acl_type] = users.map { |u| { id: u, name: u } }
@@ -133,6 +105,7 @@ module WavefrontCli
     end
 
     # Generate arrays ready for passing to the SDK acl methods
+    # @return see #user_lists, but name and id are not the same.
     #
     def group_lists(acl_type, groups)
       { view: [], modify: [] }.tap do |l|
@@ -149,6 +122,51 @@ module WavefrontCli
       end
     end
 
+    private
+
+    # When given an ACL action (grant or revoke), call the right
+    # method with the right arguments.
+    # @param action [Symbol] :grant_to or :revoke_from
+    # @return [Wavefront::Response]
+    #
+    def acl_action(action)
+      entity_type, entities = acl_entities
+
+      resp = send(format('%s_%s', action, entity_type),
+                  options[:'<id>'],
+                  entities)
+
+      print_status(resp.status)
+      do_acls
+    end
+
+    # The #grant_to_ and #revoke_from_ methods are called by
+    # #acl_action, and speak to the SDK. They all return a
+    # Wavefront::Response object.
+    #
+    def grant_to_users(id, lists)
+      wf.acl_add(id, lists[:view], lists[:modify])
+    end
+
+    def revoke_from_users(id, lists)
+      wf.acl_delete(id, lists[:view], lists[:modify])
+    end
+
+    def grant_to_groups(id, lists)
+      wf.acl_add(id, lists[:view], lists[:modify])
+    end
+
+    def revoke_from_groups(id, lists)
+      wf.acl_delete(id, lists[:view], lists[:modify])
+    end
+
+    def print_status(status)
+      puts status.message unless status.message.empty?
+    rescue NoMethodError
+      nil
+    end
+
+    # Get the name of a user group, given the ID.
     # @param group_id [String] UUID of a group
     # @return [String, Nil] name of group, nil if it does not exist
     #
@@ -171,27 +189,6 @@ module WavefrontCli
       wfs.search(:usergroup, query).response.items.first.id
     rescue RuntimeError
       raise WavefrontCli::Exception::UserGroupNotFound, 'Everyone'
-    end
-
-    # @param obj [Object] the thing to search
-    # @param key [String, Symbol] the key to search for
-    # @param aggr [Array] values of matched keys
-    # @return [Array]
-    #
-    def extract_values(obj, key, aggr = [])
-      if obj.is_a?(Hash)
-        obj.each_pair do |k, v|
-          if k == key && !v.to_s.empty?
-            aggr.<< v
-          else
-            extract_values(v, key, aggr)
-          end
-        end
-      elsif obj.is_a?(Array)
-        obj.each { |e| extract_values(e, key, aggr) }
-      end
-
-      aggr
     end
   end
 end
