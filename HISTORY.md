@@ -1,9 +1,11 @@
 # Changelog
 
 ## 3.0.0 (06/03/2019)
-* Drop support for Ruby 2.2.
+* Drop support for Ruby 2.2. (Potentially breaking change.)
 * Remove the (deprecated) `report` command. Send points directly to
-  Wavefront with `write --use api`.
+  Wavefront with `write --use api`. (Potentially breaking change.)
+* Added `settings` command to view and manage system preferences.
+* `dashboard` command supports new ACL mechanism.
 * All commands now accept the `-f` (`--format`) option.
 * New, improved `human` output. Finally fixes a very old bug where
   heavily indented columns could run into one another.
@@ -11,9 +13,10 @@
   instead of being omitted.
 * Move `id` and `name` to the top of objects in long listings, for
   easier reading.
-* Improved output testing
+* Improved output testing.
 * Fix ugly output when a raw query did not specify a host.
-* Require 2.5.1 of [the SDK](https://github.com/snltd/wavefront-sdk).
+* New `config about` subcommand gives diagnostic info.
+* Require 3.0.0 of [the SDK](https://github.com/snltd/wavefront-sdk).
 
 ## 2.18.0 (22/02/2019)
 * Add `usergroup` command, and extend `user` command to cover new
