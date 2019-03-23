@@ -10,6 +10,8 @@
 * Move `id` and `name` to the top of objects in long listings, for
   easier reading.
 * Improved output testing
+* `wf write` understands `--`, which makes it easier to send
+  negative values.
 * Fix ugly output when a raw query did not specify a host.
 * Require 2.5.1 of [the SDK](https://github.com/snltd/wavefront-sdk).
 

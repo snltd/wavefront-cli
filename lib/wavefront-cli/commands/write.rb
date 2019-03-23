@@ -10,10 +10,10 @@ class WavefrontCommandWrite < WavefrontCommandBase
   def _commands
     ['point [-DnViq] [-c file] [-P profile] [-E proxy] [-t time] ' \
      '[-p port] [-H host] [-T tag...] [-u method] [-S socket] <metric> ' \
-     '<value>',
+     '[--] <value>',
      'distribution [-DnViq] [-c file] [-P profile] [-E proxy] [-H host] ' \
      '[-p port] [-T tag...] [-u method] [-S socket] [-I interval] ' \
-     '<metric> <val>...',
+     '<metric> [--] <val>...',
      'file [-DnViq] [-c file] [-P profile] [-E proxy] [-H host] ' \
      '[-p port] [-F infileformat] [-m metric] [-T tag...] [-I interval] ' \
      '[-u method] [-S socket] <file>']
