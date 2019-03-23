@@ -9,7 +9,7 @@ require_relative "../../lib/wavefront-cli/#{word}"
 
 # Method tests. CLI tests follow
 #
-class WavefrontCliWriteTest < MiniTest::Test
+class WavefrontCliDashboardTest < MiniTest::Test
   attr_reader :wf
 
   def setup
