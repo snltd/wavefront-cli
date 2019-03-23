@@ -7,6 +7,28 @@ word = 'dashboard'
 require_relative '../spec_helper'
 require_relative "../../lib/wavefront-cli/#{word}"
 
+# Method tests. CLI tests follow
+#
+class WavefrontCliWriteTest < MiniTest::Test
+  attr_reader :wf
+
+  def setup
+    @wf = WavefrontCli::Dashboard.new({})
+  end
+
+  def test_user_lists
+    assert_equal({ modify: [],
+                   view: [ { name: 'a@bc.com', id: 'a@bc.com' },
+                           { name: 'x@yz.com', id: 'x@yz.com' } ] },
+                          wf.user_lists(:view, %w[a@bc.com x@yz.com]))
+
+    assert_equal({ view: [],
+                   modify: [ { name: 'a@bc.com', id: 'a@bc.com' },
+                             { name: 'x@yz.com', id: 'x@yz.com' } ] },
+                          wf.user_lists(:modify, %w[a@bc.com x@yz.com]))
+  end
+end
+
 describe "#{word} command" do
   missing_creds(word, ['list', "describe #{id}", "delete #{id}",
                        "undelete #{id}", "history #{id}"])
