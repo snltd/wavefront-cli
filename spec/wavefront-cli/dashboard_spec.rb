@@ -18,14 +18,14 @@ class WavefrontCliWriteTest < MiniTest::Test
 
   def test_user_lists
     assert_equal({ modify: [],
-                   view: [ { name: 'a@bc.com', id: 'a@bc.com' },
-                           { name: 'x@yz.com', id: 'x@yz.com' } ] },
-                          wf.user_lists(:view, %w[a@bc.com x@yz.com]))
+                   view: [{ name: 'a@bc.com', id: 'a@bc.com' },
+                          { name: 'x@yz.com', id: 'x@yz.com' }] },
+                 wf.user_lists(:view, %w[a@bc.com x@yz.com]))
 
     assert_equal({ view: [],
-                   modify: [ { name: 'a@bc.com', id: 'a@bc.com' },
-                             { name: 'x@yz.com', id: 'x@yz.com' } ] },
-                          wf.user_lists(:modify, %w[a@bc.com x@yz.com]))
+                   modify: [{ name: 'a@bc.com', id: 'a@bc.com' },
+                            { name: 'x@yz.com', id: 'x@yz.com' }] },
+                 wf.user_lists(:modify, %w[a@bc.com x@yz.com]))
   end
 end
 
