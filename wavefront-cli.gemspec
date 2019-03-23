@@ -12,7 +12,7 @@ Gem::Specification.new do |gem|
   gem.description   = 'CLI for Wavefront (wavefront.com) API v2 '
 
   gem.authors       = ['Robert Fisher']
-  gem.email         = 'rob@sysdef.xyz'
+  gem.email         = 'services@id264.net'
   gem.homepage      = 'https://github.com/snltd/wavefront-cli'
   gem.license       = 'BSD-2-Clause'
 
