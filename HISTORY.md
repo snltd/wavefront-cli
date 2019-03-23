@@ -1,6 +1,6 @@
 # Changelog
 
-## 3.0.0 (06/03/2019)
+## 3.0.0 (23/03/2019)
 * Drop support for Ruby 2.2. (Potentially breaking change.)
 * Remove the (deprecated) `report` command. Send points directly to
   Wavefront with `write --use api`. (Potentially breaking change.)
