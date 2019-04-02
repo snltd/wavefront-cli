@@ -1,5 +1,8 @@
 # Changelog
 
+## 3.1.0 (02/04/2019)
+* Add `message read` command.
+
 ## 3.0.1 (23/03/2019)
 * Fix `config about` bug.
 

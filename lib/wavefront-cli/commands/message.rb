@@ -9,6 +9,7 @@ class WavefrontCommandMessage < WavefrontCommandBase
 
   def _commands
     ["list #{CMN} [-al] [-O fields] [-o offset] [-L limit]",
+     "read #{CMN} <id>",
      "mark #{CMN} <id>"]
   end
 
