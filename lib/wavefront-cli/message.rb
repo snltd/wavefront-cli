@@ -21,7 +21,7 @@ module WavefrontCli
       end
 
       do_mark
-      resp
+      resp.first
     end
 
     def do_mark
