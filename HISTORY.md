@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.1.1 (05/04/2019)
+* Usernames do not have to be e-mail addresses.
+* Require 3.0.1 of [the SDK](https://github.com/snltd/wavefront-sdk).
+
 ## 3.1.0 (02/04/2019)
 * Add `message read` command.
 
