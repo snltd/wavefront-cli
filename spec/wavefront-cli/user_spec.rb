@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
 id = 'someone@somewhere.com'
-bad_id = '__BAD__'
+bad_id = 'b' * 600
 word = 'user'
 gid1 = '2659191e-aad4-4302-a94e-9667e1517127'
 gid2 = 'abcdef12-1234-abcd-1234-abcdef012345'
