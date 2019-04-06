@@ -4,12 +4,6 @@
 * Bugfix on handling of invalid config files.
 * Explicitly specifying a missing config file now causes an error
   whether or not credentials available from other mechanisms.
-* To avoid a filename clash with [the Python
-  `wavefront-cli`](https://docs.wavefront.com/wavefront_cli.html),
-  the default configuration file changes from `~/.wavefront` to
-  `~/.wavefront.conf`. The old path will still be read, but the new
-  one will be used if a config file is created with `wf config
-  setup`.
 * Require 3.0.2 of [the SDK](https://github.com/snltd/wavefront-sdk).
 
 ## 3.1.1 (05/04/2019)
