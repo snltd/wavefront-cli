@@ -44,6 +44,21 @@ class WavefrontCliHelpTest < MiniTest::Test
       end
     end
   end
+
+  def test_malformed_config
+    WavefrontCliController.new(['alert', 'list',
+                                "--config=#{RES_DIR}/malformed.conf"])
+  rescue SystemExit => e
+    assert_equal(1, e.status)
+    assert e.message.start_with?('Could not load configuration file')
+  end
+
+  def test_missing_config
+    WavefrontCliController.new(%w[alert list --config=/no/such/file])
+  rescue SystemExit => e
+    assert_equal(1, e.status)
+    assert_equal("Configuration file '/no/such/file' not found.", e.message)
+  end
 end
 
 # To test internal methods, make a subclass with no initializer,

@@ -3,7 +3,7 @@
 require_relative '../spec_helper'
 require_relative '../../lib/wavefront-cli/config'
 
-DEF_CF = Pathname.new(ENV['HOME']) + '.wavefront'
+DEF_CF = Pathname.new(ENV['HOME']) + '.wavefront.conf'
 CONF_TMP = Pathname.new('/tmp/outfile')
 
 # Test base writer

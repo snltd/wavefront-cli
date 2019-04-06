@@ -248,15 +248,20 @@ end
 def missing_creds(cmd, subcmds)
   describe 'commands with missing credentials' do
     subcmds.each do |subcmd|
-      it "'#{subcmd}' errors and tells the user to use a token" do
-        out, err = fail_command("#{cmd} #{subcmd} -c /f")
+      it "'#{subcmd}' tells the user config file not found" do
+        _out, err = fail_command("#{cmd} #{subcmd} -c /f")
+        assert_equal("Configuration file '/f' not found.\n", err)
+      end
 
-        if HOME_CONFIG.exist?
-          assert_equal("Credential error. Missing API token.\n", err)
-          assert_match(%r{config file '/f' not found.}, out)
-        else
-          assert_match(/Please run 'wf config setup'/, out)
-        end
+      # I've generally got a config file on my dev box, but Travis
+      # won't have one. Therefore this test probably won't get run
+      # locally, but it will get run in CI, which is what counts.
+      #
+      next if HOME_CONFIG.exist?
+
+      it "'#{subcmd}' errors and tells the user to generate config" do
+        out, _err = fail_command("#{cmd} #{subcmd}")
+        assert_match(/Please run 'wf config setup'/, out)
       end
     end
   end

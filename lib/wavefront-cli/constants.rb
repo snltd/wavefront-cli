@@ -22,6 +22,6 @@ module WavefrontCli
 
     # Default configuration file
     #
-    DEFAULT_CONFIG = (Pathname.new(ENV['HOME']) + '.wavefront').freeze
+    DEFAULT_CONFIG = (Pathname.new(ENV['HOME']) + '.wavefront.conf').freeze
   end
 end

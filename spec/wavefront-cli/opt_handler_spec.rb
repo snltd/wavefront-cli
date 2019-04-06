@@ -3,13 +3,15 @@
 require_relative '../spec_helper'
 require_relative '../../lib/wavefront-cli/opt_handler'
 
+# Some of these tests will be skipped if you have a ~/.wavefront
+# config file. CI will never have that.
+#
+INTERFERING_FILE = Pathname.new(ENV['HOME']) + '.wavefront'
+
 # Test option handler class. End to end tests because the work is
 # always done in the constructor
 #
 class OptHandlerTest < MiniTest::Test
-  # This one has to be kind of vague because I have a config file on
-  # the box I develop on, which will always be picked up. Other
-  # tests are more specific
   def test_no_opts
     x = WavefrontCli::OptHandler.new
     assert x.is_a?(WavefrontCli::OptHandler)
@@ -17,37 +19,37 @@ class OptHandlerTest < MiniTest::Test
     assert x.opts.keys.include?(:endpoint)
   end
 
+  def test_missing_config
+    WavefrontCli::OptHandler.new(config: '/no/such/file')
+  rescue SystemExit => e
+    assert_equal(1, e.status)
+    assert_match("Configuration file '/no/such/file' not found.", e.message)
+  end
+
   def test_no_config_no_env
-    opts = { config: '/nosuchfile' }
-    x = WavefrontCli::OptHandler.new(opts)
+    return if INTERFERING_FILE.exist?
+
+    x = WavefrontCli::OptHandler.new({})
     o = x.opts
     assert x.is_a?(WavefrontCli::OptHandler)
     assert o.is_a?(Hash)
     refute o.keys.include?(:token)
-    assert_equal(o[:config], '/nosuchfile')
     assert_equal(o[:endpoint], 'metrics.wavefront.com')
-
-    assert_output("config file '/nosuchfile' not found.\n") do
-      WavefrontCli::OptHandler.new(opts)
-    end
   end
 
   def test_no_config_env
+    return if INTERFERING_FILE.exist?
+
     ENV['WAVEFRONT_TOKEN'] = 'abcd1234'
     ENV['WAVEFRONT_ENDPOINT'] = 'myendpoint.wavefront.com'
-    opts = { config: '/nosuchfile' }
-    x = WavefrontCli::OptHandler.new(opts)
+    x = WavefrontCli::OptHandler.new({})
     o = x.opts
     assert x.is_a?(WavefrontCli::OptHandler)
     assert o.is_a?(Hash)
     assert_equal(o[:token], 'abcd1234')
-    assert_equal(o[:config], '/nosuchfile')
+    assert_nil o[:config]
     assert_equal(o[:endpoint], 'myendpoint.wavefront.com')
     refute o.keys.include?(:proxy)
-
-    assert_output("config file '/nosuchfile' not found.\n") do
-      WavefrontCli::OptHandler.new(opts)
-    end
     ENV['WAVEFRONT_TOKEN'] = nil
     ENV['WAVEFRONT_ENDPOINT'] = nil
   end

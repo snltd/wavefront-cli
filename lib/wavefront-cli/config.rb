@@ -161,7 +161,7 @@ module WavefrontCli
 
     def present?
       return true if config_file.exist?
-      raise WavefrontCli::Exception::ConfigFileNotFound
+      raise WavefrontCli::Exception::ConfigFileNotFound, config_file
     end
 
     # @return [Pathname] path to config file, from options, or from
