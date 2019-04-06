@@ -72,7 +72,7 @@ class WavefrontCliController
     begin
       [cmd, sanitize_keys(Docopt.docopt(usage[cmd], argv: args))]
     rescue Docopt::DocoptLanguageError => e
-      abort "mangled command description:\n#{e.message}"
+      abort "Mangled command description:\n#{e.message}"
     rescue Docopt::Exit => e
       abort e.message
     end
@@ -109,7 +109,7 @@ class WavefrontCliController
   rescue Interrupt
     abort "\nOperation aborted at user request."
   rescue WavefrontCli::Exception::ConfigFileNotFound => e
-    abort "Configuration file '#{e}' not found."
+    abort "Configuration file #{e}' not found."
   rescue WavefrontCli::Exception::CredentialError => e
     handle_missing_credentials(e)
   rescue WavefrontCli::Exception::MandatoryValue
@@ -153,7 +153,7 @@ class WavefrontCliController
   # @param error [WavefrontCli::Exception::CredentialError]
   #
   def handle_missing_credentials(error)
-    if DEFAULT_CONFIG.exist?
+    if DEFAULT_CONFIG.exist? && DEFAULT_CONFIG.file?
       abort "Credential error. #{error.message}"
     else
       puts 'No credentials supplied on the command line or via ' \

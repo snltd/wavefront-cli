@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.1.2 (06/04/2019)
+* Bugfix on handling of invalid config files.
+* Explicitly specifying a missing config file now causes an error
+  whether or not credentials available from other mechanisms.
+* Require 3.0.2 of [the SDK](https://github.com/snltd/wavefront-sdk).
+
 ## 3.1.1 (05/04/2019)
 * Usernames do not have to be e-mail addresses.
 * Require 3.0.1 of [the SDK](https://github.com/snltd/wavefront-sdk).

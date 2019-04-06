@@ -1,4 +1,8 @@
 module WavefrontCli
+  #
+  # CLI-specific exceptions. These should generally be caught in the
+  # controller.
+  #
   class Exception
     class CredentialError < RuntimeError; end
     class MandatoryValue < RuntimeError; end
