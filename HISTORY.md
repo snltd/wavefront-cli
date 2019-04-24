@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.1.3 (24/04/2019)
+* Fix `write distribution` bug. Points would be sent, but results
+  could not be displayed, causing a crash unless you used `-q`.
+
 ## 3.1.2 (06/04/2019)
 * Bugfix on handling of invalid config files.
 * Explicitly specifying a missing config file now causes an error
