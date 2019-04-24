@@ -4,14 +4,13 @@ module WavefrontDisplay
   # Format human-readable output when writing distributions
   #
   class Distribution < Write
-    # rubocop:disable Metrics/AbcSize
     def do_distribution
-      unless options[:quiet] || (data[:unsent] + data[:rejected].positive?)
-        report
-      end
-
+      print_report unless options[:quiet]
       exit(data.rejected.zero? && data.unsent.zero? ? 0 : 1)
     end
-    # rubocop:enable Metrics/AbcSize
+
+    def print_report
+      report unless (data[:unsent] + data[:rejected]).positive?
+    end
   end
 end
