@@ -1,7 +1,7 @@
 # For development against a local checkout of the SDK, uncomment
 # this definition
-#
-# DEVELOPMENT = true
+
+DEVELOPMENT = true
 
 if defined?(DEVELOPMENT)
   dir = Pathname.new(__FILE__).dirname.realpath.parent.parent.parent
@@ -149,7 +149,6 @@ class WavefrontCliController
   # rubocop:enable Metrics/MethodLength
   # rubocop:enable Metrics/AbcSize
 
-  #
   # @param error [WavefrontCli::Exception::CredentialError]
   #
   def handle_missing_credentials(error)
