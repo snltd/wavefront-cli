@@ -233,6 +233,10 @@ module WavefrontCli
     # @return System exit
     #
     def display_api_error(status)
+      if  status.code == 404
+        abort 'API path not found. Perhaps your account does not support this feature.'
+      end
+
       msg = status.message || 'No further information'
       abort format('ERROR: API code %s: %s.', status.code, msg.chomp('.'))
     end
