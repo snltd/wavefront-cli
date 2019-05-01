@@ -2,6 +2,7 @@ require 'fileutils'
 require 'open3'
 require 'wavefront-sdk/support/mixins'
 require_relative 'base'
+require_relative 'command_mixins/tag'
 
 EVENT_STATE_DIR = Pathname.new('/var/tmp/wavefront')
 
@@ -12,6 +13,7 @@ module WavefrontCli
   class Event < Base
     attr_reader :state_dir
     include Wavefront::Mixins
+    include WavefrontCli::Mixin::Tag
 
     def post_initialize(_options)
       @state_dir = EVENT_STATE_DIR + (Etc.getlogin || 'notty')

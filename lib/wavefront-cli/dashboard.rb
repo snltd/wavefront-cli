@@ -1,10 +1,15 @@
 require_relative 'base'
+require_relative 'command_mixins/tag'
+require_relative 'command_mixins/acl'
 
 module WavefrontCli
   #
   # CLI coverage for the v2 'dashboard' API.
   #
   class Dashboard < WavefrontCli::Base
+    include WavefrontCli::Mixin::Tag
+    include WavefrontCli::Mixin::Acl
+
     def list_filter(list)
       return list unless options[:nosystem]
       list.tap { |l| l.response.items.delete_if { |d| d[:systemOwned] } }
@@ -58,38 +63,6 @@ module WavefrontCli
     def do_unfav
       wf.unfavorite(options[:'<id>'])
       do_favs
-    end
-
-    def do_acls
-      wf.acls([options[:'<id>']])
-    end
-
-    def do_acl_clear
-      wf.acl_set(options[:'<id>'], [], [id: everyone_id, name: 'Everyone'])
-      do_acls
-    end
-
-    def do_acl_grant
-      acl_action(:grant_to)
-    end
-
-    def do_acl_revoke
-      acl_action(:revoke_from)
-    end
-
-    # Based on command-line options, return an array describing the
-    # users or groups (entities) which will be granted or revoked a
-    # privilege.
-    # @return [Array] [type_of_entity, [Hash]...]
-    #
-    def acl_entities
-      acl_type = options[:modify] ? :modify : :view
-
-      if options[:user]
-        [:users, user_lists(acl_type, options[:'<name>'])]
-      else
-        [:groups, group_lists(acl_type, options[:'<name>'])]
-      end
     end
 
     # Make a list of users to be given to the SDK ACL methods. Users

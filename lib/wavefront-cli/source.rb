@@ -1,10 +1,13 @@
 require_relative 'base'
+require_relative 'command_mixins/tag'
 
 module WavefrontCli
   #
   # CLI coverage for the v2 'source' API.
   #
   class Source < WavefrontCli::Base
+    include WavefrontCli::Mixin::Tag
+
     def do_list
       wf.list(options[:limit], options[:cursor])
     end

@@ -1,10 +1,13 @@
 require_relative 'base'
+require_relative 'command_mixins/tag'
 
 module WavefrontCli
   #
   # CLI coverage for the v2 'derivedmetric' API.
   #
   class DerivedMetric < WavefrontCli::Base
+    include WavefrontCli::Mixin::Tag
+
     def validator_exception
       Wavefront::Exception::InvalidDerivedMetricId
     end

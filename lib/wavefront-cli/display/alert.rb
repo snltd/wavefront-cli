@@ -63,5 +63,9 @@ module WavefrontDisplay
         multicolumn(:id, :condition)
       end
     end
+
+    def do_version
+      puts data.max
+    end
   end
 end
