@@ -464,7 +464,9 @@ module WavefrontCli
     # the ID.
     #
     def import_to_create(raw)
-      raw.delete_if { |k, _v| k == 'id' }
+      raw.each_with_object({}) do |(k, v), a|
+        a[k.to_sym] = v unless k == 'id'
+      end
     end
 
     # Return a detailed description of one item, if an ID has been

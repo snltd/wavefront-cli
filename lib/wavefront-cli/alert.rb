@@ -5,6 +5,11 @@ module WavefrontCli
   # CLI coverage for the v2 'alert' API.
   #
   class Alert < WavefrontCli::Base
+    def import_fields
+      %w[name condition minutes target severity displayExpression
+         tags additionalInformation]
+    end
+
     def do_describe
       wf.describe(options[:'<id>'], options[:version])
     end
@@ -118,19 +123,17 @@ module WavefrontCli
     # @param raw [Hash] Ruby hash of imported data
     #
     def import_to_create(raw)
-      ret = %w[name condition minutes target severity displayExpression
-               additionalInformation].each_with_object({}) do |k, aggr|
-        aggr[k.to_sym] = raw[k]
-      end
+      import_fields.each_with_object({}) { |k, a| a[k.to_sym] = raw[k] }
+                   .tap do |ret|
 
-      if raw.key?('resolveAfterMinutes')
-        ret[:resolveMinutes] = raw['resolveAfterMinutes']
-      end
+        if raw.key?('resolveAfterMinutes')
+          ret[:resolveMinutes] = raw['resolveAfterMinutes']
+        end
 
-      if raw.key?('customerTagsWithCounts')
-        ret[:sharedTags] = raw['customerTagsWithCounts'].keys
+        if raw.key?('customerTagsWithCounts')
+          ret[:sharedTags] = raw['customerTagsWithCounts'].keys
+        end
       end
-      ret
     end
   end
 end

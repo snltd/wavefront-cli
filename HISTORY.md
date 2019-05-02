@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.1.4 (02/05/2019)
+* Fix `alert import` missing tags bug.
+* Add import and notificants.
+
 ## 3.1.3 (24/04/2019)
 * Fix `write distribution` bug. Points would be sent, but results
   could not be displayed, causing a crash unless you used `-q`.

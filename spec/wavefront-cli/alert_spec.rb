@@ -91,3 +91,14 @@ describe "#{word} command" do
   noop_tests(word, id, true)
   test_list_output(word)
 end
+
+CliClass = WavefrontCli::Alert
+
+class TestAlertMethods < CliMethodTest
+  def test_import_method
+    import_tester(:window,
+                  %i[startTimeInSeconds endTimeInSeconds
+                     relevantCustomerTags title relevantHostTags],
+                  %i[id])
+  end
+end
