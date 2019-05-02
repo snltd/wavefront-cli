@@ -13,7 +13,6 @@ describe "#{word} command" do
                        'import file',
                        "delete #{id}",
                        "test #{id}",
-                       "update #{id} key=value",
                        'search name=pattern'])
   invalid_ids(word, ["describe #{bad_id}",
                      "delete #{bad_id}",
