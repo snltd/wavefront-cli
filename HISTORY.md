@@ -1,8 +1,12 @@
 # Changelog
 
+## 3.2.0 (30/04/2019)
+* New `apitoken` command lets you manage your own API tokens.
+* Require 3.2.0 of [the SDK](https://github.com/snltd/wavefront-sdk).
+
 ## 3.1.4 (02/05/2019)
 * Fix `alert import` missing tags bug.
-* Add import and notificants.
+* Allow importing of notificants.
 
 ## 3.1.3 (24/04/2019)
 * Fix `write distribution` bug. Points would be sent, but results
