@@ -7,7 +7,7 @@ module WavefrontCli
   class Alert < WavefrontCli::Base
     def import_fields
       %w[name condition minutes target severity displayExpression
-         tags additionalInformation]
+         tags additionalInformation resolveAfterMinutes]
     end
 
     def do_describe
@@ -38,7 +38,7 @@ module WavefrontCli
     # rubocop:enable Metrics/AbcSize
 
     def do_clone
-      wf.clone(options[:'<id>'], options[:version])
+      wf.clone(options[:'<id>'], options[:version]&.to_i)
     end
 
     def do_summary
