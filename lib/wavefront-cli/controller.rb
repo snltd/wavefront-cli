@@ -149,7 +149,6 @@ class WavefrontCliController
   # rubocop:enable Metrics/MethodLength
   # rubocop:enable Metrics/AbcSize
 
-  #
   # @param error [WavefrontCli::Exception::CredentialError]
   #
   def handle_missing_credentials(error)
