@@ -37,6 +37,10 @@ module WavefrontCli
     end
     # rubocop:enable Metrics/AbcSize
 
+    def do_clone
+      wf.clone(options[:'<id>'], options[:version])
+    end
+
     def do_summary
       wf.summary
     end

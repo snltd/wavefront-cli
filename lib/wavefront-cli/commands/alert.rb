@@ -13,6 +13,7 @@ class WavefrontCommandAlert < WavefrontCommandBase
      "snoozed #{CMN} [-o offset] [-L limit]",
      "describe #{CMN} [-v version] <id>",
      "delete #{CMN} <id>",
+     "clone #{CMN} [-v version] <id>",
      "undelete #{CMN} <id>",
      "history #{CMN} [-o offset] [-L limit] <id>",
      "import #{CMN} <file>",
