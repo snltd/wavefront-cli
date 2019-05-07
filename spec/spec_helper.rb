@@ -315,6 +315,22 @@ def tag_tests(cmd, id, bad_id, pth = nil, klass = nil)
                      "tag delete #{id} #{BAD_TAG}"])
 end
 
+class CliMethodTest < MiniTest::Test
+  attr_reader :wf
+
+  def setup
+    @wf = CliClass.new({})
+  end
+
+  def import_tester(word, have_fields, do_not_have_fields = [])
+    input = JSON.parse(IO.read(RES_DIR + 'imports' + "#{word}.json"))
+    x = wf.import_to_create(input)
+    assert_instance_of(Hash, x)
+    have_fields.each { |f| assert_includes(x.keys, f) }
+    do_not_have_fields.each { |f| refute_includes(x.keys, f) }
+  end
+end
+
 # Load in a canned query response
 #
 def load_query_response

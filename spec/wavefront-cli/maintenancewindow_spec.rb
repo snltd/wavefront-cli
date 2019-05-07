@@ -36,3 +36,14 @@ describe "#{word} command" do
               WavefrontCli::MaintenanceWindow)
   test_list_output(word, k)
 end
+
+CliClass = WavefrontCli::MaintenanceWindow
+
+class TestMaintenanceWindowMethods < CliMethodTest
+  def test_import_method
+    import_tester(:window,
+                  %i[startTimeInSeconds endTimeInSeconds
+                     relevantCustomerTags title relevantHostTags],
+                  %i[id])
+  end
+end

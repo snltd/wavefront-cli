@@ -1,0 +1,14 @@
+{
+    "name": "PKS - too many containers not running",
+    "target": "target:9wltLtYXsP8Je2kI",
+    "tags": {
+        "customerTags": [
+            "pks"
+        ]
+    },
+    "condition": "sum(ts(pks.kube.pod.container.status.running.gauge)) / (sum(ts(pks.kube.pod.container.status.running.gauge)) + sum(ts(pks.kube.pod.container.status.waiting.gauge)) + sum(ts(pks.kube.pod.container.status.terminated.gauge))) < 0.8",
+    "displayExpression": "sum(ts(pks.kube.pod.container.status.running.gauge)) / (sum(ts(pks.kube.pod.container.status.running.gauge)) + sum(ts(pks.kube.pod.container.status.waiting.gauge)) + sum(ts(pks.kube.pod.container.status.terminated.gauge)))",
+    "minutes": 5,
+    "resolveAfterMinutes": 5,
+    "severity": "SEVERE"
+}

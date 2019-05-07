@@ -93,3 +93,15 @@ describe "#{word} command" do
   tag_tests(word, id, bad_id)
   test_list_output(word)
 end
+
+CliClass = WavefrontCli::Dashboard
+
+class TestAlertMethods < CliMethodTest
+  def test_import_method
+    import_tester(:dashboard,
+                  %i[description name parameters tags url creatorId
+                     sections parameterDetails displayDescription
+                     acl numCharts],
+                  %i[id])
+  end
+end
