@@ -16,22 +16,9 @@ module WavefrontCli
       wf.describe(options[:'<id>'], options[:version])
     end
 
-    # rubocop:disable Metrics/AbcSize
     def do_delete
-      cannot_noop!
-
-      word = if wf.describe(options[:'<id>']).status.code == 200
-               'Soft'
-             else
-               'Permanently'
-             end
-
-      puts format('%s deleting derived metric definition %s', word,
-                  options[:'<id>'])
-
-      wf.delete(options[:'<id>'])
+      smart_delete('derived metric')
     end
-    # rubocop:enable Metrics/AbcSize
 
     def do_history
       wf.history(options[:'<id>'])

@@ -19,20 +19,9 @@ module WavefrontCli
       wf.describe(options[:'<id>'], options[:version])
     end
 
-    # rubocop:disable Metrics/AbcSize
     def do_delete
-      cannot_noop!
-
-      word = if wf.describe(options[:'<id>']).status.code == 200
-               'Soft'
-             else
-               'Permanently'
-             end
-
-      puts "#{word} deleting dashboard '#{options[:'<id>']}'."
-      wf.delete(options[:'<id>'])
+      smart_delete
     end
-    # rubocop:enable Metrics/AbcSize
 
     def do_history
       wf.history(options[:'<id>'])

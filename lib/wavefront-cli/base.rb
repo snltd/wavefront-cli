@@ -394,6 +394,21 @@ module WavefrontCli
       wf.delete(options[:'<id>'])
     end
 
+    # Some objects support soft deleting. To handle that, call this
+    # method from do_delete
+    #
+    def smart_delete(object_type = klass_word)
+      cannot_noop!
+      puts smart_delete_message(object_type)
+      wf.delete(options[:'<id>'])
+    end
+
+    def smart_delete_message(object_type)
+      desc = wf.describe(options[:'<id>'])
+      word = desc.ok? ? 'Soft' : 'Permanently'
+      format("%s deleting %s '%s'", word, object_type, options[:'<id>'])
+    end
+
     def do_undelete
       wf.undelete(options[:'<id>'])
     end
