@@ -64,6 +64,8 @@ class DummyResponse
   def empty?
     false
   end
+
+  def status; end
 end
 
 CANNED_RESPONSE = DummyResponse.new
@@ -75,9 +77,11 @@ CANNED_RESPONSE = DummyResponse.new
 # @param cmd [String] command line args to supply to the Wavefront
 #  command
 # @param call [Hash]
+# @param spies [Array[Hash]] array of spies to set up, for stubbing
+#   methods in any class. Hash has keys :class, :method, :return.
 # rubocop:disable Metrics/AbcSize
 # rubocop:disable Metrics/PerceivedComplexity
-def cmd_to_call(word, args, call, sdk_class = nil, extra_method = nil)
+def cmd_to_call(word, args, call, sdk_class = nil, spies = [])
   headers = { 'Accept':          /.*/,
               'Accept-Encoding': /.*/,
               'Authorization':  'Bearer 0123456789-ABCDEF',
@@ -115,16 +119,10 @@ def cmd_to_call(word, args, call, sdk_class = nil, extra_method = nil)
           end
 
           require "wavefront-sdk/#{sdk_class.name.split('::').last.downcase}"
-          # This lets us mock out methods which happen after the
-          # thing we're interested in. For instance when you
-          # favourite a dashboard, the CLI calls do_favs to display
-          # the new favourite list, sending another API call, which
-          # has been tested elsewhere.
-          #
-          if extra_method
+          spies.each do |spy|
             Spy.on_instance_method(
-              Object.const_get(extra_method.first), extra_method.last
-            ).and_return(true)
+              Object.const_get(spy[:class]), spy[:method]
+            ).and_return(spy[:return])
           end
 
           Spy.on_instance_method(
@@ -313,6 +311,129 @@ def tag_tests(cmd, id, bad_id, pth = nil, klass = nil)
                     "tag delete #{bad_id} mytag"])
   invalid_tags(cmd, ["tag add #{id} #{BAD_TAG}",
                      "tag delete #{id} #{BAD_TAG}"])
+end
+
+def acl_tests(cmd, id, bad_id, pth = nil, klass = nil)
+  gid1 = '2659191e-aad4-4302-a94e-9667e1517127'
+  pth ||= cmd
+
+  cmd_to_call(cmd, "acls #{id}", { path: "/api/v2/#{pth}/acl?id=#{id}" },
+              klass)
+
+  spies = [{ class:  "WavefrontCli::#{cmd.capitalize}",
+             method: :group_name,
+             return: 'testgroup_name' },
+           { class:  "WavefrontCli::#{cmd.capitalize}",
+             method: :do_acls,
+             return: true }]
+
+  cmd_to_call(cmd, "acl clear #{id}",
+              { method:  :put,
+                path:    "/api/v2/#{pth}/acl/set",
+                body:    [{ entityId:  id,
+                            viewAcl:   [],
+                            modifyAcl: [{ id:   'abcd-1234',
+                                          name: 'Everyone' }] }].to_json,
+                headers: JSON_POST_HEADERS }, klass, [
+                  { class:  "WavefrontCli::#{cmd.capitalize}",
+                    method: :everyone_id,
+                    return: 'abcd-1234' },
+                  { class:  "WavefrontCli::#{cmd.capitalize}",
+                    method: :do_acls,
+                    return: true }
+                ])
+
+  cmd_to_call(cmd, "acl grant view on #{id} to user testuser1",
+              { method:  :post,
+                path:    "/api/v2/#{pth}/acl/add",
+                body:    [{ entityId:  id,
+                            viewAcl:   [{ id:   'testuser1',
+                                          name: 'testuser1' }],
+                            modifyAcl: [] }].to_json,
+                headers: JSON_POST_HEADERS }, klass, spies)
+  cmd_to_call(cmd, "acl revoke view on #{id} from user testuser1",
+              { method:  :post,
+                path:    "/api/v2/#{pth}/acl/remove",
+                body:    [{ entityId:  id,
+                            viewAcl:   [{ id:   'testuser1',
+                                          name: 'testuser1' }],
+                            modifyAcl: [] }].to_json,
+                headers: JSON_POST_HEADERS }, klass, spies)
+
+  cmd_to_call(cmd, "acl grant modify on #{id} to user testuser1",
+              { method:  :post,
+                path:    "/api/v2/#{pth}/acl/add",
+                body:    [{ entityId:  id,
+                            viewAcl:   [],
+                            modifyAcl: [{ id:   'testuser1',
+                                          name: 'testuser1' }] }].to_json,
+                headers: JSON_POST_HEADERS }, klass, spies)
+  cmd_to_call(cmd, "acl revoke modify on #{id} from user testuser1",
+              { method:  :post,
+                path:    "/api/v2/#{pth}/acl/remove",
+                body:    [{ entityId:  id,
+                            viewAcl:   [],
+                            modifyAcl: [{ id:   'testuser1',
+                                          name: 'testuser1' }] }].to_json,
+                headers: JSON_POST_HEADERS }, klass, spies)
+
+  cmd_to_call(cmd, "acl grant view on #{id} to group #{gid1}",
+              { method:  :post,
+                path:    "/api/v2/#{pth}/acl/add",
+                body:    [{ entityId:  id,
+                            viewAcl:   [{ id:   gid1,
+                                          name: 'testgroup_name' }],
+                            modifyAcl: [] }].to_json,
+                headers: JSON_POST_HEADERS }, klass, spies)
+  cmd_to_call(cmd, "acl revoke view on #{id} from group #{gid1}",
+              { method:  :post,
+                path:    "/api/v2/#{pth}/acl/remove",
+                body:    [{ entityId:  id,
+                            viewAcl:   [{ id:   gid1,
+                                          name: 'testgroup_name' }],
+                            modifyAcl: [] }].to_json,
+                headers: JSON_POST_HEADERS }, klass, spies)
+
+  cmd_to_call(cmd, "acl grant modify on #{id} to group #{gid1}",
+              { method:  :post,
+                path:    "/api/v2/#{pth}/acl/add",
+                body:    [{ entityId: id,
+                            viewAcl:   [],
+                            modifyAcl: [{ id:   gid1,
+                                          name: 'testgroup_name' }] }].to_json,
+                headers: JSON_POST_HEADERS }, klass, spies)
+
+  cmd_to_call(cmd, "acl revoke modify on #{id} from group #{gid1}",
+              { method:  :post,
+                path:    "/api/v2/#{pth}/acl/remove",
+                body:    [{ entityId: id,
+                            viewAcl:   [],
+                            modifyAcl: [{ id:   gid1,
+                                          name: 'testgroup_name' }] }].to_json,
+                headers: JSON_POST_HEADERS }, klass, spies)
+
+  invalid_ids(cmd, ["acls #{bad_id}",
+                    "acl clear #{bad_id}",
+                    "acl grant modify on #{bad_id} to user testuser1",
+                    "acl revoke view on #{bad_id} from group #{gid1}"])
+end
+
+# Unit tests
+#
+class CliMethodTest < MiniTest::Test
+  attr_reader :wf
+
+  def setup
+    @wf = CliClass.new({})
+  end
+
+  def import_tester(word, have_fields, do_not_have_fields = [])
+    input = JSON.parse(IO.read(RES_DIR + 'imports' + "#{word}.json"))
+    x = wf.import_to_create(input)
+    assert_instance_of(Hash, x)
+    have_fields.each { |f| assert_includes(x.keys, f) }
+    do_not_have_fields.each { |f| refute_includes(x.keys, f) }
+  end
 end
 
 # Load in a canned query response

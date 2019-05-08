@@ -233,6 +233,11 @@ module WavefrontCli
     # @return System exit
     #
     def display_api_error(status)
+      if  status.code == 404
+        abort 'API path not found. Perhaps your account does not ' \
+              'support this feature.'
+      end
+
       msg = status.message || 'No further information'
       abort format('ERROR: API code %s: %s.', status.code, msg.chomp('.'))
     end
@@ -444,7 +449,9 @@ module WavefrontCli
     # the ID.
     #
     def import_to_create(raw)
-      raw.delete_if { |k, _v| k == 'id' }
+      raw.each_with_object({}) do |(k, v), a|
+        a[k.to_sym] = v unless k == 'id'
+      end
     end
 
     # Return a detailed description of one item, if an ID has been

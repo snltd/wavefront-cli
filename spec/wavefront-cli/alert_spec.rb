@@ -19,11 +19,23 @@ require_relative '../spec_helper'
 require_relative "../../lib/wavefront-cli/#{word}"
 
 describe "#{word} command" do
-  missing_creds(word, ['list', "describe #{id}", "snooze #{id}",
-                       'queries', 'snoozed', "install #{id}",
-                       "uninstall #{id}", 'firing',
-                       'currently firing', 'summary',
-                       "delete #{id}", "undelete #{id}", "history #{id}"])
+  missing_creds(word, ['list',
+                       "describe #{id}",
+                       "snooze #{id}",
+                       'queries',
+                       'snoozed',
+                       "clone #{id}",
+                       "install #{id}",
+                       "uninstall #{id}",
+                       'firing',
+                       'currently firing',
+                       'summary',
+                       "acls #{id}",
+                       "acl grant view on #{id} to user testuser1",
+                       "acl revoke modify on #{id} from group group1",
+                       "delete #{id}",
+                       "undelete #{id}",
+                       "history #{id}"])
   list_tests(word)
   cmd_to_call(word, "describe #{id}", path: "/api/v2/#{word}/#{id}")
   cmd_to_call(word, "describe -v 7 #{id}",
@@ -43,6 +55,12 @@ describe "#{word} command" do
                 method: :delete, path: "/api/v2/#{word}/#{id}")
   end
 
+  cmd_to_call(word, "clone #{id}",
+              method: :post, path: "/api/v2/#{word}/#{id}/clone")
+  cmd_to_call(word, "clone #{id} -v 5",
+              method: :post,
+              path: "/api/v2/#{word}/#{id}/clone",
+              body: { id: id, v: 5, name: nil })
   cmd_to_call(word, "undelete #{id}",
               method: :post, path: "/api/v2/#{word}/#{id}/undelete")
   cmd_to_call(word, "snooze #{id}",
@@ -90,4 +108,16 @@ describe "#{word} command" do
   tag_tests(word, id, bad_id)
   noop_tests(word, id, true)
   test_list_output(word)
+  acl_tests(word, id, bad_id)
+end
+
+CliClass = WavefrontCli::Alert
+
+class TestAlertMethods < CliMethodTest
+  def test_import_method
+    import_tester(:window,
+                  %i[condition displayExpression resolveAfterMinutes
+                     minutes severity tags target name],
+                  %i[id])
+  end
 end

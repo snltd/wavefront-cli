@@ -73,23 +73,41 @@ describe "#{word} command" do
                         sort:   { field:     'id',
                                   ascending: true } }.to_json)
 
+  spies = [{ class:  'WavefrontCli::Dashboard',
+             method: :do_favs,
+             return: nil }]
+
   cmd_to_call(word,
               "fav #{id}",
               { method: :post,
                 path:   "/api/v2/#{word}/#{id}/favorite" },
               nil,
-              ['WavefrontCli::Dashboard', :do_favs])
+              spies)
 
   cmd_to_call(word,
               "unfav #{id}",
               { method: :post,
                 path:   "/api/v2/#{word}/#{id}/unfavorite" },
               nil,
-              ['WavefrontCli::Dashboard', :do_favs])
+              spies)
+
   cmd_to_call(word, "undelete #{id}",
               method: :post, path: "/api/v2/#{word}/#{id}/undelete")
   invalid_ids(word, ["describe #{bad_id}", "delete #{bad_id}",
                      "undelete #{bad_id}"])
   tag_tests(word, id, bad_id)
   test_list_output(word)
+  acl_tests(word, id, bad_id)
+end
+
+CliClass = WavefrontCli::Dashboard
+
+class TestAlertMethods < CliMethodTest
+  def test_import_method
+    import_tester(:dashboard,
+                  %i[description name parameters tags url creatorId
+                     sections parameterDetails displayDescription
+                     acl numCharts],
+                  %i[id])
+  end
 end

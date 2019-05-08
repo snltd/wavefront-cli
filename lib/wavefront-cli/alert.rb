@@ -9,6 +9,10 @@ module WavefrontCli
   class Alert < WavefrontCli::Base
     include WavefrontCli::Mixin::Tag
     include WavefrontCli::Mixin::Acl
+    def import_fields
+      %w[name condition minutes target severity displayExpression
+         tags additionalInformation resolveAfterMinutes]
+    end
 
     def do_describe
       wf.describe(options[:'<id>'], options[:version])
@@ -38,7 +42,7 @@ module WavefrontCli
     # rubocop:enable Metrics/AbcSize
 
     def do_clone
-      wf.clone(options[:'<id>'], options[:version])
+      wf.clone(options[:'<id>'], options[:version]&.to_i)
     end
 
     def do_summary
@@ -131,19 +135,17 @@ module WavefrontCli
     # @param raw [Hash] Ruby hash of imported data
     #
     def import_to_create(raw)
-      ret = %w[name condition minutes target severity displayExpression
-               additionalInformation].each_with_object({}) do |k, aggr|
-        aggr[k.to_sym] = raw[k]
-      end
+      import_fields.each_with_object({}) { |k, a| a[k.to_sym] = raw[k] }
+                   .tap do |ret|
 
-      if raw.key?('resolveAfterMinutes')
-        ret[:resolveMinutes] = raw['resolveAfterMinutes']
-      end
+        if raw.key?('resolveAfterMinutes')
+          ret[:resolveMinutes] = raw['resolveAfterMinutes']
+        end
 
-      if raw.key?('customerTagsWithCounts')
-        ret[:sharedTags] = raw['customerTagsWithCounts'].keys
+        if raw.key?('customerTagsWithCounts')
+          ret[:sharedTags] = raw['customerTagsWithCounts'].keys
+        end
       end
-      ret
     end
   end
 end
