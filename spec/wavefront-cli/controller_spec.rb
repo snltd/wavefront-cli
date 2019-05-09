@@ -7,7 +7,7 @@ require_relative '../../lib/wavefront-cli/controller'
 #
 class WavefrontCliHelpTest < MiniTest::Test
   def test_no_args
-    WavefrontCliController.new([])
+    capture_io { WavefrontCliController.new([]) }
   rescue SystemExit => e
     assert_equal(1, e.status)
     assert_match(/^Usage/, e.message)
@@ -16,14 +16,14 @@ class WavefrontCliHelpTest < MiniTest::Test
   end
 
   def test_version
-    WavefrontCliController.new(%w[--version])
+    capture_io { WavefrontCliController.new(%w[--version]) }
   rescue SystemExit => e
     assert_equal(1, e.status)
     assert_match(/^\d+\.\d+\.\d+$/, e.message)
   end
 
   def test_help
-    WavefrontCliController.new(%w[--help])
+    capture_io { WavefrontCliController.new(%w[--help]) }
   rescue SystemExit => e
     assert_equal(1, e.status)
     assert_match(/^Commands:$/, e.message)
@@ -33,7 +33,7 @@ class WavefrontCliHelpTest < MiniTest::Test
   def test_command_help
     CMDS.each do |cmd|
       begin
-        WavefrontCliController.new([cmd, '--help'])
+        capture_io { WavefrontCliController.new([cmd, '--help']) }
       rescue SystemExit => e
         assert(e.message.split("\n").map(&:size).max <= TW)
         assert_equal(1, e.status)
@@ -46,15 +46,19 @@ class WavefrontCliHelpTest < MiniTest::Test
   end
 
   def test_malformed_config
-    WavefrontCliController.new(['alert', 'list',
-                                "--config=#{RES_DIR}/malformed.conf"])
+    capture_io do
+      WavefrontCliController.new(['alert', 'list',
+                                  "--config=#{RES_DIR}/malformed.conf"])
+    end
   rescue SystemExit => e
     assert_equal(1, e.status)
     assert e.message.start_with?('Could not load configuration file')
   end
 
   def test_missing_config
-    WavefrontCliController.new(%w[alert list --config=/no/such/file])
+    capture_io do
+      WavefrontCliController.new(%w[alert list --config=/no/such/file])
+    end
   rescue SystemExit => e
     assert_equal(1, e.status)
     assert_equal("Configuration file '/no/such/file' not found.", e.message)

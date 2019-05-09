@@ -100,9 +100,11 @@ describe "#{word} command" do
   acl_tests(word, id, bad_id)
 end
 
-CliClass = WavefrontCli::Dashboard
-
 class TestAlertMethods < CliMethodTest
+  def cliclass
+    WavefrontCli::Dashboard
+  end
+
   def test_import_method
     import_tester(:dashboard,
                   %i[description name parameters tags url creatorId

@@ -424,7 +424,7 @@ class CliMethodTest < MiniTest::Test
   attr_reader :wf
 
   def setup
-    @wf = CliClass.new({})
+    @wf = cliclass.new({})
   end
 
   def import_tester(word, have_fields, do_not_have_fields = [])

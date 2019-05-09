@@ -34,12 +34,14 @@ describe "#{word} command" do
   test_list_output(word)
 end
 
-CliClass = WavefrontCli::Notificant
-
 class TestNotificantMethods < CliMethodTest
   def test_import_method
     import_tester(:notificant,
                   %i[method title creatorId triggers template],
                   %i[id])
+  end
+
+  def cliclass
+    WavefrontCli::Notificant
   end
 end
