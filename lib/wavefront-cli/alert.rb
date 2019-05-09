@@ -1,10 +1,15 @@
 require_relative 'base'
+require_relative 'command_mixins/tag'
+require_relative 'command_mixins/acl'
 
 module WavefrontCli
   #
   # CLI coverage for the v2 'alert' API.
   #
   class Alert < WavefrontCli::Base
+    include WavefrontCli::Mixin::Tag
+    include WavefrontCli::Mixin::Acl
+
     def import_fields
       %w[name condition minutes target severity displayExpression
          tags additionalInformation resolveAfterMinutes]
@@ -22,23 +27,20 @@ module WavefrontCli
       wf.unsnooze(options[:'<id>'])
     end
 
-    # rubocop:disable Metrics/AbcSize
     def do_delete
-      cannot_noop!
-
-      word = if wf.describe(options[:'<id>']).status.code == 200
-               'Soft'
-             else
-               'Permanently'
-             end
-
-      puts "#{word} deleting alert '#{options[:'<id>']}'."
-      wf.delete(options[:'<id>'])
+      smart_delete
     end
-    # rubocop:enable Metrics/AbcSize
+
+    def do_clone
+      wf.clone(options[:'<id>'], options[:version]&.to_i)
+    end
 
     def do_summary
       wf.summary
+    end
+
+    def do_latest
+      wf.versions(options[:'<id>'])
     end
 
     def do_history

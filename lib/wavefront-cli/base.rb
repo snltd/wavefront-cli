@@ -394,6 +394,21 @@ module WavefrontCli
       wf.delete(options[:'<id>'])
     end
 
+    # Some objects support soft deleting. To handle that, call this
+    # method from do_delete
+    #
+    def smart_delete(object_type = klass_word)
+      cannot_noop!
+      puts smart_delete_message(object_type)
+      wf.delete(options[:'<id>'])
+    end
+
+    def smart_delete_message(object_type)
+      desc = wf.describe(options[:'<id>'])
+      word = desc.ok? ? 'Soft' : 'Permanently'
+      format("%s deleting %s '%s'", word, object_type, options[:'<id>'])
+    end
+
     def do_undelete
       wf.undelete(options[:'<id>'])
     end
@@ -443,26 +458,6 @@ module WavefrontCli
         q[:matchingMethod] = 'STARTSWITH' if cond.start_with?("#{key}^")
         aggr.<< q
       end
-    end
-
-    def do_tags
-      wf.tags(options[:'<id>'])
-    end
-
-    def do_tag_add
-      wf.tag_add(options[:'<id>'], options[:'<tag>'].first)
-    end
-
-    def do_tag_delete
-      wf.tag_delete(options[:'<id>'], options[:'<tag>'].first)
-    end
-
-    def do_tag_set
-      wf.tag_set(options[:'<id>'], options[:'<tag>'])
-    end
-
-    def do_tag_clear
-      wf.tag_set(options[:'<id>'], [])
     end
 
     # Most things will re-import with the POST method if you remove

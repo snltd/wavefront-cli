@@ -7,28 +7,6 @@ word = 'dashboard'
 require_relative '../spec_helper'
 require_relative "../../lib/wavefront-cli/#{word}"
 
-# Method tests. CLI tests follow
-#
-class WavefrontCliDashboardTest < MiniTest::Test
-  attr_reader :wf
-
-  def setup
-    @wf = WavefrontCli::Dashboard.new({})
-  end
-
-  def test_user_lists
-    assert_equal({ modify: [],
-                   view: [{ name: 'a@bc.com', id: 'a@bc.com' },
-                          { name: 'x@yz.com', id: 'x@yz.com' }] },
-                 wf.user_lists(:view, %w[a@bc.com x@yz.com]))
-
-    assert_equal({ view: [],
-                   modify: [{ name: 'a@bc.com', id: 'a@bc.com' },
-                            { name: 'x@yz.com', id: 'x@yz.com' }] },
-                 wf.user_lists(:modify, %w[a@bc.com x@yz.com]))
-  end
-end
-
 describe "#{word} command" do
   missing_creds(word, ['list', "describe #{id}", "delete #{id}",
                        "undelete #{id}", "history #{id}"])
@@ -73,25 +51,31 @@ describe "#{word} command" do
                         sort:   { field:     'id',
                                   ascending: true } }.to_json)
 
+  spies = [{ class:  'WavefrontCli::Dashboard',
+             method: :do_favs,
+             return: nil }]
+
   cmd_to_call(word,
               "fav #{id}",
               { method: :post,
                 path:   "/api/v2/#{word}/#{id}/favorite" },
               nil,
-              ['WavefrontCli::Dashboard', :do_favs])
+              spies)
 
   cmd_to_call(word,
               "unfav #{id}",
               { method: :post,
                 path:   "/api/v2/#{word}/#{id}/unfavorite" },
               nil,
-              ['WavefrontCli::Dashboard', :do_favs])
+              spies)
+
   cmd_to_call(word, "undelete #{id}",
               method: :post, path: "/api/v2/#{word}/#{id}/undelete")
   invalid_ids(word, ["describe #{bad_id}", "delete #{bad_id}",
                      "undelete #{bad_id}"])
   tag_tests(word, id, bad_id)
   test_list_output(word)
+  acl_tests(word, id, bad_id)
 end
 
 class TestAlertMethods < CliMethodTest

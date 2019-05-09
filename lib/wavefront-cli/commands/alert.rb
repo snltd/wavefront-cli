@@ -13,8 +13,11 @@ class WavefrontCommandAlert < WavefrontCommandBase
      "snoozed #{CMN} [-o offset] [-L limit]",
      "describe #{CMN} [-v version] <id>",
      "delete #{CMN} <id>",
+     "clone #{CMN} [-v version] <id>",
      "undelete #{CMN} <id>",
      "history #{CMN} [-o offset] [-L limit] <id>",
+     "clone #{CMN} [-v version] <id>",
+     "latest #{CMN} <id>",
      "import #{CMN} <file>",
      "snooze #{CMN} [-T time] <id>",
      "update #{CMN} <key=value> <id>",
@@ -29,6 +32,7 @@ class WavefrontCommandAlert < WavefrontCommandBase
      "queries #{CMN} [-b] [<id>]",
      "install #{CMN} <id>",
      "uninstall #{CMN} <id>",
+     acl_commands,
      "summary #{CMN} [-a]"]
   end
 

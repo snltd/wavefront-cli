@@ -142,8 +142,7 @@ class WavefrontCliController
     abort "Unsupported writer '#{e.message}'."
   rescue StandardError => e
     warn "general error: #{e}"
-    warn "re-run with '-D' for stack trace." unless opts[:debug]
-    warn "Backtrace:\n\t#{e.backtrace.join("\n\t")}" if opts[:debug]
+    warn "Backtrace:\n\t#{e.backtrace.join("\n\t")}"
     abort
   end
   # rubocop:enable Metrics/MethodLength

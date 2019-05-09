@@ -19,16 +19,29 @@ require_relative '../spec_helper'
 require_relative "../../lib/wavefront-cli/#{word}"
 
 describe "#{word} command" do
-  missing_creds(word, ['list', "describe #{id}", "snooze #{id}",
-                       'queries', 'snoozed', "install #{id}",
-                       "uninstall #{id}", 'firing',
-                       'currently firing', 'summary',
-                       "delete #{id}", "undelete #{id}", "history #{id}"])
+  missing_creds(word, ['list',
+                       "describe #{id}",
+                       "snooze #{id}",
+                       'queries',
+                       'snoozed',
+                       "clone #{id}",
+                       "install #{id}",
+                       "uninstall #{id}",
+                       'firing',
+                       'currently firing',
+                       'summary',
+                       "acls #{id}",
+                       "acl grant view on #{id} to testuser1",
+                       "acl revoke modify on #{id} from group1",
+                       "delete #{id}",
+                       "undelete #{id}",
+                       "history #{id}"])
   list_tests(word)
   cmd_to_call(word, "describe #{id}", path: "/api/v2/#{word}/#{id}")
   cmd_to_call(word, "describe -v 7 #{id}",
               path: "/api/v2/#{word}/#{id}/history/7")
   cmd_to_call(word, "history #{id}", path: "/api/v2/#{word}/#{id}/history")
+  cmd_to_call(word, "latest #{id}", path: "/api/v2/#{word}/#{id}/history")
 
   it 'deletes with a check on inTrash' do
     stub_request(:get,
@@ -43,6 +56,12 @@ describe "#{word} command" do
                 method: :delete, path: "/api/v2/#{word}/#{id}")
   end
 
+  cmd_to_call(word, "clone #{id}",
+              method: :post, path: "/api/v2/#{word}/#{id}/clone")
+  cmd_to_call(word, "clone #{id} -v 5",
+              method: :post,
+              path: "/api/v2/#{word}/#{id}/clone",
+              body: { id: id, v: 5, name: nil })
   cmd_to_call(word, "undelete #{id}",
               method: :post, path: "/api/v2/#{word}/#{id}/undelete")
   cmd_to_call(word, "snooze #{id}",
@@ -90,6 +109,7 @@ describe "#{word} command" do
   tag_tests(word, id, bad_id)
   noop_tests(word, id, true)
   test_list_output(word)
+  acl_tests(word, id, bad_id)
 end
 
 class TestAlertMethods < CliMethodTest

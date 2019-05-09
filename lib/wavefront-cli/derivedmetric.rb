@@ -1,10 +1,13 @@
 require_relative 'base'
+require_relative 'command_mixins/tag'
 
 module WavefrontCli
   #
   # CLI coverage for the v2 'derivedmetric' API.
   #
   class DerivedMetric < WavefrontCli::Base
+    include WavefrontCli::Mixin::Tag
+
     def validator_exception
       Wavefront::Exception::InvalidDerivedMetricId
     end
@@ -13,22 +16,9 @@ module WavefrontCli
       wf.describe(options[:'<id>'], options[:version])
     end
 
-    # rubocop:disable Metrics/AbcSize
     def do_delete
-      cannot_noop!
-
-      word = if wf.describe(options[:'<id>']).status.code == 200
-               'Soft'
-             else
-               'Permanently'
-             end
-
-      puts format('%s deleting derived metric definition %s', word,
-                  options[:'<id>'])
-
-      wf.delete(options[:'<id>'])
+      smart_delete('derived metric')
     end
-    # rubocop:enable Metrics/AbcSize
 
     def do_history
       wf.history(options[:'<id>'])

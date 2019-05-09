@@ -48,6 +48,10 @@ module WavefrontDisplay
       puts "Unsnoozed alert '#{options[:'<id>']}'."
     end
 
+    def do_latest
+      puts data.max
+    end
+
     # rubocop:disable Metrics/AbcSize
     def do_summary
       kw = data.keys.map(&:size).max + 2
@@ -62,6 +66,10 @@ module WavefrontDisplay
       else
         multicolumn(:id, :condition)
       end
+    end
+
+    def do_version
+      puts data.max
     end
   end
 end
