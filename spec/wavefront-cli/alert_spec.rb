@@ -41,6 +41,7 @@ describe "#{word} command" do
   cmd_to_call(word, "describe -v 7 #{id}",
               path: "/api/v2/#{word}/#{id}/history/7")
   cmd_to_call(word, "history #{id}", path: "/api/v2/#{word}/#{id}/history")
+  cmd_to_call(word, "latest #{id}", path: "/api/v2/#{word}/#{id}/history")
 
   it 'deletes with a check on inTrash' do
     stub_request(:get,

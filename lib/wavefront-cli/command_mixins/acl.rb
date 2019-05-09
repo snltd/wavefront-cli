@@ -55,31 +55,14 @@ module WavefrontCli
       # are defined as a Hash, with keys :id and :name.
       # @param acl_type [Symbol] :view or :modify
       # @param users [Array] user names
-      # @return [Array[Hash]]
+      # @return [Hash]
       #
       def user_lists(acl_type, users)
         { view: [], modify: [] }.tap do |l|
-          l[acl_type] = users.map { |u| { id: u, name: u } }
+          l[acl_type] = users
         end
       end
-
-      # Generate arrays ready for passing to the SDK acl methods
-      # @return see #user_lists, but name and id are not the same.
-      #
-      def group_lists(acl_type, groups)
-        { view: [], modify: [] }.tap do |l|
-          l[acl_type] = groups.each_with_object([]) do |g, a|
-            name = group_name(g)
-
-            if name.nil?
-              puts "Cannot find group with id '#{g}'."
-              next
-            end
-
-            a.<< ({ id: g, name: name })
-          end
-        end
-      end
+      alias group_lists user_lists
 
       # When given an ACL action (grant or revoke), call the right
       # method with the right arguments.

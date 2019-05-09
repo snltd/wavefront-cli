@@ -39,6 +39,10 @@ module WavefrontCli
       wf.summary
     end
 
+    def do_latest
+      wf.versions(options[:'<id>'])
+    end
+
     def do_history
       wf.history(options[:'<id>'], options[:offset], options[:limit])
     end
