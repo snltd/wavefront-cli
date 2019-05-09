@@ -20,7 +20,7 @@ class OptHandlerTest < MiniTest::Test
   end
 
   def test_missing_config
-    WavefrontCli::OptHandler.new(config: '/no/such/file')
+    capture_io { WavefrontCli::OptHandler.new(config: '/no/such/file') }
   rescue SystemExit => e
     assert_equal(1, e.status)
     assert_match("Configuration file '/no/such/file' not found.", e.message)

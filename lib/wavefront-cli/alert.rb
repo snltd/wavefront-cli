@@ -7,7 +7,7 @@ module WavefrontCli
   class Alert < WavefrontCli::Base
     def import_fields
       %w[name condition minutes target severity displayExpression
-         tags additionalInformation]
+         tags additionalInformation resolveAfterMinutes]
     end
 
     def do_describe
