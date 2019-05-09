@@ -31,8 +31,8 @@ describe "#{word} command" do
                        'currently firing',
                        'summary',
                        "acls #{id}",
-                       "acl grant view on #{id} to user testuser1",
-                       "acl revoke modify on #{id} from group group1",
+                       "acl grant view on #{id} to testuser1",
+                       "acl revoke modify on #{id} from group1",
                        "delete #{id}",
                        "undelete #{id}",
                        "history #{id}"])

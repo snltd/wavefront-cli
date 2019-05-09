@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.2.1 (09/05/2019)
+* Fix for new API ACL format.
+* Require 3.3.0 of [the SDK](https://github.com/snltd/wavefront-sdk).
+
 ## 3.2.0 (30/04/2019)
 * New `apitoken` command lets you manage your own API tokens.
 * Support for alert ACLs.
