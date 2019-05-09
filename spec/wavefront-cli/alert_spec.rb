@@ -92,13 +92,15 @@ describe "#{word} command" do
   test_list_output(word)
 end
 
-CliClass = WavefrontCli::Alert
-
 class TestAlertMethods < CliMethodTest
   def test_import_method
     import_tester(:window,
                   %i[condition displayExpression resolveAfterMinutes
                      minutes severity tags target name],
                   %i[id])
+  end
+
+  def cliclass
+    WavefrontCli::Alert
   end
 end

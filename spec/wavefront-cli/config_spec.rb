@@ -85,59 +85,97 @@ class WavefrontCliConfigTest < MiniTest::Test
     input_list = %w[2501b9c3-61e3-4f07-bee2-250aa06a9cab
                     test.wavefront.com myproxy json]
 
-    x = wfo.stub(:read_input, proc { input_list.shift }) do
-      wfo.create_profile('prof')
+    out, err = capture_io do
+      x = wfo.stub(:read_input, proc { input_list.shift }) do
+        wfo.create_profile('prof')
+      end
+
+      assert_instance_of(IniFile, x)
+      assert_equal('2501b9c3-61e3-4f07-bee2-250aa06a9cab',
+                   x[:prof]['token'])
+      assert_equal('test.wavefront.com', x[:prof]['endpoint'])
+      assert_equal('myproxy', x[:prof]['proxy'])
+      assert_equal('json', x[:prof]['format'])
     end
 
-    assert_instance_of(IniFile, x)
-    assert_equal('2501b9c3-61e3-4f07-bee2-250aa06a9cab', x[:prof]['token'])
-    assert_equal('test.wavefront.com', x[:prof]['endpoint'])
-    assert_equal('myproxy', x[:prof]['proxy'])
-    assert_equal('json', x[:prof]['format'])
+    assert_match(/Creating profile 'prof'./, out)
+    assert_match(/Wavefront API token/, out)
+    assert_match(/Wavefront API endpoint/, out)
+    assert_match(/Wavefront proxy endpoint/, out)
+    assert_match(/default output format/, out)
+    assert_empty(err)
   end
 
   def test_create_profile_2
     input_list = ['2501b9c3-61e3-4f07-bee2-250aa06a9cab', '', '', '']
 
-    x = wfo.stub(:read_input, proc { input_list.shift }) do
-      wfo.create_profile('prof')
+    out, err = capture_io do
+      x = wfo.stub(:read_input, proc { input_list.shift }) do
+        wfo.create_profile('prof')
+      end
+
+      assert_instance_of(IniFile, x)
+      assert_equal('2501b9c3-61e3-4f07-bee2-250aa06a9cab',
+                   x[:prof]['token'])
+      assert_equal('metrics.wavefront.com', x[:prof]['endpoint'])
+      assert_equal('wavefront', x[:prof]['proxy'])
+      assert_equal('human', x[:prof]['format'])
     end
 
-    assert_instance_of(IniFile, x)
-    assert_equal('2501b9c3-61e3-4f07-bee2-250aa06a9cab', x[:prof]['token'])
-    assert_equal('metrics.wavefront.com', x[:prof]['endpoint'])
-    assert_equal('wavefront', x[:prof]['proxy'])
-    assert_equal('human', x[:prof]['format'])
+    assert_match(/Creating profile 'prof'./, out)
+    assert_match(/Wavefront API token/, out)
+    assert_match(/Wavefront API endpoint/, out)
+    assert_match(/Wavefront proxy endpoint/, out)
+    assert_match(/default output format/, out)
+    assert_empty(err)
   end
 
   def test_create_profile_3
     input_list = ['X501b9c3-61e3-4f07-bee2-250aa06a9cab', '', '', '']
 
-    assert_raises(WavefrontCli::Exception::InvalidValue) do
-      wfo.stub(:read_input, proc { input_list.shift }) do
-        wfo.create_profile('prof')
+    out, err = capture_io do
+      assert_raises(WavefrontCli::Exception::InvalidValue) do
+        wfo.stub(:read_input, proc { input_list.shift }) do
+          wfo.create_profile('prof')
+        end
       end
     end
+
+    assert_match(/Creating profile 'prof'./, out)
+    assert_match(/Wavefront API token/, out)
+    assert_empty(err)
   end
 
   def test_create_profile_4
     input_list = ['2501b9c3-61e3-4f07-bee2-250aa06a9cab', 'end', '', '']
 
-    assert_raises(WavefrontCli::Exception::InvalidValue) do
-      wfo.stub(:read_input, proc { input_list.shift }) do
-        wfo.create_profile('prof')
+    out, err = capture_io do
+      assert_raises(WavefrontCli::Exception::InvalidValue) do
+        wfo.stub(:read_input, proc { input_list.shift }) do
+          wfo.create_profile('prof')
+        end
       end
     end
+
+    assert_match(/Creating profile 'prof'./, out)
+    assert_match(/Wavefront API token/, out)
+    assert_empty(err)
   end
 
   def test_create_profile_5
     input_list = ['', '', '', '']
 
-    assert_raises(WavefrontCli::Exception::MandatoryValue) do
-      wfo.stub(:read_input, proc { input_list.shift }) do
-        wfo.create_profile('prof')
+    out, err = capture_io do
+      assert_raises(WavefrontCli::Exception::MandatoryValue) do
+        wfo.stub(:read_input, proc { input_list.shift }) do
+          wfo.create_profile('prof')
+        end
       end
     end
+
+    assert_match(/Creating profile 'prof'./, out)
+    assert_match(/Wavefront API token/, out)
+    assert_empty(err)
   end
 
   def test_do_setup; end

@@ -80,12 +80,14 @@ describe "#{word} command" do
   test_list_output(word, k)
 end
 
-CliClass = WavefrontCli::DerivedMetric
-
 class TestDerivedMetricMethods < CliMethodTest
   def test_import_method
     import_tester(:derivedmetric,
                   %i[tags minutes name query metricsUsed hostsUsed],
                   %i[id])
+  end
+
+  def cliclass
+    WavefrontCli::DerivedMetric
   end
 end
