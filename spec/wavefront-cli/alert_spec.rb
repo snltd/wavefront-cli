@@ -97,8 +97,8 @@ CliClass = WavefrontCli::Alert
 class TestAlertMethods < CliMethodTest
   def test_import_method
     import_tester(:window,
-                  %i[startTimeInSeconds endTimeInSeconds
-                     relevantCustomerTags title relevantHostTags],
+                  %i[condition displayExpression resolveAfterMinutes
+                     minutes severity tags target name],
                   %i[id])
   end
 end
