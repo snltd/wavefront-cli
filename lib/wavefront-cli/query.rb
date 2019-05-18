@@ -121,6 +121,5 @@ module WavefrontCli
     def handle_errcode_404(_status)
       'Perhaps metric does not exist for given host.'
     end
-
   end
 end
