@@ -117,5 +117,9 @@ module WavefrontCli
         line.to_s.start_with?('q_')
       end
     end
+
+    def handle_errcode_404(_status)
+      'Perhaps metric does not exist for given host.'
+    end
   end
 end
