@@ -229,17 +229,23 @@ module WavefrontCli
     end
     # rubocop:enable Metrics/AbcSize
 
+    # Classes can provide methods which give the user information on
+    # a given error code. They are named #handle_errcode_xxx, and
+    # return a string.
     # @param status [Map] status object from SDK response
     # @return System exit
     #
     def display_api_error(status)
-      if  status.code == 404
-        abort 'API path not found. Perhaps your account does not ' \
-              'support this feature.'
-      end
+      method = format('handle_errcode_%s', status.code).to_sym
 
-      msg = status.message || 'No further information'
-      abort format('ERROR: API code %s: %s.', status.code, msg.chomp('.'))
+      msg = if respond_to?(method)
+              send(method, status)
+            else
+              status.message || 'No further information'
+            end
+
+      abort format('ERROR: API code %s. %s.', status.code,
+                   msg.chomp('.')).fold(TW, 7)
     end
 
     def display_no_api_response(data, method)

@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.2.2 (16/05/2019)
+* Smarter error messages.
+* Require 3.3.1 of [the SDK](https://github.com/snltd/wavefront-sdk).
+
 ## 3.2.1 (09/05/2019)
 * Fix for new API ACL format.
 * Require 3.3.0 of [the SDK](https://github.com/snltd/wavefront-sdk).
