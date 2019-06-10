@@ -264,6 +264,16 @@ module WavefrontDisplay
       end
     end
 
+    def do_tag_pathsearch
+      if data.empty?
+        puts 'No matches.'
+      elsif options[:long]
+        long_output
+      else
+        multicolumn(:id, :name)
+      end
+    end
+
     def do_queries
       if options[:brief]
         multicolumn(:condition)

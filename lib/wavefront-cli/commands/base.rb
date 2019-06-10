@@ -41,7 +41,8 @@ class WavefrontCommandBase
      "tag set #{CMN} <id> <tag>...",
      "tag clear #{CMN} <id>",
      "tag add #{CMN} <id> <tag>",
-     "tag delete #{CMN} <id> <tag>"]
+     "tag delete #{CMN} <id> <tag>",
+     "tag pathsearch #{CMN} [-al] [-o offset] [-L limit] <word>"]
   end
 
   # Anything which takes ACLs provides the same interface
