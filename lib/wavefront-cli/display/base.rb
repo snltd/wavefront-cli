@@ -228,6 +228,8 @@ module WavefrontDisplay
       else
         multicolumn(*display_keys)
       end
+    rescue
+      raise WavefrontCli::Exception::ImpossibleSearch
     end
 
     def do_search
