@@ -3,6 +3,8 @@
 ## 3.3.0 (10/06/2019)
 * Support negation searches. Search for alerts with targets *not* containing
   `str` with `wf alert search target!~str`.
+* Add `tag pathsearch` command. Searches for tags whose hierarchical names
+  begin with the given element(s).
 
 ## 3.2.3 (24/05/2019)
 * Don't print erroneous pagination message when using `list --all`.
