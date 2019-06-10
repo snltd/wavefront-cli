@@ -456,15 +456,41 @@ module WavefrontCli
 
     # Turn a list of search conditions into an API query
     #
+    # @param conds [Array]
+    # @return [Array[Hash]]
+    #
     def conds_to_query(conds)
-      conds.each_with_object([]) do |cond, aggr|
-        key, value = cond.split(/\W/, 2)
-        q = { key: key, value: value }
-        q[:matchingMethod] = 'EXACT' if cond.start_with?("#{key}=")
-        q[:matchingMethod] = 'STARTSWITH' if cond.start_with?("#{key}^")
-        aggr.<< q
+      conds.map do |cond|
+        key, value = cond.split(/\^|!\^|=|!=|~|!~/, 2)
+        { key: key, value: value }.merge(matching_method(cond))
       end
     end
+
+    # rubocop:disable Metrics/CyclomaticComplexity
+    # rubocop:disable Metrics/MethodLength
+    # @param cond [String] a search condition, like "key=value"
+    # @return [Hash] of matchingMethod and negated
+    #
+    def matching_method(cond)
+      case cond
+      when /^\w+~/
+        { matchingMethod: 'CONTAINS', negated: false }
+      when /^\w+!~/
+        { matchingMethod: 'CONTAINS', negated: true }
+      when /^\w+=/
+        { matchingMethod: 'EXACT', negated: false }
+      when /^\w+!=/
+        { matchingMethod: 'EXACT', negated: true }
+      when /^\w+\^/
+        { matchingMethod: 'STARTSWITH', negated: false }
+      when /^\w+!\^/
+        { matchingMethod: 'STARTSWITH', negated: true }
+      else
+        raise(WavefrontCli::Exception::UnparseableSearchPattern, cond)
+      end
+    end
+    # rubocop:enable Metrics/CyclomaticComplexity
+    # rubocop:enable Metrics/MethodLength
 
     # Most things will re-import with the POST method if you remove
     # the ID.

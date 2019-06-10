@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.3.0 (10/06/2019)
+* Support negation searches. Search for alerts with targets *not* containing
+  `str` with `wf alert search target!~str`.
+
 ## 3.2.3 (24/05/2019)
 * Don't print erroneous pagination message when using `list --all`.
 * Require 3.3.2 of [the SDK](https://github.com/snltd/wavefront-sdk).

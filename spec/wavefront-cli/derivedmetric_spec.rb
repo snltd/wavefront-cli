@@ -15,6 +15,7 @@ describe "#{word} command" do
                        "undelete #{id}", "history #{id}"])
   list_tests(word, nil, k)
   noop_tests(word, id, true, word, k)
+  search_tests(word, id, k)
   cmd_to_call(word, "describe #{id}", { path: "/api/v2/#{word}/#{id}" }, k)
   cmd_to_call(word, "describe -v 7 #{id}",
               { path: "/api/v2/#{word}/#{id}/history/7" }, k)
@@ -33,16 +34,6 @@ describe "#{word} command" do
     cmd_to_call(word, "delete #{id}",
                 { method: :delete, path: "/api/v2/#{word}/#{id}" }, k)
   end
-
-  cmd_to_call(word, "search id=#{id}",
-              { method: :post, path: "/api/v2/search/#{word}",
-                body:   { limit: 10,
-                          offset: 0,
-                          query: [{ key: 'id',
-                                    value: id,
-                                    matchingMethod: 'EXACT' }],
-                          sort: { field: 'id', ascending: true } },
-                headers: JSON_POST_HEADERS }, k)
 
   cmd_to_call(word, "undelete #{id}",
               { method: :post, path: "/api/v2/#{word}/#{id}/undelete" }, k)
