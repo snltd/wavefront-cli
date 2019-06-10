@@ -228,7 +228,7 @@ module WavefrontDisplay
       else
         multicolumn(*display_keys)
       end
-    rescue
+    rescue KeyError
       raise WavefrontCli::Exception::ImpossibleSearch
     end
 
