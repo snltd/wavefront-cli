@@ -219,17 +219,21 @@ module WavefrontDisplay
     end
 
     def do_search_brief
-      display_keys = ([:id] + options[:'<condition>'].map do |c|
-        c.split(/\W/, 2).first.to_sym
-      end).uniq
+      search_keys = search_display_keys
 
       if data.empty?
         puts 'No matches.'
       else
-        multicolumn(*display_keys)
+        multicolumn(*search_keys)
       end
     rescue KeyError
       raise WavefrontCli::Exception::ImpossibleSearch
+    end
+
+    def search_display_keys
+      ([:id] + options[:'<condition>'].map do |c|
+        c.split(SEARCH_SPLIT, 2).first.to_sym
+      end).uniq
     end
 
     def do_search

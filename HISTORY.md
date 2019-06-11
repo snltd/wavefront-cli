@@ -5,6 +5,8 @@
   `str` with `wf alert search target!~str`.
 * Add `tag pathsearch` command. Searches for tags whose hierarchical names
   begin with the given element(s).
+* Better printing of structured search results. For example `wf alert search
+  tags=X`.
 
 ## 3.2.3 (24/05/2019)
 * Don't print erroneous pagination message when using `list --all`.

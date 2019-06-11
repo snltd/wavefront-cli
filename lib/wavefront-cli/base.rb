@@ -461,7 +461,7 @@ module WavefrontCli
     #
     def conds_to_query(conds)
       conds.map do |cond|
-        key, value = cond.split(/\^|!\^|=|!=|~|!~/, 2)
+        key, value = cond.split(SEARCH_SPLIT, 2)
         { key: key, value: value }.merge(matching_method(cond))
       end
     end
