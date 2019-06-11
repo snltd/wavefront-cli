@@ -223,11 +223,34 @@ module WavefrontDisplay
 
       if data.empty?
         puts 'No matches.'
+      elsif search_keys.include?(:freetext)
+        display_brief_freetext_results
       else
         multicolumn(*search_keys)
       end
     rescue KeyError
       raise WavefrontCli::Exception::ImpossibleSearch
+    end
+
+    # For freetext searches, we just display the matching fields in "brief"
+    # mode.
+    #
+    def display_brief_freetext_results
+      search_keys = freetext_keys
+
+      data.map! do |d|
+        mf = d.select do |_k, v|
+          search_keys.any? { |s| v.to_s.include?(s) }
+        end
+
+        { id: d[:id], matching_fields: mf.to_h.keys }
+      end
+
+      multicolumn(:id, :matching_fields)
+    end
+
+    def freetext_keys
+      options[:'<condition>'].map { |c| c.split(SEARCH_SPLIT, 2).last }
     end
 
     def search_display_keys
