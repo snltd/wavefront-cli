@@ -23,6 +23,18 @@ module WavefrontCli
       def do_tag_clear
         wf.tag_set(options[:'<id>'], [])
       end
+
+      def do_tag_pathsearch
+        require 'wavefront-sdk/search'
+        wfs = Wavefront::Search.new(mk_creds, mk_opts)
+
+        query = { key: 'tags',
+                  value: options[:'<word>'],
+                  matchingMethod: 'TAGPATH',
+                  negated: false }
+
+        wfs.search(search_key, query, range_hash)
+      end
     end
   end
 end

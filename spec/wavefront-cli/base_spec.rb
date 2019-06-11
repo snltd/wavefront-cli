@@ -49,6 +49,59 @@ class WavefrontCliBaseTest < MiniTest::Test
 
   def test_dispatch
     assert_raises(WavefrontCli::Exception::UnhandledCommand) { wf.dispatch }
-    # assert_equal(wf_cmd.dispatch, nil)
+  end
+
+  def test_conds_to_query
+    assert_equal([{ key: 'mykey',
+                    value: 'myvalue',
+                    matchingMethod: 'EXACT',
+                    negated: false }],
+                 wf.conds_to_query(%w[mykey=myvalue]))
+
+    assert_equal([{ key: 'mykey',
+                    value: 'myvalue',
+                    matchingMethod: 'EXACT',
+                    negated: true }],
+                 wf.conds_to_query(%w[mykey!=myvalue]))
+
+    assert_equal([{ key: 'mykey',
+                    value: 'myvalue',
+                    matchingMethod: 'CONTAINS',
+                    negated: true }],
+                 wf.conds_to_query(%w[mykey!~myvalue]))
+
+    assert_equal([{ key: 'mykey',
+                    value: 'myvalue',
+                    matchingMethod: 'STARTSWITH',
+                    negated: false }],
+                 wf.conds_to_query(%w[mykey^myvalue]))
+
+    assert_equal([{ key: 'mykey',
+                    value: 'myvalue',
+                    matchingMethod: 'EXACT',
+                    negated: true }],
+                 wf.conds_to_query(%w[mykey!=myvalue]))
+
+    assert_raises(WavefrontCli::Exception::UnparseableSearchPattern) do
+      wf.conds_to_query(%w[what!nonsense])
+    end
+  end
+
+  def test_matching_method
+    assert_equal({ matchingMethod: 'EXACT', negated: true },
+                 wf.matching_method('key!=val'))
+    assert_equal({ matchingMethod: 'EXACT', negated: false },
+                 wf.matching_method('key=val'))
+    assert_equal({ matchingMethod: 'STARTSWITH', negated: false },
+                 wf.matching_method('key^val'))
+    assert_equal({ matchingMethod: 'STARTSWITH', negated: true },
+                 wf.matching_method('key!^val'))
+    assert_equal({ matchingMethod: 'CONTAINS', negated: false },
+                 wf.matching_method('key~val'))
+    assert_equal({ matchingMethod: 'CONTAINS', negated: true },
+                 wf.matching_method('key!~val'))
+    assert_raises(WavefrontCli::Exception::UnparseableSearchPattern) do
+      wf.matching_method('what nonsense')
+    end
   end
 end

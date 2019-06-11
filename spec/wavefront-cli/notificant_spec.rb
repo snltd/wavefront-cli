@@ -18,18 +18,9 @@ describe "#{word} command" do
                      "delete #{bad_id}",
                      "test #{bad_id}",
                      "update #{bad_id} key=value"])
-  list_tests(word)
   cmd_to_call(word, "describe #{id}", path: "/api/v2/#{word}/#{id}")
-
-  cmd_to_call(word, "search id=#{id}",
-              method: :post, path: "/api/v2/search/#{word}",
-              body: { limit: 10,
-                      offset: 0,
-                      query: [{ key: 'id',
-                                value: id,
-                                matchingMethod: 'EXACT' }],
-                      sort: { field: 'id', ascending: true } },
-              headers: JSON_POST_HEADERS)
+  list_tests(word)
+  search_tests(word, id)
   noop_tests(word, id)
   test_list_output(word)
 end

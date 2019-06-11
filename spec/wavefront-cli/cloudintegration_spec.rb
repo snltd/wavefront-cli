@@ -13,19 +13,11 @@ describe 'cloudintegration command' do
                        "undelete #{id}"])
   list_tests(word, 'cloudintegration', k)
   noop_tests(word, id, false, 'cloudintegration', k)
+  search_tests(word, id, k)
   cmd_to_call(word, "describe #{id}",
               { path: "/api/v2/cloudintegration/#{id}" }, k)
   cmd_to_call(word, "delete #{id}",
               { method: :delete, path: "/api/v2/cloudintegration/#{id}" }, k)
-  cmd_to_call(word, "search -L 100 id~#{id}",
-              { method: :post, path: '/api/v2/search/cloudintegration',
-                body:   { limit: '100',
-                          offset: 0,
-                          query: [{ key: 'id',
-                                    value: id,
-                                    matchingMethod: 'CONTAINS' }],
-                          sort: { field: 'id', ascending: true } },
-                headers: JSON_POST_HEADERS }, WavefrontCli::CloudIntegration)
   cmd_to_call(word, "undelete #{id}",
               { method: :post,
                 path:    "/api/v2/cloudintegration/#{id}/undelete" }, k)
