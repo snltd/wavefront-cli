@@ -204,7 +204,7 @@ the last ten minutes.
 Use the `query` subcommand with any timeseries expression.
 
 ```
- ./wf query "ts(cpu.*.pc.user, source=cube)" | more
+$ wf query "ts(cpu.*.pc.user, source=cube)" | more
 name          ts(cpu.*.pc.user, source=cube)
 query         ts(cpu.*.pc.user, source=cube)
 timeseries
