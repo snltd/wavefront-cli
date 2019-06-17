@@ -457,12 +457,12 @@ module WavefrontCli
     # Turn a list of search conditions into an API query
     #
     def conds_to_query(conds)
-      conds.each_with_object([]) do |cond, aggr|
+      conds.map do |cond|
         key, value = cond.split(/\W/, 2)
         q = { key: key, value: value }
         q[:matchingMethod] = 'EXACT' if cond.start_with?("#{key}=")
         q[:matchingMethod] = 'STARTSWITH' if cond.start_with?("#{key}^")
-        aggr.<< q
+        q
       end
     end
 
