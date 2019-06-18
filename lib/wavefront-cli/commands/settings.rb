@@ -3,8 +3,8 @@ require_relative 'base'
 # Define the settings command.
 #
 class WavefrontCommandSettings < WavefrontCommandBase
-  def description
-    'view and manage system preferences'
+  def thing
+    'system preference'
   end
 
   def _commands
@@ -16,7 +16,7 @@ class WavefrontCommandSettings < WavefrontCommandBase
 
   def _options
     [common_options,
-     '-l, --long              list derived metrics in detail',
+     "-l, --long              list #{things} in detail",
      '-O, --fields=F1,F2,...  only show given fields']
   end
 end

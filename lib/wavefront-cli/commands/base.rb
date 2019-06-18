@@ -6,6 +6,10 @@ CMN = '[-DnV] [-c file] [-P profile] [-E endpoint] [-t token] ' \
 # A base class which all command classes extend.
 #
 class WavefrontCommandBase
+  def description
+    "view and manage #{things}"
+  end
+
   # All commands have these options
   # @return [Array]
   #
@@ -15,6 +19,7 @@ class WavefrontCommandBase
      '-D, --debug          enable debug mode',
      '-n, --noop           do not perform API calls',
      '-V, --verbose        be verbose',
+     '-f, --format=STRING  output format',
      '-h, --help           show this message']
   end
 
@@ -65,6 +70,14 @@ class WavefrontCommandBase
   #
   def word
     self.class.name.sub(/WavefrontCommand/, '').downcase
+  end
+
+  def thing
+    word
+  end
+
+  def things
+    thing + 's'
   end
 
   # @return [String] the name of the SDK class which does the work

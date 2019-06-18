@@ -3,8 +3,12 @@ require_relative 'base'
 # Define the usergroup command.
 #
 class WavefrontCommandUsergroup < WavefrontCommandBase
+  def thing
+    'user group'
+  end
+
   def description
-    'view and manage Wavefront user groups'
+    "view and manage Wavefront #{things}"
   end
 
   def sdk_class
@@ -20,7 +24,7 @@ class WavefrontCommandUsergroup < WavefrontCommandBase
      "describe #{CMN} <id>",
      "create #{CMN} [-p permission...] <name>",
      "delete #{CMN} <id>",
-     "import #{CMN} <file>",
+     "import #{CMN} [-u] <file>",
      "update #{CMN} <key=value> <id>",
      "users #{CMN} <id>",
      "permissions #{CMN} <id>",
@@ -33,13 +37,12 @@ class WavefrontCommandUsergroup < WavefrontCommandBase
 
   def _options
     [common_options,
-     '-l, --long                list users in detail',
-     '-o, --offset=n            start from nth user group',
-     '-L, --limit=COUNT         number of user group to list',
-     '-O, --fields=F1,F2,...    only show given fields',
-     '-p, --permission=STRING   Wavefront permission',
-     '-u, --user=STRING         user name',
-     '-f, --format=STRING       output format']
+     "-l, --long               list #{things} in detail",
+     "-o, --offset=n           start from nth #{thing}",
+     "-L, --limit=COUNT        number of #{things} to list",
+     '-O, --fields=F1,F2,...   only show given fields',
+     "-u, --update             update an existing #{thing}",
+     '-p, --permission=STRING  Wavefront permission']
   end
 
   def postscript

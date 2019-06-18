@@ -4,7 +4,7 @@ require_relative 'base'
 #
 class WavefrontCommandUser < WavefrontCommandBase
   def description
-    'view and manage Wavefront users'
+    "view and manage Wavefront #{things}"
   end
 
   # delete uses a different string because it accepts multiples.
@@ -18,7 +18,7 @@ class WavefrontCommandUser < WavefrontCommandBase
      "invite #{CMN} [-m permission...] [-g group...] <id>",
      "update #{CMN} <key=value> <id>",
      "delete #{CMN} <user>...",
-     "import #{CMN} <file>",
+     "import #{CMN} [-u] <file>",
      "groups #{CMN} <id>",
      "join #{CMN} <id> <group>...",
      "leave #{CMN} <id> <group>...",
@@ -29,14 +29,14 @@ class WavefrontCommandUser < WavefrontCommandBase
 
   def _options
     [common_options,
-     '-l, --long                list users in detail',
-     '-o, --offset=n            start from nth user',
-     '-L, --limit=COUNT         number of users to list',
-     '-O, --fields=F1,F2,...    only show given fields',
-     '-e, --email               send e-mail to user on account creation',
-     '-m, --permission=STRING   give user this permission',
-     '-g, --group=STRING        add user to this user group',
-     '-f, --format=STRING       output format']
+     "-l, --long               list #{things} in detail",
+     "-o, --offset=n           start from nth #{thing}",
+     "-L, --limit=COUNT        number of #{things} to list",
+     '-O, --fields=F1,F2,...   only show given fields',
+     "-u, --update             update an existing #{thing}",
+     "-e, --email              send e-mail to #{thing} on account creation",
+     "-m, --permission=STRING  give #{thing} this permission",
+     "-g, --group=STRING       add #{thing} to this user group"]
   end
 
   def postscript

@@ -3,8 +3,8 @@ require_relative 'base'
 # Define the maintenance window command.
 #
 class WavefrontCommandWindow < WavefrontCommandBase
-  def description
-    'view and manage maintenance windows'
+  def thing
+    'maintenance window'
   end
 
   def sdk_file
@@ -23,7 +23,7 @@ class WavefrontCommandWindow < WavefrontCommandBase
      "close #{CMN} <id>",
      "extend #{CMN} (by|to) <time> <id>",
      "delete #{CMN} <id>",
-     "import #{CMN} <file>",
+     "import #{CMN} [-u] <file>",
      "update #{CMN} <key=value> <id>",
      "search #{CMN} [-al] [-o offset] [-L limit] <condition>...",
      "ongoing #{CMN}",
@@ -32,17 +32,17 @@ class WavefrontCommandWindow < WavefrontCommandBase
 
   def _options
     [common_options,
-     '-l, --long              list maintenance windows in detail',
-     '-a, --all               list all maintenance windows',
-     '-o, --offset=n          start from nth maintenance window',
+     "-l, --long              list #{things} in detail",
+     "-a, --all               list all #{things}",
+     "-o, --offset=n          start from nth #{thing}",
      '-O, --fields=F1,F2,...  only show given fields',
-     '-L, --limit=COUNT       number of maintenance windows to list',
-     '-d, --desc=STRING       reason for maintenance window',
-     '-s, --start=TIME        time at which window begins',
-     '-e, --end=TIME          time at which window ends',
-     '-A, --atag=STRING       alert tag to which window applies',
-     '-H, --host=STRING       host to which window applies',
-     '-T, --htag=STRING       host tag to which window applies',
-     '-f, --format=STRING     output format']
+     "-L, --limit=COUNT       number of #{things} to list",
+     "-u, --update            update an existing #{thing}",
+     "-d, --desc=STRING       reason for #{thing}",
+     "-s, --start=TIME        time at which #{thing} begins",
+     "-e, --end=TIME          time at which #{thing} ends",
+     "-A, --atag=STRING       alert tag to which #{thing} applies",
+     "-H, --host=STRING       host to which #{thing} applies",
+     "-T, --htag=STRING       host tag to which #{thing} applies"]
   end
 end

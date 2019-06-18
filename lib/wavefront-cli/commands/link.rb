@@ -3,8 +3,8 @@ require_relative 'base'
 # Define the external link command.
 #
 class WavefrontCommandLink < WavefrontCommandBase
-  def description
-    'view and manage external links'
+  def thing
+    'external link'
   end
 
   def sdk_file
@@ -21,21 +21,21 @@ class WavefrontCommandLink < WavefrontCommandBase
      "create #{CMN} [-m regex] [-s regex] [-p str=regex...] <name> " \
      '<description> <template>',
      "delete #{CMN} <id>",
-     "import #{CMN} <file>",
+     "import #{CMN} [-u] <file>",
      "update #{CMN} <key=value> <id>",
      "search #{CMN} [-al] [-o offset] [-L limit] <condition>..."]
   end
 
   def _options
     [common_options,
-     '-l, --long               list external links in detail',
-     '-a, --all                list all external links',
-     '-o, --offset=n           start from nth external link',
+     "-l, --long               list #{things} in detail",
+     "-a, --all                list all #{things}",
+     "-o, --offset=n           start from nth #{thing}",
      '-O, --fields=F1,F2,...   only show given fields',
-     '-L, --limit=COUNT        number of external link to list',
+     "-L, --limit=COUNT        number of #{thing} to list",
      '-m, --metric-regex=REGEX metric filter regular expression',
      '-s, --source-regex=REGEX source filter regular expression',
      '-p, --point-regex=REGEX  point filter regular expression',
-     '-f, --format=STRING      output format']
+     "-u, --update             update an existing #{thing}"]
   end
 end

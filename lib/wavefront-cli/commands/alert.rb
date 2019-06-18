@@ -3,10 +3,6 @@ require_relative 'base'
 # Define the Alert command
 #
 class WavefrontCommandAlert < WavefrontCommandBase
-  def description
-    'view and manage alerts'
-  end
-
   def _commands
     ["list #{CMN} [-al] [-O fields] [-o offset] [-L limit]",
      "firing #{CMN} [-o offset] [-L limit]",
@@ -18,7 +14,7 @@ class WavefrontCommandAlert < WavefrontCommandBase
      "history #{CMN} [-o offset] [-L limit] <id>",
      "clone #{CMN} [-v version] <id>",
      "latest #{CMN} <id>",
-     "import #{CMN} <file>",
+     "import #{CMN} [-u] <file>",
      "snooze #{CMN} [-T time] <id>",
      "update #{CMN} <key=value> <id>",
      "unsnooze #{CMN} <id>",
@@ -38,14 +34,14 @@ class WavefrontCommandAlert < WavefrontCommandBase
 
   def _options
     [common_options,
-     '-l, --long               list alerts in detail',
-     '-a, --all                list all alerts',
-     '-v, --version=INTEGER    describe only this version of alert',
-     '-o, --offset=n           start from nth alert',
-     '-L, --limit=COUNT        number of alerts to list',
+     "-l, --long               list #{things} in detail",
+     "-a, --all                list all #{things}",
+     "-v, --version=INTEGER    describe only this version of #{thing}",
+     "-o, --offset=n           start from nth #{thing}",
+     "-L, --limit=COUNT        number of #{things} to list",
      '-O, --fields=F1,F2,...   only show given fields',
+     "-u, --update             update an existing #{thing}",
      '-T, --time=SECONDS       how long to snooze (default 3600)',
-     '-b, --brief              do not show alert names',
-     '-f, --format=STRING      output format']
+     "-b, --brief              do not show #{thing} names"]
   end
 end

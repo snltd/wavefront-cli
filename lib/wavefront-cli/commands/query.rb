@@ -4,7 +4,7 @@ require_relative 'base'
 #
 class WavefrontCommandQuery < WavefrontCommandBase
   def description
-    'query the Wavefront API'
+    'run Wavefront queries'
   end
 
   def _commands
@@ -31,7 +31,6 @@ class WavefrontCommandQuery < WavefrontCommandBase
      'points (mean, median, min, max, sum, count, last, first)',
      '-O, --obsolete            include metrics unreported for > 4 weeks',
      '-H, --host=STRING         host or source to query on',
-     '-f, --format=STRING       output format',
      '-F, --format-opts=STRING  comma-separated options to pass to ' \
                                 'output formatter',
      '-k, --nospark             do not show sparkline',
