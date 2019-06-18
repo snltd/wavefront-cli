@@ -10,7 +10,8 @@ def search_body(val)
     query: [
       { key: 'status',
         value: val,
-        matchingMethod: 'EXACT' }
+        matchingMethod: 'EXACT',
+        negated: false }
     ],
     sort: { field: 'status', ascending: true } }
 end
@@ -66,15 +67,6 @@ describe "#{word} command" do
               method: :post, path: "/api/v2/#{word}/#{id}/undelete")
   cmd_to_call(word, "snooze #{id}",
               method: :post, path: "/api/v2/#{word}/#{id}/snooze")
-  cmd_to_call(word, "search id=#{id}",
-              method: :post, path: "/api/v2/search/#{word}",
-              body: { limit: 10,
-                      offset: 0,
-                      query: [{ key: 'id',
-                                value: id,
-                                matchingMethod: 'EXACT' }],
-                      sort: { field: 'id', ascending: true } },
-              headers: JSON_POST_HEADERS)
   cmd_to_call(word, "snooze -T 800 #{id}",
               method: :post,
               path: "/api/v2/#{word}/#{id}/snooze?seconds=800")
@@ -106,6 +98,7 @@ describe "#{word} command" do
               path: "/api/v2/search/#{word}",
               body: search_body('in_maintenance'))
   cmd_to_call(word, 'queries', path: "/api/v2/#{word}?limit=999&offset=0")
+  search_tests(word, id)
   tag_tests(word, id, bad_id)
   noop_tests(word, id, true)
   test_list_output(word)

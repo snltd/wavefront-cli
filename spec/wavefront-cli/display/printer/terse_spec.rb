@@ -44,9 +44,9 @@ class WavefrontDisplayPrinterTerse < MiniTest::Test
                               [:things]))
   end
 
-  def test_to_list
-    assert_equal('a, b, c', wf.to_list(%w[a b c]))
-    assert_equal('abc', wf.to_list('abc'))
+  def test_to_string
+    assert_equal('a, b, c', wf.to_string(%w[a b c]))
+    assert_equal('abc', wf.to_string('abc'))
   end
 
   def test_end_to_end

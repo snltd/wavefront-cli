@@ -140,6 +140,8 @@ class WavefrontCliController
     abort "Cannot find user group '#{e.message}'."
   rescue Wavefront::Exception::UnsupportedWriter => e
     abort "Unsupported writer '#{e.message}'."
+  rescue WavefrontCli::Exception::ImpossibleSearch
+    abort 'Search on non-existent key. Please use a top-level field.'
   rescue StandardError => e
     warn "general error: #{e}"
     warn "Backtrace:\n\t#{e.backtrace.join("\n\t")}"

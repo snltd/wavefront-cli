@@ -8,6 +8,7 @@ module WavefrontCli
     class MandatoryValue < RuntimeError; end
     class ConfigFileNotFound < IOError; end
     class FileNotFound < IOError; end
+    class ImpossibleSearch < RuntimeError; end
     class InsufficientData < RuntimeError; end
     class InvalidInput < RuntimeError; end
     class InvalidValue < RuntimeError; end
@@ -17,6 +18,7 @@ module WavefrontCli
     class UnhandledCommand < RuntimeError; end
     class UnparseableInput < RuntimeError; end
     class UnparseableResponse < RuntimeError; end
+    class UnparseableSearchPattern < RuntimeError; end
     class UnsupportedFileFormat < RuntimeError; end
     class UnsupportedNoop < RuntimeError; end
     class UnsupportedOperation < RuntimeError; end

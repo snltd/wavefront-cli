@@ -2,7 +2,7 @@ require_relative '../../stdlib/array'
 
 module WavefrontDisplayPrinter
   #
-  # Print things which are per-row. The terse listings, primarily
+  # Print values which are per-row. The terse listings, primarily
   #
   class Terse
     attr_reader :data, :fmt
@@ -20,11 +20,21 @@ module WavefrontDisplayPrinter
     end
 
     def stringify(data, keys)
-      data.map { |e| e.tap { keys.each { |k| e[k] = to_list(e[k]) } } }
+      data.map { |e| e.tap { keys.each { |k| e[k] = to_string(e[k]) } } }
     end
 
-    def to_list(thing)
-      thing.is_a?(Array) ? thing.join(', ') : thing
+    def to_string(value)
+      if value.is_a?(Array)
+        value.join(', ')
+      elsif value.is_a?(Map)
+        map_to_string(value)
+      else
+        value
+      end
+    end
+
+    def map_to_string(value)
+      format('%s=%s', value.keys[0], value.values.join(','))
     end
 
     def to_s

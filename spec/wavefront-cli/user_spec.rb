@@ -89,15 +89,7 @@ describe "#{word} command" do
               body:   'group=agent_management',
               headers: hdrs)
 
-  cmd_to_call(word, "search -L 40 id=#{id}",
-              { method: :post, path: "/api/v2/search/#{word}",
-                body:   { limit:  '40',
-                          offset: 0,
-                          query: [{ key: 'id',
-                                    value: id,
-                                    matchingMethod: 'EXACT' }],
-                          sort: { field: 'id', ascending: true } },
-                headers: JSON_POST_HEADERS }, WavefrontCli::User)
+  search_tests(word, id)
 
   invalid_ids(word, ["describe #{bad_id}",
                      "delete #{bad_id}",

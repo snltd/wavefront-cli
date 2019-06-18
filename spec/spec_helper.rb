@@ -75,7 +75,6 @@ CANNED_RESPONSE = DummyResponse.new
 # requisite display methods are called.
 #
 # @param cmd [String] command line args to supply to the Wavefront
-#  command
 # @param call [Hash]
 # @param spies [Array[Hash]] array of spies to set up, for stubbing
 #   methods in any class. Hash has keys :class, :method, :return.
@@ -263,6 +262,52 @@ def missing_creds(cmd, subcmds)
       end
     end
   end
+end
+
+def search_tests(word, id, klass = nil, pth = nil)
+  pth ||= word
+  cmd_to_call(word,
+              "search id=#{id}",
+              { method: :post, path: "/api/v2/search/#{pth}",
+                body: { limit: 10,
+                        offset: 0,
+                        query: [{ key: 'id',
+                                  value: id,
+                                  matchingMethod: 'EXACT',
+                                  negated: false }],
+                        sort: { field: 'id', ascending: true } },
+                headers: JSON_POST_HEADERS },
+              klass)
+
+  cmd_to_call(word,
+              "search id=#{id} thing!^word",
+              { method: :post, path: "/api/v2/search/#{pth}",
+                body: { limit: 10,
+                        offset: 0,
+                        query: [{ key: 'id',
+                                  value: id,
+                                  matchingMethod: 'EXACT',
+                                  negated: false },
+                                { key: 'thing',
+                                  value: 'word',
+                                  matchingMethod: 'STARTSWITH',
+                                  negated: true }],
+                        sort: { field: 'id', ascending: true } },
+                headers: JSON_POST_HEADERS },
+              klass)
+
+  cmd_to_call(word,
+              'search id!~avoid',
+              { method: :post, path: "/api/v2/search/#{pth}",
+                body: { limit: 10,
+                        offset: 0,
+                        query: [{ key: 'id',
+                                  value: 'avoid',
+                                  matchingMethod: 'CONTAINS',
+                                  negated: true }],
+                        sort: { field: 'id', ascending: true } },
+                headers: JSON_POST_HEADERS },
+              klass)
 end
 
 # Generic list tests, needed by most commands

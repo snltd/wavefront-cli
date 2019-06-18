@@ -48,7 +48,7 @@ class WavefrontCommmandBaseTest < MiniTest::Test
 
     cmds.each do |o|
       assert_instance_of(String, o)
-      assert_match(/^tags* .* <id>/, o)
+      assert_match(/^tags* /, o)
     end
   end
 

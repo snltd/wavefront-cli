@@ -6,6 +6,18 @@
   lets you overwrite an existing object with a JSON or YAML
   description.
 
+## 3.3.0 (10/06/2019)
+* Support negation searches. Search for alerts with targets *not*
+  containing `str` with `wf alert search target!~str`.
+* Add `tag pathsearch` command. Searches for tags whose hierarchical
+  names begin with the given element(s).
+* Better printing of structured search results. For example `wf
+  alert search tags=X`.
+* Support freetext searches. Use `wf <object> search
+  freetext=string` and you will be given a list of the objects which
+  match the search along with the matching keys. (Not values!)
+  Adding `-l` presents all matching objects in full.
+
 ## 3.2.3 (24/05/2019)
 * Don't print erroneous pagination message when using `list --all`.
 * Require 3.3.2 of [the SDK](https://github.com/snltd/wavefront-sdk).

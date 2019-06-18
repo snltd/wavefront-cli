@@ -30,15 +30,6 @@ describe "#{word} command" do
                 method: :delete, path: "/api/v2/#{word}/#{id}")
   end
 
-  cmd_to_call(word, "search id=#{id}",
-              method: :post, path: "/api/v2/search/#{word}",
-              body:   { limit: 10,
-                        offset: 0,
-                        query: [{ key: 'id',
-                                  value: id,
-                                  matchingMethod: 'EXACT' }],
-                        sort: { field: 'id', ascending: true } },
-              headers: JSON_POST_HEADERS)
   cmd_to_call(word,
               'favs',
               method: :post,
@@ -47,7 +38,8 @@ describe "#{word} command" do
                         offset: 0,
                         query:  [{ key:             'favorite',
                                    value:           'true',
-                                   matchingMethod: 'EXACT' }],
+                                   matchingMethod: 'EXACT',
+                                   negated:         false }],
                         sort:   { field:     'id',
                                   ascending: true } }.to_json)
 
@@ -74,6 +66,7 @@ describe "#{word} command" do
   invalid_ids(word, ["describe #{bad_id}", "delete #{bad_id}",
                      "undelete #{bad_id}"])
   tag_tests(word, id, bad_id)
+  search_tests(word, id)
   test_list_output(word)
   acl_tests(word, id, bad_id)
 end

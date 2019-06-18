@@ -23,5 +23,9 @@ module WavefrontCli
     # Default configuration file
     #
     DEFAULT_CONFIG = (Pathname.new(ENV['HOME']) + '.wavefront').freeze
+
+    # Split regex for searches
+    #
+    SEARCH_SPLIT = /\^|!\^|=|!=|~|!~/
   end
 end
