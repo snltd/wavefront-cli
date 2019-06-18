@@ -17,7 +17,7 @@ class WavefrontCommandNotificant < WavefrontCommandBase
      "import #{CMN} [-u] <file>",
      "delete #{CMN} <id>",
      "test #{CMN} <id>",
-     "modify #{CMN} <key=value> <id>",
+     "set #{CMN} <key=value> <id>",
      "search #{CMN} [-al] [-o offset] [-L limit] <condition>..."]
   end
 

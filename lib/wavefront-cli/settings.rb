@@ -17,7 +17,7 @@ module WavefrontCli
       wf.default_user_groups
     end
 
-    def do_modify
+    def do_set
       body = options[:'<key=value>'].each_with_object({}) do |o, a|
         k, v = o.split('=', 2)
         next unless v && !v.empty?
