@@ -40,10 +40,10 @@ Commands:
   integration        view and manage Wavefront integrations
   link               view and manage external links
   message            read and mark user messages
-  metric             view metrics
+  metric             get metric details
   notificant         view and manage Wavefront alert targets
-  proxy              view and manage Wavefront proxies
-  query              query the Wavefront API
+  proxy              view and manage proxies
+  query              run Wavefront queries
   savedsearch        view and manage saved searches
   settings           view and manage system preferences
   source             view and manage source tags and descriptions
@@ -174,7 +174,8 @@ sysdef.limited@gmail.com
 ```
 
 You could, of course, modify certain aspects of the exported data before
-re-importing.
+re-importing. You can import an object over the top of an existing
+one with `import --update`.
 
 ### Time Windows
 
