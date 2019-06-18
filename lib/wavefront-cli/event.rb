@@ -27,7 +27,7 @@ module WavefrontCli
               options[:cursor] || nil)
     end
 
-    def do_modify
+    def do_set
       k, v = options[:'<key=value>'].split('=')
       wf.update(options[:'<id>'], k => v)
     end

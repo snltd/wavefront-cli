@@ -17,7 +17,7 @@ describe "#{word} command" do
   invalid_ids(word, ["describe #{bad_id}",
                      "delete #{bad_id}",
                      "test #{bad_id}",
-                     "modify #{bad_id} key=value"])
+                     "set #{bad_id} key=value"])
   list_tests(word)
   cmd_to_call(word, "describe #{id}", path: "/api/v2/#{word}/#{id}")
   list_tests(word)

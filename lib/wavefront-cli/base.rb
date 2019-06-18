@@ -427,7 +427,7 @@ module WavefrontCli
       wf.undelete(options[:'<id>'])
     end
 
-    def do_modify
+    def do_set
       cannot_noop!
       k, v = options[:'<key=value>'].split('=', 2)
       wf.update(options[:'<id>'], k => v)

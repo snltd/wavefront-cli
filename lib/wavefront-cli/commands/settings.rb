@@ -10,7 +10,7 @@ class WavefrontCommandSettings < WavefrontCommandBase
   def _commands
     ["list permissions #{CMN} [-l] [-O fields]",
      "show preferences #{CMN} [-l] [-O fields]",
-     "modify #{CMN} <key=value>...",
+     "set #{CMN} <key=value>...",
      "default usergroups #{CMN} [-l] [-O fields]"]
   end
 

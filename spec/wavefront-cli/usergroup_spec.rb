@@ -20,7 +20,7 @@ describe "#{word} command" do
                        "create #{name}",
                        "delete #{gid1}",
                        'import file',
-                       "modify key=val #{gid1}",
+                       "set key=val #{gid1}",
                        "users #{gid1}",
                        "permissions #{gid1}",
                        "add user #{gid1} #{uid1} #{uid2}",
@@ -88,7 +88,7 @@ describe "#{word} command" do
 
   invalid_ids(word, ["describe #{bad_id}",
                      "delete #{bad_id}",
-                     "modify key=val #{bad_id}",
+                     "set key=val #{bad_id}",
                      "users #{bad_id}",
                      "permissions #{bad_id}",
                      "add user #{bad_id} #{uid1} #{uid2}",
