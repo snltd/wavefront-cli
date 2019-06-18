@@ -1,5 +1,7 @@
 # Changelog
 
+* Fix `tag searchpath` bug.
+
 ## 3.3.0 (10/06/2019)
 * Support negation searches. Search for alerts with targets *not* containing
   `str` with `wf alert search target!~str`.
