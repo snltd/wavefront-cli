@@ -20,7 +20,7 @@ describe "#{word} command" do
                        "delete #{id}",
                        "create #{id}",
                        "invite #{id}",
-                       "update key=val #{id}",
+                       "modify key=val #{id}",
                        'import file',
                        "groups #{id}",
                        "join #{id} #{gid1}",

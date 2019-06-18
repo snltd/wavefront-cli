@@ -1,5 +1,8 @@
 # Changelog
 
+## 4.0.0 (18/06/2019)
+* `update` subcommand is now `modify`. (Breaking change.)
+
 ## 3.2.3 (24/05/2019)
 * Don't print erroneous pagination message when using `list --all`.
 * Require 3.3.2 of [the SDK](https://github.com/snltd/wavefront-sdk).

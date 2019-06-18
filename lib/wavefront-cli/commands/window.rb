@@ -24,7 +24,7 @@ class WavefrontCommandWindow < WavefrontCommandBase
      "extend #{CMN} (by|to) <time> <id>",
      "delete #{CMN} <id>",
      "import #{CMN} [-u] <file>",
-     "update #{CMN} <key=value> <id>",
+     "modify #{CMN} <key=value> <id>",
      "search #{CMN} [-al] [-o offset] [-L limit] <condition>...",
      "ongoing #{CMN}",
      "pending #{CMN} [<hours>]"]

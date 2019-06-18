@@ -22,7 +22,7 @@ class WavefrontCommandLink < WavefrontCommandBase
      '<description> <template>',
      "delete #{CMN} <id>",
      "import #{CMN} [-u] <file>",
-     "update #{CMN} <key=value> <id>",
+     "modify #{CMN} <key=value> <id>",
      "search #{CMN} [-al] [-o offset] [-L limit] <condition>..."]
   end
 

@@ -7,7 +7,7 @@ class WavefrontCommandDashboard < WavefrontCommandBase
     ["list #{CMN} [-alN] [-O fields] [-o offset] [-L limit]",
      "describe #{CMN} [-v version] <id>",
      "import #{CMN} [-u] <file>",
-     "update #{CMN} <key=value> <id>",
+     "modify #{CMN} <key=value> <id>",
      "delete #{CMN} <id>",
      "undelete #{CMN} <id>",
      "history #{CMN} [-o offset] [-L limit] <id>",

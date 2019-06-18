@@ -16,7 +16,7 @@ class WavefrontCommandAlert < WavefrontCommandBase
      "latest #{CMN} <id>",
      "import #{CMN} [-u] <file>",
      "snooze #{CMN} [-T time] <id>",
-     "update #{CMN} <key=value> <id>",
+     "modify #{CMN} <key=value> <id>",
      "unsnooze #{CMN} <id>",
      "search #{CMN} [-al] [-o offset] [-L limit] <condition>...",
      "tags #{CMN} <id>",
