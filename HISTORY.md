@@ -1,11 +1,15 @@
 # Changelog
 
-## 4.0.0 (18/06/2019)
+## 4.0.1 (18/06/2019)
 * `update` subcommand has been changed to `set`. (Breaking change.)
 * `import` subcommand now accepts `--update` (`-u`) option, which
   lets you overwrite an existing object with a JSON or YAML
   description.
 * Fix `tag searchpath` bug.
+
+## 4.0.0 (18/06/2019)
+
+* Failed push to Gemfury. Does not exist.
 
 ## 3.3.0 (10/06/2019)
 * Support negation searches. Search for alerts with targets *not*
