@@ -3,15 +3,11 @@ require_relative 'base'
 # Define the dashboard command.
 #
 class WavefrontCommandDashboard < WavefrontCommandBase
-  def description
-    'view and manage dashboards'
-  end
-
   def _commands
     ["list #{CMN} [-alN] [-O fields] [-o offset] [-L limit]",
      "describe #{CMN} [-v version] <id>",
-     "import #{CMN} <file>",
-     "update #{CMN} <key=value> <id>",
+     "import #{CMN} [-u] <file>",
+     "modify #{CMN} <key=value> <id>",
      "delete #{CMN} <id>",
      "undelete #{CMN} <id>",
      "history #{CMN} [-o offset] [-L limit] <id>",
@@ -26,14 +22,15 @@ class WavefrontCommandDashboard < WavefrontCommandBase
 
   def _options
     [common_options,
-     '-l, --long               list dashboards in detail',
-     '-a, --all                list all dashboards',
-     '-o, --offset=n           start list from nth dashboard or revision',
+     "-l, --long               list #{things} in detail",
+     "-a, --all                list all #{things}",
+     "-o, --offset=n           start list from nth #{thing} or revision",
+     "-L, --limit=COUNT        number of #{things} or revisions to list",
      '-O, --fields=F1,F2,...   only show given fields',
-     '-L, --limit=COUNT        number of dashboards or revisions to list',
-     '-v, --version=INTEGER    version of dashboard',
-     '-b, --brief              do not show dashboard names',
-     '-N, --no-system          do not show system-owned dashboards',
-     '-f, --format=STRING      output format']
+     "-u, --update             update an existing #{thing}",
+     '-T, --time=SECONDS       how long to snooze (default 3600)',
+     "-v, --version=INTEGER    version of #{thing}",
+     "-b, --brief              do not show #{thing} names",
+     "-N, --no-system          do not show system-owned #{things}"]
   end
 end

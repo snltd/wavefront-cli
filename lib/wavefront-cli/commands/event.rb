@@ -4,7 +4,7 @@ require_relative 'base'
 #
 class WavefrontCommandEvent < WavefrontCommandBase
   def description
-    'open, close, view, and manage events'
+    "open, close, view, and manage #{things}"
   end
 
   def _commands
@@ -15,7 +15,7 @@ class WavefrontCommandEvent < WavefrontCommandBase
      '[-S severity] [-T type] [-H host...] [-g tag...] [-N] <event>',
      "close #{CMN} [<id>]",
      "delete #{CMN} <id>",
-     "update #{CMN} <key=value> <id>",
+     "modify #{CMN} <key=value> <id>",
      "search #{CMN} [-o offset] [-L limit] [-l] <condition>...",
      "wrap #{CMN} [-C command] [-d description] [-S severity] [-T type] " \
      '[-H host...] [-g tag...] <event>',
@@ -25,26 +25,25 @@ class WavefrontCommandEvent < WavefrontCommandBase
 
   def _options
     [common_options,
-     '-l, --long                list events in detail',
-     '-o, --cursor=EVENT        start listing from given event',
+     "-l, --long                list #{things} in detail",
+     "-o, --cursor=EVENT        start listing from given #{thing}",
      '-O, --fields=F1,F2,...    only show given fields',
-     '-L, --limit=COUNT         number of events to list',
-     '-s, --start=TIME          time at which event begins',
-     '-e, --end=TIME            time at which event ends',
-     '-S, --severity=SEVERITY   severity of event',
-     '-i, --instant             create an instantaneous event',
-     '-T, --type=TYPE           type of event',
-     '-d, --desc=STRING         description of event',
-     '-H, --host=STRING         source to which event applies',
+     "-L, --limit=COUNT         number of #{things} to list",
+     "-s, --start=TIME          time at which #{thing} begins",
+     "-e, --end=TIME            time at which #{thing} ends",
+     "-S, --severity=SEVERITY   severity of #{thing}",
+     "-i, --instant             create an instantaneous #{thing}",
+     "-T, --type=TYPE           type of #{thing}",
+     "-d, --desc=STRING         description of #{thing}",
+     "-H, --host=STRING         source to which #{thing} applies",
      '-N, --nostate             do not create a local file recording ' \
-     'the event',
-     '-g, --evtag=TAG           event tag',
-     '-C, --command=COMMAND     command to run',
-     '-f, --format=STRING       output format']
+     "the #{thing}",
+     "-g, --evtag=TAG           #{thing} tag",
+     '-C, --command=COMMAND     command to run']
   end
 
   def postscript
-    "View events in detail using the 'query' command with the " \
+    "View #{things} in detail using the 'query' command with the " \
       "'events()' function."
   end
 end

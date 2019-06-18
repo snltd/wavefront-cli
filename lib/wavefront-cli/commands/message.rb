@@ -4,7 +4,7 @@ require_relative 'base'
 #
 class WavefrontCommandMessage < WavefrontCommandBase
   def description
-    'read and mark user messages'
+    "read and mark user #{things}"
   end
 
   def _commands
@@ -15,11 +15,10 @@ class WavefrontCommandMessage < WavefrontCommandBase
 
   def _options
     [common_options,
-     '-l, --long              list messages in detail',
-     '-o, --offset=n          start from nth message',
+     "-l, --long              list #{things} in detail",
+     "-o, --offset=n          start from nth #{thing}",
      '-O, --fields=F1,F2,...  only show given fields',
-     '-L, --limit=COUNT       number of messages to list',
-     '-a, --all               list all messages, not just unread',
-     '-f, --format=STRING     output format']
+     "-L, --limit=COUNT       number of #{things} to list",
+     "-a, --all               list all #{things}, not just unread"]
   end
 end

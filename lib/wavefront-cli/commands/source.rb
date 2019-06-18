@@ -19,11 +19,10 @@ class WavefrontCommandSource < WavefrontCommandBase
 
   def _options
     [common_options,
-     '-l, --long               list sources in detail',
-     '-o, --cursor=SOURCE      start list given source',
+     "-l, --long               list #{things} in detail",
+     "-o, --cursor=SOURCE      start list given #{thing}",
      '-O, --fields=F1,F2,...   only show given fields',
-     '-L, --limit=COUNT        number of sources to list',
-     '-a, --all                list all sources, including cluster',
-     '-f, --format=STRING      output format']
+     "-L, --limit=COUNT        number of #{things} to list",
+     "-a, --all                list all #{things}, including cluster"]
   end
 end

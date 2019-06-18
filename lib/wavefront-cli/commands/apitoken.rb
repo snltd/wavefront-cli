@@ -3,8 +3,8 @@ require_relative 'base'
 # Define the apitoken command.
 #
 class WavefrontCommandApitoken < WavefrontCommandBase
-  def description
-    'view and manage API tokens'
+  def thing
+    'API token'
   end
 
   def sdk_file
@@ -25,7 +25,6 @@ class WavefrontCommandApitoken < WavefrontCommandBase
 
   def _options
     [common_options,
-     '-O, --fields=F1,F2,...  only show given fields',
-     '-f, --format=STRING   output format']
+     '-O, --fields=F1,F2,...  only show given fields']
   end
 end

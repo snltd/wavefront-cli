@@ -3,8 +3,8 @@ require_relative 'base'
 # Define the proxy command.
 #
 class WavefrontCommandProxy < WavefrontCommandBase
-  def description
-    'view and manage Wavefront proxies'
+  def things
+    'proxies'
   end
 
   def _commands
@@ -19,11 +19,10 @@ class WavefrontCommandProxy < WavefrontCommandBase
 
   def _options
     [common_options,
-     '-l, --long                list proxies in detail',
-     '-a, --all                 list all proxies',
-     '-o, --offset=n            start from nth proxy',
+     "-l, --long                list #{things} in detail",
+     "-a, --all                 list all #{things}",
+     "-o, --offset=n            start from nth #{thing}",
      '-O, --fields=F1,F2,...    only show given fields',
-     '-f, --format=STRING       output format',
-     '-L, --limit=COUNT         number of proxies to list']
+     "-L, --limit=COUNT         number of #{things} to list"]
   end
 end

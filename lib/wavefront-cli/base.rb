@@ -393,7 +393,15 @@ module WavefrontCli
         raise WavefrontCli::Exception::UnparseableInput
       end
 
-      wf.create(prepped)
+      if options[:update]
+        import_update(raw)
+      else
+        wf.create(prepped)
+      end
+    end
+
+    def import_update(raw)
+      wf.update(raw['id'], raw, false)
     end
 
     def do_delete
@@ -419,7 +427,7 @@ module WavefrontCli
       wf.undelete(options[:'<id>'])
     end
 
-    def do_update
+    def do_modify
       cannot_noop!
       k, v = options[:'<key=value>'].split('=', 2)
       wf.update(options[:'<id>'], k => v)

@@ -13,7 +13,7 @@ class WavefrontCommmandBaseTest < MiniTest::Test
 
   def setup
     @wf = WavefrontCommandBase.new
-    @col_width = 18 # has to be manually set for each class
+    @col_width = 19 # has to be manually set for each class
   end
 
   def word

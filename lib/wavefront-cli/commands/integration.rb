@@ -1,10 +1,10 @@
 require_relative 'base'
 
-# Define the cloud integration command.
+# Define the integration command.
 #
 class WavefrontCommandIntegration < WavefrontCommandBase
   def description
-    'view and manage Wavefront integrations'
+    "view and manage Wavefront #{things}"
   end
 
   def _commands
@@ -24,11 +24,10 @@ class WavefrontCommandIntegration < WavefrontCommandBase
 
   def _options
     [common_options,
-     '-l, --long               list cloud integrations in detail',
-     '-a, --all                list all cloud integrations',
-     '-o, --offset=n           start from nth cloud integration',
+     "-l, --long               list #{things} in detail",
+     "-a, --all                list all #{things}",
+     "-o, --offset=n           start from nth #{thing}",
      '-O, --fields=F1,F2,...   only show given fields',
-     '-L, --limit=COUNT        number of cloud integrations to list',
-     '-f, --format=STRING      output format']
+     "-L, --limit=COUNT        number of #{things} to list"]
   end
 end
