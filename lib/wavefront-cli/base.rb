@@ -394,10 +394,14 @@ module WavefrontCli
       end
 
       if options[:update]
-        puts 'import update'
+        import_update(raw)
       else
         wf.create(prepped)
       end
+    end
+
+    def import_update(raw)
+      wf.update(raw['id'], raw, false)
     end
 
     def do_delete

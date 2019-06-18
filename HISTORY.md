@@ -1,7 +1,10 @@
 # Changelog
 
 ## 4.0.0 (18/06/2019)
-* `update` subcommand is now `modify`. (Breaking change.)
+* `update` subcommand hash been changed to `modify`. (Breaking change.)
+* `import` subcommand now accepts `--update` (`-u`) option, which
+  lets you overwrite an existing object with a JSON or YAML
+  description.
 
 ## 3.2.3 (24/05/2019)
 * Don't print erroneous pagination message when using `list --all`.
