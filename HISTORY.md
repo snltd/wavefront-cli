@@ -5,6 +5,7 @@
 * `import` subcommand now accepts `--update` (`-u`) option, which
   lets you overwrite an existing object with a JSON or YAML
   description.
+* Fix `tag searchpath` bug.
 
 ## 3.3.0 (10/06/2019)
 * Support negation searches. Search for alerts with targets *not*

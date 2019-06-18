@@ -28,7 +28,7 @@ module WavefrontCli
         require 'wavefront-sdk/search'
         wfs = Wavefront::Search.new(mk_creds, mk_opts)
 
-        query = { key: 'tags',
+        query = { key: 'tagpath',
                   value: options[:'<word>'],
                   matchingMethod: 'TAGPATH',
                   negated: false }
