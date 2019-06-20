@@ -33,7 +33,6 @@ class WavefrontCliController
     @usage = docopt_hash
     cmd, opts = parse_args
     @opts = parse_opts(opts)
-    pp @opts if @opts[:debug]
     cli_class_obj = load_cli_class(cmd, @opts)
     run_command(cli_class_obj)
   end

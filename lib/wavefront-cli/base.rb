@@ -333,10 +333,12 @@ module WavefrontCli
 
       raise WavefrontCli::Exception::FileNotFound unless file.exist?
 
-      if file.extname == '.json'
-        JSON.parse(IO.read(file))
-      elsif file.extname == '.yaml' || file.extname == '.yml'
-        YAML.safe_load(IO.read(file))
+      extname = file.extname.downcase
+
+      if extname == '.json'
+        JSON.parse(IO.read(file), symbolize_names: true)
+      elsif extname == '.yaml' || extname == '.yml'
+        YAML.safe_load(IO.read(file), symbolize_names: true)
       else
         raise WavefrontCli::Exception::UnsupportedFileFormat
       end
@@ -385,6 +387,7 @@ module WavefrontCli
 
     def do_import
       raw = load_file(options[:'<file>'])
+      raw = preprocess_rawfile(raw) if respond_to?(:preprocess_rawfile)
 
       begin
         prepped = import_to_create(raw)
@@ -401,7 +404,7 @@ module WavefrontCli
     end
 
     def import_update(raw)
-      wf.update(raw['id'], raw, false)
+      wf.update(raw[:id], raw, false)
     end
 
     def do_delete
