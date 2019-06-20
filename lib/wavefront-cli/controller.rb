@@ -10,7 +10,6 @@ if defined?(DEVELOPMENT)
 end
 
 require 'pathname'
-require 'pp'
 require 'docopt'
 require_relative 'version'
 require_relative 'constants'
@@ -144,11 +143,19 @@ class WavefrontCliController
     abort 'Search on non-existent key. Please use a top-level field.'
   rescue StandardError => e
     warn "general error: #{e}"
-    warn "Backtrace:\n\t#{e.backtrace.join("\n\t")}"
+    backtrace_message(e)
     abort
   end
   # rubocop:enable Metrics/MethodLength
   # rubocop:enable Metrics/AbcSize
+
+  def backtrace_message(e)
+    if opts[:debug]
+      warn "Backtrace:\n\t#{e.backtrace.join("\n\t")}"
+    else
+      puts "Re-run command with '-D' for backtrace."
+    end
+  end
 
   # @param error [WavefrontCli::Exception::CredentialError]
   #
