@@ -1,5 +1,8 @@
 # Changelog
 
+## 4.0.2 (20/06/2019)
+* Allow importing of dashboards which have a URL but not an ID.
+
 ## 4.0.1 (18/06/2019)
 * `update` subcommand has been changed to `set`. (Breaking change.)
 * `import` subcommand now accepts `--update` (`-u`) option, which

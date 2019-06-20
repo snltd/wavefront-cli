@@ -53,5 +53,15 @@ module WavefrontCli
       wf.unfavorite(options[:'<id>'])
       do_favs
     end
+
+    # Dashboards are, AFAIK, unique in that they do NOT require an
+    # ID. They can have a URL instead: the two are equivalent. The
+    # easiest workaround for this is to copy the URL to the ID if we
+    # only have the former.
+    #
+    def preprocess_rawfile(raw)
+      raw[:id] = raw[:url] if raw.key?(:url) && !raw.key?(:id)
+      raw
+    end
   end
 end
