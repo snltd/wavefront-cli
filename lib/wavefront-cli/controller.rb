@@ -148,9 +148,9 @@ class WavefrontCliController
   # rubocop:enable Metrics/MethodLength
   # rubocop:enable Metrics/AbcSize
 
-  def backtrace_message(e)
+  def backtrace_message(err)
     if opts[:debug]
-      warn "Backtrace:\n\t#{e.backtrace.join("\n\t")}"
+      warn "Backtrace:\n\t#{err.backtrace.join("\n\t")}"
     else
       puts "Re-run command with '-D' for backtrace."
     end

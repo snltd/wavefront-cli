@@ -325,7 +325,6 @@ module WavefrontCli
     #   filetype is unknown.
     # @raise pass through any error loading or parsing the file
     #
-    # rubocop:disable Metrics/AbcSize
     def load_file(path)
       return load_from_stdin if path == '-'
 
@@ -337,13 +336,12 @@ module WavefrontCli
 
       if extname == '.json'
         JSON.parse(IO.read(file), symbolize_names: true)
-      elsif extname == '.yaml' || extname == '.yml'
+      elsif %w[.yaml .yml].include?(extname)
         YAML.safe_load(IO.read(file), symbolize_names: true)
       else
         raise WavefrontCli::Exception::UnsupportedFileFormat
       end
     end
-    # rubocop:enable Metrics/AbcSize
 
     # Read STDIN and return a Ruby object, assuming that STDIN is
     # valid JSON or YAML. This is a dumb method, it does no
@@ -385,6 +383,7 @@ module WavefrontCli
       wf.describe(options[:'<id>'])
     end
 
+    # rubocop:disable Metrics/AbcSize
     def do_import
       raw = load_file(options[:'<file>'])
       raw = preprocess_rawfile(raw) if respond_to?(:preprocess_rawfile)
@@ -402,6 +401,7 @@ module WavefrontCli
         wf.create(prepped)
       end
     end
+    # rubocop:enable Metrics/AbcSize
 
     def import_update(raw)
       wf.update(raw[:id], raw, false)
