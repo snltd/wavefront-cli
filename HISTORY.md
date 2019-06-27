@@ -1,5 +1,13 @@
 # Changelog
 
+## 4.1.0 (27/06/2019)
+* Add `dump` subcommand for all importable object types. Produces
+  JSON or YAML output.
+* Allow batch importing of objects. Works with files produced by
+  `dump` subcommand, or by manually creating a JSON or YAML array of
+  objects. Batch imports are automatically detected by the `import`
+  subcommand.
+
 ## 4.0.2 (20/06/2019)
 * Allow importing of dashboards which have a URL but not an ID.
 

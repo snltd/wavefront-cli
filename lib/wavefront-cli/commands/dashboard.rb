@@ -6,6 +6,7 @@ class WavefrontCommandDashboard < WavefrontCommandBase
   def _commands
     ["list #{CMN} [-alN] [-O fields] [-o offset] [-L limit]",
      "describe #{CMN} [-v version] <id>",
+     "dump #{CMN}",
      "import #{CMN} [-u] <file>",
      "set #{CMN} <key=value> <id>",
      "delete #{CMN} <id>",

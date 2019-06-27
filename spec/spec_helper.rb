@@ -430,7 +430,7 @@ class CliMethodTest < MiniTest::Test
   end
 
   def import_tester(word, have_fields, do_not_have_fields = [])
-    input = JSON.parse(IO.read(RES_DIR + 'imports' + "#{word}.json"))
+    input = wf.load_file(RES_DIR + 'imports' + "#{word}.json")
     x = wf.import_to_create(input)
     assert_instance_of(Hash, x)
     have_fields.each { |f| assert_includes(x.keys, f) }

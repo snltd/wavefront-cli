@@ -18,6 +18,7 @@ class WavefrontCommandUser < WavefrontCommandBase
      "invite #{CMN} [-m permission...] [-g group...] <id>",
      "set #{CMN} <key=value> <id>",
      "delete #{CMN} <user>...",
+     "dump #{CMN}",
      "import #{CMN} [-u] <file>",
      "groups #{CMN} <id>",
      "join #{CMN} <id> <group>...",

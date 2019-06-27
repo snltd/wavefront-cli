@@ -22,6 +22,7 @@ class WavefrontCommandCloudintegration < WavefrontCommandBase
      "undelete #{CMN} <id>",
      "enable #{CMN} <id>",
      "disable #{CMN} <id>",
+     "dump #{CMN}",
      "import #{CMN} [-u] <file>",
      "search #{CMN} [-al] [-o offset] [-L limit] <condition>..."]
   end

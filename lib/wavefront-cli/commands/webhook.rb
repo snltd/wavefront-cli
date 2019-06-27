@@ -7,6 +7,7 @@ class WavefrontCommandWebhook < WavefrontCommandBase
     ["list #{CMN} [-al] [-O fields] [-o offset] [-L limit]",
      "describe #{CMN} <id>",
      "delete #{CMN} <id>",
+     "dump #{CMN}",
      "import #{CMN} [-u] <file>",
      "set #{CMN} <key=value> <id>",
      "search #{CMN} [-al] [-o offset] [-L limit] <condition>..."]

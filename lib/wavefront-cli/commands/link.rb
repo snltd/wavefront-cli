@@ -21,6 +21,7 @@ class WavefrontCommandLink < WavefrontCommandBase
      "create #{CMN} [-m regex] [-s regex] [-p str=regex...] <name> " \
      '<description> <template>',
      "delete #{CMN} <id>",
+     "dump #{CMN}",
      "import #{CMN} [-u] <file>",
      "set #{CMN} <key=value> <id>",
      "search #{CMN} [-al] [-o offset] [-L limit] <condition>..."]
