@@ -165,25 +165,15 @@ module WavefrontCli
     # @raise WavefrontCli::Exception::UnhandledCommand if the
     #   command does not match a `do_` method.
     #
-    # rubocop:disable Metrics/AbcSize
     def dispatch
+      # Look through each deconstructed method name and see if the
+      # user supplied an option for each component.  Call the first
+      # one that matches. The order will ensure we match
+      # "do_delete_tags" before we match "do_delete".
       #
-      # Take a list of do_ methods, remove the 'do_' from their name,
-      # and break them into arrays of '_' separated words.
-      #
-      m_list = methods.select { |m| m.to_s.start_with?('do_') }.map do |m|
-        m.to_s.split('_')[1..-1]
-      end
-
-      # Sort that array of arrays by length, longest first.  Then look
-      # through each deconstructed method name and see if the user
-      # supplied an option for each component. Call the first one that
-      # matches. The order will ensure we match "do_delete_tags" before
-      # we match "do_delete".
-      #
-      m_list.sort_by(&:length).reverse_each do |m|
-        if m.reject { |w| options[w.to_sym] }.empty?
-          method = (%w[do] + m).join('_')
+      method_word_list.reverse_each do |w_list|
+        if w_list.reject { |w| options[w.to_sym] }.empty?
+          method = name_of_do_method(w_list)
           return display(public_send(method), method)
         end
       end
@@ -194,7 +184,19 @@ module WavefrontCli
 
       raise WavefrontCli::Exception::UnhandledCommand
     end
-    # rubocop:enable Metrics/AbcSize
+
+    def name_of_do_method(word_list)
+      (%w[do] + word_list).join('_')
+    end
+
+    # Take a list of do_ methods, remove the 'do_' from their name,
+    # and break them into arrays of '_' separated words. The array
+    # is sorted by length, longest first.
+    #
+    def method_word_list
+      do_methods = methods.select { |m| m.to_s.start_with?('do_') }
+      do_methods.map { |m| m.to_s.split('_')[1..-1] }.sort_by(&:length)
+    end
 
     # Display a Ruby object as JSON, YAML, or human-readable.  We
     # provide a default method to format human-readable output, but
