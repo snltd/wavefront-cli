@@ -24,6 +24,7 @@ class WavefrontCommandUsergroup < WavefrontCommandBase
      "describe #{CMN} <id>",
      "create #{CMN} [-p permission...] <name>",
      "delete #{CMN} <id>",
+     "dump #{CMN}",
      "import #{CMN} [-u] <file>",
      "set #{CMN} <key=value> <id>",
      "users #{CMN} <id>",

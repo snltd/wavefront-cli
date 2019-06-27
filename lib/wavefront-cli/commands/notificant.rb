@@ -14,6 +14,7 @@ class WavefrontCommandNotificant < WavefrontCommandBase
   def _commands
     ["list #{CMN} [-al] [-O fields] [-o offset] [-L limit]",
      "describe #{CMN} <id>",
+     "dump #{CMN}",
      "import #{CMN} [-u] <file>",
      "delete #{CMN} <id>",
      "test #{CMN} <id>",

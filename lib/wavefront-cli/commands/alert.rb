@@ -14,6 +14,7 @@ class WavefrontCommandAlert < WavefrontCommandBase
      "history #{CMN} [-o offset] [-L limit] <id>",
      "clone #{CMN} [-v version] <id>",
      "latest #{CMN} <id>",
+     "dump #{CMN}",
      "import #{CMN} [-u] <file>",
      "snooze #{CMN} [-T time] <id>",
      "set #{CMN} <key=value> <id>",

@@ -23,6 +23,7 @@ class WavefrontCommandWindow < WavefrontCommandBase
      "close #{CMN} <id>",
      "extend #{CMN} (by|to) <time> <id>",
      "delete #{CMN} <id>",
+     "dump #{CMN}",
      "import #{CMN} [-u] <file>",
      "set #{CMN} <key=value> <id>",
      "search #{CMN} [-al] [-o offset] [-L limit] <condition>...",

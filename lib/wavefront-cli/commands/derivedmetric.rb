@@ -20,6 +20,7 @@ class WavefrontCommandDerivedmetric < WavefrontCommandBase
      "describe #{CMN} [-v version] <id>",
      "create #{CMN} [-d description] [-T tag...] [-b] [-i interval] " \
      '[-r range] <name> <query>',
+     "dump #{CMN}",
      "import #{CMN} [-u] <file>",
      "set #{CMN} <key=value> <id>",
      "delete #{CMN} <id>",
