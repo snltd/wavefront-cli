@@ -18,7 +18,7 @@ SDK](https://github.com/snltd/wavefront-sdk) and requires Ruby >=
 2.3. It has no "native extension" dependencies.
 
 For a far more comprehensive overview/tutorial, please read [this
-article](http://sysdef.xyz/post/2017-07-26-wavefront-cli).
+article](https://sysdef.xyz/article/wavefront-cli).
 
 ```
 $ wf --help
