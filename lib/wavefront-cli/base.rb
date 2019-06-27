@@ -427,13 +427,7 @@ module WavefrontCli
 
     def import_object(raw)
       raw = preprocess_rawfile(raw) if respond_to?(:preprocess_rawfile)
-
-      begin
-        prepped = import_to_create(raw)
-      rescue StandardError => e
-        puts e if options[:debug]
-        raise WavefrontCli::Exception::UnparseableInput
-      end
+      prepped = import_to_create(raw)
 
       if options[:update]
         import_update(raw)
@@ -549,6 +543,9 @@ module WavefrontCli
       raw.each_with_object({}) do |(k, v), a|
         a[k.to_sym] = v unless k == :id
       end
+    rescue StandardError => e
+      puts e if options[:debug]
+      raise WavefrontCli::Exception::UnparseableInput
     end
 
     # Return a detailed description of one item, if an ID has been
