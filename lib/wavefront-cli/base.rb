@@ -143,9 +143,10 @@ module WavefrontCli
     end
 
     # To allow a user to default to different output formats for
-    # different object, we are able to define a format for each class.
-    # instance, `alertformat` or `agentformat`. This method returns
-    # such a string appropriate for the inheriting class.
+    # different object types, we are able to define a format for
+    # each class.  instance, `alertformat` or `proxyformat`. This
+    # method returns such a symbol appropriate for the inheriting
+    # class.
     #
     # @return [Symbol] name of the option or config-file key which
     #   sets the default output format for this class
@@ -208,7 +209,6 @@ module WavefrontCli
     # @param method [String] the name of the method which produced
     #   this output. Used to find a suitable humanize method.
     #
-    # rubocop:disable Metrics/AbcSize
     def display(data, method)
       if no_api_response.include?(method)
         return display_no_api_response(data, method)
@@ -216,18 +216,22 @@ module WavefrontCli
 
       exit if options[:noop]
 
+      check_response_blocks(data)
+      status_error_handler(data, method)
+      handle_response(data.response, format_var, method)
+    end
+
+    def status_error_handler(data, method)
+      return if check_status(data.status)
+      handle_error(method, data.status.code) if format_var == :human
+      display_api_error(data.status)
+    end
+
+    def check_response_blocks(data)
       %i[status response].each do |b|
         abort "no #{b} block in API response" unless data.respond_to?(b)
       end
-
-      unless check_status(data.status)
-        handle_error(method, data.status.code) if format_var == :human
-        display_api_error(data.status)
-      end
-
-      handle_response(data.response, format_var, method)
     end
-    # rubocop:enable Metrics/AbcSize
 
     # Classes can provide methods which give the user information on
     # a given error code. They are named #handle_errcode_xxx, and
@@ -384,8 +388,42 @@ module WavefrontCli
     end
 
     # rubocop:disable Metrics/AbcSize
+    def do_dump
+      items = wf.list(ALL_PAGE_SIZE, :all).response.items
+
+      if options[:format] == 'yaml'
+        ok_exit items.to_yaml
+      elsif options[:format] == 'json'
+        ok_exit items.to_json
+      else
+        abort format("Dump format must be 'json' or 'yaml'. (Tried '%s')",
+                     options[:format])
+      end
+    end
+    # rubocop:enable Metrics/AbcSize
+
     def do_import
       raw = load_file(options[:'<file>'])
+      errs = 0
+
+      [raw].flatten.each do |obj|
+        resp = import_object(obj)
+        next if options[:noop]
+        errs += 1 unless resp.ok?
+        puts import_message(obj, resp)
+      end
+
+      exit errs
+    end
+
+    def import_message(obj, resp)
+      format('%-15s %-10s %s',
+             obj[:id] || obj[:url],
+             resp.ok? ? 'IMPORTED' : 'FAILED',
+             resp.status.message)
+    end
+
+    def import_object(raw)
       raw = preprocess_rawfile(raw) if respond_to?(:preprocess_rawfile)
 
       begin
@@ -401,7 +439,6 @@ module WavefrontCli
         wf.create(prepped)
       end
     end
-    # rubocop:enable Metrics/AbcSize
 
     def import_update(raw)
       wf.update(raw[:id], raw, false)
@@ -508,7 +545,7 @@ module WavefrontCli
     #
     def import_to_create(raw)
       raw.each_with_object({}) do |(k, v), a|
-        a[k.to_sym] = v unless k == 'id'
+        a[k.to_sym] = v unless k == :id
       end
     end
 

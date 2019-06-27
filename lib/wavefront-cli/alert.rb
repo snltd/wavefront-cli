@@ -11,7 +11,7 @@ module WavefrontCli
     include WavefrontCli::Mixin::Acl
 
     def import_fields
-      %w[name condition minutes target severity displayExpression
+      %i[name condition minutes target severity displayExpression
          tags additionalInformation resolveAfterMinutes]
     end
 
@@ -128,8 +128,8 @@ module WavefrontCli
       import_fields.each_with_object({}) { |k, a| a[k.to_sym] = raw[k] }
                    .tap do |ret|
 
-        if raw.key?('resolveAfterMinutes')
-          ret[:resolveMinutes] = raw['resolveAfterMinutes']
+        if raw.key?(:resolveAfterMinutes)
+          ret[:resolveMinutes] = raw[:resolveAfterMinutes]
         end
 
         if raw.key?('customerTagsWithCounts')
