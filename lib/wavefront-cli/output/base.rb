@@ -36,9 +36,6 @@ module WavefrontOutput
       items_only(resp)
     end
 
-    # Any class which supports items-only output should define
-    # ITEMS_ONLY
-    #
     def items_only(resp)
       if allow_items_only?
         return resp[:items] if resp.key?(:items)
