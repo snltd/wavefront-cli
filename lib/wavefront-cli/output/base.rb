@@ -16,8 +16,8 @@ module WavefrontOutput
 
     def initialize(resp = {}, options = {})
       @cmd = options[:class]
-      @resp = resp
       @options = options
+      @resp = filtered_response(resp)
     end
 
     # We used to call #run directly, but now we use this wrapper to
@@ -29,6 +29,24 @@ module WavefrontOutput
 
     def _run
       command_class.run
+    end
+
+    def filtered_response(resp)
+      return resp unless options[:itemsonly]
+      items_only(resp)
+    end
+
+    def items_only(resp)
+      if allow_items_only?
+        return resp[:items] if resp.key?(:items)
+
+        raise(WavefrontCli::Exception::UnsupportedOutput,
+              'API response does not contain items object.')
+      end
+
+      raise(WavefrontCli::Exception::UnsupportedOutput,
+            format("'%s' format does not support items-only output.",
+                   my_format))
     end
 
     def my_format
@@ -46,6 +64,10 @@ module WavefrontOutput
     def command_class
       require_relative command_file
       Object.const_get(command_class_name).new(resp, options)
+    end
+
+    def allow_items_only?
+      false
     end
   end
 end

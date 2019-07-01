@@ -8,5 +8,9 @@ module WavefrontOutput
     def _run
       resp.to_json
     end
+
+    def allow_items_only?
+      true
+    end
   end
 end
