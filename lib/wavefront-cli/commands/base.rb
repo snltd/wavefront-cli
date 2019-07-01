@@ -1,6 +1,6 @@
 require_relative '../stdlib/string'
 
-CMN = '[-DnV] [-c file] [-P profile] [-E endpoint] [-t token] ' \
+CMN = '[-DnVM] [-c file] [-P profile] [-E endpoint] [-t token] ' \
       '[-f format]'.freeze
 
 # A base class which all command classes extend.
@@ -20,6 +20,7 @@ class WavefrontCommandBase
      '-n, --noop           do not perform API calls',
      '-V, --verbose        be verbose',
      '-f, --format=STRING  output format',
+     '-M, --items-only     only show items in machine-parseable formats',
      '-h, --help           show this message']
   end
 

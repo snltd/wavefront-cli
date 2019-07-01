@@ -12,5 +12,9 @@ module WavefrontOutput
     def _run
       resp
     end
+
+    def allow_items_only?
+      true
+    end
   end
 end

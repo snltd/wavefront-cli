@@ -1,5 +1,12 @@
 # Changelog
 
+## 4.2.0 (01/07/2019)
+* Add `-M` (`--items-only`) option to all commands. For
+  machine-parseable formats, this filters the API response, giving only
+  the `items` array, which should usually be suitable for batch
+  importing. This is a more sophisticated and flexible implementation of
+  4.1.0's `dump` subcommand.
+
 ## 4.1.0 (27/06/2019)
 * Add `dump` subcommand for all importable object types. Produces
   JSON or YAML output.

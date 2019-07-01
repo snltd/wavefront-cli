@@ -11,5 +11,9 @@ module WavefrontOutput
     def _run
       JSON.parse(resp.to_json).to_yaml
     end
+
+    def allow_items_only?
+      true
+    end
   end
 end
