@@ -6,7 +6,7 @@ require_relative '../../lib/wavefront-cli/config'
 DEF_CF = Pathname.new(ENV['HOME']) + '.wavefront'
 CONF_TMP = Pathname.new('/tmp/outfile')
 
-# Test base writer
+# Test CLI configuration command
 #
 class WavefrontCliConfigTest < MiniTest::Test
   attr_reader :wf, :wfo, :wfn

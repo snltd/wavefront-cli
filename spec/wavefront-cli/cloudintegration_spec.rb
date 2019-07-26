@@ -19,11 +19,10 @@ class WebhookEndToEndTest < EndToEndTest
     assert_usage('enable')
     assert_abort_on_missing_creds("enable #{id}")
 
-    assert_noop(
-        "enable #{id}",
-        'uri: POST https://default.wavefront.com/api/v2/' \
-        "cloudintegration/#{id}/enable",
-        'body: null')
+    assert_noop("enable #{id}",
+                'uri: POST https://default.wavefront.com/api/v2/' \
+                "cloudintegration/#{id}/enable",
+                'body: null')
   end
 
   def test_disable
@@ -33,11 +32,10 @@ class WebhookEndToEndTest < EndToEndTest
     assert_usage('disable')
     assert_abort_on_missing_creds("disable #{id}")
 
-    assert_noop(
-        "disable #{id}",
-        'uri: POST https://default.wavefront.com/api/v2/' \
-        "cloudintegration/#{id}/disable",
-        'body: null')
+    assert_noop("disable #{id}",
+                'uri: POST https://default.wavefront.com/api/v2/' \
+                "cloudintegration/#{id}/disable",
+                'body: null')
   end
 
   private

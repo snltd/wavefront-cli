@@ -1,12 +1,10 @@
 #!/usr/bin/env ruby
 
 require_relative 'command_base'
-require_relative '../test_mixins/tag'
 require_relative '../../lib/wavefront-cli/apitoken'
 
 class ApiTokenEndToEndTest < EndToEndTest
   include WavefrontCliTest::Delete
-  include WavefrontCliTest::Tag
 
   def test_list
     assert_cmd_gets('list', '/api/v2/apitoken')

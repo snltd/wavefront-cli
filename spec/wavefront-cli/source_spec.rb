@@ -1,26 +1,41 @@
 #!/usr/bin/env ruby
 
-id = '74a247a9-f67c-43ad-911f-fabafa9dc2f3joyent'
-bad_id = '(>_<)'
-word = 'source'
+require_relative 'command_base'
+require_relative '../../lib/wavefront-cli/source'
 
-require_relative '../spec_helper'
-require_relative "../../lib/wavefront-cli/#{word}"
+class SourceEndToEndTest < EndToEndTest
+  #include WavefrontCliTest::Describe
+  #include WavefrontCliTest::Search
+  #include WavefrontCliTest::Tag
 
-describe "#{word} command" do
-  missing_creds(word, ['list', "describe #{id}", "clear #{id}"])
-  cmd_to_call(word, 'list', path: "/api/v2/#{word}")
-  cmd_to_call(word, 'list -L 50', path: "/api/v2/#{word}?limit=50")
-  cmd_to_call(word, 'list -L 100 -o mysource',
-              path: "/api/v2/#{word}?cursor=mysource&limit=100")
-  cmd_to_call(word, "describe #{id}", path: "/api/v2/#{word}/#{id}")
-  cmd_to_call(word, "clear #{id}",
-              method: :delete, path: "/api/v2/#{word}/#{id}")
-  invalid_ids(word, ["describe #{bad_id}", "clear #{bad_id}"])
-  tag_tests(word, id, bad_id)
-  cmd_noop(word, 'list',
-           ['GET https://metrics.wavefront.com/api/v2/source'])
-  cmd_noop(word, 'describe src',
-           ['GET https://metrics.wavefront.com/api/v2/source/src'])
-  search_tests(word, id)
+  def test_list
+    assert_cmd_gets('list', '/api/v2/source')
+
+    assert_noop('list',
+        'uri: GET https://default.wavefront.com/api/v2/source')
+    assert_abort_on_missing_creds('list')
+  end
+
+  def test_description_set
+  end
+
+  def test_description_clear
+  end
+
+  def test_clear
+  end
+
+  private
+
+  def id
+    '74a247a9-f67c-43ad-911f-fabafa9dc2f3joyent'
+  end
+
+  def invalid_id
+    '(>_<)'
+  end
+
+  def cmd_word
+    'source'
+  end
 end

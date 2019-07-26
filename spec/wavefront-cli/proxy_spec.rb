@@ -1,30 +1,45 @@
 #!/usr/bin/env ruby
 
-id = 'fd248f53-378e-4fbe-bbd3-efabace8d724'
-bad_id = '__bad_id__'
-word = 'proxy'
+require_relative 'command_base'
+require_relative '../../lib/wavefront-cli/proxy'
 
-require_relative '../spec_helper'
-require_relative "../../lib/wavefront-cli/#{word}"
+class ProxyEndToEndTest < EndToEndTest
+  include WavefrontCliTest::DeleteUndelete
+  include WavefrontCliTest::Describe
+  include WavefrontCliTest::List
+  include WavefrontCliTest::Search
 
-describe "#{word} command" do
-  missing_creds(word, ['list', 'versions', "describe #{id}", "delete #{id}",
-                       "undelete #{id}", "rename #{id} newname"])
-  list_tests(word)
-  noop_tests(word, id)
-  cmd_to_call(word, "describe #{id}", path: "/api/v2/#{word}/#{id}")
-  cmd_to_call(word, 'versions', path: "/api/v2/#{word}?limit=999&offset=0")
-  cmd_to_call(word, "rename #{id} newname",
-              method: :put,
-              path:   "/api/v2/#{word}/#{id}",
-              body:   { name: 'newname' }.to_json)
-  cmd_to_call(word, "delete #{id}",
-              method: :delete, path: "/api/v2/#{word}/#{id}")
-  cmd_to_call(word, "undelete #{id}",
-              method: :post, path: "/api/v2/#{word}/#{id}/undelete")
-  invalid_ids(word, ["describe #{bad_id}", "delete #{bad_id}",
-                     "undelete #{bad_id}", "rename #{bad_id} newname"])
-  invalid_something(word, ["rename #{id} '(>_<)'"], 'proxy name')
-  search_tests(word, id)
-  test_list_output(word)
+  def test_versions
+    assert_cmd_gets('versions', '/api/v2/proxy?limit=999&offset=0')
+
+    assert_abort_on_missing_creds('versions')
+    assert_noop('versions',
+                'uri: GET https://default.wavefront.com/api/v2/proxy',
+                'params: {:offset=>0, :limit=>:all}')
+  end
+
+  def test_rename
+    assert_cmd_puts("rename #{id} newname", "/api/v2/proxy/#{id}",
+                    tokenID: id, tokenName: 'newname')
+    assert_invalid_id("rename #{invalid_id} newname")
+    assert_abort_on_missing_creds("rename #{id} newname")
+
+    assert_noop("rename #{id} newname",
+                "uri: PUT https://default.wavefront.com/api/v2/proxy/#{id}",
+                'body: {"name":"newname"}')
+  end
+
+  private
+
+  def id
+    'fd248f53-378e-4fbe-bbd3-efabace8d724'
+  end
+
+  def invalid_id
+    '__BAD__'
+  end
+
+  def cmd_word
+    'proxy'
+  end
 end

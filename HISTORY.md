@@ -1,5 +1,7 @@
 # Changelog
 
+* Fix `proxy versions --noop`
+
 ## 4.2.0 (01/07/2019)
 * Add `-M` (`--items-only`) option to all commands. For
   machine-parseable formats, this filters the API response, giving only

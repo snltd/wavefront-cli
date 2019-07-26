@@ -97,7 +97,6 @@ module WavefrontCliTest
                                    negated: true }],
                          sort: { field: 'id', ascending: true } })
 
-
       assert_cmd_posts('search id!~avoid -L 2',
                        "/api/v2/search/#{api_class}",
                        { limit: 2,
