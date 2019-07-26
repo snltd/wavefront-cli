@@ -1,5 +1,7 @@
 # Changelog
 
+* Fix partially broken `source list` command.
+
 ## 4.2.1 (26/07/2019)
 * Remove tagging subcommands from `apitoken` command's usage info,
   because you can't tag API tokens.
