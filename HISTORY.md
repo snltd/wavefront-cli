@@ -1,5 +1,9 @@
 # Changelog
 
+## 4.2.1 (26/07/2019)
+* Remove tagging subcommands from `apitoken` command's usage info,
+  because you can't tag API tokens.
+
 ## 4.2.0 (01/07/2019)
 * Add `-M` (`--items-only`) option to all commands. For
   machine-parseable formats, this filters the API response, giving only

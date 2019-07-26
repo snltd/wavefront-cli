@@ -19,8 +19,7 @@ class WavefrontCommandApitoken < WavefrontCommandBase
     ["list #{CMN} [-O fields]",
      "create #{CMN}",
      "delete #{CMN} <id>",
-     "rename #{CMN} <id> <name>",
-     tag_commands]
+     "rename #{CMN} <id> <name>"]
   end
 
   def _options
