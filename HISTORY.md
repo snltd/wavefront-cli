@@ -2,6 +2,8 @@
 
 * Fix `proxy versions --noop`
 * Fix partially broken `source list` command.
+* Remove duplicate `manifests` subcommand from `integrations`
+  command.
 
 ## 4.2.1 (26/07/2019)
 * Remove tagging subcommands from `apitoken` command's usage info,

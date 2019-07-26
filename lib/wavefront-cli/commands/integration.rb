@@ -18,7 +18,6 @@ class WavefrontCommandIntegration < WavefrontCommandBase
      "alert install #{CMN} <id>",
      "alert uninstall #{CMN} <id>",
      "installed #{CMN}",
-     "manifests #{CMN}",
      "search #{CMN} [-al] [-o offset] [-L limit] <condition>..."]
   end
 
