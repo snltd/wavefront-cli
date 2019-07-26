@@ -38,15 +38,20 @@ end
 # Return an array of CLI permutations and the values to which they relate
 #
 def permutations
-  [["-t #{TOKEN} -E #{ENDPOINT}", { t: TOKEN, e: ENDPOINT }],
-   ["-c #{CF}", { t: CF_VAL['default']['token'],
-                  e: CF_VAL['default']['endpoint'] }],
-   ["-c #{CF} -P other", { t: CF_VAL['other']['token'],
-                           e: CF_VAL['other']['endpoint'] }],
-   ["-c #{CF} -P other -t #{TOKEN}", { t: TOKEN,
-                                       e: CF_VAL['other']['endpoint'] }],
-   ["-c #{CF} -E #{ENDPOINT}", { t: CF_VAL['default']['token'],
-                                 e: ENDPOINT }]]
+  [["-t #{TOKEN} -E #{ENDPOINT}",
+    { t: TOKEN, e: ENDPOINT }],
+
+   ["-c #{CF}",
+    { t: CF_VAL['default']['token'], e: CF_VAL['default']['endpoint'] }],
+
+   ["-c #{CF} -P other",
+    { t: CF_VAL['other']['token'], e: CF_VAL['other']['endpoint'] }],
+
+   ["-c #{CF} -P other -t #{TOKEN}",
+    { t: TOKEN, e: CF_VAL['other']['endpoint'] }],
+
+   ["-c #{CF} -E #{ENDPOINT}",
+    { t: CF_VAL['default']['token'], e: ENDPOINT }]]
 end
 
 # Object returned by cmd_to_call. Has just enough methods to satisfy

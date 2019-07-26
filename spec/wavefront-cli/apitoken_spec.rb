@@ -1,35 +1,58 @@
 #!/usr/bin/env ruby
 
-word = 'apitoken'
+require_relative 'command_base'
+require_relative '../test_mixins/tag'
+require_relative '../../lib/wavefront-cli/apitoken'
 
-require_relative '../spec_helper'
-require_relative "../../lib/wavefront-cli/#{word}"
+class ApiTokenEndToEndTest < EndToEndTest
+  include WavefrontCliTest::Delete
+  include WavefrontCliTest::Tag
 
-id     = '17db4cc1-65f6-40a8-a1fa-6fcae460c4bd'
-bad_id = 'bad_id'
+  def test_list
+    assert_cmd_gets('list', '/api/v2/apitoken')
+    assert_usage('list --offset 4')
+    assert_abort_on_missing_creds('list')
 
-k = WavefrontCli::ApiToken
+    assert_noop('list',
+                'uri: GET https://default.wavefront.com/api/v2/apitoken')
+  end
 
-describe "#{word} command" do
-  missing_creds(word, ['list',
-                       'create',
-                       "delete #{id}",
-                       "rename #{id} name"])
+  def test_create
+    assert_cmd_posts('create', '/api/v2/apitoken', nil)
+    assert_abort_on_missing_creds('create')
+    assert_noop('create',
+                'uri: POST https://default.wavefront.com/api/v2/apitoken',
+                'body: null')
+  end
 
-  invalid_ids(word, ["delete #{bad_id}", "rename #{bad_id} name"])
+  def test_rename
+    assert_cmd_puts("rename #{id} newname", "/api/v2/apitoken/#{id}",
+                    tokenID: id, tokenName: 'newname')
+    assert_invalid_id("rename #{invalid_id} newname")
+    assert_abort_on_missing_creds("rename #{id} newname")
 
-  cmd_to_call(word, 'list', { path: "/api/v2/#{word}" }, k)
+    assert_noop(
+        "rename #{id} newname",
+        "uri: PUT https://default.wavefront.com/api/v2/apitoken/#{id}",
+        'body: {"tokenID":"17db4cc1-65f6-40a8-a1fa-6fcae460c4bd",' \
+        '"tokenName":"newname"}')
+  end
 
-  cmd_noop(word, 'list',
-           ["GET https://metrics.wavefront.com/api/v2/#{word}"], k)
-  cmd_noop(word, 'create',
-           ["POST https://metrics.wavefront.com/api/v2/#{word}"], k)
-  cmd_noop(word, "delete #{id}",
-           ["DELETE https://metrics.wavefront.com/api/v2/#{word}/#{id}"], k)
+  private
 
-  cmd_to_call(word, "rename #{id} newname",
-              { method: :put, path: "/api/v2/#{word}/#{id}",
-                body: { tokenID:   id,
-                        tokenName: 'newname' },
-                headers: JSON_POST_HEADERS }, k)
+  def id
+    '17db4cc1-65f6-40a8-a1fa-6fcae460c4bd'
+  end
+
+  def invalid_id
+    '__BAD__'
+  end
+
+  def cmd_word
+    'apitoken'
+  end
+
+  def sdk_class_name
+    'ApiToken'
+  end
 end
