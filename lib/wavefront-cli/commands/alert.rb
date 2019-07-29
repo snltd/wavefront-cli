@@ -12,7 +12,6 @@ class WavefrontCommandAlert < WavefrontCommandBase
      "clone #{CMN} [-v version] <id>",
      "undelete #{CMN} <id>",
      "history #{CMN} [-o offset] [-L limit] <id>",
-     "clone #{CMN} [-v version] <id>",
      "latest #{CMN} <id>",
      "dump #{CMN}",
      "import #{CMN} [-u] <file>",
