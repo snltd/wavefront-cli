@@ -391,11 +391,11 @@ module WavefrontCli
 
     # rubocop:disable Metrics/AbcSize
     def do_dump
-      items = wf.list(ALL_PAGE_SIZE, :all).response.items
-
       if options[:format] == 'yaml'
+        items = wf.list(ALL_PAGE_SIZE, :all).response.items
         ok_exit items.to_yaml
       elsif options[:format] == 'json'
+        items = wf.list(ALL_PAGE_SIZE, :all).response.items
         ok_exit items.to_json
       else
         abort format("Dump format must be 'json' or 'yaml'. (Tried '%s')",
