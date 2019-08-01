@@ -6,6 +6,7 @@
   command.
 * Fix broken noop on `acl clear`.
 * Fix `derivedmetric set` command.
+* Fix various `alert` commands when using `--noop`.
 
 ## 4.2.1 (26/07/2019)
 * Remove tagging subcommands from `apitoken` command's usage info,
