@@ -83,7 +83,6 @@ CANNED_RESPONSE = DummyResponse.new
 # @param call [Hash]
 # @param spies [Array[Hash]] array of spies to set up, for stubbing
 #   methods in any class. Hash has keys :class, :method, :return.
-# rubocop:disable Metrics/AbcSize
 # rubocop:disable Metrics/PerceivedComplexity
 def cmd_to_call(word, args, call, sdk_class = nil, spies = [])
   headers = { 'Accept':          /.*/,

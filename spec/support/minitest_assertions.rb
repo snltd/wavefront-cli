@@ -13,25 +13,22 @@ module Minitest
         .to_return(body: DUMMY_RESPONSE, status: 200)
       yield block
       assert_requested(:get, api_path, headers: headers)
-      WebMock.reset!
     end
 
     def assert_posts(api_path, headers, payload, &block)
       stub_request(:post, api_path)
-        .with(headers: headers)
+        .with(body: payload, headers: headers)
         .to_return(body: DUMMY_RESPONSE, status: 200)
       yield block
       assert_requested(:post, api_path, headers: headers)
-      WebMock.reset!
     end
 
-    def assert_puts(api_path, headers, payload, &block)
+    def assert_puts(api_path, headers, _payload, &block)
       stub_request(:put, api_path)
         .with(headers: headers)
         .to_return(body: DUMMY_RESPONSE, status: 200)
       yield block
       assert_requested(:put, api_path, headers: headers)
-      WebMock.reset!
     end
 
     def assert_deletes(api_path, headers, &block)
@@ -40,7 +37,6 @@ module Minitest
         .to_return(body: DUMMY_RESPONSE, status: 200)
       yield block
       assert_requested(:delete, api_path, headers: headers)
-      WebMock.reset!
     end
 
     # Don't bother testing permutations for this
@@ -74,59 +70,71 @@ module Minitest
       assert_empty(out)
     end
 
-    def assert_cmd_gets(command, api_path)
-      permutations.each do |p|
-        d = Spy.on_instance_method(sdk_class, :display)
+    def assert_exits_with(command, message)
+      out, err = capture_io do
+        assert_raises(SystemExit) do
+          wf.new("#{cmd_word} #{command}".split)
+        end
+      end
 
+      assert_equal(message, err.strip)
+      assert_empty(out)
+    end
+
+    def assert_cannot_noop(command)
+      out, err = capture_io do
+        assert_raises(SystemExit) do
+          wf.new("#{cmd_word} #{command} --noop".split)
+        end
+      end
+
+      assert_equal('Multiple API call operations cannot be ' \
+                   "performed as no-ops.\n", err)
+      assert_empty(out)
+    end
+
+    def assert_cmd_gets(command, api_path)
+      all_permutations do |p|
         assert_gets("https://#{p[:endpoint]}#{api_path}",
                     mk_headers(p[:token])) do
           wf.new("#{cmd_word} #{command} #{p[:cmdline]}".split)
         end
-
-        assert d.has_been_called?
-        d.unhook
       end
     end
 
-    def assert_cmd_posts(command, api_path, payload)
-      permutations.each do |p|
-        d = Spy.on_instance_method(sdk_class, :display)
+    def assert_repeated_output(msg)
+      out, err = capture_io do
+        yield
+      end
 
+      out.each_line { |l| assert_equal(msg, l.rstrip) }
+      assert_empty(err)
+    end
+
+    def assert_cmd_posts(command, api_path, payload = 'null')
+      all_permutations do |p|
         assert_posts("https://#{p[:endpoint]}#{api_path}",
                      mk_headers(p[:token]), payload) do
           wf.new("#{cmd_word} #{command} #{p[:cmdline]}".split)
         end
-
-        assert d.has_been_called?
-        d.unhook
       end
     end
 
     def assert_cmd_puts(command, api_path, payload)
-      permutations.each do |p|
-        d = Spy.on_instance_method(sdk_class, :display)
-
+      all_permutations do |p|
         assert_puts("https://#{p[:endpoint]}#{api_path}",
-                     mk_headers(p[:token]), payload) do
+                    mk_headers(p[:token]), payload) do
           wf.new("#{cmd_word} #{command} #{p[:cmdline]}".split)
         end
-
-        assert d.has_been_called?
-        d.unhook
       end
     end
 
     def assert_cmd_deletes(command, api_path)
       permutations.each do |p|
-        d = Spy.on_instance_method(sdk_class, :display)
-
         assert_deletes("https://#{p[:endpoint]}#{api_path}",
                        mk_headers(p[:token])) do
           wf.new("#{cmd_word} #{command} #{p[:cmdline]}".split)
         end
-
-        assert d.has_been_called?
-        d.unhook
       end
     end
 
@@ -144,12 +152,32 @@ module Minitest
       assert_empty(err)
     end
 
+    # Run tests with all available permutations. We'll always need
+    # to mock out display, unless we don't, when even if we do, it
+    # won't matter.
+    #
+    def all_permutations
+      permutations.each do |p|
+        yield(p)
+        WebMock.reset!
+      end
+    end
+
+    # Helper to avoid dealing with our display methods
+    #
+    def quietly
+      d = Spy.on_instance_method(cmd_class, :display)
+      yield
+      assert d.has_been_called?
+      d.unhook
+    end
+
     private
 
     def mk_headers(token = nil)
       { 'Accept':          /.*/,
         'Accept-Encoding': /.*/,
-        'Authorization':   'Bearer ' + token || '0123456789-ABCDEF',
+        'Authorization':   'Bearer ' + (token || '0123456789-ABCDEF'),
         'User-Agent':      "wavefront-cli-#{WF_CLI_VERSION}" }
     end
 

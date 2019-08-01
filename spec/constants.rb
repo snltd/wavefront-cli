@@ -2,7 +2,7 @@ require 'inifile'
 
 # Constants for testing
 
-CMD = 'wf'
+CMD = 'wf'.freeze
 TW = 80
 DUMMY_RESPONSE = {
   status: { result: 'OK', message: '', code: 200 },
@@ -15,5 +15,5 @@ RES_DIR = Pathname.new(__dir__) + 'wavefront-cli' + 'resources'
 CF = RES_DIR + 'wavefront.conf'
 CF_VAL =  IniFile.load(CF)
 JSON_POST_HEADERS = {
-    'Content-Type': 'application/json', Accept: 'application/json'
-  }.freeze
+  'Content-Type': 'application/json', Accept: 'application/json'
+}.freeze
