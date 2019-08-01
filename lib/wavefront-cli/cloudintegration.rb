@@ -9,6 +9,10 @@ module WavefrontCli
       Wavefront::Exception::InvalidCloudIntegrationId
     end
 
+    def do_delete
+      smart_delete('cloud integration')
+    end
+
     def do_enable
       wf.enable(options[:'<id>'])
     end
