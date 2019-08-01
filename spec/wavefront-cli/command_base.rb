@@ -14,29 +14,32 @@ class EndToEndTest < MiniTest::Test
     cmd_word
   end
 
-  def sdk_class
+  def cmd_class
     Object.const_get("WavefrontCli::#{sdk_class_name}")
+  end
+
+  def cmd_instance
+    cmd_class.new({})
   end
 
   def sdk_class_name
     api_class.capitalize
   end
-end
 
-# Base for class unit tests
-#
-class CliMethodTest < MiniTest::Test
-  attr_reader :wf
-
-  def setup
-    @wf = cliclass.new({})
+  # Fields which must not be in import objects
+  #
+  def blocked_import_fields
+    %i[id]
   end
 
-  def import_tester(word, have_fields, do_not_have_fields = [])
-    input = wf.load_file(RES_DIR + 'imports' + "#{word}.json")
-    x = wf.import_to_create(input)
-    assert_instance_of(Hash, x)
-    have_fields.each { |f| assert_includes(x.keys, f) }
-    do_not_have_fields.each { |f| refute_includes(x.keys, f) }
+  # the key to use when testing the 'set' command. The value is
+  # always 'new_value'
+  #
+  def set_key
+    'name'
+  end
+
+  def friendly_name
+    cmd_word
   end
 end

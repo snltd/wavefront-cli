@@ -3,18 +3,22 @@
 require_relative 'command_base'
 require_relative '../../lib/wavefront-cli/cloudintegration'
 
-class WebhookEndToEndTest < EndToEndTest
+# Ensure cloudintegration commands produce the correct API calls.
+#
+class CloudIntegrationEndToEndTest < EndToEndTest
   include WavefrontCliTest::DeleteUndelete
   include WavefrontCliTest::Describe
   include WavefrontCliTest::Dump
-  include WavefrontCliTest::Import
   include WavefrontCliTest::List
+  # include WavefrontCliTest::Import
   include WavefrontCliTest::Search
-  include WavefrontCliTest::Set
 
   def test_enable
-    assert_cmd_posts("enable #{id}",
-                     "/api/v2/cloudintegration/#{id}/enable", nil)
+    assert_repeated_output("Enabled '#{id}'.") do
+      assert_cmd_posts("enable #{id}",
+                       "/api/v2/cloudintegration/#{id}/enable")
+    end
+
     assert_invalid_id("enable #{invalid_id}")
     assert_usage('enable')
     assert_abort_on_missing_creds("enable #{id}")
@@ -26,8 +30,11 @@ class WebhookEndToEndTest < EndToEndTest
   end
 
   def test_disable
-    assert_cmd_posts("disable #{id}",
-                     "/api/v2/cloudintegration/#{id}/disable", nil)
+    assert_repeated_output("Disabled '#{id}'.") do
+      assert_cmd_posts("disable #{id}",
+                       "/api/v2/cloudintegration/#{id}/disable")
+    end
+
     assert_invalid_id("disable #{invalid_id}")
     assert_usage('disable')
     assert_abort_on_missing_creds("disable #{id}")
@@ -54,5 +61,9 @@ class WebhookEndToEndTest < EndToEndTest
 
   def sdk_class_name
     'CloudIntegration'
+  end
+
+  def friendly_name
+    'cloud integration'
   end
 end
