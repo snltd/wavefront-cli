@@ -4,6 +4,8 @@
 * Fix partially broken `source list` command.
 * Remove duplicate `manifests` subcommand from `integrations`
   command.
+* Fix broken noop on `acl clear`.
+* Fix `derivedmetric set` command.
 
 ## 4.2.1 (26/07/2019)
 * Remove tagging subcommands from `apitoken` command's usage info,
