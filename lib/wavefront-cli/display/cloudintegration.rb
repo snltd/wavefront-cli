@@ -16,11 +16,11 @@ module WavefrontDisplay
     end
 
     def do_enable
-      puts "Enabled #{options[:'<id>']}."
+      puts "Enabled '#{options[:'<id>']}'."
     end
 
     def do_disable
-      puts "Disabled #{options[:'<id>']}."
+      puts "Disabled '#{options[:'<id>']}'."
     end
   end
 end
