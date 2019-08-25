@@ -70,7 +70,7 @@ module Minitest
       assert_empty(out)
     end
 
-    def assert_exits_with(command, message)
+    def assert_exits_with(message, command)
       out, err = capture_io do
         assert_raises(SystemExit) do
           wf.new("#{cmd_word} #{command}".split)
