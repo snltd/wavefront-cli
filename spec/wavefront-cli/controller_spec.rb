@@ -6,6 +6,10 @@ require_relative '../../lib/wavefront-cli/controller'
 # Be sure the CLI behaves properly when people ask for help
 #
 class WavefrontCliHelpTest < MiniTest::Test
+  def test_development_mode
+    refute defined?(DEVELOPMENT) if ENV['CI']
+  end
+
   def test_no_args
     capture_io { WavefrontCliController.new([]) }
   rescue SystemExit => e
