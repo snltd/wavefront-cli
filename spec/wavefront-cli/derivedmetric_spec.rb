@@ -5,7 +5,7 @@ require_relative '../test_mixins/tag'
 require_relative '../test_mixins/history'
 require_relative '../../lib/wavefront-cli/derivedmetric'
 
-# Ensure derivedmetric commands produce the correct API calls.
+# Ensure 'derivedmetric' commands produce the correct API calls.
 #
 class DerivedMetricEndToEndTest < EndToEndTest
   include WavefrontCliTest::List

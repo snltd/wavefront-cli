@@ -3,6 +3,9 @@ require_relative '../support/minitest_assertions'
 require_relative '../test_mixins/general'
 require_relative '../../lib/wavefront-cli/controller'
 
+# An abstract class which facilitates "end-to-end" testing of
+# commands.
+#
 class EndToEndTest < MiniTest::Test
   attr_reader :wf
 
