@@ -1,63 +1,86 @@
 #!/usr/bin/env ruby
 
-require_relative '../spec_helper'
+require_relative 'command_base'
 require_relative '../../lib/wavefront-cli/externallink'
 
-id     = 'lq6rPlSg2CFMSrg6'
-bad_id = '__BAD__'
-k      = WavefrontCli::ExternalLink
-word   = 'link'
+# Ensure 'link' commands produce the correct API calls.
+#
+class ExternalLinkEndToEndTest < EndToEndTest
+  include WavefrontCliTest::List
+  include WavefrontCliTest::Describe
+  include WavefrontCliTest::Dump
+  # include WavefrontCliTest::Import
+  include WavefrontCliTest::Set
+  include WavefrontCliTest::Delete
+  include WavefrontCliTest::Search
 
-describe "#{word} command" do
-  missing_creds(word, ['list', "describe #{id}", "delete #{id}"])
-  list_tests(word, 'extlink', k)
-  noop_tests(word, id, false, 'extlink', k)
-  search_tests(word, id, k, 'extlink')
-  cmd_to_call(word, "describe #{id}", { path: "/api/v2/extlink/#{id}" }, k)
-  cmd_to_call(word, "delete #{id}",
-              { method: :delete, path: "/api/v2/extlink/#{id}" }, k)
-  invalid_ids(word, ["describe #{bad_id}", "delete #{bad_id}"])
+  def test_create_without_options
+    quietly do
+      assert_cmd_posts('create myname mydescription mytemplate',
+                       '/api/v2/extlink',
+                       name:        'myname',
+                       template:    'mytemplate',
+                       description: 'mydescription')
+    end
+  end
 
-  cmd_to_call(word, 'create name description template',
-              { method: :post,
-                path:   '/api/v2/extlink',
-                body: {
-                  name:        'name',
-                  template:    'template',
-                  description: 'description'
-                }.to_json,
-                headers: JSON_POST_HEADERS },
-              WavefrontCli::ExternalLink)
+  def test_create_with_regexes
+    quietly do
+      assert_cmd_posts('create -m metricregex -s sourceregex myname ' \
+                       'mydescription mytemplate',
+                       '/api/v2/extlink',
+                       name:              'myname',
+                       template:          'mytemplate',
+                       description:       'mydescription',
+                       metricFilterRegex: 'metricregex',
+                       sourceFilterRegex: 'sourceregex')
+    end
+  end
 
-  cmd_to_call(word, 'create -m metricregex -s sourceregex name ' \
-                    'description template',
-              { method: :post,
-                path:   '/api/v2/extlink',
-                body: {
-                  name:              'name',
-                  template:          'template',
-                  description:       'description',
-                  metricFilterRegex: 'metricregex',
-                  sourceFilterRegex: 'sourceregex'
-                }.to_json,
-                headers: JSON_POST_HEADERS },
-              WavefrontCli::ExternalLink)
+  def test_create_with_keys_and_regexes
+    quietly do
+      assert_cmd_posts('create -p key1=reg1 -p key2=reg2 ' \
+                       '-m metricregex myname mydescription mytemplate',
+                       '/api/v2/extlink',
+                       name:              'myname',
+                       template:          'mytemplate',
+                       description:       'mydescription',
+                       metricFilterRegex: 'metricregex',
+                       pointFilterRegex: {
+                         key1: 'reg1',
+                         key2: 'reg2'
+                       })
+    end
+  end
 
-  cmd_to_call(word, 'create -p key1=reg1 -p key2=reg2 ' \
-                    '-m metricregex name description template',
-              { method: :post,
-                path:   '/api/v2/extlink',
-                body: {
-                  name:              'name',
-                  template:          'template',
-                  description:       'description',
-                  metricFilterRegex: 'metricregex',
-                  pointFilterRegex: {
-                    key1: 'reg1',
-                    key2: 'reg2'
-                  }
-                }.to_json,
-                headers: JSON_POST_HEADERS },
-              WavefrontCli::ExternalLink)
-  test_list_output(word, k)
+  private
+
+  def id
+    'lq6rPlSg2CFMSrg6'
+  end
+
+  def invalid_id
+    '__BAD__'
+  end
+
+  def cmd_word
+    'link'
+  end
+
+  def api_class
+    'extlink'
+  end
+
+  def sdk_class_name
+    'ExternalLink'
+  end
+
+  def friendly_name
+    'external link'
+  end
+
+  def import_fields
+    %i[condition displayExpression resolveAfterMinutes minutes severity
+       tags target name]
+  end
 end
