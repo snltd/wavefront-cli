@@ -5,26 +5,19 @@ require_relative '../../lib/wavefront-cli/alert'
 require 'spy'
 require 'spy/integration'
 
-OPTS = {
-  endpoint: 'test.wavefront.com',
-  token:    '0123456789-ABCDEF',
-  debug:    false,
-  noop:     true
-}.freeze
+OPTS = { endpoint: 'test.wavefront.com',
+         token:    '0123456789-ABCDEF',
+         debug:    false,
+         noop:     true }.freeze
 
-OPTS_CMD = {
-  endpoint: 'test.wavefront.com',
-  token:    '0123456789-ABCDEF',
-  debug:    false,
-  noop:     true,
-  test:     true,
-  cmd:      true
-}.freeze
+OPTS_CMD = { endpoint: 'test.wavefront.com',
+             token:    '0123456789-ABCDEF',
+             debug:    false,
+             noop:     true,
+             test:     true,
+             cmd:      true }.freeze
 
-DISP_DATA = {
-  a: 'string',
-  b: %w[list_1 list_2]
-}.freeze
+DISP_DATA = { a: 'string', b: %w[list_1 list_2] }.freeze
 
 # Since I tidied up the file layout in wavefront-sdk, there's no
 # longer a 1:1 mapping of CLI and SDK classes. wavefront-sdk/base is
