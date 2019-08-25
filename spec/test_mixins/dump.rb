@@ -4,9 +4,10 @@ module WavefrontCliTest
   #
   module Dump
     def test_dump_human
-      assert_exits_with('dump --format=human',
-                        "Dump format must be 'json' or 'yaml'. " \
-                        "(Tried 'human')")
+      assert_exits_with(
+        "Dump format must be 'json' or 'yaml'. (Tried 'human')",
+        'dump --format=human'
+      )
     end
 
     def test_dump_json

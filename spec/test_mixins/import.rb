@@ -18,7 +18,7 @@ module WavefrontCliTest
       assert_empty(err)
       assert_equal('IMPORTED', out.strip)
 
-      assert_exits_with('import /no/such/file', 'File not found.')
+      assert_exits_with('File not found.', 'import /no/such/file')
       assert_usage('import')
       assert_abort_on_missing_creds("import #{import_file}")
     end
@@ -38,7 +38,7 @@ module WavefrontCliTest
       assert_empty(err)
       assert_equal('1556812163465   IMPORTED', out.strip)
 
-      assert_exits_with('import -u /no/such/file', 'File not found.')
+      assert_exits_with('File not found.', 'import /no/such/file')
       assert_usage('import -u')
       assert_abort_on_missing_creds("import -u #{import_file}")
     end
