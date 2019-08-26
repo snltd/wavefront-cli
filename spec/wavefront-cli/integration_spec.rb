@@ -3,18 +3,18 @@
 require_relative 'command_base'
 require_relative '../../lib/wavefront-cli/integration'
 
-# Ensure integration commands produce the correct API calls.
+# Ensure 'integration' commands produce the correct API calls.
 #
 class IntegrationEndToEndTest < EndToEndTest
-  #include WavefrontCliTest::List
-  #include WavefrontCliTest::Describe
-  #include WavefrontCliTest::Search
+  include WavefrontCliTest::List
+  include WavefrontCliTest::Describe
+  include WavefrontCliTest::Search
 
   def test_install
     quietly do
       assert_cmd_posts("install #{id}",
-                      "/api/v2/integration/#{id}/install",
-                      'null')
+                       "/api/v2/integration/#{id}/install",
+                       'null')
     end
 
     assert_invalid_id("install #{invalid_id}")
