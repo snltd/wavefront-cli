@@ -11,6 +11,7 @@
 * Fix various `alert` commands when using `--noop`.
 * Better handle bad `search` input.
 * Fix bug when trying to read non-existent messages.
+* Fix missing quote in `usergroup delete` output.
 
 ## 4.2.1 (26/07/2019)
 * Remove tagging subcommands from `apitoken` command's usage info,

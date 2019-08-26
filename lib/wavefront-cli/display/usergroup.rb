@@ -10,7 +10,7 @@ module WavefrontDisplay
     end
 
     def do_delete
-      puts "Deleted user group '#{options[:'<id>']}."
+      puts "Deleted user group '#{options[:'<id>']}'."
     end
 
     def do_add_user
