@@ -3,13 +3,13 @@
 require_relative 'command_base'
 require_relative '../../lib/wavefront-cli/webhook'
 
-# Ensure webhook commands produce the correct API calls.
+# Ensure 'webhook' commands produce the correct API calls.
 #
 class WebhookEndToEndTest < EndToEndTest
   include WavefrontCliTest::Delete
   include WavefrontCliTest::Describe
   include WavefrontCliTest::Dump
-  include WavefrontCliTest::Import
+  # include WavefrontCliTest::Import
   include WavefrontCliTest::List
   include WavefrontCliTest::Search
   include WavefrontCliTest::Set
@@ -26,5 +26,9 @@ class WebhookEndToEndTest < EndToEndTest
 
   def cmd_word
     'webhook'
+  end
+
+  def set_key
+    'title'
   end
 end
