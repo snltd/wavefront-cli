@@ -1,104 +1,156 @@
 #!/usr/bin/env ruby
 
-uid1 = 'someone@somewhere.com'
-uid2 = 'other@elsewhere.com'
-name = 'testgroup'
-bad_id = '__BAD__'
-word = 'usergroup'
-gid1 = '2659191e-aad4-4302-a94e-9667e1517127'
-priv1 = 'alerts_management'
-priv2 = 'events_management'
+require_relative 'command_base'
+require_relative '../../lib/wavefront-cli/usergroup'
 
-require_relative '../spec_helper'
-require_relative "../../lib/wavefront-cli/#{word}"
+# Ensure 'usergroup' commands produce the correct API calls.
+#
+class UserGroupEndToEndTest < EndToEndTest
+  include WavefrontCliTest::List
+  include WavefrontCliTest::Describe
+  include WavefrontCliTest::Dump
+  include WavefrontCliTest::Set
+  include WavefrontCliTest::Delete
+  include WavefrontCliTest::Search
 
-k = WavefrontCli::UserGroup
+  def test_create
+    quietly do
+      assert_cmd_posts("create #{groupname}",
+                       '/api/v2/usergroup',
+                       name: groupname, permissions: [])
+    end
 
-describe "#{word} command" do
-  missing_creds(word, ['list',
-                       "describe #{gid1}",
-                       "create #{name}",
-                       "delete #{gid1}",
-                       'import file',
-                       "set key=val #{gid1}",
-                       "users #{gid1}",
-                       "permissions #{gid1}",
-                       "add user #{gid1} #{uid1} #{uid2}",
-                       "remove user #{gid1} #{uid1} #{uid2}",
-                       "grant #{priv1} to #{gid1}",
-                       "revoke #{priv2} from #{gid1}",
-                       'search key=value'])
+    assert_abort_on_missing_creds("create #{groupname}")
+    assert_usage('create')
+  end
 
-  list_tests(word, 'usergroup', k)
+  def test_create_with_privileges
+    quietly do
+      assert_cmd_posts("create -p #{privileges[0]} -p #{privileges[1]} " \
+                       "#{groupname}",
+                       '/api/v2/usergroup',
+                       name: groupname, permissions: privileges)
+    end
+  end
 
-  cmd_to_call(word, "describe #{gid1}",
-              { path: "/api/v2/#{word}/#{gid1}" }, k)
+  def test_users
+    assert_repeated_output("No users in group '#{id}'.") do
+      assert_cmd_gets("users #{id}", "/api/v2/usergroup/#{id}")
+    end
 
-  cmd_to_call(word, "create #{name}",
-              { method: :post,
-                path:   "/api/v2/#{word}",
-                body:   { name: name, permissions: [] }.to_json }, k)
+    assert_abort_on_missing_creds("users #{id}")
+    assert_invalid_id("users #{invalid_id}")
+    assert_usage('users')
+  end
 
-  cmd_to_call(word, "create -p #{priv1} -p #{priv2} #{name}",
-              { method: :post,
-                path:   "/api/v2/#{word}",
-                body:   { name: name,
-                          permissions: [priv1, priv2] }.to_json }, k)
+  def test_permissions
+    assert_repeated_output("Group '#{id}' has no permissions.") do
+      assert_cmd_gets("permissions #{id}", "/api/v2/usergroup/#{id}")
+    end
 
-  cmd_to_call(word, "delete #{gid1}",
-              { method: :delete, path: "/api/v2/#{word}/#{gid1}" }, k)
+    assert_abort_on_missing_creds("permissions #{id}")
+    assert_invalid_id("permissions #{invalid_id}")
+    assert_usage('permissions')
+  end
 
-  cmd_to_call(word, "users #{gid1}",
-              { path: "/api/v2/#{word}/#{gid1}" }, k)
+  def test_add_user
+    assert_repeated_output("Added '#{users[0]}' to '#{id}'.") do
+      assert_cmd_posts("add user #{id} #{users[0]}",
+                       "/api/v2/usergroup/#{id}/addUsers",
+                       [users[0]].to_json)
+    end
 
-  cmd_to_call(word, "permissions #{gid1}",
-              { path: "/api/v2/#{word}/#{gid1}" }, k)
+    assert_abort_on_missing_creds("add user #{id} #{users[0]}")
+    assert_invalid_id("add user #{invalid_id} #{users[0]}")
+  end
 
-  cmd_to_call(word, "add user #{gid1} #{uid1}",
-              { method: :post,
-                path:   "/api/v2/#{word}/#{gid1}/addUsers",
-                body:   [uid1].to_json }, k)
+  def test_add_multiple_users
+    assert_repeated_output(
+      "Added '#{users[0]}', '#{users[1]}' to '#{id}'."
+    ) do
+      assert_cmd_posts("add user #{id} #{users[0]} #{users[1]}",
+                       "/api/v2/usergroup/#{id}/addUsers",
+                       users.to_json)
+    end
+  end
 
-  cmd_to_call(word, "add user #{gid1} #{uid1} #{uid2}",
-              { method: :post,
-                path:   "/api/v2/#{word}/#{gid1}/addUsers",
-                body:   [uid1, uid2].to_json }, k)
+  def test_remove_user
+    assert_repeated_output("Removed '#{users[0]}' from '#{id}'.") do
+      assert_cmd_posts("remove user #{id} #{users[0]}",
+                       "/api/v2/usergroup/#{id}/removeUsers",
+                       [users[0]].to_json)
+    end
 
-  cmd_to_call(word, "remove user #{gid1} #{uid1}",
-              { method: :post,
-                path:   "/api/v2/#{word}/#{gid1}/removeUsers",
-                body:   [uid1].to_json }, k)
+    assert_abort_on_missing_creds("remove user #{id} #{users[0]}")
+    assert_invalid_id("remove user #{invalid_id} #{users[0]}")
+  end
 
-  cmd_to_call(word, "remove user #{gid1} #{uid1} #{uid2}",
-              { method: :post,
-                path:   "/api/v2/#{word}/#{gid1}/removeUsers",
-                body:   [uid1, uid2].to_json }, k)
+  def test_remove_multiple_users
+    assert_repeated_output(
+      "Removed '#{users[0]}', '#{users[1]}' from '#{id}'."
+    ) do
 
-  cmd_to_call(word, "grant #{priv1} to #{gid1}",
-              { method: :post,
-                path: "/api/v2/#{word}/grant/#{priv1}",
-                body:   [gid1].to_json }, k)
+      assert_cmd_posts("remove user #{id} #{users[0]} #{users[1]}",
+                       "/api/v2/usergroup/#{id}/removeUsers",
+                       users.to_json)
+    end
+  end
 
-  cmd_to_call(word, "revoke #{priv1} from #{gid1}",
-              { method: :post,
-                path: "/api/v2/#{word}/revoke/#{priv1}",
-                body:   [gid1].to_json }, k)
+  def test_grant
+    assert_repeated_output(
+      "Granted '#{privileges[1]}' permission to '#{id}'."
+    ) do
 
-  search_tests(word, gid1, k)
+      assert_cmd_posts("grant #{privileges[1]} to #{id}",
+                       "/api/v2/usergroup/grant/#{privileges[1]}",
+                       [id].to_json)
+    end
 
-  invalid_ids(word, ["describe #{bad_id}",
-                     "delete #{bad_id}",
-                     "set key=val #{bad_id}",
-                     "users #{bad_id}",
-                     "permissions #{bad_id}",
-                     "add user #{bad_id} #{uid1} #{uid2}",
-                     "remove user #{bad_id} #{uid1} #{uid2}",
-                     "grant #{priv1} to #{bad_id}",
-                     "revoke #{priv2} from #{bad_id}"])
+    assert_abort_on_missing_creds("grant #{privileges[1]} to #{id}")
+    assert_invalid_id("grant #{privileges[1]} to #{invalid_id}")
+  end
 
-  cmd_noop(word, 'list',
-           ["GET https://metrics.wavefront.com/api/v2/#{word}"], k)
-  cmd_noop(word, "describe #{gid1}",
-           ["GET https://metrics.wavefront.com/api/v2/#{word}/#{gid1}"], k)
-  test_list_output(word, k)
+  def test_revoke
+    assert_repeated_output(
+      "Revoked '#{privileges[0]}' permission from '#{id}'."
+    ) do
+      assert_cmd_posts("revoke #{privileges[0]} from #{id}",
+                       "/api/v2/usergroup/revoke/#{privileges[0]}",
+                       [id].to_json)
+    end
+  end
+
+  private
+
+  def id
+    '2659191e-aad4-4302-a94e-9667e1517127'
+  end
+
+  def invalid_id
+    '__BAD__'
+  end
+
+  def cmd_word
+    'usergroup'
+  end
+
+  def sdk_class_name
+    'UserGroup'
+  end
+
+  def friendly_name
+    'user group'
+  end
+
+  def groupname
+    'testgroup'
+  end
+
+  def privileges
+    %w[alerts_management events_management]
+  end
+
+  def users
+    %w[someone@somewhere.com other@elsewhere.com]
+  end
 end
