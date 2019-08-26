@@ -14,10 +14,11 @@ module WavefrontCli
 
     def extra_validation
       return unless options[:'<metric>']
+
       begin
         wf_metric_name?(options[:'<metric>'])
       rescue Wavefront::Exception::InvalidMetricName
-        abort "'#{options[:'<metric>']}' is not a valid metric."
+        abort "'#{options[:'<metric>']}' is not a valid metric ID."
       end
     end
   end
