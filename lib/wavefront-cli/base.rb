@@ -480,15 +480,21 @@ module WavefrontCli
     # values
     #
     def range_hash
+      offset_key = :offset
+
       if options[:all]
         limit  = :all
         offset = ALL_PAGE_SIZE
+      elsif options[:cursor]
+        offset_key = :cursor
+        limit  = options[:limit]
+        offset = options[:cursor]
       else
         limit  = options[:limit]
-        offset = options[:offset] || options[:cursor]
+        offset = options[:offset]
       end
 
-      { limit: limit, offset: offset }
+      { limit: limit, offset_key => offset }
     end
 
     # The search URI pattern doesn't always match the command name,

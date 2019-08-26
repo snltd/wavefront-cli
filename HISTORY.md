@@ -3,6 +3,7 @@
 * Fix noops on `proxy versions`, `window ongoing` and `window
   pending`.
 * Fix partially broken `source list` command.
+* Make `source search --cursor <source>` work properly.
 * Remove duplicate `manifests` subcommand from `integrations`
   command.
 * Fix broken noop on `acl clear`.

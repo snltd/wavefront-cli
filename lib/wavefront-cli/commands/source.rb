@@ -13,7 +13,7 @@ class WavefrontCommandSource < WavefrontCommandBase
      "description set  #{CMN} <id> <description>",
      "description clear  #{CMN} <id>",
      "clear  #{CMN} <id>",
-     "search #{CMN} [-al] [-o offset] [-L limit] <condition>...",
+     "search #{CMN} [-al] [-o cursor] [-L limit] <condition>...",
      tag_commands]
   end
 
