@@ -14,6 +14,10 @@ module WavefrontCli
       wf.rename(options[:'<id>'], options[:'<name>'])
     end
 
+    def do_delete
+      smart_delete
+    end
+
     def do_versions
       raw = wf.list(0, :all)
 
