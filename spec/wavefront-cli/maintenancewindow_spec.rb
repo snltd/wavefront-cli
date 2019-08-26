@@ -14,7 +14,7 @@ class MaintenanceWindowEndToEndTest < EndToEndTest
   include WavefrontCliTest::Set
   include WavefrontCliTest::Search
 
-  def _test_create
+  def test_create
     quietly do
       assert_cmd_posts('create -d testing --host shark test_window',
                        '/api/v2/maintenancewindow',
@@ -29,7 +29,7 @@ class MaintenanceWindowEndToEndTest < EndToEndTest
     assert_usage('create test_window')
   end
 
-  def _test_create_with_boundaries
+  def test_create_with_boundaries
     quietly do
       assert_cmd_posts('create --desc testing -H shark -s 1566776337 ' \
                        '-H box -e 1566776399 test_window',
@@ -53,7 +53,7 @@ class MaintenanceWindowEndToEndTest < EndToEndTest
     )
   end
 
-  def _test_create_with_boundaries_and_tags
+  def test_create_with_boundaries_and_tags
     quietly do
       assert_cmd_posts('create -d testing -A alert_tag_1 -A alert_tag_2 ' \
                        '--start 1566776337 --end 1566776399 test_window',
@@ -66,7 +66,7 @@ class MaintenanceWindowEndToEndTest < EndToEndTest
     end
   end
 
-  def _test_close
+  def test_close
     quietly do
       all_permutations do |p|
         get_stub = stub_request(
@@ -98,7 +98,7 @@ class MaintenanceWindowEndToEndTest < EndToEndTest
     assert_usage('close')
   end
 
-  def _test_extend_to
+  def test_extend_to
     quietly do
       all_permutations do |p|
         get_stub = stub_request(
@@ -130,7 +130,7 @@ class MaintenanceWindowEndToEndTest < EndToEndTest
     assert_usage('extend')
   end
 
-  def _test_extend_by
+  def test_extend_by
     quietly do
       all_permutations do |p|
         get_stub = stub_request(
@@ -162,7 +162,7 @@ class MaintenanceWindowEndToEndTest < EndToEndTest
     assert_usage("extend by an hour #{id}")
   end
 
-  def _test_ongoing
+  def test_ongoing
     out, err = capture_io do
       assert_raises(SystemExit) do
         assert_cmd_posts('ongoing',
