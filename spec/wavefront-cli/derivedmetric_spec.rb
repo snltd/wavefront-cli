@@ -18,7 +18,7 @@ class DerivedMetricEndToEndTest < EndToEndTest
   include WavefrontCliTest::Tag
   include WavefrontCliTest::History
 
-  def test_create
+  def test_create_simple
     quietly do
       assert_cmd_posts('create mymetric ts(series)',
                        '/api/v2/derivedmetric',
@@ -40,6 +40,11 @@ class DerivedMetricEndToEndTest < EndToEndTest
                   processRateMinutes:     1
                 }.to_json)
 
+    assert_usage('create')
+    assert_abort_on_missing_creds("create #{id} ts(series)")
+  end
+
+  def create_with_options
     quietly do
       assert_cmd_posts('create -i 3 -r 7 -b mymetric ts(series)',
                        '/api/v2/derivedmetric',
@@ -49,7 +54,9 @@ class DerivedMetricEndToEndTest < EndToEndTest
                        processRateMinutes:     3,
                        query:                  'ts(series)')
     end
+  end
 
+  def create_with_options_and_tags
     quietly do
       assert_cmd_posts('create -i 3 -T tag1 -T tag2 mymetric ts(series)',
                        '/api/v2/derivedmetric',
@@ -60,9 +67,6 @@ class DerivedMetricEndToEndTest < EndToEndTest
                        tags:                   %w[tag1 tag2],
                        query:                  'ts(series)')
     end
-
-    assert_usage('create')
-    assert_abort_on_missing_creds("create #{id} ts(series)")
   end
 
   private

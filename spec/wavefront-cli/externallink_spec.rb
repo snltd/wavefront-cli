@@ -22,6 +22,16 @@ class ExternalLinkEndToEndTest < EndToEndTest
                        template:    'mytemplate',
                        description: 'mydescription')
     end
+
+    assert_noop('create myname mydescription mytemplate',
+                'uri: POST https://default.wavefront.com/api/v2/extlink',
+                'body: ' + { name:        'myname',
+                             template:    'mytemplate',
+                             description: 'mydescription' }.to_json)
+
+    assert_abort_on_missing_creds('create myname mydescription mytemplate')
+    assert_usage('create myname mydescription')
+    assert_usage('create myname')
   end
 
   def test_create_with_regexes
