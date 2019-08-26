@@ -14,12 +14,12 @@ module WavefrontDisplay
     end
 
     def do_add_user
-      puts format("Added %s to '%s'.", quoted_users,
+      puts format("Added %s to '%s'.", quoted(options[:'<user>']),
                   options[:'<id>']).fold(TW, 0)
     end
 
     def do_remove_user
-      puts format("Removed %s from '%s'.", quoted_users,
+      puts format("Removed %s from '%s'.", (options[:'<user>']),
                   options[:'<id>']).fold(TW, 0)
     end
 
@@ -47,12 +47,6 @@ module WavefrontDisplay
            else
             data[:permissions]
            end)
-    end
-
-    private
-
-    def quoted_users
-      options[:'<user>'].map{ |u| "'#{u}'" }.join(', ')
     end
   end
 end

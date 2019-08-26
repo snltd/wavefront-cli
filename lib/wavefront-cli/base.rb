@@ -392,7 +392,7 @@ module WavefrontCli
     # rubocop:disable Metrics/AbcSize
     def do_dump
       if options[:format] == 'yaml'
-        ok_exit item_dump_call.to_yaml
+        ok_exit JSON.parse(item_dump_call.to_json).to_yaml
       elsif options[:format] == 'json'
         ok_exit item_dump_call.to_json
       else
@@ -402,7 +402,7 @@ module WavefrontCli
     end
     # rubocop:enable Metrics/AbcSize
 
-    # Broken out into its own method because users don't use
+    # Broken out into its own method because 'users' does not use
     # pagination
     #
     def item_dump_call

@@ -9,12 +9,13 @@
 * Fix broken noop on `acl clear`.
 * Fix `derivedmetric` and `notificant` `set` commands.
 * Fix various `alert` commands when using `--noop`.
-* Better handle bad `search` input.
+* Better handling of bad `search` input.
 * Fix bug when trying to read non-existent messages.
 * Fix missing quote in `usergroup delete` output.
 * Fix broken `--all` in usergroup listings and searches.
 * Fix `user dump`.
 * Removed `user set` command, because it didn't do anything.
+* Improve output of `user` and `usergroup` commands.
 
 ## 4.2.1 (26/07/2019)
 * Remove tagging subcommands from `apitoken` command's usage info,

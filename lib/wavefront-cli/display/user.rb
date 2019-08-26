@@ -6,7 +6,7 @@ module WavefrontDisplay
   #
   class User < Base
     def do_list_brief
-      data.each { |user| puts user[:identifier] }
+      puts data.map { |user| user[:identifier] }
     end
 
     def do_groups
@@ -36,7 +36,35 @@ module WavefrontDisplay
     end
 
     def do_delete
-      puts format('Deleted %s', options[:'<user>'].join(', '))
+      puts format("Deleted %s.", quoted(options[:'<user>']))
+    end
+
+    def do_invite
+      puts format("Sent invitation to '%s'.", options[:'<id>'])
+    end
+
+    def do_grant
+      puts format("Granted '%s' to '%s'.",
+                  options[:'<privilege>'],
+                  options[:'<id>'])
+    end
+
+    def do_revoke
+      puts format("Revoked '%s' from '%s'.",
+                  options[:'<privilege>'],
+                  options[:'<id>'])
+    end
+
+    def do_join
+      puts format("Added '%s' to %s.",
+                  options[:'<id>'],
+                  quoted(options[:'<group>']))
+    end
+
+    def do_leave
+      puts format("Removed '%s' from %s.",
+                  options[:'<id>'],
+                  quoted(options[:'<group>']))
     end
   end
 end
