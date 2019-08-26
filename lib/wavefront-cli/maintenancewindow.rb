@@ -60,6 +60,8 @@ module WavefrontCli
     end
 
     def do_extend_by
+      cannot_noop!
+
       begin
         to_add = options[:'<time>'].to_seconds
       rescue ArgumentError
@@ -71,10 +73,12 @@ module WavefrontCli
     end
 
     def do_extend_to
+      cannot_noop!
       change_end_time(parse_time(options[:'<time>']))
     end
 
     def do_close
+      cannot_noop!
       change_end_time(Time.now.to_i)
     end
 
@@ -83,22 +87,26 @@ module WavefrontCli
     end
 
     def do_ongoing
-      w = wf.ongoing
-      ok_exit('No maintenance windows currently ongoing.') if w.empty?
-      w
+      ret = wf.ongoing
+
+      exit if options[:noop]
+
+      return ret unless ret.is_a?(Wavefront::Response) && ret.empty?
+
+      ok_exit('No maintenance windows currently ongoing.')
     end
 
     def do_pending
       range = options[:'<hours>'].to_f
       range = 24 unless range.positive?
 
-      w = wf.pending(range)
+      ret = wf.pending(range)
 
-      if w.empty?
-        ok_exit(format('No maintenance windows in the next %s hours.',
-                       range))
-      end
-      w
+      exit if options[:noop]
+
+      return ret unless ret.is_a?(Wavefront::Response) && ret.empty?
+
+      ok_exit(format('No maintenance windows in the next %s hours.', range))
     end
   end
 end

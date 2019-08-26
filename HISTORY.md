@@ -1,6 +1,7 @@
 # Changelog
 
-* Fix `proxy versions --noop`
+* Fix noops on `proxy versions`, `window ongoing` and `window
+  pending`.
 * Fix partially broken `source list` command.
 * Remove duplicate `manifests` subcommand from `integrations`
   command.
