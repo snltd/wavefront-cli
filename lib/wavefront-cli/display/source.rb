@@ -17,7 +17,9 @@ module WavefrontDisplay
     end
 
     def do_search_brief
-      multicolumn(:id)
+      return multicolumn(:id) unless data.empty?
+
+      puts 'No matches.'
     end
 
     private
