@@ -16,6 +16,8 @@ module WavefrontCli
     end
 
     def do_read
+      cannot_noop!
+
       resp = wf.list(0, :all, false).response.items.select do |msg|
         msg[:id] == options[:'<id>']
       end
