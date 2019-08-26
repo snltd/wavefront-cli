@@ -1,7 +1,7 @@
 # For development against a local checkout of the SDK, uncomment
 # this definition
 #
-# DEVELOPMENT = true
+DEVELOPMENT = true
 
 if defined?(DEVELOPMENT)
   dir = Pathname.new(__FILE__).dirname.realpath.parent.parent.parent
@@ -126,6 +126,8 @@ class WavefrontCliController
     abort "Host system error. #{e.message}"
   rescue WavefrontCli::Exception::UnparseableInput => e
     abort "Cannot parse input. #{e.message}"
+  rescue WavefrontCli::Exception::UnparseableSearchPattern
+    abort 'Searches require a key, a value, and a match operator.'
   rescue WavefrontCli::Exception::UnsupportedFileFormat
     abort 'Unsupported file format.'
   rescue WavefrontCli::Exception::UnsupportedOperation => e
