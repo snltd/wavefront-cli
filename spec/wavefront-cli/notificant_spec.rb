@@ -7,21 +7,22 @@ class NotificantEndToEndTest < EndToEndTest
   include WavefrontCliTest::Delete
   include WavefrontCliTest::Describe
   include WavefrontCliTest::Dump
-  include WavefrontCliTest::Import
+  # include WavefrontCliTest::Import
   include WavefrontCliTest::List
   include WavefrontCliTest::Search
   include WavefrontCliTest::Set
 
   def test_test
-    assert_cmd_posts("test #{id}",
-                     "/api/v2/notificant/test/#{id}", nil)
-    assert_invalid_id("test #{invalid_id}")
-    assert_usage('test')
-    assert_abort_on_missing_creds("test #{id}")
+    assert_repeated_output("Testing notificant '#{id}'.") do
+      assert_cmd_posts("test #{id}", "/api/v2/notificant/test/#{id}")
+    end
 
     assert_noop("test #{id}",
                 'uri: POST https://default.wavefront.com/api/v2/' \
                 "notificant/test/#{id}", 'body: null')
+    assert_invalid_id("test #{invalid_id}")
+    assert_usage('test')
+    assert_abort_on_missing_creds("test #{id}")
   end
 
   private
@@ -37,16 +38,12 @@ class NotificantEndToEndTest < EndToEndTest
   def cmd_word
     'notificant'
   end
-end
 
-class TestNotificantMethods < CliMethodTest
-  def test_import_method
-    import_tester(:notificant,
-                  %i[method title creatorId triggers template],
-                  %i[id])
+  def set_key
+    'title'
   end
 
-  def cliclass
-    WavefrontCli::Notificant
+  def import_fields
+    %i[method title creatorId triggers template]
   end
 end

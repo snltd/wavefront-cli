@@ -19,8 +19,12 @@ module WavefrontCliTest
           .to_return(status: 200, body: '', headers: {})
 
         out, err = capture_io do
-          wf.new("#{cmd_word} set #{set_key}=new_value #{id} " \
-                "#{p[:cmdline]}".split)
+          begin
+            wf.new("#{cmd_word} set #{set_key}=new_value #{id} " \
+                  "#{p[:cmdline]}".split)
+          rescue SystemExit => e
+            p e
+          end
         end
 
         assert_empty(err)

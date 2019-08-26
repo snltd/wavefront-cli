@@ -6,7 +6,7 @@
 * Remove duplicate `manifests` subcommand from `integrations`
   command.
 * Fix broken noop on `acl clear`.
-* Fix `derivedmetric set` command.
+* Fix `derivedmetric` and `notificant` `set` commands.
 * Fix various `alert` commands when using `--noop`.
 * Better handle bad `search` input.
 * Fix bug when trying to read non-existent messages.

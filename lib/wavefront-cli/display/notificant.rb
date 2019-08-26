@@ -15,7 +15,7 @@ module WavefrontDisplay
     end
 
     def do_test
-      puts 'Testing notification.'
+      puts "Testing notificant '#{options[:'<id>']}'."
     end
   end
 end
