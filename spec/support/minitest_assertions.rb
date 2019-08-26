@@ -8,35 +8,35 @@ module Minitest
   #
   module Assertions
     def assert_gets(api_path, headers, &block)
-      stub_request(:get, api_path)
-        .with(headers: headers)
-        .to_return(body: DUMMY_RESPONSE, status: 200)
+      stub = stub_request(:get, api_path)
+              .with(headers: headers)
+              .to_return(body: DUMMY_RESPONSE, status: 200)
       yield block
-      assert_requested(:get, api_path, headers: headers)
+      assert_requested(stub)
     end
 
     def assert_posts(api_path, headers, payload, &block)
-      stub_request(:post, api_path)
-        .with(body: payload, headers: headers)
-        .to_return(body: DUMMY_RESPONSE, status: 200)
+      stub = stub_request(:post, api_path)
+              .with(body: payload, headers: headers)
+              .to_return(body: DUMMY_RESPONSE, status: 200)
       yield block
-      assert_requested(:post, api_path, headers: headers)
+      assert_requested(stub)
     end
 
     def assert_puts(api_path, headers, _payload, &block)
-      stub_request(:put, api_path)
-        .with(headers: headers)
-        .to_return(body: DUMMY_RESPONSE, status: 200)
+      stub = stub_request(:put, api_path)
+              .with(headers: headers)
+              .to_return(body: DUMMY_RESPONSE, status: 200)
       yield block
-      assert_requested(:put, api_path, headers: headers)
+      assert_requested(stub)
     end
 
     def assert_deletes(api_path, headers, &block)
-      stub_request(:delete, api_path)
-        .with(headers: headers)
-        .to_return(body: DUMMY_RESPONSE, status: 200)
+      stub = stub_request(:delete, api_path)
+              .with(headers: headers)
+              .to_return(body: DUMMY_RESPONSE, status: 200)
       yield block
-      assert_requested(:delete, api_path, headers: headers)
+      assert_requested(stub)
     end
 
     # Don't bother testing permutations for this
@@ -204,6 +204,13 @@ module Minitest
        { cmdline:  "--config #{CF} -E #{ENDPOINT}",
          token:    CF_VAL['default']['token'],
          endpoint: ENDPOINT }]
+    end
+
+    # Drop this into bodies when you need to check a non-specific
+    # timestamp is there
+    #
+    def a_timestamp
+      proc { |t| t.to_s =~ /^\d{10}$/ }
     end
   end
 end
