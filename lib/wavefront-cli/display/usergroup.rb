@@ -19,7 +19,7 @@ module WavefrontDisplay
     end
 
     def do_remove_user
-      puts format("Removed %s from '%s'.", (options[:'<user>']),
+      puts format("Removed %s from '%s'.", quoted(options[:'<user>']),
                   options[:'<id>']).fold(TW, 0)
     end
 
