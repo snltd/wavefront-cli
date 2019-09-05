@@ -6,7 +6,7 @@ module WavefrontDisplay
   #
   class User < Base
     def do_list_brief
-      puts data.map { |user| user[:identifier] }
+      data.each { |user| puts user[:identifier] }
     end
 
     def do_groups
@@ -15,7 +15,7 @@ module WavefrontDisplay
       if groups.empty?
         puts 'User does not belong to any groups.'
       else
-        puts groups.map { |u| format('%s (%s)', u[:id], u[:name]) }
+        groups.each { |u| puts format('%s (%s)', u[:id], u[:name]) }
       end
     end
 
@@ -39,7 +39,7 @@ module WavefrontDisplay
     end
 
     def do_delete
-      puts format("Deleted %s.", quoted(options[:'<user>']))
+      puts format('Deleted %s.', quoted(options[:'<user>']))
     end
 
     def do_invite

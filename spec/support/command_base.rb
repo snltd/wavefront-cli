@@ -54,7 +54,6 @@ class EndToEndTest < MiniTest::Test
 
   def dummy_response
     { status: { result: 'OK', message: '', code: 200 },
-      items: []
-    }.to_json
+      items: [] }.to_json
   end
 end

@@ -9,32 +9,32 @@ module Minitest
   module Assertions
     def assert_gets(api_path, headers, response, &block)
       stub = stub_request(:get, api_path)
-              .with(headers: headers)
-              .to_return(body: response, status: 200)
+             .with(headers: headers)
+             .to_return(body: response, status: 200)
       yield block
       assert_requested(stub)
     end
 
     def assert_posts(api_path, headers, payload, response, &block)
       stub = stub_request(:post, api_path)
-              .with(body: payload, headers: headers)
-              .to_return(body: response, status: 200)
+             .with(body: payload, headers: headers)
+             .to_return(body: response, status: 200)
       yield block
       assert_requested(stub)
     end
 
     def assert_puts(api_path, headers, _payload, response, &block)
       stub = stub_request(:put, api_path)
-              .with(headers: headers)
-              .to_return(body: response, status: 200)
+             .with(headers: headers)
+             .to_return(body: response, status: 200)
       yield block
       assert_requested(stub)
     end
 
     def assert_deletes(api_path, headers, response, &block)
       stub = stub_request(:delete, api_path)
-              .with(headers: headers)
-              .to_return(body: response, status: 200)
+             .with(headers: headers)
+             .to_return(body: response, status: 200)
       yield block
       assert_requested(stub)
     end

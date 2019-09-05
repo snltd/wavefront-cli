@@ -34,7 +34,7 @@ module WavefrontDisplay
     end
 
     def do_users
-      puts(if ! data.include?(:users) || data[:users].empty?
+      puts(if !data.include?(:users) || data[:users].empty?
              "No users in group '#{options[:'<id>']}'."
            else
              data[:users]
@@ -42,10 +42,10 @@ module WavefrontDisplay
     end
 
     def do_permissions
-      puts(if ! data.include?(:permissions) || data[:permissions].empty?
-            "Group '#{options[:'<id>']}' has no permissions."
+      puts(if !data.include?(:permissions) || data[:permissions].empty?
+             "Group '#{options[:'<id>']}' has no permissions."
            else
-            data[:permissions]
+             data[:permissions]
            end)
     end
   end

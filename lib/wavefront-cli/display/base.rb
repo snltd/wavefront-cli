@@ -385,7 +385,7 @@ module WavefrontDisplay
     # @return [String] all "things", strong-quoted and comma-separated
     #
     def quoted(things)
-      things.map{ |item| "'#{item}'" }.join(', ')
+      things.map { |item| "'#{item}'" }.join(', ')
     end
   end
 end

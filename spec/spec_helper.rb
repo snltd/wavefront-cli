@@ -143,7 +143,6 @@ def cmd_to_call(word, args, call, sdk_class = nil, spies = [])
   end
 end
 # rubocop:enable Metrics/PerceivedComplexity
-# rubocop:enable Metrics/AbcSize
 
 # Test no-ops
 #

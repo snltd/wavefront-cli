@@ -21,12 +21,12 @@ module WavefrontCliTest
         "uri: POST https://default.wavefront.com/api/v2/search/#{api_class}",
         'body: ' + { limit: 10,
                      offset: 0,
-                     query: [{key: 'id',
-                              value: id,
-                              matchingMethod: 'EXACT',
-                              negated: false}],
-                              sort: { field: 'id', ascending: true}
-                  }.to_json)
+                     query: [{ key: 'id',
+                               value: id,
+                               matchingMethod: 'EXACT',
+                               negated: false }],
+                     sort: { field: 'id', ascending: true } }.to_json
+      )
       assert_abort_on_missing_creds("search id=#{id}")
       assert_usage('search')
     end
@@ -88,7 +88,8 @@ module WavefrontCliTest
     def test_search_incorrect_usage
       assert_exits_with(
         'Searches require a key, a value, and a match operator.',
-        'search value -D')
+        'search value -D'
+      )
     end
   end
 end

@@ -59,6 +59,7 @@ module WavefrontCli
       end
     end
 
+    # rubocop:disable Metrics/AbcSize
     def do_extend_by
       cannot_noop!
 
@@ -71,6 +72,7 @@ module WavefrontCli
       old_end = wf.describe(options[:'<id>']).response.endTimeInSeconds
       change_end_time(old_end + to_add)
     end
+    # rubocop:enable Metrics/AbcSize
 
     def do_extend_to
       cannot_noop!
