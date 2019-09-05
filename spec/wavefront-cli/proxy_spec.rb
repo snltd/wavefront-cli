@@ -3,6 +3,8 @@
 require_relative '../support/command_base'
 require_relative '../../lib/wavefront-cli/proxy'
 
+# Ensure 'proxy' commands produce the correct API calls.
+#
 class ProxyEndToEndTest < EndToEndTest
   include WavefrontCliTest::DeleteUndelete
   include WavefrontCliTest::Describe

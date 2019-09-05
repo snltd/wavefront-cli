@@ -4,6 +4,8 @@ require_relative '../support/command_base'
 require_relative '../test_mixins/tag'
 require_relative '../../lib/wavefront-cli/source'
 
+# Ensure 'source' commands produce the correct API calls.
+#
 class SourceEndToEndTest < EndToEndTest
   include WavefrontCliTest::Describe
   include WavefrontCliTest::Search

@@ -3,6 +3,8 @@
 require_relative '../support/command_base'
 require_relative '../../lib/wavefront-cli/notificant'
 
+# Ensure 'notificant' commands produce the correct API calls.
+#
 class NotificantEndToEndTest < EndToEndTest
   include WavefrontCliTest::Delete
   include WavefrontCliTest::Describe

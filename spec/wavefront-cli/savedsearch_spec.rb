@@ -3,6 +3,8 @@
 require_relative '../support/command_base'
 require_relative '../../lib/wavefront-cli/savedsearch'
 
+# Ensure 'savedsearch' commands produce the correct API calls.
+#
 class SavedSearchEndToEndTest < EndToEndTest
   include WavefrontCliTest::List
   include WavefrontCliTest::Describe

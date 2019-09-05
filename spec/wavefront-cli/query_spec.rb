@@ -100,6 +100,8 @@ describe 'output formatting' do
   end
 end
 
+# Query tests
+#
 class QueryTest < MiniTest::Test
   attr_reader :wf
 
