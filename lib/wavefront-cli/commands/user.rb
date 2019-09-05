@@ -30,6 +30,7 @@ class WavefrontCommandUser < WavefrontCommandBase
   def _options
     [common_options,
      "-l, --long               list #{things} in detail",
+     "-a, --all                list all #{things}",
      "-o, --offset=n           start from nth #{thing}",
      "-L, --limit=COUNT        number of #{things} to list",
      '-O, --fields=F1,F2,...   only show given fields',
