@@ -219,12 +219,14 @@ module WavefrontCli
       exit if options[:noop]
 
       check_response_blocks(data)
+      warning_message(data.status)
       status_error_handler(data, method)
       handle_response(data.response, format_var, method)
     end
 
     def status_error_handler(data, method)
       return if check_status(data.status)
+
       handle_error(method, data.status.code) if format_var == :human
       display_api_error(data.status)
     end
@@ -252,6 +254,11 @@ module WavefrontCli
 
       abort format('ERROR: API code %s. %s.', status.code,
                    msg.chomp('.')).fold(TW, 7)
+    end
+
+    def warning_message(status)
+      return unless status.status.between?(201, 299)
+      puts format("API WARNING: '%s'.", status.message)
     end
 
     def display_no_api_response(data, method)
