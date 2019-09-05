@@ -7,34 +7,34 @@ module Minitest
   # Custom assertions to facilitate CLI command testing
   #
   module Assertions
-    def assert_gets(api_path, headers, &block)
+    def assert_gets(api_path, headers, response, &block)
       stub = stub_request(:get, api_path)
               .with(headers: headers)
-              .to_return(body: DUMMY_RESPONSE, status: 200)
+              .to_return(body: response, status: 200)
       yield block
       assert_requested(stub)
     end
 
-    def assert_posts(api_path, headers, payload, &block)
+    def assert_posts(api_path, headers, payload, response, &block)
       stub = stub_request(:post, api_path)
               .with(body: payload, headers: headers)
-              .to_return(body: DUMMY_RESPONSE, status: 200)
+              .to_return(body: response, status: 200)
       yield block
       assert_requested(stub)
     end
 
-    def assert_puts(api_path, headers, _payload, &block)
+    def assert_puts(api_path, headers, _payload, response, &block)
       stub = stub_request(:put, api_path)
               .with(headers: headers)
-              .to_return(body: DUMMY_RESPONSE, status: 200)
+              .to_return(body: response, status: 200)
       yield block
       assert_requested(stub)
     end
 
-    def assert_deletes(api_path, headers, &block)
+    def assert_deletes(api_path, headers, response, &block)
       stub = stub_request(:delete, api_path)
               .with(headers: headers)
-              .to_return(body: DUMMY_RESPONSE, status: 200)
+              .to_return(body: response, status: 200)
       yield block
       assert_requested(stub)
     end
@@ -93,46 +93,52 @@ module Minitest
       assert_empty(out)
     end
 
-    def assert_cmd_gets(command, api_path)
-      all_permutations do |p|
-        assert_gets("https://#{p[:endpoint]}#{api_path}",
-                    mk_headers(p[:token])) do
-          wf.new("#{cmd_word} #{command} #{p[:cmdline]}".split)
-        end
-      end
-    end
-
     def assert_repeated_output(msg)
-      out, err = capture_io do
-        yield
+      begin
+        out, err = capture_io do
+          yield
+        end
+      rescue SystemExit => e
+        puts e.backtrace
+        p e
       end
 
       out.each_line { |l| assert_equal(msg, l.rstrip) }
       assert_empty(err)
     end
 
-    def assert_cmd_posts(command, api_path, payload = 'null')
+    def assert_cmd_gets(command, api_path, response = dummy_response)
+      all_permutations do |p|
+        assert_gets("https://#{p[:endpoint]}#{api_path}",
+                    mk_headers(p[:token]), response) do
+          wf.new("#{cmd_word} #{command} #{p[:cmdline]}".split)
+        end
+      end
+    end
+
+    def assert_cmd_posts(command, api_path, payload = 'null',
+                         response = dummy_response)
       all_permutations do |p|
         assert_posts("https://#{p[:endpoint]}#{api_path}",
-                     mk_headers(p[:token]), payload) do
+                     mk_headers(p[:token]), payload, response) do
           wf.new("#{cmd_word} #{command} #{p[:cmdline]}".split)
         end
       end
     end
 
-    def assert_cmd_puts(command, api_path, payload)
+    def assert_cmd_puts(command, api_path, payload, response = dummy_response)
       all_permutations do |p|
         assert_puts("https://#{p[:endpoint]}#{api_path}",
-                    mk_headers(p[:token]), payload) do
+                    mk_headers(p[:token]), payload, response) do
           wf.new("#{cmd_word} #{command} #{p[:cmdline]}".split)
         end
       end
     end
 
-    def assert_cmd_deletes(command, api_path)
+    def assert_cmd_deletes(command, api_path, response = dummy_response)
       permutations.each do |p|
         assert_deletes("https://#{p[:endpoint]}#{api_path}",
-                       mk_headers(p[:token])) do
+                       mk_headers(p[:token]), response) do
           wf.new("#{cmd_word} #{command} #{p[:cmdline]}".split)
         end
       end
@@ -157,7 +163,10 @@ module Minitest
     # won't matter.
     #
     def all_permutations
-      permutations.each do |p|
+      perms = permutations
+      perms = perms.take(1) if ENV['WF_QUICKTEST']
+
+      perms.each do |p|
         yield(p)
         WebMock.reset!
       end

@@ -32,6 +32,8 @@ module WavefrontCliTest
     end
 
     def test_search_equals_with_limits
+      return if cannot_handle_offsets
+
       assert_repeated_output('No matches.') do
         assert_cmd_posts("search id=#{id} -L 5 --offset 15",
                          "/api/v2/search/#{api_class}",

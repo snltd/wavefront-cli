@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-require_relative 'command_base'
+require_relative '../support/command_base'
 require_relative '../../lib/wavefront-cli/usergroup'
 
 # Ensure 'usergroup' commands produce the correct API calls.

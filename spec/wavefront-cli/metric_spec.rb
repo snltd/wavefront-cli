@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-require_relative 'command_base'
+require_relative '../support/command_base'
 require_relative '../../lib/wavefront-cli/metric'
 
 # Ensure 'metric' commands produce the correct API calls.

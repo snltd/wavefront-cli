@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-require_relative 'command_base'
+require_relative '../support/command_base'
 require_relative '../test_mixins/acl'
 require_relative '../test_mixins/tag'
 require_relative '../test_mixins/history'
@@ -65,6 +65,10 @@ class DashboardEndToEndTest < EndToEndTest
         wf.new("#{cmd_word} fav #{id} #{perm[:cmdline]}".split)
       end
     end
+
+    assert_abort_on_missing_creds("fav #{id}")
+    assert_invalid_id("fav #{invalid_id}")
+    assert_usage('fav')
   end
 
   def test_unfav
@@ -98,6 +102,10 @@ class DashboardEndToEndTest < EndToEndTest
         wf.new("#{cmd_word} unfav #{id} #{perm[:cmdline]}".split)
       end
     end
+
+    assert_abort_on_missing_creds("unfav #{id}")
+    assert_invalid_id("unfav #{invalid_id}")
+    assert_usage('unfav')
   end
 
   private

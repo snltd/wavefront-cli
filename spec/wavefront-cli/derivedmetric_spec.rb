@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-require_relative 'command_base'
+require_relative '../support/command_base'
 require_relative '../test_mixins/tag'
 require_relative '../test_mixins/history'
 require_relative '../../lib/wavefront-cli/derivedmetric'
@@ -42,6 +42,8 @@ class DerivedMetricEndToEndTest < EndToEndTest
 
     assert_usage('create')
     assert_abort_on_missing_creds("create #{id} ts(series)")
+    # Names are free-text, so there aren't any invalid ID tests for this
+    # command.
   end
 
   def create_with_options

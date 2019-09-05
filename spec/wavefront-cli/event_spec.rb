@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-require_relative 'command_base'
+require_relative '../support/command_base'
 require_relative '../../lib/wavefront-cli/event'
 
 TEST_EVENT_DIR = Pathname.new('/tmp/wf_event_test')
@@ -8,8 +8,8 @@ TEST_EVENT_DIR = Pathname.new('/tmp/wf_event_test')
 # Test the event command behaves as it should
 #
 class EventEndToEndTest < EndToEndTest
-  #include WavefrontCliTest::Describe
-   #include WavefrontCliTest::Delete
+  # include WavefrontCliTest::Describe
+  # include WavefrontCliTest::Delete
   #
   # include WavefrontCliTest::Search
   # include WavefrontCliTest::Set
@@ -75,10 +75,10 @@ class EventEndToEndTest < EndToEndTest
   end
 
   def test_create
-    start_time = 1564681681
+    start_time = 1_564_681_681
 
     assert_cmd_posts("create #{event_name} --start #{start_time}",
-                     "/api/v2/event",
+                     '/api/v2/event',
                      { name: event_name,
                        startTime: start_time,
                        annotations: {},

@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-require_relative 'command_base'
+require_relative '../support/command_base'
 require_relative '../../lib/wavefront-cli/maintenancewindow'
 
 # Ensure 'window' commands produce the correct API calls.
@@ -84,7 +84,7 @@ class MaintenanceWindowEndToEndTest < EndToEndTest
                        startTimeInSeconds: 1_538_812_800,
                        endTimeInSeconds: a_timestamp,
                        title: 'test_2' })
-                   .to_return(body: DUMMY_RESPONSE, status: 200)
+                   .to_return(body: dummy_response, status: 200)
 
         wf.new("window close #{id} #{p[:cmdline]}".split)
 
@@ -116,7 +116,7 @@ class MaintenanceWindowEndToEndTest < EndToEndTest
                        startTimeInSeconds: 1_538_812_800,
                        endTimeInSeconds: 1_566_781_528,
                        title: 'test_2' })
-                   .to_return(body: DUMMY_RESPONSE, status: 200)
+                   .to_return(body: dummy_response, status: 200)
 
         wf.new("window extend to 1566781528 #{id} #{p[:cmdline]}".split)
 
@@ -148,7 +148,7 @@ class MaintenanceWindowEndToEndTest < EndToEndTest
                        startTimeInSeconds: 1_538_812_800,
                        endTimeInSeconds: a_timestamp,
                        title: 'test_2' })
-                   .to_return(body: DUMMY_RESPONSE, status: 200)
+                   .to_return(body: dummy_response, status: 200)
 
         wf.new("window extend by 1h #{id} #{p[:cmdline]}".split)
 

@@ -45,4 +45,16 @@ class EndToEndTest < MiniTest::Test
   def friendly_name
     cmd_word
   end
+
+  # Set this to true for things that use cursors rather than offsets
+  #
+  def cannot_handle_offsets
+    false
+  end
+
+  def dummy_response
+    { status: { result: 'OK', message: '', code: 200 },
+      items: []
+    }.to_json
+  end
 end

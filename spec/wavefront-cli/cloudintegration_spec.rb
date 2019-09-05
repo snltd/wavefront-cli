@@ -1,9 +1,9 @@
 #!/usr/bin/env ruby
 
-require_relative 'command_base'
+require_relative '../support/command_base'
 require_relative '../../lib/wavefront-cli/cloudintegration'
 
-# Ensure cloudintegration commands produce the correct API calls.
+# Ensure 'cloudintegration' commands produce the correct API calls.
 #
 class CloudIntegrationEndToEndTest < EndToEndTest
   include WavefrontCliTest::DeleteUndelete

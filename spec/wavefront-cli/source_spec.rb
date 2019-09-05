@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-require_relative 'command_base'
+require_relative '../support/command_base'
 require_relative '../test_mixins/tag'
 require_relative '../../lib/wavefront-cli/source'
 

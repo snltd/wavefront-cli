@@ -1,16 +1,15 @@
 #!/usr/bin/env ruby
 
-require_relative 'command_base'
+require_relative '../support/command_base'
 require_relative '../../lib/wavefront-cli/savedsearch'
 
 class SavedSearchEndToEndTest < EndToEndTest
-  include WavefrontCliTest::Delete
-  include WavefrontCliTest::Describe
-  include WavefrontCliTest::Dump
-  include WavefrontCliTest::Import
   include WavefrontCliTest::List
+  include WavefrontCliTest::Describe
+  include WavefrontCliTest::Delete
+  include WavefrontCliTest::Dump
+  # include WavefrontCliTest::Import
   include WavefrontCliTest::Search
-  include WavefrontCliTest::Set
 
   private
 
@@ -28,5 +27,9 @@ class SavedSearchEndToEndTest < EndToEndTest
 
   def sdk_class_name
     'SavedSearch'
+  end
+
+  def friendly_name
+    'saved search'
   end
 end

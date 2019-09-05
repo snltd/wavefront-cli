@@ -3,11 +3,7 @@ require 'inifile'
 # Constants for testing
 
 CMD = 'wf'.freeze
-TW = 80
-DUMMY_RESPONSE = {
-  status: { result: 'OK', message: '', code: 200 },
-  items: []
-}.to_json
+TW = 180
 
 ENDPOINT = 'metrics.wavefront.com'.freeze
 TOKEN = '0123456789-ABCDEF'.freeze
