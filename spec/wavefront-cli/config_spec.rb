@@ -1,6 +1,8 @@
 #!/usr/bin/env ruby
 
-require_relative '../spec_helper'
+require 'pathname'
+require 'minitest/autorun'
+require_relative '../constants'
 require_relative '../../lib/wavefront-cli/config'
 
 DEF_CF = Pathname.new(ENV['HOME']) + '.wavefront'

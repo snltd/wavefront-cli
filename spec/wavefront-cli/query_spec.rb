@@ -1,104 +1,218 @@
 #!/usr/bin/env ruby
 
-word = 'query'
-
-require_relative '../spec_helper'
-require_relative "../../lib/wavefront-cli/#{word}"
 require 'wavefront-sdk/support/mixins'
-# rubocop:disable Style/MixinUsage
-include Wavefront::Mixins
-# rubocop:enable Style/MixinUsage
+require_relative '../support/command_base'
+require_relative '../../lib/wavefront-cli/query'
 
-q = 'ts("dev.cli.test")'
+TEE_ZERO = Time.now.freeze
+
+# Ensure 'query' commands produce the correct API calls.
 #
-# The SDK has got smarter about calculating granularity options, so
-# we can't use any kind of absolute time any more. We round time
-# down to the nearest minute, because that's how users will most
-# likely specify it.
-#
-t1_t = Time.now - (30 * 60)
-t1_t = Time.at(t1_t.to_i - t1_t.sec)
-t2_t = Time.at(t1_t + (10 * 60))
+class AlertEndToEndTest < EndToEndTest
+  include Wavefront::Mixins
 
-t1 = parse_time(t1_t, true)
-t2 = parse_time(t2_t, true)
-o = "-g m -s #{t1_t.strftime('%H:%M')}"
-s_and_e_opts = "-s #{t1_t.strftime('%H:%M')} -e #{t2_t.strftime('%H:%M')}"
+  def _test_query_last_two_hours
+    out, err = capture_io do
+      assert_cmd_gets_with_params("--start='-2h' #{query}",
+                                  '/api/v2/chart/api',
+                                  { g: 'h',
+                                    sorted: 'true',
+                                    strict: 'true',
+                                    summarization: 'mean',
+                                    q: query }, canned_response)
+    end
 
-describe "#{word} command" do
-  cmd_to_call(word, "-s -2h #{q}",
-              path: '/api/v2/chart/api\\?g=m&i=false' \
-                    '&listMode=true&q=ts\(%22dev.cli.test%22\)' \
-                    '&s=[0-9]{13}&sorted=true&strict=true&summarization=mean',
-              regex: true)
-
-  missing_creds(word, ["#{o} '#{q}'", "raw #{q}"])
-
-  cmd_noop(word, "-s #{t1} #{q}",
-           ['GET https://metrics.wavefront.com/api/v2/chart/api',
-            i: false, summarization: 'mean', listMode: true, strict: true,
-            sorted: true, q: q, g: :m, s: t1])
-
-  cmd_noop(word, 'raw dev.cli.test',
-           ['GET https://metrics.wavefront.com/api/v2/chart/raw',
-            metric: 'dev.cli.test'])
-
-  cmd_to_call(word, "#{o} #{q}",
-              path: '/api/v2/chart/api?g=m&i=false&listMode=true' \
-                    "&q=ts(%22dev.cli.test%22)&s=#{t1}&sorted=true" \
-                    '&strict=true&summarization=mean')
-
-  cmd_to_call(word, "#{s_and_e_opts} #{q}",
-              path: "/api/v2/chart/api?e=#{t2}&g=m&i=false" \
-                    '&listMode=true&q=ts(%22dev.cli.test%22)' \
-                    "&s=#{t1}&sorted=true&strict=true&summarization=mean")
-
-  cmd_to_call(word, "-g s #{s_and_e_opts} -S max #{q}",
-              path: "/api/v2/chart/api?e=#{t2}&g=s&i=false" \
-                    '&listMode=true&q=ts(%22dev.cli.test%22)' \
-                    "&s=#{t1}&sorted=true&strict=true&summarization=max")
-
-  cmd_to_call(word, "-g s #{s_and_e_opts} -p 100 #{q}",
-              path: "/api/v2/chart/api?e=#{t2}&g=s&i=false" \
-                    '&listMode=true&q=ts(%22dev.cli.test%22)' \
-                    "&s=#{t1}&sorted=true&summarization=mean&strict=true" \
-                    '&p=100')
-
-  cmd_to_call(word, "-iO -g h #{s_and_e_opts} -p 100 #{q}",
-              path: "/api/v2/chart/api?e=#{t2}&g=h&i=true" \
-                    '&listMode=true&q=ts(%22dev.cli.test%22)' \
-                    "&s=#{t1}&sorted=true&summarization=mean" \
-                    '&strict=true&p=100&includeObsoleteMetrics=true')
-
-  cmd_to_call(word, "-N query -g h #{s_and_e_opts} -p 100 #{q}",
-              path: "/api/v2/chart/api?e=#{t2}&g=h&i=false" \
-                    '&listMode=true&q=ts(%22dev.cli.test%22)' \
-                    "&s=#{t1}&sorted=true&summarization=mean" \
-                    '&strict=true&p=100&n=query')
-
-  cmd_to_call(word, 'raw dev.cli.test',
-              path: '/api/v2/chart/raw?metric=dev.cli.test')
-
-  cmd_to_call(word, 'raw -H h1 dev.cli.test',
-              path: '/api/v2/chart/raw?metric=dev.cli.test&source=h1')
-
-  cmd_to_call(word, "raw -s #{t1_t.strftime('%H:%M')} -H h1 dev.cli.test",
-              path: '/api/v2/chart/raw?metric=dev.cli.test&source=h1' \
-                    "&startTime=#{t1}")
-
-  cmd_to_call(word, "raw #{s_and_e_opts} -H h1 dev.cli.test",
-              path: '/api/v2/chart/raw?metric=dev.cli.test&source=h1' \
-                    "&startTime=#{t1}&endTime=#{t2}")
-end
-
-describe 'output formatting' do
-  it 'tests query output' do
-    out, err = command_output(word, :do_default, nil, 'query-cpu.json')
-    refute_empty(out)
     assert_empty(err)
-    assert out.start_with?('name ')
+    assert_match(/name\s+ts\("cpu.0.pc.user"\)/, out)
+    assert_match(/query\s+ts\("cpu.0.pc.user"\)/, out)
+    assert_match(/sparkline/, out)
+  end
+
+  def _test_query_specifying_start_of_window_no_sparkline
+    out, err = capture_io do
+      assert_cmd_gets_with_params("-s #{epoch_time[0]} -k #{query}",
+                                  '/api/v2/chart/api',
+                                  { q: query,
+                                    g: 'm',
+                                    s: epoch_time[0].to_s }, canned_response)
+    end
+
+    assert_empty(err)
+    assert_match(/name\s+ts\("cpu.0.pc.user"\)/, out)
+    assert_match(/query\s+ts\("cpu.0.pc.user"\)/, out)
+    refute_match(/sparkline/, out)
+
+    assert_noop(
+      "-s #{epoch_time[0]} -k #{query}",
+      'uri: GET https://default.wavefront.com/api/v2/chart/api',
+      'params: {:i=>false, :summarization=>"mean", :listMode=>true, ' \
+      ':strict=>true, :sorted=>true, :q=>"ts(\"dev.cli.test\")", ' \
+      ":g=>:m, :s=>#{epoch_time[0]}}"
+    )
+  end
+
+  def test_query_with_start_and_end
+    out, err = capture_io do
+      assert_cmd_gets_with_params("#{start_and_end_opts} #{query}",
+                                  '/api/v2/chart/api',
+                                  { q: query,
+                                    g: 'm',
+                                    s: epoch_time[0].to_s,
+                                    e: epoch_time[1].to_s }, canned_response)
+    end
+
+    assert_match(/query\s+ts\("cpu.0.pc.user"\)/, out)
+    assert_empty(err)
+  end
+
+  def test_query_with_start_and_end_and_max_summary
+    out, err = capture_io do
+      assert_cmd_gets_with_params("#{start_and_end_opts} -S max #{query}",
+                                  '/api/v2/chart/api',
+                                  { q: query,
+                                    g: 'm',
+                                    summarization: 'max',
+                                    s: epoch_time[0].to_s,
+                                    e: epoch_time[1].to_s }, canned_response)
+    end
+
+    assert_match(/query\s+ts\("cpu.0.pc.user"\)/, out)
+    assert_empty(err)
+  end
+
+  def test_query_with_start_and_end_and_max_number_of_points
+    out, err = capture_io do
+      assert_cmd_gets_with_params("#{start_and_end_opts} -p 100 #{query}",
+                                  '/api/v2/chart/api',
+                                  { q: query,
+                                    g: 'm',
+                                    p: '100',
+                                    s: epoch_time[0].to_s,
+                                    e: epoch_time[1].to_s }, canned_response)
+    end
+
+    assert_match(/query\s+ts\("cpu.0.pc.user"\)/, out)
+    assert_empty(err)
+  end
+
+  def test_query_with_start_and_end_and_granularity_and_obsolete
+    out, err = capture_io do
+      assert_cmd_gets_with_params("#{start_and_end_opts} -g h -O #{query}",
+                                  '/api/v2/chart/api',
+                                  { q: query,
+                                    g: 'h',
+                                    includeObsoleteMetrics: 'true',
+                                    s: epoch_time[0].to_s,
+                                    e: epoch_time[1].to_s }, canned_response)
+    end
+
+    assert_match(/query\s+ts\("cpu.0.pc.user"\)/, out)
+    assert_empty(err)
+  end
+
+  def test_query_with_start_and_end_and_name
+    out, err = capture_io do
+      assert_cmd_gets_with_params(
+        "#{start_and_end_opts} -g s -N query #{query}",
+        '/api/v2/chart/api',
+        { q: query,
+          g: 's',
+          n: 'query',
+          s: epoch_time[0].to_s,
+          e: epoch_time[1].to_s }, canned_response
+      )
+    end
+
+    assert_match(/query\s+ts\("cpu.0.pc.user"\)/, out)
+    assert_empty(err)
+  end
+
+  def _test_raw
+    assert_cmd_gets('raw dev.cli.test',
+                    '/api/v2/chart/raw?metric=dev.cli.test')
+
+    assert_noop('raw dev.cli.test',
+                'uri: GET https://default.wavefront.com/api/v2/chart/raw',
+                'params: {:metric=>"dev.cli.test"}')
+    assert_abort_on_missing_creds('raw dev.cli.test')
+  end
+
+  def _test_error_if_the_query_is_a_literal_raw
+    out, err = capture_io do
+      assert_raises(SystemExit) do
+        assert_cmd_gets_with_params('raw',
+                                    '/api/v2/chart/api',
+                                    { g: 'm', q: 'raw' },
+                                    { errorMessage: 'mock error' }.to_json)
+      end
+    end
+
+    assert_empty(out)
+    assert_equal("Invalid query. API message: 'mock error'.", err.strip)
+  end
+
+  def _test_raw_with_host
+    assert_cmd_gets('raw -H h1 dev.cli.test',
+                    '/api/v2/chart/raw?metric=dev.cli.test&source=h1')
+  end
+
+  def test_raw_with_start_and_host
+    assert_cmd_gets("raw -s #{wall_time[0].strftime('%H:%M')} " \
+                    '-H h1 dev.cli.test',
+                    '/api/v2/chart/raw?metric=dev.cli.test&source=h1' \
+                    "&startTime=#{epoch_time[0]}")
+  end
+
+  def test_raw_with_start_and_end_and_host
+    assert_cmd_gets("raw #{start_and_end_opts} -H h1 dev.cli.test",
+                    '/api/v2/chart/raw?metric=dev.cli.test&source=h1' \
+                    "&startTime=#{epoch_time[0]}&endTime=#{epoch_time[1]}")
+  end
+
+  private
+
+  def query
+    'ts("dev.cli.test")'
+  end
+
+  def invalid_id
+    '__BAD__'
+  end
+
+  def cmd_word
+    'query'
+  end
+
+  def wall_time
+    half_an_hour_ago = TEE_ZERO - (30 * 60)
+    start_time = Time.at(half_an_hour_ago.to_i - half_an_hour_ago.sec)
+    [start_time, Time.at(start_time + (10 * 60))]
+  end
+
+  def epoch_time
+    wall_time.map { |t| parse_time(t, true) }
+  end
+
+  def start_and_end_opts
+    format('-s %s -e %s',
+           wall_time[0].strftime('%H:%M'),
+           wall_time[1].strftime('%H:%M'))
+  end
+
+  def canned_response
+    IO.read(RES_DIR + 'responses' + 'query.json')
   end
 end
+
+#
+# describe 'output formatting' do
+#   it 'tests query output' do
+#     out, err = command_output(word, :do_default, nil, 'query-cpu.json')
+#     refute_empty(out)
+#     assert_empty(err)
+#     assert out.start_with?('name ')
+#   end
+# end
 
 # Query tests
 #

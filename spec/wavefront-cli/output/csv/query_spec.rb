@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 
-require_relative '../../../spec_helper'
+require 'minitest/autorun'
+require_relative '../helpers'
 require_relative '../../../../lib/wavefront-cli/output/csv/query'
 
 # Test CSV output

@@ -1,6 +1,8 @@
 #!/usr/bin/env ruby
 
-require_relative '../../spec_helper'
+require 'minitest/autorun'
+require_relative 'helpers'
+require_relative '../../support/supported_commands'
 require_relative '../../../lib/wavefront-cli/output/wavefront'
 
 # Test the Wavefront instantiation of the base class
@@ -9,8 +11,7 @@ class WavefrontOutputBaseTest < MiniTest::Test
   attr_reader :wfo
 
   def setup
-    @wfo = WavefrontOutput::Wavefront.new(load_query_response,
-                                          class: 'query')
+    @wfo = WavefrontOutput::Wavefront.new(load_query_response, class: 'query')
   end
 
   def test_my_format
@@ -36,7 +37,7 @@ class WavefrontOutputBaseTest < MiniTest::Test
       assert klass.respond_to?(:run)
     end
 
-    (CMDS - supported_commands).each do |cmd|
+    (SupportedCommands.new.all - supported_commands).each do |cmd|
       wfo = WavefrontOutput::Wavefront.new(load_query_response, class: cmd)
       assert_raises(LoadError) { wfo.command_class }
     end

@@ -1,3 +1,4 @@
+require 'map'
 require_relative '../../stdlib/array'
 
 module WavefrontDisplayPrinter

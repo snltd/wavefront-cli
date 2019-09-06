@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 
-require_relative '../spec_helper'
+require 'minitest/autorun'
+require_relative '../constants'
 require_relative '../../lib/wavefront-cli/controller'
 
 # Be sure the CLI behaves properly when people ask for help

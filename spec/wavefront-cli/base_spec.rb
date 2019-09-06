@@ -1,23 +1,8 @@
 #!/usr/bin/env ruby
 
-require_relative '../spec_helper'
+require 'minitest/autorun'
 require_relative '../../lib/wavefront-cli/alert'
-require 'spy'
-require 'spy/integration'
-
-OPTS = { endpoint: 'test.wavefront.com',
-         token:    '0123456789-ABCDEF',
-         debug:    false,
-         noop:     true }.freeze
-
-OPTS_CMD = { endpoint: 'test.wavefront.com',
-             token:    '0123456789-ABCDEF',
-             debug:    false,
-             noop:     true,
-             test:     true,
-             cmd:      true }.freeze
-
-DISP_DATA = { a: 'string', b: %w[list_1 list_2] }.freeze
+require_relative '../../lib/wavefront-cli/version'
 
 # Since I tidied up the file layout in wavefront-sdk, there's no
 # longer a 1:1 mapping of CLI and SDK classes. wavefront-sdk/base is
@@ -30,7 +15,10 @@ class WavefrontCliBaseTest < MiniTest::Test
   attr_reader :wf, :wf_cmd
 
   def setup
-    @wf = WavefrontCli::Alert.new(OPTS)
+    @wf = WavefrontCli::Alert.new(endpoint: 'test.wavefront.com',
+                                  token:    '0123456789-ABCDEF',
+                                  debug:    false,
+                                  noop:     true)
   end
 
   def test_mk_creds

@@ -1,7 +1,8 @@
 #!/usr/bin/env ruby
 
 require 'json'
-require_relative '../../spec_helper'
+require 'minitest/autorun'
+require_relative 'helpers'
 require_relative '../../../lib/wavefront-cli/output/json'
 
 # Test JSON output

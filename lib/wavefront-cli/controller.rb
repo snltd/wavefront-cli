@@ -122,6 +122,8 @@ class WavefrontCliController
     abort 'File not found.'
   rescue WavefrontCli::Exception::InsufficientData => e
     abort "Insufficient data. #{e.message}"
+  rescue WavefrontCli::Exception::InvalidQuery => e
+    abort "Invalid query. API message: '#{e.message}'."
   rescue WavefrontCli::Exception::SystemError => e
     abort "Host system error. #{e.message}"
   rescue WavefrontCli::Exception::UnparseableInput => e

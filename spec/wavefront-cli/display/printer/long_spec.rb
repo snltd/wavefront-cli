@@ -1,8 +1,8 @@
 #!/usr/bin/env ruby
 
+require 'minitest/autorun'
+require_relative '../../../support/output_tester'
 require_relative '../../../../lib/wavefront-cli/display/printer/long'
-require_relative '../spec_helper'
-require_relative '../../../spec_helper'
 
 # Test verbose printing stuff
 #
@@ -88,21 +88,21 @@ class TestWavefrontDisplayPrinterLong < MiniTest::Test
   end
 
   def test_end_to_end
-    input, expected = OUTPUT_TESTER.in_and_out('user-input.json',
-                                               'user-human-long')
+    input, expected = OutputTester.new.in_and_out('user-input.json',
+                                                  'user-human-long')
     output = WavefrontDisplayPrinter::Long.new(input).to_s
     assert_equal(expected, output + "\n")
 
-    input, expected = OUTPUT_TESTER.in_and_out('user-input.json',
-                                               'user-human-long-no_sep')
+    input, expected = OutputTester.new.in_and_out('user-input.json',
+                                                  'user-human-long-no_sep')
     output = WavefrontDisplayPrinter::Long.new(input, nil, nil,
                                                separator: false).to_s
     assert_equal(expected, output + "\n")
   end
 
   def test_end_to_end_fold
-    input, expected = OUTPUT_TESTER.in_and_out('alert-input.json',
-                                               'alert-human-long')
+    input, expected = OutputTester.new.in_and_out('alert-input.json',
+                                                  'alert-human-long')
     output = WavefrontDisplayPrinter::Long.new(input).to_s
     assert_equal(expected, output + "\n")
   end

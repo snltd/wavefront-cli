@@ -15,6 +15,15 @@ module Minitest
       assert_requested(stub)
     end
 
+    def assert_gets_with_params(api_path, params, headers, response, &block)
+      stub = stub_request(:get, api_path)
+             .with(query: hash_including(params),
+                   headers: headers)
+             .to_return(body: response, status: 200)
+      yield block
+      assert_requested(stub)
+    end
+
     def assert_posts(api_path, headers, payload, response, &block)
       stub = stub_request(:post, api_path)
              .with(body: payload, headers: headers)
@@ -111,6 +120,18 @@ module Minitest
       all_permutations do |p|
         assert_gets("https://#{p[:endpoint]}#{api_path}",
                     mk_headers(p[:token]), response) do
+          wf.new("#{cmd_word} #{command} #{p[:cmdline]}".split)
+        end
+      end
+    end
+
+    def assert_cmd_gets_with_params(command, api_path, params,
+                                    response = dummy_response)
+      all_permutations do |p|
+        assert_gets_with_params("https://#{p[:endpoint]}#{api_path}",
+                                params,
+                                mk_headers(p[:token]),
+                                response) do
           wf.new("#{cmd_word} #{command} #{p[:cmdline]}".split)
         end
       end

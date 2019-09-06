@@ -2,11 +2,9 @@
 
 require 'date'
 require 'map'
-require 'pathname'
-require_relative(File.join('../../../lib/wavefront-cli/display',
-                           Pathname.new(__FILE__).basename
-                           .to_s.sub('_spec.rb', '')))
-require_relative 'spec_helper'
+require 'minitest/autorun'
+require 'spy/integration'
+require_relative '../../../lib/wavefront-cli/display/base'
 
 S_DATA = Map.new
 S_OPTIONS = { '<id>': 'abc123' }.freeze

@@ -19,6 +19,9 @@ module WavefrontDisplay
 
       @data = d_obj
       long_output
+    rescue StandardError
+      raise(WavefrontCli::Exception::InvalidQuery,
+            data[:errorMessage].split("\n").first)
     end
     # rubocop:enable Metrics/AbcSize
 

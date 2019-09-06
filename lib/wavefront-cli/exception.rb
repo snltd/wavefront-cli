@@ -11,6 +11,7 @@ module WavefrontCli
     class ImpossibleSearch < RuntimeError; end
     class InsufficientData < RuntimeError; end
     class InvalidInput < RuntimeError; end
+    class InvalidQuery < RuntimeError; end
     class InvalidValue < RuntimeError; end
     class ProfileExists < RuntimeError; end
     class ProfileNotFound < RuntimeError; end
