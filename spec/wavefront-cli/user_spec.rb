@@ -5,7 +5,7 @@ require_relative '../../lib/wavefront-cli/user'
 
 # Ensure 'user' commands produce the correct API calls.
 #
-class UserGroupEndToEndTest < EndToEndTest
+class UserEndToEndTest < EndToEndTest
   include WavefrontCliTest::Search
   include WavefrontCliTest::Describe
 
@@ -42,13 +42,13 @@ class UserGroupEndToEndTest < EndToEndTest
       )
     end
 
+    assert_empty err
     out = out.split("\n")
     assert_equal("Created user 'test1@sysdef.xyz'.", out[0])
     assert_equal('Permission groups', out[1])
     assert_equal('  <none>', out[2])
     assert_equal('User groups', out[3])
     assert_match(/^  Everyone \([0-9a-f\-]{36}\)$/, out.last)
-    assert_empty err
   end
 
   def test_create_with_email_invite
@@ -75,14 +75,13 @@ class UserGroupEndToEndTest < EndToEndTest
       )
     end
 
+    assert_empty err
     out = out.split("\n")
     assert_equal("Created user 'test1@sysdef.xyz'.", out[0])
     assert_equal('Permission groups', out[1])
     assert_equal('  <none>', out[2])
     assert_equal('User groups', out[3])
     assert_match(/^  Everyone \([0-9a-f\-]{36}\)$/, out.last)
-
-    assert_empty err
   end
 
   def test_create_with_groups
@@ -110,13 +109,13 @@ class UserGroupEndToEndTest < EndToEndTest
       )
     end
 
+    assert_empty err
     out = out.split("\n")
     assert_equal("Created user 'test1@sysdef.xyz'.", out[0])
     assert_equal('Permission groups', out[1])
     assert_equal('  <none>', out[2])
     assert_equal('User groups', out[3])
     assert_match(/^  Everyone \([0-9a-f\-]{36}\)$/, out.last)
-    assert_empty err
   end
 
   def test_invite
@@ -217,9 +216,9 @@ class UserGroupEndToEndTest < EndToEndTest
       Spy.teardown
     end
 
+    assert_empty(err)
     assert_equal('[{"items":[{"identifier":"user1@example.com"},' \
                  '{"identifier":"user2@example.com"}]}]', out.strip)
-    assert_empty(err)
   end
 
   def test_dump_yaml
@@ -230,9 +229,9 @@ class UserGroupEndToEndTest < EndToEndTest
       Spy.teardown
     end
 
+    assert_empty(err)
     assert_equal("---\n- items:\n  - identifier: user1@example.com\n  " \
                  '- identifier: user2@example.com', out.strip)
-    assert_empty(err)
   end
 
   private

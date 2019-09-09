@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-require_relative 'command_base'
+require_relative '../support/command_base'
 require_relative '../../lib/wavefront-cli/webhook'
 
 # Ensure 'webhook' commands produce the correct API calls.

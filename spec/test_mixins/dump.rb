@@ -19,8 +19,8 @@ module WavefrontCliTest
         Spy.teardown
       end
 
-      assert_equal([].to_s, out.rstrip)
       assert_empty(err)
+      assert_equal([].to_s, out.rstrip)
     end
 
     def test_dump_yaml
@@ -32,8 +32,8 @@ module WavefrontCliTest
         Spy.teardown
       end
 
-      assert_equal('--- []', out.rstrip)
       assert_empty(err)
+      assert_equal('--- []', out.rstrip)
     end
   end
 end

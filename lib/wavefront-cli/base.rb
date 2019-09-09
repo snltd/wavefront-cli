@@ -318,13 +318,12 @@ module WavefrontCli
     #
     def validate_opts
       unless options[:token]
-        raise(WavefrontCli::Exception::CredentialError,
-              'Missing API token.')
+        raise(WavefrontCli::Exception::CredentialError, 'Missing API token.')
       end
 
       return true if options[:endpoint]
-      raise(WavefrontCli::Exception::CredentialError,
-            'Missing API endpoint.')
+
+      raise(WavefrontCli::Exception::CredentialError, 'Missing API endpoint.')
     end
 
     # Give it a path to a file (as a string) and it will return the

@@ -14,8 +14,8 @@ class MetricEndToEndTest < EndToEndTest
       end
     end
 
-    assert_equal("Did not find metric 'dev.cli.test'.", out.strip)
     assert_empty(err)
+    assert_equal("Did not find metric 'dev.cli.test'.", out.strip)
 
     assert_invalid_id("describe #{invalid_id}")
     assert_usage('describe')
@@ -30,8 +30,8 @@ class MetricEndToEndTest < EndToEndTest
       end
     end
 
-    assert_equal("Did not find metric 'dev.cli.test'.", out.strip)
     assert_empty(err)
+    assert_equal("Did not find metric 'dev.cli.test'.", out.strip)
   end
 
   def test_describe_with_glob_and_offset
@@ -42,8 +42,8 @@ class MetricEndToEndTest < EndToEndTest
       end
     end
 
-    assert_equal("Did not find metric 'dev.cli.test'.", out.strip)
     assert_empty(err)
+    assert_equal("Did not find metric 'dev.cli.test'.", out.strip)
   end
 
   private

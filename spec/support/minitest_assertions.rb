@@ -55,8 +55,8 @@ module Minitest
         assert_raises(SystemExit) { wf.new("#{cmd_word} #{command}".split) }
       end
 
-      assert_match(/is not a valid \w+ ID.$/, err)
       assert_empty(out)
+      assert_match(/is not a valid \w+ ID.$/, err)
     end
 
     def assert_usage(command)
@@ -64,8 +64,8 @@ module Minitest
         assert_raises(SystemExit) { wf.new("#{cmd_word} #{command}".split) }
       end
 
-      assert_match(/^Usage:\n  wf #{cmd_word}/, err)
       assert_empty(out)
+      assert_match(/^Usage:\n  wf #{cmd_word}/, err)
     end
 
     def assert_abort_on_missing_creds(command)
@@ -75,31 +75,31 @@ module Minitest
         end
       end
 
-      assert_equal("Configuration file '/nofile' not found.\n", err)
       assert_empty(out)
+      assert_equal("Configuration file '/nofile' not found.\n", err)
     end
 
     def assert_exits_with(message, command)
       out, err = capture_io do
         assert_raises(SystemExit) do
-          wf.new("#{cmd_word} #{command}".split)
+          wf.new("#{cmd_word} #{command} --config #{CF}".split)
         end
       end
 
-      assert_equal(message, err.strip)
       assert_empty(out)
+      assert_equal(message, err.strip)
     end
 
     def assert_cannot_noop(command)
       out, err = capture_io do
         assert_raises(SystemExit) do
-          wf.new("#{cmd_word} #{command} --noop".split)
+          wf.new("#{cmd_word} #{command} --noop --config #{CF}".split)
         end
       end
 
+      assert_empty(out)
       assert_equal('Multiple API call operations cannot be ' \
                    "performed as no-ops.\n", err)
-      assert_empty(out)
     end
 
     def assert_repeated_output(msg)
@@ -112,8 +112,8 @@ module Minitest
         p e
       end
 
-      out.each_line { |l| assert_equal(msg, l.rstrip) }
       assert_empty(err)
+      out.each_line { |l| assert_equal(msg, l.rstrip) }
     end
 
     def assert_cmd_gets(command, api_path, response = dummy_response)
@@ -185,7 +185,7 @@ module Minitest
     #
     def all_permutations
       perms = permutations
-      perms = perms.take(1) if ENV['WF_QUICKTEST']
+      perms = [perms[2]]
 
       perms.each do |p|
         yield(p)

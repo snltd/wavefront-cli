@@ -8,7 +8,7 @@ TEE_ZERO = Time.now.freeze
 
 # Ensure 'query' commands produce the correct API calls.
 #
-class AlertEndToEndTest < EndToEndTest
+class QueryEndToEndTest < EndToEndTest
   include Wavefront::Mixins
 
   def _test_query_last_two_hours
@@ -61,8 +61,8 @@ class AlertEndToEndTest < EndToEndTest
                                     e: epoch_time[1].to_s }, canned_response)
     end
 
-    assert_match(/query\s+ts\("cpu.0.pc.user"\)/, out)
     assert_empty(err)
+    assert_match(/query\s+ts\("cpu.0.pc.user"\)/, out)
   end
 
   def test_query_with_start_and_end_and_max_summary
@@ -76,8 +76,8 @@ class AlertEndToEndTest < EndToEndTest
                                     e: epoch_time[1].to_s }, canned_response)
     end
 
-    assert_match(/query\s+ts\("cpu.0.pc.user"\)/, out)
     assert_empty(err)
+    assert_match(/query\s+ts\("cpu.0.pc.user"\)/, out)
   end
 
   def test_query_with_start_and_end_and_max_number_of_points
@@ -91,8 +91,8 @@ class AlertEndToEndTest < EndToEndTest
                                     e: epoch_time[1].to_s }, canned_response)
     end
 
-    assert_match(/query\s+ts\("cpu.0.pc.user"\)/, out)
     assert_empty(err)
+    assert_match(/query\s+ts\("cpu.0.pc.user"\)/, out)
   end
 
   def test_query_with_start_and_end_and_granularity_and_obsolete
@@ -106,8 +106,8 @@ class AlertEndToEndTest < EndToEndTest
                                     e: epoch_time[1].to_s }, canned_response)
     end
 
-    assert_match(/query\s+ts\("cpu.0.pc.user"\)/, out)
     assert_empty(err)
+    assert_match(/query\s+ts\("cpu.0.pc.user"\)/, out)
   end
 
   def test_query_with_start_and_end_and_name
@@ -123,8 +123,8 @@ class AlertEndToEndTest < EndToEndTest
       )
     end
 
-    assert_match(/query\s+ts\("cpu.0.pc.user"\)/, out)
     assert_empty(err)
+    assert_match(/query\s+ts\("cpu.0.pc.user"\)/, out)
   end
 
   def _test_raw

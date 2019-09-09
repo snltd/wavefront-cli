@@ -52,8 +52,18 @@ class WavefrontCliConfigTest < MiniTest::Test
   end
 
   def test_base_config
-    assert_instance_of(IniFile, wfo.base_config)
-    assert_instance_of(IniFile, wf.base_config)
+    out, err = capture_io { assert_instance_of(IniFile, wf.base_config) }
+    assert_empty(err)
+
+    if (Pathname.new(ENV['HOME']) + '.wavefront').exist?
+      assert_empty(out)
+    else
+      assert_match(/Creating new configuration file at/, out)
+    end
+
+    out, err = capture_io { assert_instance_of(IniFile, wfo.base_config) }
+    assert_empty(err)
+    assert_empty(out)
 
     assert_output('') { wfo.base_config }
     assert_output("Creating new configuration file at /no/file.\n") do
@@ -98,12 +108,12 @@ class WavefrontCliConfigTest < MiniTest::Test
       assert_equal('json', x[:prof]['format'])
     end
 
+    assert_empty(err)
     assert_match(/Creating profile 'prof'./, out)
     assert_match(/Wavefront API token/, out)
     assert_match(/Wavefront API endpoint/, out)
     assert_match(/Wavefront proxy endpoint/, out)
     assert_match(/default output format/, out)
-    assert_empty(err)
   end
 
   def test_create_profile_2
@@ -122,12 +132,12 @@ class WavefrontCliConfigTest < MiniTest::Test
       assert_equal('human', x[:prof]['format'])
     end
 
+    assert_empty(err)
     assert_match(/Creating profile 'prof'./, out)
     assert_match(/Wavefront API token/, out)
     assert_match(/Wavefront API endpoint/, out)
     assert_match(/Wavefront proxy endpoint/, out)
     assert_match(/default output format/, out)
-    assert_empty(err)
   end
 
   def test_create_profile_3
@@ -141,9 +151,9 @@ class WavefrontCliConfigTest < MiniTest::Test
       end
     end
 
+    assert_empty(err)
     assert_match(/Creating profile 'prof'./, out)
     assert_match(/Wavefront API token/, out)
-    assert_empty(err)
   end
 
   def test_create_profile_4
@@ -157,9 +167,9 @@ class WavefrontCliConfigTest < MiniTest::Test
       end
     end
 
+    assert_empty(err)
     assert_match(/Creating profile 'prof'./, out)
     assert_match(/Wavefront API token/, out)
-    assert_empty(err)
   end
 
   def test_create_profile_5
@@ -173,9 +183,9 @@ class WavefrontCliConfigTest < MiniTest::Test
       end
     end
 
+    assert_empty(err)
     assert_match(/Creating profile 'prof'./, out)
     assert_match(/Wavefront API token/, out)
-    assert_empty(err)
   end
 
   def test_do_setup; end

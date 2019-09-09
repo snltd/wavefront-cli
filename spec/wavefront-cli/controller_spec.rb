@@ -2,6 +2,7 @@
 
 require 'minitest/autorun'
 require_relative '../constants'
+require_relative '../support/supported_commands'
 require_relative '../../lib/wavefront-cli/controller'
 
 # Be sure the CLI behaves properly when people ask for help
@@ -32,11 +33,14 @@ class WavefrontCliHelpTest < MiniTest::Test
   rescue SystemExit => e
     assert_equal(1, e.status)
     assert_match(/^Commands:$/, e.message)
-    CMDS.each { |cmd| assert_match(/^  #{cmd} /, e.message) }
+
+    SupportedCommands.new.all.each do |cmd|
+      assert_match(/^  #{cmd} /, e.message)
+    end
   end
 
   def test_command_help
-    CMDS.each do |cmd|
+    SupportedCommands.new.all.each do |cmd|
       begin
         capture_io { WavefrontCliController.new([cmd, '--help']) }
       rescue SystemExit => e

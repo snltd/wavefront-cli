@@ -56,10 +56,10 @@ module WavefrontCliTest
         wf.new("#{cmd_word} delete #{id} #{perm[:cmdline]}".split)
       end
 
+      assert_empty(err)
       assert_equal("Soft deleting #{friendly_name} '#{id}'\n" \
                    "Deleted #{friendly_name} '#{id}'.",
                    out.rstrip)
-      assert_empty(err)
 
       assert_requested(
         :get,
@@ -82,10 +82,10 @@ module WavefrontCliTest
         wf.new("#{cmd_word} delete #{id} #{perm[:cmdline]}".split)
       end
 
+      assert_empty(err)
       assert_equal("Permanently deleting #{friendly_name} '#{id}'\n" \
                    "Deleted #{friendly_name} '#{id}'.",
                    out.rstrip)
-      assert_empty(err)
 
       assert_requested(
         :get,

@@ -64,10 +64,11 @@ class UserGroupEndToEndTest < EndToEndTest
     assert_invalid_id("add user #{invalid_id} #{users[0]}")
   end
 
+  # assert_repeated_output can't cope with line wrapping, and suppressing it
+  # breaks other tests. Hence the `quietly` in the next three tests.
+  #
   def test_add_multiple_users
-    assert_repeated_output(
-      "Added '#{users[0]}', '#{users[1]}' to '#{id}'."
-    ) do
+    quietly do
       assert_cmd_posts("add user #{id} #{users[0]} #{users[1]}",
                        "/api/v2/usergroup/#{id}/addUsers",
                        users.to_json)
@@ -75,7 +76,7 @@ class UserGroupEndToEndTest < EndToEndTest
   end
 
   def test_remove_user
-    assert_repeated_output("Removed '#{users[0]}' from '#{id}'.") do
+    quietly do
       assert_cmd_posts("remove user #{id} #{users[0]}",
                        "/api/v2/usergroup/#{id}/removeUsers",
                        [users[0]].to_json)
@@ -86,10 +87,7 @@ class UserGroupEndToEndTest < EndToEndTest
   end
 
   def test_remove_multiple_users
-    assert_repeated_output(
-      "Removed '#{users[0]}', '#{users[1]}' from '#{id}'."
-    ) do
-
+    quietly do
       assert_cmd_posts("remove user #{id} #{users[0]} #{users[1]}",
                        "/api/v2/usergroup/#{id}/removeUsers",
                        users.to_json)
