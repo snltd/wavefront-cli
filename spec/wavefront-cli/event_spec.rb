@@ -234,7 +234,7 @@ class EventEndToEndTest < EndToEndTest
     setup_test_state_dir
 
     out, err = capture_io do
-      assert_raises(SystemExit) { wf.new('event show'.split) }
+      assert_raises(SystemExit) { wf.new("event show -c #{CF}".split) }
     end
 
     assert_empty(err)
