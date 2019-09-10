@@ -118,10 +118,18 @@ module Minitest
 
     def assert_cmd_gets(command, api_path, response = dummy_response)
       all_permutations do |p|
-        assert_gets("https://#{p[:endpoint]}#{api_path}",
+        assert_gets(full_uri(p[:endpoint], api_path),
                     mk_headers(p[:token]), response) do
           wf.new("#{cmd_word} #{command} #{p[:cmdline]}".split)
         end
+      end
+    end
+
+    def full_uri(host, api_path)
+      if api_path.is_a?(Regexp)
+        %r{^https://#{host}#{api_path.source}$}
+      else
+        "https://#{host}#{api_path}"
       end
     end
 
@@ -241,6 +249,10 @@ module Minitest
     #
     def a_timestamp
       proc { |t| t.to_s =~ /^\d{10}$/ }
+    end
+
+    def a_ms_timestamp
+      proc { |t| t.to_s =~ /^\d{13}$/ }
     end
   end
 end
