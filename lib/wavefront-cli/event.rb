@@ -9,48 +9,39 @@ module WavefrontCli
   # CLI coverage for the v2 'event' API.
   #
   class Event < Base
-    attr_accessor :state_dir
+    attr_reader :state_dir
 
     include Wavefront::Mixins
     include WavefrontCli::Mixin::Tag
 
     def post_initialize(_options)
       @state_dir = event_state_dir + (Etc.getlogin || 'notty')
-      create_state_dir
+      create_dir(state_dir)
     end
 
     def do_list
-      wf.list(options[:start]  || Time.now - 600,
-              options[:end]    || Time.now,
-              options[:limit]  || 100,
-              options[:cursor] || nil)
+      wf.list(*list_args)
     end
 
-    # rubocop:disable Metrics/AbcSize
     def do_create(opts = nil)
       opts ||= options
-
       opts[:start] = Time.now unless opts[:start]
-
       t_start = parse_time(opts[:start], true)
-
       body = create_body(opts, t_start)
-
       resp = wf.create(body)
-
-      unless opts[:nostate] || opts[:end] || opts[:instant]
-        create_state_file(resp.response[:id], opts[:host])
-      end
-
+      create_state_file(resp.response[:id]) if state_file_needed?(opts)
       resp
     end
-    # rubocop:enable Metrics/AbcSize
+
+    def state_file_needed?(opts)
+      !(opts[:nostate] || opts[:end] || opts[:instant])
+    end
 
     # The user doesn't have to give us an event ID.  If no event
     # name is given, we'll pop the last event off the stack. If an
     # event name is given and it doesn't look like a full WF event
     # name, we'll look for something on the stack.  If it does look
-    # like a real event, we'll make and API call straight away.
+    # like a real event, we'll make an API call straight away.
     #
     # rubocop:disable Metrics/AbcSize
     def do_close(id = nil)
@@ -84,45 +75,45 @@ module WavefrontCli
       event_id = do_create(create_opts).response.id
       exit_code = run_wrapped_cmd(options[:command])
       do_close(event_id)
-      puts "Command exited #{exit_code}"
+      puts "Command exited #{exit_code}."
       exit exit_code
     end
 
-    private
-
+    # We can override the temp directory with the WF_EVENT_STATE_DIR. This is
+    # primarily for testing.
+    #
     def event_state_dir
-      options[:event_state_dir] || EVENT_STATE_DIR
+      if ENV['WF_EVENT_STATE_DIR']
+        Pathname.new(ENV['WF_EVENT_STATE_DIR'])
+      else
+        EVENT_STATE_DIR
+      end
     end
 
     # return [Hash] body for #create() method
     #
-    # rubocop:disable Metrics/AbcSize
-    # rubocop:disable Metrics/CyclomaticComplexity
-    # rubocop:disable Metrics/PerceivedComplexity
-    # rubocop:disable Metrics/MethodLength
     def create_body(opts, t_start)
-      body = { name:        opts[:'<event>'],
-               startTime:   t_start,
-               annotations: {} }
+      { name:        opts[:'<event>'],
+        startTime:   t_start,
+        annotations: annotations(opts) }.tap do |r|
+          r[:hosts] = opts[:host] if opts[:host]
+          r[:tags] = opts[:evtag] if opts[:evtag]
 
-      body[:annotations][:details] = opts[:desc] if opts[:desc]
-      body[:annotations][:severity] = opts[:severity] if opts[:severity]
-      body[:annotations][:type] = opts[:type] if opts[:type]
-      body[:hosts] = opts[:host] if opts[:host]
-      body[:tags] = opts[:evtag] if opts[:evtag]
-
-      if opts[:instant]
-        body[:endTime] = t_start + 1
-      elsif opts[:end]
-        body[:endTime] = parse_time(opts[:end], true)
-      end
-
-      body
+          if opts[:instant]
+            r[:endTime] = t_start + 1
+          elsif opts[:end]
+            r[:endTime] = parse_time(opts[:end], true)
+          end
+        end
     end
-    # rubocop:enable Metrics/MethodLength
-    # rubocop:enable Metrics/CyclomaticComplexity
-    # rubocop:enable Metrics/PerceivedComplexity
-    # rubocop:enable Metrics/AbcSize
+
+    def annotations(opts)
+      {}.tap do |r|
+        r[:details] = opts[:desc] if opts[:desc]
+        r[:severity] = opts[:severity] if opts[:severity]
+        r[:type] = opts[:type] if opts[:type]
+      end
+    end
 
     # @return a local event from the stack directory
     #
@@ -158,7 +149,7 @@ module WavefrontCli
 
       Open3.popen2e(cmd) do |_in, out, thr|
         # rubocop:disable Lint/AssignmentInCondition
-        while l = out.gets do STDERR.puts(l) end
+        while l = out.gets do warn l end
         # rubocop:enable Lint/AssignmentInCondition
         ret = thr.value.exitstatus
       end
@@ -171,18 +162,27 @@ module WavefrontCli
     # file. These aren't currently used by anything in the CLI, but they
     # might be useful to someone, somewhere, someday.
     #
-    def create_state_file(id, hosts = [])
-      p state_dir
+    def create_state_file(id)
       fname = state_dir + id
-      puts fname
-      File.open(fname, 'w') { hosts.to_s }
+      File.open(fname, 'w') { |fh| fh.puts(event_file_data) }
       puts "Event state recorded at #{fname}."
-    rescue StandardError => e
-      p e
+    rescue StandardError
       puts 'NOTICE: event was created but state file was not.'
     end
 
-    def create_state_dir
+    # Record event data in the state file. We don't currently use it, but it
+    # might be useful to someone someday.
+    #
+    # @return [String]
+    #
+    def event_file_data
+      { hosts:       options[:host],
+        description: options[:desc],
+        severity:    options[:severity],
+        tags:        options[:evtag] }.to_json
+    end
+
+    def create_dir(state_dir)
       FileUtils.mkdir_p(state_dir)
       raise unless state_dir.exist? && state_dir.directory? &&
                    state_dir.writable?
@@ -218,10 +218,24 @@ module WavefrontCli
 
     def local_events_with_name(name = nil)
       list = local_event_list
-
       return list unless name
 
       list.select { |f| f.basename.to_s.split(':').last == name }
+    end
+
+    def list_args
+      [window_start,
+       window_end,
+       options[:limit] || 100,
+       options[:cursor] || nil]
+    end
+
+    def window_start
+      parse_time((options[:start] || Time.now - 600), true)
+    end
+
+    def window_end
+      parse_time((options[:end] || Time.now), true)
     end
   end
 end
