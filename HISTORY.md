@@ -17,18 +17,18 @@
 * Removed `user set` command, because it didn't do anything.
 * Improve output of `user` and `usergroup` commands.
 
-## 4.2.1 (26/07/2019)
-* Remove tagging subcommands from `apitoken` command's usage info,
+## 4.2.1 (201user9
+groups.to_json)
   because you can't tag API tokens.
 
-## 4.2.0 (01/07/2019)
+## 4.2.0 (2019-07-01)
 * Add `-M` (`--items-only`) option to all commands. For
   machine-parseable formats, this filters the API response, giving only
   the `items` array, which should usually be suitable for batch
   importing. This is a more sophisticated and flexible implementation of
   4.1.0's `dump` subcommand.
 
-## 4.1.0 (27/06/2019)
+## 4.1.0 (2019-06-27)
 * Add `dump` subcommand for all importable object types. Produces
   JSON or YAML output.
 * Allow batch importing of objects. Works with files produced by
@@ -36,21 +36,21 @@
   objects. Batch imports are automatically detected by the `import`
   subcommand.
 
-## 4.0.2 (20/06/2019)
+## 4.0.2 (2019-06-20)
 * Allow importing of dashboards which have a URL but not an ID.
 
-## 4.0.1 (18/06/2019)
+## 4.0.1 (2019-06-18)
 * `update` subcommand has been changed to `set`. (Breaking change.)
 * `import` subcommand now accepts `--update` (`-u`) option, which
   lets you overwrite an existing object with a JSON or YAML
   description.
 * Fix `tag searchpath` bug.
 
-## 4.0.0 (18/06/2019)
+## 4.0.0 (2019-06-18)
 
 * Failed push to Gemfury. Does not exist.
 
-## 3.3.0 (10/06/2019)
+## 3.3.0 (2019-06-10)
 * Support negation searches. Search for alerts with targets *not*
   containing `str` with `wf alert search target!~str`.
 * Add `tag pathsearch` command. Searches for tags whose hierarchical
@@ -62,48 +62,48 @@
   match the search along with the matching keys. (Not values!)
   Adding `-l` presents all matching objects in full.
 
-## 3.2.3 (24/05/2019)
+## 3.2.3 (2019-05-24)
 * Don't print erroneous pagination message when using `list --all`.
 * Require 3.3.2 of [the SDK](https://github.com/snltd/wavefront-sdk).
 
-## 3.2.2 (16/05/2019)
+## 3.2.2 (2019-05-16)
 * Smarter error messages.
 * Require 3.3.1 of [the SDK](https://github.com/snltd/wavefront-sdk).
 
-## 3.2.1 (09/05/2019)
+## 3.2.1 (2019-05-09)
 * Fix for new API ACL format.
 * Require 3.3.0 of [the SDK](https://github.com/snltd/wavefront-sdk).
 
-## 3.2.0 (30/04/2019)
+## 3.2.0 (2019-04-30)
 * New `apitoken` command lets you manage your own API tokens.
 * Support for alert ACLs.
 * Require 3.2.0 of [the SDK](https://github.com/snltd/wavefront-sdk).
 
-## 3.1.4 (02/05/2019)
+## 3.1.4 (2019-05-02)
 * Fix `alert import` missing tags bug.
 * Allow importing of notificants.
 
-## 3.1.3 (24/04/2019)
+## 3.1.3 (2019-04-24)
 * Fix `write distribution` bug. Points would be sent, but results
   could not be displayed, causing a crash unless you used `-q`.
 
-## 3.1.2 (06/04/2019)
+## 3.1.2 (2019-04-06)
 * Bugfix on handling of invalid config files.
 * Explicitly specifying a missing config file now causes an error
   whether or not credentials available from other mechanisms.
 * Require 3.0.2 of [the SDK](https://github.com/snltd/wavefront-sdk).
 
-## 3.1.1 (05/04/2019)
+## 3.1.1 (2019-04-05)
 * Usernames do not have to be e-mail addresses.
 * Require 3.0.1 of [the SDK](https://github.com/snltd/wavefront-sdk).
 
-## 3.1.0 (02/04/2019)
+## 3.1.0 (2019-04-02)
 * Add `message read` command.
 
-## 3.0.1 (23/03/2019)
+## 3.0.1 (2019-03-23)
 * Fix `config about` bug.
 
-## 3.0.0 (23/03/2019)
+## 3.0.0 (2019-03-23)
 * Drop support for Ruby 2.2. (Potentially breaking change.)
 * Remove the (deprecated) `report` command. Send points directly to
   Wavefront with `write --use api`. (Potentially breaking change.)
@@ -123,20 +123,20 @@
 * New `config about` subcommand gives diagnostic info.
 * Require 3.0.0 of [the SDK](https://github.com/snltd/wavefront-sdk).
 
-## 2.18.0 (22/02/2019)
+## 2.18.0 (2019-02-22)
 * Add `usergroup` command, and extend `user` command to cover new
   RBAC features.
 * Require 2.5.0 of [the SDK](https://github.com/snltd/wavefront-sdk).
 
-## 2.17.0 (19/02/2019)
+## 2.17.0 (2019-02-19)
 * Add `-O field,field` to all `list` commands. This lets you select
   the fields displayed in the output.
 
-## 2.16.2 (29/12/2018)
+## 2.16.2 (2018-12-29)
 * Fix typo in `query` help. CSV headers are produced with `-F
   headers`, not `-F header`.
 
-## 2.16.1 (29/12/2018)
+## 2.16.1 (2018-12-29)
 * Fix regression which broke query time ranges.
 * Fix regression which made `--noop` silent unless `--verbose` was
   also specified.
@@ -146,18 +146,18 @@
 * Add much more comprehensive `--noop` tests.
 * Better handling of `--noop` on commands which cannot support it.
 
-## 2.16.0 (23/12/2018)
+## 2.16.0 (2018-12-23)
 * Add `config` command to quickly set up and manage profiles.
 
-## 2.15.2 (21/12/2018)
+## 2.15.2 (2018-12-21)
 * Fix bug which caused an unhandled exception if CSV or Wavefront
   query outputs tried to process an empty data set.
 
-## 2.15.1 (20/12/2018)
+## 2.15.1 (2018-12-20)
 * Fix bug where `alert snoozed` and `alert firing` did the same
   thing.
 
-## 2.15.0 (18/12/2018)
+## 2.15.0 (2018-12-18)
 * Gracefully handle ctrl-c.
 * Add `install` and `uninstall` subcommands to `wf alert`.
 * Add `enable` and `disable` subcommands to `wf cloudintegration`.
@@ -166,12 +166,12 @@
   `manifest` commands to `wf integration`.
 * Require 2.2.0 of [wavefront-sdk](https://github.com/snltd/wavefront-sdk).
 
-## 2.14.0 (15/12/2018)
+## 2.14.0 (2018-12-15)
 * Add `-n` to `dashboard`'s `list` and `queries` commands to omit
   system-owned dashboards.
 * Let `queries` subcommand accept an optional ID.
 
-## 2.13.0 (11/12/2018)
+## 2.13.0 (2018-12-11)
 * Add CSV output for `query` command.
 * Add multiple format outputs for all applicable `alert`
   subcommands.
@@ -179,19 +179,19 @@
   to quickly see which queries (and therefore timeseries) are being
   used.
 
-## 2.12.0 (26/11/2018)
+## 2.12.0 (2018-11-26)
 * Support SDK's new `unix` writer, which lets you write points to a
   local Unix datagram socket. This requires `-u unix` and `-S
   filename`.
 
-## 2.11.0 (24/10/2018)
+## 2.11.0 (2018-10-24)
 * Add `proxy versions` subcommand. Lists proxies and their versions,
   newest to oldest.
 
-## 2.10.1 (22/10/2018)
+## 2.10.1 (2018-10-22)
 * Fix bug seen when listing events with `-s` AND `-L`.
 
-## 2.10.0 (22/10/2018)
+## 2.10.0 (2018-10-22)
 * Most `list` subcommands accept `-a / --all`, and will show all
   objects of the given type, with no pagination. (Exceptions are
   `user`, which never paginated because the API doesn't, and
@@ -222,18 +222,18 @@
 * Use a single connection when streaming data to a proxy from STDIN.
 * Don't list hidden sources unless specifically asked.
 
-## 2.9.3 (03/09/2018)
+## 2.9.3 (2018-09-03)
 * Fix a bug where indefinitely snoozed alerts broke `wf alert
   snoozed`.
 
-## 2.9.2 (22/08/2018)
+## 2.9.2 (2018-08-22)
 * Fix regression which broke the `wf` command when it ran without a
   tty.
 
-## 2.9.1 (22/08/2018)
+## 2.9.1 (2018-08-22)
 * Use 1.6.2 of [wavefront-sdk](https://github.com/snltd/wavefront-sdk).
 
-## 2.9.0 (22/08/2018)
+## 2.9.0 (2018-08-22)
 * Create external links with new `link create` sub-command.
 * Fix bug which stopped you writing points without a `.wavefront`
   configuration file.
@@ -242,7 +242,7 @@
 * Modify external link filters.
 * Use 1.6.1 of [wavefront-sdk](https://github.com/snltd/wavefront-sdk).
 
-## 2.8.0 (08/08/2018)
+## 2.8.0 (2018-08-08)
 * Add `wavefront` format to the `query` command. This outputs the
   result of a raw or timeseries query in a format which can be fed
   back into Wavefront via a proxy.
@@ -250,15 +250,15 @@
 * Restructure the way different output formats are handled in a
   better, more flexible way.
 
-## 2.7.0 (04/07/2018)
+## 2.7.0 (2018-07-04)
 * Add a `-i` option to the `report` command, to send delta metrics.
 * Fix delta metrics on the `write` command.
 
-## 2.6.0 (27/06/2018)
+## 2.6.0 (2018-06-27)
 * Anything which can be imported can be imported from STDIN. The CLI
   will do its best to work out if the format is YAML or JSON.
 
-## 2.5.0 (25/06/2018)
+## 2.5.0 (2018-06-25)
 * Support [derived
   metrics](https://docs.wavefront.com/derived_metrics.html).
 * Remove options which were not actually supported.
@@ -268,7 +268,7 @@
 * Better formatting of `query` output.
 * Remove obsolete code and test files.
 
-## 2.4.0 (10/04/2017)
+## 2.4.0 (2017-04-10)
 * Support direct data ingestion via `report` command.
 * Support writing delta metrics.
 * Add `-q` to silenty write data points.
@@ -277,56 +277,56 @@
   Terraform
   provider](https://github.com/spaceapegames/terraform-provider-wavefront).
 
-## 2.3.1 (24/03/2017)
+## 2.3.1 (2017-03-24)
 * Fix broken handling of negative values in `write` command.
 
-## 2.3.0 (23/02/2017)
+## 2.3.0 (2017-02-23)
 * Add query aliases.
 
-## 2.2.0 (18/02/2017)
+## 2.2.0 (2017-02-18)
 * Add `alert firing` and `alert snoozed` subcommands.
 
-## 2.1.6 (11/01/2017)
+## 2.1.6 (2017-01-11)
 * Correctly handle `=` characters in `update` subcommands.
 
-## 2.1.5 (05/12/2017)
+## 2.1.5 (2017-12-05)
 * Allow the user to tag events when they are created.
 
-## 2.1.4 (15/11/2017)
+## 2.1.4 (2017-11-15)
 * `event create` bugfix.
 
-## 2.1.3 (31/10/2017)
+## 2.1.3 (2017-10-31)
 * Use credential mechanism from SDK instead of rolling our own.
 * Fix bug which ignored supposedly supported environment variables,
   and add support for more.
 * Cut dead wood out of codebase.
 * Eradicate build warnings.
 
-## 2.1.2 (31/10/2017)
+## 2.1.2 (2017-10-31)
 * Fix no-op bug.
 * Add BSD license.
 
-## 2.1.1 (12/10/2017)
+## 2.1.1 (2017-10-12)
 * Fix bug in relative time specifications.
 
-## 2.1.0 (12/10/2017)
+## 2.1.0 (2017-10-12)
 * Allow users to specify relative times, like `-10m`.
 
-## 2.0.0 (09/10/2017)
+## 2.0.0 (2017-10-09)
 * Support viewing and managing of integrations.
 * Support notificants. (AKA alert targets).
 * Support new source descriptions.
 * Breaking change in `source` command.
 
-## 1.0.3 (25/08/2017)
+## 1.0.3 (2017-08-25)
 * Fix nil tag bug in terse source listing.
 
-## 1.0.2 (04/08/2017)
+## 1.0.2 (2017-08-04)
 * Greatly improve support for maintenance windows. They can now be
   extended, shrunk, and closed and created on the fly.
 
-## 1.0.1 (31/07/2017)
+## 1.0.1 (2017-07-31)
 * Report `no data` if a query returns no data.
 
-## 1.0.0 (28/07/2017)
+## 1.0.0 (2017-07-28)
 * First official release.
