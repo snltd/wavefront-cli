@@ -4,7 +4,7 @@
 DEVELOPMENT = true
 
 if defined?(DEVELOPMENT)
-  dir = Pathname.new(__FILE__).dirname.realpath.parent.parent.parent
+  dir = Pathname.new(__dir__).realpath.parent.parent.parent
   $LOAD_PATH.<< dir + 'lib'
   $LOAD_PATH.<< dir + 'wavefront-sdk' + 'lib'
 end
@@ -17,7 +17,7 @@ require_relative 'exception'
 require_relative 'opt_handler'
 require_relative 'stdlib/string'
 
-CMD_DIR = Pathname.new(__FILE__).dirname + 'commands'
+CMD_DIR = Pathname.new(__dir__) + 'commands'
 
 # Dynamically generate a CLI interface from files which describe
 # each subcomand.
