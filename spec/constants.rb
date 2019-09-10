@@ -16,3 +16,4 @@ CF_VAL =  IniFile.load(CF)
 JSON_POST_HEADERS = {
   'Content-Type': 'application/json', Accept: 'application/json'
 }.freeze
+TEE_ZERO = Time.now.freeze

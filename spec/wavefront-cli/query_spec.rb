@@ -1,10 +1,8 @@
 #!/usr/bin/env ruby
 
-require 'wavefront-sdk/support/mixins'
 require_relative '../support/command_base'
 require_relative '../../lib/wavefront-cli/query'
-
-TEE_ZERO = Time.now.freeze
+require 'wavefront-sdk/support/mixins'
 
 # Ensure 'query' commands produce the correct API calls.
 #
@@ -181,22 +179,6 @@ class QueryEndToEndTest < EndToEndTest
 
   def cmd_word
     'query'
-  end
-
-  def wall_time
-    half_an_hour_ago = TEE_ZERO - (30 * 60)
-    start_time = Time.at(half_an_hour_ago.to_i - half_an_hour_ago.sec)
-    [start_time, Time.at(start_time + (10 * 60))]
-  end
-
-  def epoch_time
-    wall_time.map { |t| parse_time(t, true) }
-  end
-
-  def start_and_end_opts
-    format('-s %s -e %s',
-           wall_time[0].strftime('%H:%M'),
-           wall_time[1].strftime('%H:%M'))
   end
 
   def canned_response

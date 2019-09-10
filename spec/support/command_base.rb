@@ -10,6 +10,7 @@ class EndToEndTest < MiniTest::Test
   attr_reader :wf
 
   def setup
+    before_setup if respond_to?(:before_setup)
     @wf = WavefrontCliController
   end
 
@@ -44,6 +45,22 @@ class EndToEndTest < MiniTest::Test
 
   def friendly_name
     cmd_word
+  end
+
+  def wall_time
+    half_an_hour_ago = TEE_ZERO - (30 * 60)
+    start_time = Time.at(half_an_hour_ago.to_i - half_an_hour_ago.sec)
+    [start_time, Time.at(start_time + (10 * 60))]
+  end
+
+  def epoch_time
+    wall_time.map { |t| parse_time(t, true) }
+  end
+
+  def start_and_end_opts
+    format('-s %s -e %s',
+           wall_time[0].strftime('%H:%M'),
+           wall_time[1].strftime('%H:%M'))
   end
 
   # Set this to true for things that use cursors rather than offsets
