@@ -55,7 +55,7 @@ module WavefrontCli
       if wf.respond_to?(state)
         in_state(state)
       else
-        abort format("'%s' is not a valid alert state.", state)
+        abort format("'%<state>s' is not a valid alert state.", state: state)
       end
     end
 
@@ -96,7 +96,7 @@ module WavefrontCli
 
       return ret unless ret.is_a?(Wavefront::Response) && ret.empty?
 
-      ok_exit(format('No alerts are currently %s.', status))
+      ok_exit(format('No alerts are currently %<status>s.', status: status))
     end
 
     # Does the work for #in_state
@@ -105,7 +105,7 @@ module WavefrontCli
     # @return Wavefront::Response
     #
     def find_in_state(status)
-      search = do_search([format('status=%s', status)])
+      search = do_search([format('status=%<status>s', status: status)])
 
       return if options[:noop]
 

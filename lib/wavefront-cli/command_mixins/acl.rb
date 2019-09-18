@@ -69,7 +69,9 @@ module WavefrontCli
       def _acl_action(action)
         entity_type, entities = acl_entities
 
-        resp = send(format('%s_%s', action, entity_type),
+        resp = send(format('%<action>s_%<type>s',
+                           action: action,
+                           type: entity_type),
                     options[:'<id>'],
                     entities)
 

@@ -48,8 +48,8 @@ module WavefrontOutput
       end
 
       raise(WavefrontCli::Exception::UnsupportedOutput,
-            format("'%s' format does not support items-only output.",
-                   my_format))
+            format("'%<format>s' format does not support items-only output.",
+                   format: my_format))
     end
 
     def my_format
@@ -57,7 +57,9 @@ module WavefrontOutput
     end
 
     def command_class_name
-      format('Wavefront%sOutput::%s', my_format.capitalize, cmd.capitalize)
+      format('Wavefront%<format>sOutput::%<command>s',
+             format: my_format.capitalize,
+             command: cmd.capitalize)
     end
 
     def command_file

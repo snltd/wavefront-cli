@@ -29,8 +29,9 @@ module WavefrontHclOutput
     end
 
     def open_output
-      format('resource "wavefront_%s" "%s" {', resource_name,
-             SecureRandom.uuid)
+      format('resource "wavefront_%<name>s" "%<uuid>s" {',
+             name: resource_name,
+             uuid: SecureRandom.uuid)
     end
 
     def close_output
@@ -68,7 +69,9 @@ module WavefrontHclOutput
 
       quote_handler = :quote_value unless respond_to?(quote_handler)
 
-      format('  %s = %s', key.to_snake, send(quote_handler, val))
+      format('  %<key>s = %<value>s',
+             key: key.to_snake,
+             value: send(quote_handler, val))
     end
 
     # Tags need to be in an array. They aren't always called "tags"
@@ -89,7 +92,7 @@ module WavefrontHclOutput
     def quote_value(val)
       case val.class.to_s.to_sym
       when :String
-        format('"%s"', val.gsub(/\"/, '\"'))
+        format('"%<value>s"', value: val.gsub(/\"/, '\"'))
       else
         val
       end

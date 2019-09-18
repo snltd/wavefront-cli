@@ -21,9 +21,9 @@ class WavefrontCliConfigTest < MiniTest::Test
   end
 
   def test_do_location
-    assert_output(format("%s\n", CF)) { wfo.do_location }
+    assert_output(format("%<file>s\n", file: CF)) { wfo.do_location }
     assert_output("/no/file\n") { wfn.do_location }
-    assert_output(format("%s\n", DEF_CF)) { wf.do_location }
+    assert_output(format("%<file>s\n", file: DEF_CF)) { wf.do_location }
   end
 
   def test_do_profiles

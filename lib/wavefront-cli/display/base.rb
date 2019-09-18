@@ -155,17 +155,17 @@ module WavefrontDisplay
 
     # if this is a section of a larger dataset, say so
     #
-    # rubocop:disable Metrics/AbcSize
     def pagination_line
       return unless raw.respond_to?(:moreItems) && raw.moreItems == true
 
       enditem = raw.limit.positive? ? raw.offset + raw.limit - 1 : 0
-      puts format('List shows items %d to %d. Use -o and -L for more.',
-                  raw.offset, enditem)
+      puts format('List shows items %<first>d to %<last>d. ' \
+                  'Use -o and -L for more.',
+                  first: raw.offset,
+                  last: enditem)
     rescue StandardError
       puts 'List shows paginated output. Use -o and -L for more.'
     end
-    # rubocop:enable Metrics/AbcSize
 
     # Give it a key-value hash, and it will return the size of the first
     # column to use when formatting that data.
@@ -367,7 +367,7 @@ module WavefrontDisplay
       str = time.to_s
       fmt, out_fmt = time_formats(str)
       ret = DateTime.strptime(str, fmt).to_time
-      # rubocop:enable Style/DateTime
+
       ret = force_utc ? ret.utc : ret.localtime
       ret.strftime(out_fmt)
     end

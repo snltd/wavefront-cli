@@ -34,10 +34,11 @@ class String
   # @param prefix [String] prepended to every line
   # @return [String] the folded line
   #
-  # rubocop:disable Metrics/AbcSize
   def fold(twidth = TW, indent = 10, prefix = '')
     chunks = gsub(/default: /, 'default:^').scan_line(twidth - 8)
-    first_line = format("%s%s\n", prefix, chunks.shift)
+    first_line = format("%<padding>s%<text>s\n",
+                        padding: prefix,
+                        text: chunks.shift)
 
     return first_line.restored if chunks.empty?
 
@@ -47,7 +48,6 @@ class String
 
     (first_line + rest.join("\n") + "\n").restored
   end
-  # rubocop:enable Metrics/AbcSize
 
   # We use a carat as a temporary whitespace character to avoid
   # undesirable line breaking. This puts it back

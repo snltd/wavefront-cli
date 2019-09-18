@@ -113,7 +113,6 @@ class WavefrontCommandBase
   #   testing far simpler.
   # @return [String] the options the command understands.
   #
-  # rubocop:disable Metrics/AbcSize
   def options(term_width = TW)
     width = option_column_width
     ret = ''
@@ -128,19 +127,20 @@ class WavefrontCommandBase
     _options.flatten.each { |o| ret.<< opt_row(o, width, term_width) }
     ret
   end
-  # rubocop:enable Metrics/AbcSize
 
   # Formats an option string.
   #
-  # @param opt [String] the option string
+  # @param opt_str [String] the option string
   # @param width [Integer] the width of the short + long options
   #   columns. This is used to indent following lines
   # @param term_width [Integer] the width of the user's terminal
   #
-  def opt_row(opt, width, term_width = TW)
-    format("  %s %-#{width}s %s\n", *opt.split(/\s+/, 3))
-      .opt_fold(term_width, width + 5)
+  # rubocop:disable Style/FormatStringToken
+  def opt_row(opt_str, width, term_width = TW)
+    format("  %s %-#{width}s %s\n",
+           *opt_str.split(/\s+/, 3)).opt_fold(term_width, width + 5)
   end
+  # rubocop:enable Style/FormatStringToken
 
   # @return [Integer] the width of the column containing short and
   #   long options

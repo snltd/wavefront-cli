@@ -37,7 +37,9 @@ module WavefrontDisplayPrinter
     end
 
     def map_to_string(value)
-      format('%s=%s', value.keys[0], value.values.join(','))
+      format('%<key>s=%<value>s',
+             key: value.keys[0],
+             value: value.values.join(','))
     end
 
     def to_s

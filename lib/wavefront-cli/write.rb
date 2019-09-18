@@ -14,7 +14,6 @@ module WavefrontCli
     include Wavefront::Mixins
     SPLIT_PATTERN = /\s(?=(?:[^"]|"[^"]*")*$)/.freeze
 
-    # rubocop:disable Metrics/AbcSize
     def do_point
       p = { path: options[:'<metric>'],
             value: options[:'<value>'].delete('\\').to_f }
@@ -26,7 +25,6 @@ module WavefrontCli
       p[:ts] = parse_time(options[:time]) if options[:time]
       send_point(p)
     end
-    # rubocop:enable Metrics/AbcSize
 
     def do_file
       valid_format?(options[:infileformat])
@@ -34,7 +32,6 @@ module WavefrontCli
       process_input(options[:'<file>'])
     end
 
-    # rubocop:disable Metrics/AbcSize
     def do_distribution
       p = { path: options[:'<metric>'],
             interval: options[:interval] || 'M',
@@ -46,7 +43,6 @@ module WavefrontCli
       p[:ts] = parse_time(options[:time]) if options[:time]
       send_point(p)
     end
-    # rubocop:enable Metrics/AbcSize
 
     # Turn our user's representation of a distribution into one
     # which suits Wavefront. The SDK can do this for us.
@@ -121,8 +117,7 @@ module WavefrontCli
     def send_point(point)
       call_write(point)
     rescue Wavefront::Exception::InvalidEndpoint
-      abort format("Could not connect to proxy '%s:%s'.",
-                   options[:proxy], options[:port])
+      abort format("Could not connect to proxy '%<proxy>s:%<port>s'.", options)
     end
 
     # Read the input, from a file or from STDIN, and turn each line
@@ -271,7 +266,6 @@ module WavefrontCli
     # @raise WavefrontCli::Exception::UnparseableInput if the line
     #   doesn't look right
     #
-    # rubocop:disable Metrics/AbcSize
     # rubocop:disable Metrics/CyclomaticComplexity
     def process_line(line)
       return true if line.empty?
@@ -292,7 +286,6 @@ module WavefrontCli
       end
     end
     # rubocop:enable Metrics/CyclomaticComplexity
-    # rubocop:enable Metrics/AbcSize
 
     # We can get tags from the file, from the -T option, or both.
     # Merge them, making the -T win if there is a collision.
@@ -331,7 +324,6 @@ module WavefrontCli
     #
     # rubocop:disable Metrics/PerceivedComplexity
     # rubocop:disable Metrics/CyclomaticComplexity
-    # rubocop:disable Metrics/AbcSize
     def valid_format?(fmt)
       err = if fmt.include?('v') && fmt.include?('d')
               "'v' and 'd' are mutually exclusive"
@@ -351,7 +343,6 @@ module WavefrontCli
     end
     # rubocop:enable Metrics/PerceivedComplexity
     # rubocop:enable Metrics/CyclomaticComplexity
-    # rubocop:enable Metrics/AbcSize
 
     # Make sure we have the right number of columns, according to
     # the format string. We want to take every precaution we can to
@@ -369,7 +360,9 @@ module WavefrontCli
       return true if ncols == fmt.length
 
       raise(WavefrontCli::Exception::UnparseableInput,
-            format('Expected %s fields, got %s', fmt.length, ncols))
+            format('Expected %<expected>s fields, got %<got>s',
+                   expected: fmt.length,
+                   got: ncols))
     end
 
     # Although the SDK does value checking, we'll add another layer

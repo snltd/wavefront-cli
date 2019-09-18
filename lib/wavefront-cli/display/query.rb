@@ -8,7 +8,6 @@ module WavefrontDisplay
   # Format human-readable output for queries.
   #
   class Query < Base
-    # rubocop:disable Metrics/AbcSize
     def do_default
       d_obj = { name: data.name,
                 query: data.query,
@@ -25,7 +24,6 @@ module WavefrontDisplay
       raise(WavefrontCli::Exception::InvalidQuery,
             data[:errorMessage].split("\n").first)
     end
-    # rubocop:enable Metrics/AbcSize
 
     # Prioritizing keys does not make sense in this context
     #
@@ -81,7 +79,6 @@ module WavefrontDisplay
       data
     end
 
-    # rubocop:disable Metrics/MethodLength
     def humanize_series(data)
       last_date = nil
 
@@ -97,9 +94,11 @@ module WavefrontDisplay
         date, time = ht.split
         ds = date == last_date ? '' : date
         last_date = date
-        format('%-12s %s    %s', ds, time, val)
+        format('%-12<series>s %<time>s    %<value>s',
+               series: ds,
+               time: time,
+               value: val)
       end
-      # rubocop:enable Metrics/MethodLength
     end
   end
 end

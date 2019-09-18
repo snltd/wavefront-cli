@@ -92,7 +92,7 @@ module WavefrontCsvOutput
     end
 
     def quote_value(value)
-      format('"%s"', value.to_s.gsub(/"/, '\"'))
+      format('"%<value>s"', value: value.to_s.gsub(/"/, '\"'))
     end
 
     # Turn a string of output options into an easy-to-query array
@@ -116,7 +116,11 @@ module WavefrontCsvOutput
     # We may be doing key=val or just val, depending on the formatter options
     #
     def tag_val(key, val)
-      formatopts.include?('tagkeys') ? format('%s=%s', key, val) : val
+      if formatopts.include?('tagkeys')
+        format('%<key>s=%<value>s', key: key, value: val)
+      else
+        val
+      end
     end
   end
 end

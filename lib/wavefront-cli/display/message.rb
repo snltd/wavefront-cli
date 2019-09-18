@@ -20,11 +20,13 @@ module WavefrontDisplay
     private
 
     def message_title
-      format("\n%s\n%s\n", data.title, '-' * data.title.length)
+      format("\n%<title>s\n%<underline>s\n",
+             title: data.title,
+             underline: '-' * data.title.length)
     end
 
     def message_sender
-      format("\n%#{TW - 2}s\n", data.source)
+      format("\n%#{TW - 2}<sender>s\n", sender: data.source)
     end
   end
 end

@@ -37,7 +37,7 @@ module WavefrontCli
 
     def import_to_create(raw)
       raw['emailAddress'] = raw['identifier']
-      raw.delete_if { |k, _v| k == 'customer' || k == 'identifier' }
+      raw.delete_if { |k, _v| %w[customer identifier].include?(k) }
     end
   end
 end

@@ -25,8 +25,10 @@ module WavefrontDisplay
     end
 
     def report
-      %w[sent rejected unsent].each do |k|
-        puts format('  %12s %d', k.to_s, data[k])
+      %w[sent rejected unsent].each do |status|
+        puts format('  %12<status>s %<count>d',
+                    status: status,
+                    count: data[status])
       end
     end
   end

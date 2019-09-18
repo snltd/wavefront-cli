@@ -93,7 +93,7 @@ module WavefrontCli
       puts "Creating profile '#{profile}'."
 
       str = CONFIGURABLES.each_with_object("[#{profile}]") do |t, a|
-        a.<< format("\n%s=%s", t[:key], read_thing(t))
+        a.<< format("\n%<key>s=%<value>s", key: t[:key], value: read_thing(t))
       end
 
       IniFile.new(content: str)
@@ -116,7 +116,9 @@ module WavefrontCli
 
     def do_envvars
       %w[WAVEFRONT_ENDPOINT WAVEFRONT_TOKEN WAVEFRONT_PROXY].each do |v|
-        puts format('%-20s %s', v, ENV[v] || 'unset')
+        puts format('%-20<var>s %<value>s',
+                    var: v,
+                    value: ENV[v] || 'unset')
       end
     end
 
@@ -129,8 +131,8 @@ module WavefrontCli
     end
 
     def input_prompt(label, default)
-      ret = format('  %s', label)
-      ret.<< format(' [%s]', default) unless default.nil?
+      ret = format('  %<label>s', label: label)
+      ret.<< format(' [%<value>s]', value: default) unless default.nil?
       ret + ':> '
     end
 

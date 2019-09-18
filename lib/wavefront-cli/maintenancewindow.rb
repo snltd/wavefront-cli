@@ -61,7 +61,6 @@ module WavefrontCli
       end
     end
 
-    # rubocop:disable Metrics/AbcSize
     def do_extend_by
       cannot_noop!
 
@@ -74,7 +73,6 @@ module WavefrontCli
       old_end = wf.describe(options[:'<id>']).response.endTimeInSeconds
       change_end_time(old_end + to_add)
     end
-    # rubocop:enable Metrics/AbcSize
 
     def do_extend_to
       cannot_noop!
@@ -110,7 +108,8 @@ module WavefrontCli
 
       return ret unless ret.is_a?(Wavefront::Response) && ret.empty?
 
-      ok_exit(format('No maintenance windows in the next %s hours.', range))
+      ok_exit(format('No maintenance windows in the next %<range>s hours.',
+                     range: range))
     end
   end
 end

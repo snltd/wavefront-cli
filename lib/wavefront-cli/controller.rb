@@ -46,7 +46,12 @@ class WavefrontCliController
     s = "Wavefront CLI\n\nUsage:\n  #{CMD} command [options]\n" \
         "  #{CMD} --version\n  #{CMD} --help\n\nCommands:\n"
 
-    cmds.sort.each { |k, v| s.<< format("  %-18s %s\n", k, v.description) }
+    cmds.sort.each do |k, v|
+      s.<< format("  %-18<command>s %<desc>s\n",
+                  command: k,
+                  desc: v.description)
+    end
+
     s.<< "\nUse '#{CMD} <command> --help' for further information.\n"
   end
 
@@ -61,7 +66,6 @@ class WavefrontCliController
   # Parse the input. The first Docopt.docopt handles the default
   # options, the second works on the command.
   #
-  # rubocop:disable Metrics/AbcSize
   def parse_args
     Docopt.docopt(usage[:default], version: WF_CLI_VERSION, argv: args)
   rescue Docopt::Exit => e
@@ -77,7 +81,6 @@ class WavefrontCliController
       abort e.message
     end
   end
-  # rubocop:enable Metrics/AbcSize
 
   def parse_opts(options)
     WavefrontCli::OptHandler.new(options).opts
@@ -88,7 +91,6 @@ class WavefrontCliController
   # @param cmd [String]
   # @return WavefrontCli::cmd
   #
-  # rubocop:disable Metrics/AbcSize
   def load_cli_class(cmd, opts)
     require_relative File.join('.', cmds[cmd].sdk_file)
     Object.const_get('WavefrontCli').const_get(cmds[cmd].sdk_class).new(opts)
@@ -99,10 +101,7 @@ class WavefrontCliController
   rescue RuntimeError => e
     abort "Unable to run command. #{e.message}."
   end
-  # rubocop:enable Metrics/AbcSize
 
-  # rubocop:disable Metrics/AbcSize
-  # rubocop:disable Metrics/MethodLength
   def run_command(cli_class_obj)
     cli_class_obj.validate_opts
     cli_class_obj.run
@@ -151,8 +150,6 @@ class WavefrontCliController
     backtrace_message(e)
     abort
   end
-  # rubocop:enable Metrics/MethodLength
-  # rubocop:enable Metrics/AbcSize
 
   def backtrace_message(err)
     if opts[:debug]

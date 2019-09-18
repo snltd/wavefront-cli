@@ -459,7 +459,8 @@ def command_output(word, method, klass = nil, infile = nil)
   infile ||= "#{word}-list.json"
   json = IO.read(RES_DIR + 'responses' + infile)
   resp = Wavefront::Response.new(json, 200)
-  klass ||= Object.const_get(format('WavefrontCli::%s', word.capitalize))
+  klass ||= Object.const_get(format('WavefrontCli::%<class_word>s',
+                                    class_word: word.capitalize))
   klass = klass.new(format: :human)
 
   capture_io { klass.display(resp, method) }

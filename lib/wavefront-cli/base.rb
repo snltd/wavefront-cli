@@ -114,7 +114,9 @@ module WavefrontCli
     end
 
     def failed_validation_message(input)
-      format("'%s' is not a valid %s ID.", input, klass_word)
+      format("'%<value>s' is not a valid %<thing>s ID.",
+             value: input,
+             thing: klass_word)
     end
 
     # Make a wavefront-sdk credentials object from standard
@@ -246,7 +248,7 @@ module WavefrontCli
     # @return System exit
     #
     def display_api_error(status)
-      method = format('handle_errcode_%s', status.code).to_sym
+      method = format('handle_errcode_%<code>s', code: status.code).to_sym
 
       msg = if respond_to?(method)
               send(method, status)
@@ -254,14 +256,15 @@ module WavefrontCli
               status.message || 'No further information'
             end
 
-      abort format('ERROR: API code %s. %s.', status.code,
-                   msg.chomp('.')).fold(TW, 7)
+      abort format('ERROR: API code %<code>s. %<message>s.',
+                   code: status.code,
+                   message: msg.chomp('.')).fold(TW, 7)
     end
 
     def warning_message(status)
       return unless status.status.between?(201, 299)
 
-      puts format("API WARNING: '%s'.", status.message)
+      puts format("API WARNING: '%<message>s'.", message: status.message)
     end
 
     def display_no_api_response(data, method)
@@ -289,20 +292,20 @@ module WavefrontCli
       end
     end
 
-    # rubocop:disable Metrics/AbcSize
     def parseable_output(format, resp)
       options[:class] = klass_word
       options[:hcl_fields] = hcl_fields
       require_relative File.join('output', format.to_s)
-      oclass = Object.const_get(format('WavefrontOutput::%s',
-                                       format.to_s.capitalize))
+      oclass = Object.const_get(format('WavefrontOutput::%<class>s',
+                                       class: format.to_s.capitalize))
       oclass.new(resp, options).run
     rescue LoadError
       raise(WavefrontCli::Exception::UnsupportedOutput,
-            format("The '%s' command does not support '%s' output.",
-                   options[:class], format))
+            format("The '%<command>s' command does not support " \
+                   "'%<format>s' output.",
+                   command: options[:class],
+                   format: format))
     end
-    # rubocop:enable Metrics/AbcSize
 
     def hcl_fields
       []
@@ -398,18 +401,16 @@ module WavefrontCli
       wf.describe(options[:'<id>'])
     end
 
-    # rubocop:disable Metrics/AbcSize
     def do_dump
       if options[:format] == 'yaml'
         ok_exit JSON.parse(item_dump_call.to_json).to_yaml
       elsif options[:format] == 'json'
         ok_exit item_dump_call.to_json
       else
-        abort format("Dump format must be 'json' or 'yaml'. (Tried '%s')",
-                     options[:format])
+        abort format("Dump format must be 'json' or 'yaml'. " \
+                     "(Tried '%<format>s')", options)
       end
     end
-    # rubocop:enable Metrics/AbcSize
 
     # Broken out into its own method because 'users' does not use
     # pagination
@@ -434,10 +435,10 @@ module WavefrontCli
     end
 
     def import_message(obj, resp)
-      format('%-15s %-10s %s',
-             obj[:id] || obj[:url],
-             resp.ok? ? 'IMPORTED' : 'FAILED',
-             resp.status.message)
+      format('%-15<id>s %-10<status>s %<message>s',
+             id: obj[:id] || obj[:url],
+             status: resp.ok? ? 'IMPORTED' : 'FAILED',
+             message: resp.status.message)
     end
 
     def import_object(raw)
@@ -471,7 +472,10 @@ module WavefrontCli
     def smart_delete_message(object_type)
       desc = wf.describe(options[:'<id>'])
       word = desc.ok? ? 'Soft' : 'Permanently'
-      format("%s deleting %s '%s'", word, object_type, options[:'<id>'])
+      format("%<soft_or_hard>s deleting %<object>s '%<id>s'",
+             soft_or_hard: word,
+             object: object_type,
+             id: options[:'<id>'])
     end
 
     def do_undelete
@@ -531,11 +535,10 @@ module WavefrontCli
       end
     end
 
-    # rubocop:disable Metrics/CyclomaticComplexity
-    # rubocop:disable Metrics/MethodLength
     # @param cond [String] a search condition, like "key=value"
     # @return [Hash] of matchingMethod and negated
     #
+    # rubocop:disable Metrics/CyclomaticComplexity
     def matching_method(cond)
       case cond
       when /^\w+~/
@@ -555,7 +558,6 @@ module WavefrontCli
       end
     end
     # rubocop:enable Metrics/CyclomaticComplexity
-    # rubocop:enable Metrics/MethodLength
 
     # Most things will re-import with the POST method if you remove
     # the ID.

@@ -100,7 +100,6 @@ module WavefrontDisplayPrinter
     # Turn the list made by #make_list into user output
     # @return [String]
     #
-    # rubocop:disable Metrics/AbcSize
     def to_s
       list.map do |e|
         indent = ' ' * opts[:indent] * e.last
@@ -109,7 +108,6 @@ module WavefrontDisplayPrinter
         line(key_str, val)
       end.join("\n")
     end
-    # rubocop:enable Metrics/AbcSize
 
     def line(key, val)
       line_length = key.to_s.size + val.to_s.size
@@ -118,7 +116,7 @@ module WavefrontDisplayPrinter
         val = val.value_fold(key.to_s.size)
       end
 
-      format('%s%s', key, val).rstrip
+      format('%<padded_key>s%<value>s', padded_key: key, value: val).rstrip
     end
 
     private

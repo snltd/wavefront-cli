@@ -56,7 +56,6 @@ module WavefrontCli
       ev_file.unlink if ev_file&.exist? && res.status.code == 200
       res
     end
-    # rubocop:enable Metrics/AbcSize
 
     def do_show
       events = local_event_list
