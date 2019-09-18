@@ -1,5 +1,7 @@
 # Changelog
 
+## 4.2.2
+* Refactor of all tests, which exposed the following:
 * Fix noops on `proxy versions`, `window ongoing` and `window
   pending`.
 * Fix partially broken `source list` command.
@@ -16,10 +18,11 @@
 * Fix `user dump`.
 * Removed `user set` command, because it didn't do anything.
 * Improve output of `user` and `usergroup` commands.
+* Require 3.3.3 of [the SDK](https://github.com/snltd/wavefront-sdk).
 
-## 4.2.1 (201user9
-groups.to_json)
-  because you can't tag API tokens.
+## 4.2.1 (2019-07-26)
+* Remove tagging subcommands from `apitoken` command's usage info, because you
+  can't tag API tokens.
 
 ## 4.2.0 (2019-07-01)
 * Add `-M` (`--items-only`) option to all commands. For
@@ -47,7 +50,6 @@ groups.to_json)
 * Fix `tag searchpath` bug.
 
 ## 4.0.0 (2019-06-18)
-
 * Failed push to Gemfury. Does not exist.
 
 ## 3.3.0 (2019-06-10)
