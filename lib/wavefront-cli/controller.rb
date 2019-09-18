@@ -43,16 +43,25 @@ class WavefrontCliController
   # @return [String]
   #
   def default_help
-    s = "Wavefront CLI\n\nUsage:\n  #{CMD} command [options]\n" \
-        "  #{CMD} --version\n  #{CMD} --help\n\nCommands:\n"
+    s = ['Wavefront CLI',
+         '',
+         'Usage:',
+         "  #{CMD} command [options]",
+         "  #{CMD} --version",
+         "  #{CMD} --help",
+         '',
+         'Commands:',
+         '']
 
     cmds.sort.each do |k, v|
-      s.<< format("  %-18<command>s %<desc>s\n",
+      s.<< format('  %-18<command>s %<desc>s',
                   command: k,
                   desc: v.description)
     end
 
-    s.<< "\nUse '#{CMD} <command> --help' for further information.\n"
+    s.<< ''
+    s.<< "Use '#{CMD} <command> --help' for further information."
+    s.join("\n")
   end
 
   # @return [Hash] command descriptions for docopt.

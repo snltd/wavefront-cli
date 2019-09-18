@@ -53,7 +53,7 @@ class String
   # undesirable line breaking. This puts it back
   #
   def restored
-    tr('^', ' ')
+    tr('^', ' ').chomp("\n")
   end
 
   # Fold long value lines in two-column output. The returned string
@@ -97,8 +97,7 @@ class String
   #
   def to_snake
     gsub(/(.)([A-Z])/) do
-      Regexp.last_match[1] + '_' +
-        Regexp.last_match[2].downcase
+      Regexp.last_match[1] + '_' + Regexp.last_match[2].downcase
     end
   end
 end

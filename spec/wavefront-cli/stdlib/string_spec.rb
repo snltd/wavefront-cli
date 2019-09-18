@@ -24,14 +24,15 @@ class StringTest < MiniTest::Test
   end
 
   def test_opt_fold
-    assert_equal('short string'.opt_fold, "  short string\n")
+    assert_equal('short string'.opt_fold, '  short string')
 
     str = '-o, --option PARAMETER a rather pointless option with a ' \
           'needlessly wordy description string'
     pad = "\n" + ' ' * 12
     assert_equal("  -o, --option PARAMETER a#{pad}rather pointless" \
                  "#{pad}option with a#{pad}needlessly wordy#{pad}" \
-                 "description#{pad}string\n", str.opt_fold(30, 10))
+                 "description#{pad}string",
+                 str.opt_fold(30, 10))
   end
 
   def test_fold_options
@@ -40,12 +41,12 @@ class StringTest < MiniTest::Test
 
     assert_equal(str.opt_fold,
                  '  -l, --longoption    a long option with a quite ' \
-                 "long description which\n            needs folding\n")
+                 "long description which\n            needs folding")
     assert_equal(str.opt_fold(50),
                  "  -l, --longoption    a long option with a\n     " \
                  "       quite long description which needs\n      " \
-                 "      folding\n")
-    assert_equal(str.opt_fold(100), "  #{str}\n")
+                 '      folding')
+    assert_equal(str.opt_fold(100), "  #{str}")
   end
 
   def test_to_seconds

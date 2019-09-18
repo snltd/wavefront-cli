@@ -92,11 +92,15 @@ module WavefrontCli
     def create_profile(profile)
       puts "Creating profile '#{profile}'."
 
-      str = CONFIGURABLES.each_with_object("[#{profile}]") do |t, a|
-        a.<< format("\n%<key>s=%<value>s", key: t[:key], value: read_thing(t))
+      prof_arr = ["[#{profile}]"]
+
+      CONFIGURABLES.each do |c|
+        prof_arr.<< format('%<key>s=%<value>s',
+                           key: c[:key],
+                           value: read_thing(c))
       end
 
-      IniFile.new(content: str)
+      IniFile.new(content: prof_arr.join("\n"))
     end
 
     def do_delete

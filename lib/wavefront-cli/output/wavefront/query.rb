@@ -32,15 +32,15 @@ module WavefrontWavefrontOutput
     def query_output
       check_query_response
 
-      resp[:timeseries].each_with_object('') do |ts, a|
+      resp[:timeseries].each_with_object([]) do |ts, a|
         ts[:data].each do |point|
           a.<< wavefront_format(ts[:label],
                                 point[1],
                                 point[0],
                                 ts[:host],
-                                ts[:tags]) + "\n"
+                                ts[:tags])
         end
-      end
+      end.join("\n")
     end
 
     def wavefront_format(path, value, timestamp, source, tags = nil)

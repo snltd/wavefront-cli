@@ -24,7 +24,7 @@ module WavefrontDisplay
     def do_create
       info = data[0]
       puts format("Created user '%<user>s'.\nPermission groups\n" \
-                  "%<perm_groups>\nUser groups\n%<user_groups>s",
+                  "%<perm_groups>s\nUser groups\n%<user_groups>s",
                   user: info[:identifier],
                   perm_groups: groups_as_string(info[:groups]),
                   user_groups: user_groups_as_string(info[:userGroups]))

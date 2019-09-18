@@ -78,7 +78,7 @@ class WavefrontCommmandBaseTest < MiniTest::Test
 
   def test_options
     assert wf.options(600).start_with?("Global options:\n")
-    assert_match(/\nOptions:\n/, wf.options)
+    assert_match(/\nOptions:/, wf.options)
 
     wf.options(600).split("\n")[1..-1].each do |o|
       next if o == 'Global options:' || o == 'Options:' || o.empty?
@@ -88,20 +88,20 @@ class WavefrontCommmandBaseTest < MiniTest::Test
       refute o.end_with?('.')
     end
 
-    assert_equal(wf.options.split("\n").select(&:empty?).size, 1)
+    assert_equal(1, wf.options.split("\n").select(&:empty?).size)
   end
 
   def test_opt_row
     assert_equal(wf.opt_row('-s, --short    short option', 10),
-                 "  -s, --short    short option\n")
+                 '  -s, --short    short option')
     assert_equal(wf.opt_row('-s, --short    short option', 8),
-                 "  -s, --short  short option\n")
+                 '  -s, --short  short option')
     assert_equal(wf.opt_row(
                    '-l, --longoption    a long option with a quite ' \
                    'long description which needs folding', 15
                  ),
                  '  -l, --longoption    a long option with a quite long ' \
-                 "description which\n                      needs folding\n")
+                 "description which\n                      needs folding")
     assert_equal(wf.opt_row(
                    '-h, --hugeoption    an option with a very long, far ' \
                    'too verbose description which is going need folding ' \
@@ -110,7 +110,7 @@ class WavefrontCommmandBaseTest < MiniTest::Test
                  '  -h, --hugeoption an option with a very long, far too ' \
                  "verbose description\n                   which is going " \
                  'need folding more than one time, let me tell' \
-                 "\n                   you\n")
+                 "\n                   you")
   end
 
   def test_option_column_width
