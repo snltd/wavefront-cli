@@ -18,6 +18,7 @@
 * Fix `user dump`.
 * Removed `user set` command, because it didn't do anything.
 * Improve output of `user` and `usergroup` commands.
+* Refactor of `event` command handling.
 * Require 3.3.3 of [the SDK](https://github.com/snltd/wavefront-sdk).
 
 ## 4.2.1 (2019-07-26)
