@@ -1,20 +1,34 @@
 #!/usr/bin/env ruby
 
-id = '9095WaGklE8Gy3M1'
-bad_id = '__BAD__'
-word = 'webhook'
+require_relative '../support/command_base'
+require_relative '../../lib/wavefront-cli/webhook'
 
-require_relative '../spec_helper'
-require_relative "../../lib/wavefront-cli/#{word}"
+# Ensure 'webhook' commands produce the correct API calls.
+#
+class WebhookEndToEndTest < EndToEndTest
+  include WavefrontCliTest::Delete
+  include WavefrontCliTest::Describe
+  include WavefrontCliTest::Dump
+  # include WavefrontCliTest::Import
+  include WavefrontCliTest::List
+  include WavefrontCliTest::Search
+  include WavefrontCliTest::Set
 
-describe "#{word} command" do
-  missing_creds(word, ['list', "describe #{id}", "delete #{id}"])
-  list_tests(word)
-  noop_tests(word, id)
-  cmd_to_call(word, "describe #{id}", path: "/api/v2/#{word}/#{id}")
-  cmd_to_call(word, "delete #{id}", method: :delete,
-                                    path:   "/api/v2/#{word}/#{id}")
-  invalid_ids(word, ["describe #{bad_id}", "delete #{bad_id}"])
-  search_tests(word, id)
-  test_list_output(word)
+  private
+
+  def id
+    '9095WaGklE8Gy3M1'
+  end
+
+  def invalid_id
+    '__BAD__'
+  end
+
+  def cmd_word
+    'webhook'
+  end
+
+  def set_key
+    'title'
+  end
 end

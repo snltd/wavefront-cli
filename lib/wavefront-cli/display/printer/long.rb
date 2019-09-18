@@ -1,3 +1,5 @@
+require_relative '../../stdlib/string'
+
 module WavefrontDisplayPrinter
   #
   # Print the long indented descriptions of things

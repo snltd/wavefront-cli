@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 
-require_relative '../../spec_helper'
+require 'minitest/autorun'
+require_relative 'helpers'
 require_relative '../../../lib/wavefront-cli/output/ruby'
 
 # We can't really test this without `eval`-ing the output, and

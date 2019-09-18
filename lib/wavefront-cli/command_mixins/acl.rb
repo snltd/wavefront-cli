@@ -9,6 +9,7 @@ module WavefrontCli
       end
 
       def do_acl_clear
+        cannot_noop!
         wf.acl_set(options[:'<id>'], [], [everyone_id])
         do_acls
       end

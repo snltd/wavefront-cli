@@ -380,5 +380,12 @@ module WavefrontDisplay
         raise ArgumentError
       end
     end
+
+    # @param things [Array[String]]
+    # @return [String] all "things", strong-quoted and comma-separated
+    #
+    def quoted(things)
+      things.map { |item| "'#{item}'" }.join(', ')
+    end
   end
 end

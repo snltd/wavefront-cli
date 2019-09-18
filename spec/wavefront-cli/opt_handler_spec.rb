@@ -1,6 +1,8 @@
 #!/usr/bin/env ruby
 
-require_relative '../spec_helper'
+require 'minitest/autorun'
+require_relative '../constants'
+require_relative '../../lib/wavefront-cli/exception'
 require_relative '../../lib/wavefront-cli/opt_handler'
 
 # Some of these tests will be skipped if you have a ~/.wavefront

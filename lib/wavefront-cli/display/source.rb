@@ -12,17 +12,28 @@ module WavefrontDisplay
 
     def do_list_brief
       massage_data
+      terse_data
       multicolumn(:id, :description)
+    end
+
+    def do_search_brief
+      return multicolumn(:id) unless data.empty?
+
+      puts 'No matches.'
+    end
+
+    private
+
+    def terse_data
+      @data.map! do |e|
+        { id: e[:id], description: e[:description] || '<no description>' }
+      end
     end
 
     def massage_data
       return if options[:all]
       drop_cluster_sources
       drop_hidden_sources
-    end
-
-    def do_search_brief
-      multicolumn(:id)
     end
 
     # Filter out any sources with 'hidden=true'

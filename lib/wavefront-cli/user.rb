@@ -73,5 +73,9 @@ module WavefrontCli
     rescue Wavefront::Exception::InvalidUserId
       abort failed_validation_message(user)
     end
+
+    def item_dump_call
+      wf.list.response.items
+    end
   end
 end

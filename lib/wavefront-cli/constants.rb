@@ -27,5 +27,9 @@ module WavefrontCli
     # Split regex for searches
     #
     SEARCH_SPLIT = /\^|!\^|=|!=|~|!~/
+
+    # Where we store local event information
+    #
+    EVENT_STATE_DIR = Pathname.new('/var/tmp/wavefront')
   end
 end

@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-require_relative '../spec_helper'
+require 'minitest/autorun'
 require_relative '../../lib/wavefront-cli/write'
 
 # Test base writer

@@ -1,84 +1,99 @@
 #!/usr/bin/env ruby
 
-word = 'derivedmetric'
+require_relative '../support/command_base'
+require_relative '../test_mixins/tag'
+require_relative '../test_mixins/history'
+require_relative '../../lib/wavefront-cli/derivedmetric'
 
-require_relative '../spec_helper'
-require_relative "../../lib/wavefront-cli/#{word}"
+# Ensure 'derivedmetric' commands produce the correct API calls.
+#
+class DerivedMetricEndToEndTest < EndToEndTest
+  include WavefrontCliTest::List
+  include WavefrontCliTest::Describe
+  include WavefrontCliTest::Dump
+  # include WavefrontCliTest::Import
+  include WavefrontCliTest::Set
+  include WavefrontCliTest::DeleteUndelete
+  include WavefrontCliTest::Search
+  include WavefrontCliTest::Tag
+  include WavefrontCliTest::History
 
-id     = '1529938767979'
-bad_id = '>_<'
+  def test_create_simple
+    quietly do
+      assert_cmd_posts('create mymetric ts(series)',
+                       '/api/v2/derivedmetric',
+                       minutes:                5,
+                       name:                   'mymetric',
+                       includeObsoleteMetrics: false,
+                       processRateMinutes:     1,
+                       query:                  'ts(series)')
+    end
 
-k = WavefrontCli::DerivedMetric
+    assert_noop('create mymetric ts(series)',
+                'uri: POST https://default.wavefront.com/api/v2/' \
+                'derivedmetric',
+                'body: ' + {
+                  query:                  'ts(series)',
+                  name:                   'mymetric',
+                  minutes:                5,
+                  includeObsoleteMetrics: false,
+                  processRateMinutes:     1
+                }.to_json)
 
-describe "#{word} command" do
-  missing_creds(word, ['list', "describe #{id}", "delete #{id}",
-                       "undelete #{id}", "history #{id}"])
-  list_tests(word, nil, k)
-  noop_tests(word, id, true, word, k)
-  search_tests(word, id, k)
-  cmd_to_call(word, "describe #{id}", { path: "/api/v2/#{word}/#{id}" }, k)
-  cmd_to_call(word, "describe -v 7 #{id}",
-              { path: "/api/v2/#{word}/#{id}/history/7" }, k)
-  cmd_to_call(word, "history #{id}",
-              { path: "/api/v2/#{word}/#{id}/history" }, k)
-
-  it 'deletes with a check on inTrash' do
-    stub_request(:get,
-                 "https://other.wavefront.com/api/v2/#{word}/#{id}")
-      .with(headers: { 'Accept': '*/*',
-                       'Accept-Encoding':
-                          'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-                       'Authorization': 'Bearer 0123456789-ABCDEF',
-                       'User-Agent': /wavefront.*/ })
-      .to_return(status: 200, body: '', headers: {})
-    cmd_to_call(word, "delete #{id}",
-                { method: :delete, path: "/api/v2/#{word}/#{id}" }, k)
+    assert_usage('create')
+    assert_abort_on_missing_creds("create #{id} ts(series)")
+    # Names are free-text, so there aren't any invalid ID tests for this
+    # command.
   end
 
-  cmd_to_call(word, "undelete #{id}",
-              { method: :post, path: "/api/v2/#{word}/#{id}/undelete" }, k)
-  invalid_ids(word, ["describe #{bad_id}", "delete #{bad_id}",
-                     "undelete #{bad_id}"])
-  tag_tests(word, id, bad_id, nil, k)
-
-  cmd_to_call(word, 'create test_dm ts(series)',
-              { method: :post, path: '/api/v2/derivedmetric',
-                body: { minutes:                5,
-                        name:                   'test_dm',
-                        includeObsoleteMetrics: false,
-                        processRateMinutes:     1,
-                        query:                  'ts(series)' },
-                headers: JSON_POST_HEADERS }, k)
-
-  cmd_to_call(word, 'create -i 3 -r 7 -b test_dm ts(series)',
-              { method: :post, path: '/api/v2/derivedmetric',
-                body: { minutes:                7,
-                        name:                   'test_dm',
-                        includeObsoleteMetrics: true,
-                        processRateMinutes:     3,
-                        query:                  'ts(series)' },
-                headers: JSON_POST_HEADERS }, k)
-
-  cmd_to_call(word, 'create -i 3 -T tag1 -T tag2 test_dm ts(series)',
-              { method: :post, path: '/api/v2/derivedmetric',
-                body: { minutes:                5,
-                        name:                   'test_dm',
-                        includeObsoleteMetrics: false,
-                        processRateMinutes:     3,
-                        tags:                   %w[tag1 tag2],
-                        query:                  'ts(series)' },
-                headers: JSON_POST_HEADERS }, k)
-  test_list_output(word, k)
-end
-
-class TestDerivedMetricMethods < CliMethodTest
-  def test_import_method
-    import_tester(:derivedmetric,
-                  %i[tags minutes name query metricsUsed hostsUsed],
-                  %i[id])
+  def create_with_options
+    quietly do
+      assert_cmd_posts('create -i 3 -r 7 -b mymetric ts(series)',
+                       '/api/v2/derivedmetric',
+                       minutes:                7,
+                       name:                   'mymetric',
+                       includeObsoleteMetrics: true,
+                       processRateMinutes:     3,
+                       query:                  'ts(series)')
+    end
   end
 
-  def cliclass
-    WavefrontCli::DerivedMetric
+  def create_with_options_and_tags
+    quietly do
+      assert_cmd_posts('create -i 3 -T tag1 -T tag2 mymetric ts(series)',
+                       '/api/v2/derivedmetric',
+                       minutes:                5,
+                       name:                   'mymetric',
+                       includeObsoleteMetrics: false,
+                       processRateMinutes:     3,
+                       tags:                   %w[tag1 tag2],
+                       query:                  'ts(series)')
+    end
+  end
+
+  private
+
+  def id
+    '1529926075038'
+  end
+
+  def invalid_id
+    '__BAD__'
+  end
+
+  def cmd_word
+    'derivedmetric'
+  end
+
+  def sdk_class_name
+    'DerivedMetric'
+  end
+
+  def import_fields
+    %i[tags minutes name query metricsUsed hostsUsed]
+  end
+
+  def friendly_name
+    'derived metric'
   end
 end

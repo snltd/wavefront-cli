@@ -1,45 +1,142 @@
 #!/usr/bin/env ruby
 
-id = 'tester'
-bad_id = '%%badid%%'
-word = 'integration'
+require_relative '../support/command_base'
+require_relative '../../lib/wavefront-cli/integration'
 
-require_relative '../spec_helper'
-require_relative "../../lib/wavefront-cli/#{word}"
+# Ensure 'integration' commands produce the correct API calls.
+#
+class IntegrationEndToEndTest < EndToEndTest
+  include WavefrontCliTest::List
+  include WavefrontCliTest::Describe
+  include WavefrontCliTest::Search
 
-describe "#{word} command" do
-  missing_creds(word, ['list', "describe #{id}", "install #{id}",
-                       "uninstall #{id}", "status #{id}", 'statuses',
-                       'manifests'])
-  list_tests(word)
-  noop_tests(word, id, :skip, 'integration')
-  cmd_to_call(word, "status #{id}", path: "/api/v2/#{word}/#{id}/status")
+  def test_install
+    quietly do
+      assert_cmd_posts("install #{id}",
+                       "/api/v2/integration/#{id}/install",
+                       'null')
+    end
 
-  cmd_to_call(word, "install #{id}",
-              method: :post, path: "/api/v2/#{word}/#{id}/install")
+    assert_invalid_id("install #{invalid_id}")
+    assert_usage('install')
+    assert_abort_on_missing_creds("install #{id}")
 
-  cmd_to_call(word, "uninstall #{id}",
-              method: :post, path: "/api/v2/#{word}/#{id}/uninstall")
+    assert_noop("install #{id}",
+                'uri: POST https://default.wavefront.com/api/v2/' \
+                "integration/#{id}/install",
+                'body: null')
+  end
 
-  cmd_to_call(word, "alert install #{id}",
-              method: :post,
-              path:   "/api/v2/#{word}/#{id}/install-all-alerts")
+  def test_uninstall
+    quietly do
+      assert_cmd_posts("uninstall #{id}",
+                       "/api/v2/integration/#{id}/uninstall",
+                       'null')
+    end
 
-  cmd_to_call(word, "alert uninstall #{id}",
-              method: :post,
-              path:   "/api/v2/#{word}/#{id}/uninstall-all-alerts")
+    assert_invalid_id("uninstall #{invalid_id}")
+    assert_usage('uninstall')
+    assert_abort_on_missing_creds("uninstall #{id}")
 
-  cmd_to_call(word, "describe #{id}", path: "/api/v2/#{word}/#{id}")
+    assert_noop("uninstall #{id}",
+                'uri: POST https://default.wavefront.com/api/v2/' \
+                "integration/#{id}/uninstall",
+                'body: null')
+  end
 
-  cmd_to_call(word, "status #{id}", path: "/api/v2/#{word}/#{id}/status")
+  def test_manifests
+    assert_exits_with('Human-readable manifest output is not supported.',
+                      'manifests -f human')
 
-  cmd_to_call(word, 'installed', path: "/api/v2/#{word}/installed")
+    quietly do
+      assert_cmd_gets('manifests -f json', '/api/v2/integration/manifests')
+    end
 
-  cmd_to_call(word, 'manifests -f json', path: "/api/v2/#{word}/manifests")
+    assert_noop('manifests --format yaml',
+                'uri: GET https://default.wavefront.com/api/v2/' \
+                'integration/manifests')
+    assert_abort_on_missing_creds('manifests')
+  end
 
-  invalid_ids(word, ["describe #{bad_id}", "install #{bad_id}",
-                     "alert install #{bad_id}",
-                     "alert uninstall #{bad_id}",
-                     "uninstall #{bad_id}", "status #{bad_id}"])
-  test_list_output(word)
+  def test_status
+    quietly do
+      assert_cmd_gets("status #{id}", "/api/v2/integration/#{id}/status")
+    end
+
+    assert_invalid_id("status #{invalid_id}")
+    assert_noop("status #{id}",
+                'uri: GET https://default.wavefront.com/api/v2/' \
+                "integration/#{id}/status")
+    assert_abort_on_missing_creds("status #{id}")
+  end
+
+  def test_statuses
+    quietly do
+      assert_cmd_gets('statuses', '/api/v2/integration/status')
+    end
+
+    assert_noop('statuses',
+                'uri: GET https://default.wavefront.com/api/v2/' \
+                'integration/status')
+    assert_abort_on_missing_creds('statuses')
+  end
+
+  def test_alert_install
+    quietly do
+      assert_cmd_posts("alert install #{id}",
+                       "/api/v2/integration/#{id}/install-all-alerts",
+                       'null')
+    end
+
+    assert_invalid_id("alert install #{invalid_id}")
+    assert_usage('alert install')
+    assert_abort_on_missing_creds("alert install #{id}")
+
+    assert_noop("alert install #{id}",
+                'uri: POST https://default.wavefront.com/api/v2/' \
+                "integration/#{id}/install-all-alerts",
+                'body: null')
+  end
+
+  def test_alert_uninstall
+    quietly do
+      assert_cmd_posts("alert uninstall #{id}",
+                       "/api/v2/integration/#{id}/uninstall-all-alerts",
+                       'null')
+    end
+
+    assert_invalid_id("alert uninstall #{invalid_id}")
+    assert_usage('alert uninstall')
+    assert_abort_on_missing_creds("alert uninstall #{id}")
+
+    assert_noop("alert uninstall #{id}",
+                'uri: POST https://default.wavefront.com/api/v2/' \
+                "integration/#{id}/uninstall-all-alerts",
+                'body: null')
+  end
+
+  def test_installed
+    quietly do
+      assert_cmd_gets('installed', '/api/v2/integration/installed')
+    end
+
+    assert_noop('installed',
+                'uri: GET https://default.wavefront.com/api/v2/' \
+                'integration/installed')
+    assert_abort_on_missing_creds('installed')
+  end
+
+  private
+
+  def id
+    'tester'
+  end
+
+  def invalid_id
+    '%%badid%%'
+  end
+
+  def cmd_word
+    'integration'
+  end
 end

@@ -10,7 +10,7 @@ module WavefrontDisplay
     end
 
     def do_read
-      abort 'Message not found.' if data.empty?
+      abort 'Message not found.' unless data && !data.empty?
 
       puts message_title, data.content.fold(TW, 0), message_sender
     end

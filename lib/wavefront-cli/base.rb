@@ -219,12 +219,14 @@ module WavefrontCli
       exit if options[:noop]
 
       check_response_blocks(data)
+      warning_message(data.status)
       status_error_handler(data, method)
       handle_response(data.response, format_var, method)
     end
 
     def status_error_handler(data, method)
       return if check_status(data.status)
+
       handle_error(method, data.status.code) if format_var == :human
       display_api_error(data.status)
     end
@@ -252,6 +254,11 @@ module WavefrontCli
 
       abort format('ERROR: API code %s. %s.', status.code,
                    msg.chomp('.')).fold(TW, 7)
+    end
+
+    def warning_message(status)
+      return unless status.status.between?(201, 299)
+      puts format("API WARNING: '%s'.", status.message)
     end
 
     def display_no_api_response(data, method)
@@ -311,13 +318,12 @@ module WavefrontCli
     #
     def validate_opts
       unless options[:token]
-        raise(WavefrontCli::Exception::CredentialError,
-              'Missing API token.')
+        raise(WavefrontCli::Exception::CredentialError, 'Missing API token.')
       end
 
       return true if options[:endpoint]
-      raise(WavefrontCli::Exception::CredentialError,
-            'Missing API endpoint.')
+
+      raise(WavefrontCli::Exception::CredentialError, 'Missing API endpoint.')
     end
 
     # Give it a path to a file (as a string) and it will return the
@@ -391,18 +397,23 @@ module WavefrontCli
 
     # rubocop:disable Metrics/AbcSize
     def do_dump
-      items = wf.list(ALL_PAGE_SIZE, :all).response.items
-
       if options[:format] == 'yaml'
-        ok_exit items.to_yaml
+        ok_exit JSON.parse(item_dump_call.to_json).to_yaml
       elsif options[:format] == 'json'
-        ok_exit items.to_json
+        ok_exit item_dump_call.to_json
       else
         abort format("Dump format must be 'json' or 'yaml'. (Tried '%s')",
                      options[:format])
       end
     end
     # rubocop:enable Metrics/AbcSize
+
+    # Broken out into its own method because 'users' does not use
+    # pagination
+    #
+    def item_dump_call
+      wf.list(ALL_PAGE_SIZE, :all).response.items
+    end
 
     def do_import
       raw = load_file(options[:'<file>'])
@@ -480,15 +491,21 @@ module WavefrontCli
     # values
     #
     def range_hash
+      offset_key = :offset
+
       if options[:all]
         limit  = :all
         offset = ALL_PAGE_SIZE
+      elsif options[:cursor]
+        offset_key = :cursor
+        limit  = options[:limit]
+        offset = options[:cursor]
       else
         limit  = options[:limit]
-        offset = options[:offset] || options[:cursor]
+        offset = options[:offset]
       end
 
-      { limit: limit, offset: offset }
+      { limit: limit, offset_key => offset }
     end
 
     # The search URI pattern doesn't always match the command name,

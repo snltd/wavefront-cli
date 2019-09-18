@@ -1,8 +1,8 @@
 #!/usr/bin/env ruby
 
+require 'minitest/autorun'
+require_relative '../../../support/output_tester'
 require_relative '../../../../lib/wavefront-cli/display/printer/terse'
-require_relative '../spec_helper'
-require_relative '../../../spec_helper'
 
 TERSE_DATA = [{ id: 'id1', name: 'name1', fa: 1, fb: 2, fc: 3 },
               { id: 'id2', name: 'name2', fa: 11, fb: 21, fc: 31 }].freeze
@@ -50,8 +50,8 @@ class WavefrontDisplayPrinterTerse < MiniTest::Test
   end
 
   def test_end_to_end
-    input, expected = OUTPUT_TESTER.in_and_out('alerts-input.json',
-                                               'alerts-human-terse')
+    input, expected = OutputTester.new.in_and_out('alerts-input.json',
+                                                  'alerts-human-terse')
     out = WavefrontDisplayPrinter::Terse.new(input, %i[id status name]).to_s
     assert_equal(expected, out + "\n")
   end

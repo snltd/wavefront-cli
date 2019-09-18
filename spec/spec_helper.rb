@@ -8,16 +8,6 @@ require 'minitest/spec'
 require 'pathname'
 require_relative '../lib/wavefront-cli/controller'
 
-def all_commands
-  cmd_dir = ROOT + 'lib' + 'wavefront-cli' + 'commands'
-
-  files = cmd_dir.children.select do |f|
-    f.extname == '.rb' && f.basename.to_s != 'base.rb'
-  end
-
-  files.each.with_object([]) { |c, a| a.<< c.basename.to_s.chomp('.rb') }
-end
-
 unless defined?(CMD)
   ROOT = Pathname.new(__FILE__).dirname.parent
   CMD = 'wavefront'.freeze
@@ -29,7 +19,6 @@ unless defined?(CMD)
   JSON_POST_HEADERS = {
     'Content-Type': 'application/json', Accept: 'application/json'
   }.freeze
-  CMDS = all_commands.freeze
   BAD_TAG = '*BAD_TAG*'.freeze
   TW = 80
   HOME_CONFIG = Pathname.new(ENV['HOME']) + '.wavefront'
@@ -38,15 +27,20 @@ end
 # Return an array of CLI permutations and the values to which they relate
 #
 def permutations
-  [["-t #{TOKEN} -E #{ENDPOINT}", { t: TOKEN, e: ENDPOINT }],
-   ["-c #{CF}", { t: CF_VAL['default']['token'],
-                  e: CF_VAL['default']['endpoint'] }],
-   ["-c #{CF} -P other", { t: CF_VAL['other']['token'],
-                           e: CF_VAL['other']['endpoint'] }],
-   ["-c #{CF} -P other -t #{TOKEN}", { t: TOKEN,
-                                       e: CF_VAL['other']['endpoint'] }],
-   ["-c #{CF} -E #{ENDPOINT}", { t: CF_VAL['default']['token'],
-                                 e: ENDPOINT }]]
+  [["-t #{TOKEN} -E #{ENDPOINT}",
+    { t: TOKEN, e: ENDPOINT }],
+
+   ["-c #{CF}",
+    { t: CF_VAL['default']['token'], e: CF_VAL['default']['endpoint'] }],
+
+   ["-c #{CF} -P other",
+    { t: CF_VAL['other']['token'], e: CF_VAL['other']['endpoint'] }],
+
+   ["-c #{CF} -P other -t #{TOKEN}",
+    { t: TOKEN, e: CF_VAL['other']['endpoint'] }],
+
+   ["-c #{CF} -E #{ENDPOINT}",
+    { t: CF_VAL['default']['token'], e: ENDPOINT }]]
 end
 
 # Object returned by cmd_to_call. Has just enough methods to satisfy
@@ -78,7 +72,6 @@ CANNED_RESPONSE = DummyResponse.new
 # @param call [Hash]
 # @param spies [Array[Hash]] array of spies to set up, for stubbing
 #   methods in any class. Hash has keys :class, :method, :return.
-# rubocop:disable Metrics/AbcSize
 # rubocop:disable Metrics/PerceivedComplexity
 def cmd_to_call(word, args, call, sdk_class = nil, spies = [])
   headers = { 'Accept':          /.*/,
@@ -139,7 +132,6 @@ def cmd_to_call(word, args, call, sdk_class = nil, spies = [])
   end
 end
 # rubocop:enable Metrics/PerceivedComplexity
-# rubocop:enable Metrics/AbcSize
 
 # Test no-ops
 #
@@ -437,48 +429,6 @@ class CliMethodTest < MiniTest::Test
     do_not_have_fields.each { |f| refute_includes(x.keys, f) }
   end
 end
-
-# Load in a canned query response
-#
-def load_query_response
-  JSON.parse(IO.read(RES_DIR + 'sample_query_response.json'),
-             symbolize_names: true)
-end
-
-def load_raw_query_response
-  JSON.parse(IO.read(RES_DIR + 'sample_raw_query_response.json'),
-             symbolize_names: true)
-end
-
-# We keep a bunch of Wavefront API responses as text files alongside
-# canned responses in various formats. This class groups helpers for
-# doing that.
-#
-class OutputTester
-  # @param file [String] filename to load
-  # @param only_items [Bool] true for the items hash, false for the
-  #   whole loadedobject
-  # @return [Object] canned raw responses used to test outputs
-  #
-  def load_input(file, only_items = true)
-    ret = JSON.parse(IO.read(RES_DIR + 'display' + file),
-                     symbolize_names: true)
-    only_items ? ret[:items] : ret
-  end
-
-  # @param file [String] file to load
-  # @return [String]
-  #
-  def load_expected(file)
-    IO.read(RES_DIR + 'display' + file)
-  end
-
-  def in_and_out(input, expected, only_items = true)
-    [load_input(input, only_items), load_expected(expected)]
-  end
-end
-
-OUTPUT_TESTER = OutputTester.new
 
 # stdlib extensions
 #

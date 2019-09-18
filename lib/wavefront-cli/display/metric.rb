@@ -22,7 +22,7 @@ module WavefrontDisplay
     end
 
     def bail_out
-      puts 'No matches.'
+      puts "Did not find metric '#{options[:'<metric>']}'."
       exit
     end
   end

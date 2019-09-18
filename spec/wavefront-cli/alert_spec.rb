@@ -1,119 +1,295 @@
 #!/usr/bin/env ruby
 
-id = '1481553823153'
-bad_id = '__bad_id__'
-word = 'alert'
+require_relative '../support/command_base'
+require_relative '../test_mixins/acl'
+require_relative '../test_mixins/tag'
+require_relative '../test_mixins/history'
+require_relative '../../lib/wavefront-cli/alert'
 
-def search_body(val)
-  { limit: 999,
-    offset: 0,
-    query: [
-      { key: 'status',
-        value: val,
-        matchingMethod: 'EXACT',
-        negated: false }
-    ],
-    sort: { field: 'status', ascending: true } }
-end
+# Ensure 'alert' commands produce the correct API calls.
+#
+class AlertEndToEndTest < EndToEndTest
+  include WavefrontCliTest::Import
+  include WavefrontCliTest::Set
+  include WavefrontCliTest::DeleteUndelete
+  include WavefrontCliTest::Dump
+  include WavefrontCliTest::List
+  include WavefrontCliTest::Describe
+  include WavefrontCliTest::Search
+  include WavefrontCliTest::Tag
+  include WavefrontCliTest::History
+  include WavefrontCliTest::Acl
 
-require_relative '../spec_helper'
-require_relative "../../lib/wavefront-cli/#{word}"
+  def test_latest
+    quietly do
+      assert_cmd_gets("latest #{id}", "/api/v2/alert/#{id}/history")
+    end
 
-describe "#{word} command" do
-  missing_creds(word, ['list',
-                       "describe #{id}",
-                       "snooze #{id}",
-                       'queries',
-                       'snoozed',
-                       "clone #{id}",
-                       "install #{id}",
-                       "uninstall #{id}",
-                       'firing',
-                       'currently firing',
-                       'summary',
-                       "acls #{id}",
-                       "acl grant view on #{id} to testuser1",
-                       "acl revoke modify on #{id} from group1",
-                       "delete #{id}",
-                       "undelete #{id}",
-                       "history #{id}"])
-  list_tests(word)
-  cmd_to_call(word, "describe #{id}", path: "/api/v2/#{word}/#{id}")
-  cmd_to_call(word, "describe -v 7 #{id}",
-              path: "/api/v2/#{word}/#{id}/history/7")
-  cmd_to_call(word, "history #{id}", path: "/api/v2/#{word}/#{id}/history")
-  cmd_to_call(word, "latest #{id}", path: "/api/v2/#{word}/#{id}/history")
+    assert_noop("latest #{id}",
+                'uri: GET https://default.wavefront.com/api/v2/' \
+                "alert/#{id}/history")
 
-  it 'deletes with a check on inTrash' do
-    stub_request(:get,
-                 'https://other.wavefront.com/api/v2/alert/1481553823153')
-      .with(headers: { 'Accept': '*/*',
-                       'Accept-Encoding':
-                         'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-                       'Authorization': 'Bearer 0123456789-ABCDEF',
-                       'User-Agent': /wavefront.*/ })
-      .to_return(status: 200, body: '', headers: {})
-    cmd_to_call(word, "delete #{id}",
-                method: :delete, path: "/api/v2/#{word}/#{id}")
+    assert_invalid_id("latest #{invalid_id}")
+    assert_usage('latest')
+    assert_abort_on_missing_creds("latest #{id}")
   end
 
-  cmd_to_call(word, "clone #{id}",
-              method: :post, path: "/api/v2/#{word}/#{id}/clone")
-  cmd_to_call(word, "clone #{id} -v 5",
-              method: :post,
-              path: "/api/v2/#{word}/#{id}/clone",
-              body: { id: id, v: 5, name: nil })
-  cmd_to_call(word, "undelete #{id}",
-              method: :post, path: "/api/v2/#{word}/#{id}/undelete")
-  cmd_to_call(word, "snooze #{id}",
-              method: :post, path: "/api/v2/#{word}/#{id}/snooze")
-  cmd_to_call(word, "snooze -T 800 #{id}",
-              method: :post,
-              path: "/api/v2/#{word}/#{id}/snooze?seconds=800")
-  cmd_to_call(word, "unsnooze #{id}",
-              method: :post, path: "/api/v2/#{word}/#{id}/unsnooze")
-  cmd_to_call(word, "install #{id}",
-              method: :post, path: "/api/v2/#{word}/#{id}/install")
-  cmd_to_call(word, "uninstall #{id}",
-              method: :post, path: "/api/v2/#{word}/#{id}/uninstall")
-  cmd_to_call(word, 'summary', path: "/api/v2/#{word}/summary")
-  invalid_ids(word, ["describe #{bad_id}", "delete #{bad_id}",
-                     "undelete #{bad_id}", "snooze #{bad_id}",
-                     "install #{bad_id}", "uninstall #{bad_id}",
-                     "snooze -T 500 #{bad_id}"])
-  cmd_to_call(word, 'snoozed',
-              method: :post,
-              path: "/api/v2/search/#{word}",
-              body: search_body('snoozed'))
-  cmd_to_call(word, 'firing',
-              method: :post,
-              path: "/api/v2/search/#{word}",
-              body: search_body('firing'))
-  cmd_to_call(word, 'currently firing',
-              method: :post,
-              path: "/api/v2/search/#{word}",
-              body: search_body('firing'))
-  cmd_to_call(word, 'currently in_maintenance',
-              method: :post,
-              path: "/api/v2/search/#{word}",
-              body: search_body('in_maintenance'))
-  cmd_to_call(word, 'queries', path: "/api/v2/#{word}?limit=999&offset=0")
-  search_tests(word, id)
-  tag_tests(word, id, bad_id)
-  noop_tests(word, id, true)
-  test_list_output(word)
-  acl_tests(word, id, bad_id)
-end
-
-class TestAlertMethods < CliMethodTest
-  def test_import_method
-    import_tester(:window,
-                  %i[condition displayExpression resolveAfterMinutes
-                     minutes severity tags target name],
-                  %i[id])
+  def test_queries
+    quietly do
+      assert_cmd_gets('queries', '/api/v2/alert?limit=999&offset=0')
+    end
   end
 
-  def cliclass
-    WavefrontCli::Alert
+  def test_clone
+    quietly do
+      assert_cmd_posts("clone #{id}",
+                       "/api/v2/alert/#{id}/clone",
+                       id: id, v: nil, name: nil)
+    end
+
+    assert_noop("clone #{id}",
+                'uri: POST https://default.wavefront.com/api/v2/' \
+                "alert/#{id}/clone",
+                'body: ' + { id: id, name: nil, v: nil }.to_json)
+
+    assert_invalid_id("clone #{invalid_id}")
+    assert_usage('clone')
+    assert_abort_on_missing_creds("clone #{id}")
   end
+
+  def test_clone_v
+    quietly do
+      assert_cmd_posts("clone #{id} -v5",
+                       "/api/v2/alert/#{id}/clone",
+                       id: id, v: 5, name: nil)
+    end
+
+    assert_noop("clone #{id} --version 5",
+                'uri: POST https://default.wavefront.com/api/v2/' \
+                "alert/#{id}/clone",
+                'body: ' + { id: id, name: nil, v: 5 }.to_json)
+
+    assert_invalid_id("clone -v 10 #{invalid_id}")
+    assert_usage('clone -v')
+    assert_abort_on_missing_creds("clone -v5 #{id}")
+  end
+
+  def test_snooze
+    assert_repeated_output("Snoozed alert '#{id}' indefinitely.") do
+      assert_cmd_posts("snooze #{id}", "/api/v2/alert/#{id}/snooze")
+    end
+
+    assert_noop("snooze #{id}",
+                'uri: POST https://default.wavefront.com/api/v2/' \
+                "alert/#{id}/snooze",
+                'body: null')
+    assert_usage('snooze')
+    assert_abort_on_missing_creds("snooze #{id}")
+  end
+
+  def test_snooze_t
+    assert_repeated_output("Snoozed alert '#{id}' for 800 seconds.") do
+      assert_cmd_posts("snooze -T 800 #{id}",
+                       "/api/v2/alert/#{id}/snooze?seconds=800")
+    end
+
+    assert_noop("snooze -T 800 #{id}",
+                'uri: POST https://default.wavefront.com/api/v2/' \
+                "alert/#{id}/snooze",
+                'body: null')
+    assert_usage('snooze -T')
+    assert_invalid_id("snooze -T 100 #{invalid_id}")
+    assert_abort_on_missing_creds("snooze -T 800 #{id}")
+  end
+
+  def test_unsnooze
+    assert_repeated_output("Unsnoozed alert '#{id}'.") do
+      assert_cmd_posts("unsnooze #{id}",
+                       "/api/v2/alert/#{id}/unsnooze")
+    end
+
+    assert_noop("unsnooze #{id}",
+                'uri: POST https://default.wavefront.com/api/v2/' \
+                "alert/#{id}/unsnooze",
+                'body: null')
+    assert_invalid_id("unsnooze #{invalid_id}")
+    assert_usage('unsnooze')
+    assert_abort_on_missing_creds("unsnooze #{id}")
+  end
+
+  def test_install
+    quietly do
+      assert_cmd_posts("install #{id}",
+                       "/api/v2/alert/#{id}/install")
+    end
+
+    assert_noop("install #{id}",
+                'uri: POST https://default.wavefront.com/api/v2/' \
+                "alert/#{id}/install",
+                'body: null')
+    assert_invalid_id("install #{invalid_id}")
+    assert_usage('install')
+    assert_abort_on_missing_creds("install #{id}")
+  end
+
+  def test_uninstall
+    quietly do
+      assert_cmd_posts("uninstall #{id}",
+                       "/api/v2/alert/#{id}/uninstall")
+    end
+
+    assert_noop("uninstall #{id}",
+                'uri: POST https://default.wavefront.com/api/v2/' \
+                "alert/#{id}/uninstall",
+                'body: null')
+    assert_invalid_id("uninstall #{invalid_id}")
+    assert_usage('uninstall')
+    assert_abort_on_missing_creds("uninstall #{id}")
+  end
+
+  def test_summary
+    quietly { assert_cmd_gets('summary', '/api/v2/alert/summary') }
+
+    assert_noop(
+      'summary',
+      'uri: GET https://default.wavefront.com/api/v2/alert/summary'
+    )
+    assert_abort_on_missing_creds('summary')
+  end
+
+  def test_snoozed
+    out, err = capture_io do
+      assert_raises(SystemExit) do
+        assert_cmd_posts('snoozed',
+                         '/api/v2/search/alert',
+                         state_search('snoozed').to_json)
+      end
+    end
+
+    assert_empty(err)
+    assert_equal('No alerts are currently snoozed.', out.rstrip)
+
+    assert_noop('snoozed',
+                'uri: POST https://default.wavefront.com/api/v2/' \
+                'search/alert',
+                'body: ' + state_search('snoozed').to_json)
+
+    assert_abort_on_missing_creds('snoozed')
+  end
+
+  def test_firing
+    out, err = capture_io do
+      assert_raises(SystemExit) do
+        assert_cmd_posts('firing',
+                         '/api/v2/search/alert',
+                         state_search('firing').to_json)
+      end
+    end
+
+    assert_empty(err)
+    assert_equal('No alerts are currently firing.', out.rstrip)
+
+    assert_noop('firing',
+                'uri: POST https://default.wavefront.com/api/v2/' \
+                'search/alert',
+                'body: ' + state_search('firing').to_json)
+
+    assert_abort_on_missing_creds('firing')
+  end
+
+  def test_currently_firing
+    out, err = capture_io do
+      assert_raises(SystemExit) do
+        assert_cmd_posts('currently firing',
+                         '/api/v2/search/alert',
+                         state_search('firing').to_json)
+      end
+    end
+
+    assert_empty(err)
+    assert_equal('No alerts are currently firing.', out.rstrip)
+
+    assert_noop('currently firing',
+                'uri: POST https://default.wavefront.com/api/v2/' \
+                'search/alert',
+                'body: ' + state_search('firing').to_json)
+
+    assert_abort_on_missing_creds('currently firing')
+  end
+
+  def test_currently_in_maintenance
+    out, err = capture_io do
+      assert_raises(SystemExit) do
+        assert_cmd_posts('currently in_maintenance',
+                         '/api/v2/search/alert',
+                         state_search('in_maintenance').to_json)
+      end
+    end
+
+    assert_empty(err)
+    assert_equal('No alerts are currently in_maintenance.', out.rstrip)
+
+    assert_noop('currently in_maintenance',
+                'uri: POST https://default.wavefront.com/api/v2/' \
+                'search/alert',
+                'body: ' + state_search('in_maintenance').to_json)
+
+    assert_abort_on_missing_creds('currently in_maintenance')
+  end
+
+  private
+
+  def id
+    '1481553823153'
+  end
+
+  def invalid_id
+    '__BAD__'
+  end
+
+  def cmd_word
+    'alert'
+  end
+
+  def state_search(state)
+    { limit: 999,
+      offset: 0,
+      query: [{ key:            'status',
+                value:          state,
+                matchingMethod: 'EXACT',
+                negated:        false }],
+      sort: { field: 'status', ascending: true } }
+  end
+
+  def import_fields
+    %i[condition displayExpression resolveAfterMinutes minutes severity
+       tags target name]
+  end
+
+  # rubocop:disable Metrics/LineLength
+  def import_data
+    { name: 'PKS - too many containers not running',
+      condition:      'sum(ts(pks.kube.pod.container.status.running.gauge)) / (sum(ts(pks.kube.pod.container.status.running.gauge)) + sum(ts(pks.kube.pod.container.status.waiting.gauge)) + sum(ts(pks.kube.pod.container.status.terminated.gauge))) < 0.8',
+      minutes: 5,
+      target: 'target:9wltLtYXsP8Je2kI',
+      severity: 'SEVERE',
+      displayExpression:      'sum(ts(pks.kube.pod.container.status.running.gauge)) / (sum(ts(pks.kube.pod.container.status.running.gauge)) + sum(ts(pks.kube.pod.container.status.waiting.gauge)) + sum(ts(pks.kube.pod.container.status.terminated.gauge)))',
+      tags: { customerTags: ['pks'] },
+      additionalInformation: nil,
+      resolveAfterMinutes: 5,
+      resolveMinutes: 5 }
+  end
+
+  def update_data
+    { name: 'PKS - too many containers not running',
+      condition:    'sum(ts(pks.kube.pod.container.status.running.gauge)) / (sum(ts(pks.kube.pod.container.status.running.gauge)) + sum(ts(pks.kube.pod.container.status.waiting.gauge)) + sum(ts(pks.kube.pod.container.status.terminated.gauge))) < 0.8',
+      minutes: 5,
+      target: 'target:9wltLtYXsP8Je2kI',
+      severity: 'SEVERE',
+      displayExpression:    'sum(ts(pks.kube.pod.container.status.running.gauge)) / (sum(ts(pks.kube.pod.container.status.running.gauge)) + sum(ts(pks.kube.pod.container.status.waiting.gauge)) + sum(ts(pks.kube.pod.container.status.terminated.gauge)))',
+      tags: { customerTags: ['pks'] },
+      resolveAfterMinutes: 5,
+      id: '1556812163465' }
+  end
+  # rubocop:enable Metrics/LineLength
 end

@@ -1,6 +1,8 @@
 #!/usr/bin/env ruby
 
-require_relative '../../spec_helper'
+require 'minitest/autorun'
+require_relative 'helpers'
+require_relative '../../support/supported_commands'
 require_relative '../../../lib/wavefront-cli/output/csv'
 
 # Test the CSV instantiation of the base class
@@ -35,7 +37,7 @@ class CsvOutputBaseTest < MiniTest::Test
       assert klass.respond_to?(:run)
     end
 
-    (CMDS - supported_commands).each do |cmd|
+    (SupportedCommands.new.all - supported_commands).each do |cmd|
       wfo = WavefrontOutput::Csv.new(load_query_response, class: cmd)
       assert_raises(LoadError) { wfo.command_class }
     end

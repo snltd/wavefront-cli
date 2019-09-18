@@ -1,39 +1,51 @@
 #!/usr/bin/env ruby
 
-id = '9wltLtYXsP8Je2kI'
-bad_id = '__bad_id__'
-word = 'notificant'
+require_relative '../support/command_base'
+require_relative '../../lib/wavefront-cli/notificant'
 
-require_relative '../spec_helper'
-require_relative "../../lib/wavefront-cli/#{word}"
+# Ensure 'notificant' commands produce the correct API calls.
+#
+class NotificantEndToEndTest < EndToEndTest
+  include WavefrontCliTest::Delete
+  include WavefrontCliTest::Describe
+  include WavefrontCliTest::Dump
+  # include WavefrontCliTest::Import
+  include WavefrontCliTest::List
+  include WavefrontCliTest::Search
+  include WavefrontCliTest::Set
 
-describe "#{word} command" do
-  missing_creds(word, ['list',
-                       "describe #{id}",
-                       'import file',
-                       "delete #{id}",
-                       "test #{id}",
-                       'search name=pattern'])
-  invalid_ids(word, ["describe #{bad_id}",
-                     "delete #{bad_id}",
-                     "test #{bad_id}",
-                     "set #{bad_id} key=value"])
-  list_tests(word)
-  cmd_to_call(word, "describe #{id}", path: "/api/v2/#{word}/#{id}")
-  list_tests(word)
-  search_tests(word, id)
-  noop_tests(word, id)
-  test_list_output(word)
-end
+  def test_test
+    assert_repeated_output("Testing notificant '#{id}'.") do
+      assert_cmd_posts("test #{id}", "/api/v2/notificant/test/#{id}")
+    end
 
-class TestNotificantMethods < CliMethodTest
-  def test_import_method
-    import_tester(:notificant,
-                  %i[method title creatorId triggers template],
-                  %i[id])
+    assert_noop("test #{id}",
+                'uri: POST https://default.wavefront.com/api/v2/' \
+                "notificant/test/#{id}", 'body: null')
+    assert_invalid_id("test #{invalid_id}")
+    assert_usage('test')
+    assert_abort_on_missing_creds("test #{id}")
   end
 
-  def cliclass
-    WavefrontCli::Notificant
+  private
+
+  def id
+    '9wltLtYXsP8Je2kI'
+  end
+
+  def invalid_id
+    '__BAD__'
+  end
+
+  def cmd_word
+    'notificant'
+  end
+
+  def set_key
+    'title'
+  end
+
+  def import_fields
+    %i[method title creatorId triggers template]
   end
 end

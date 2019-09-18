@@ -1,7 +1,8 @@
 #!/usr/bin/env ruby
 
 require 'yaml'
-require_relative '../../spec_helper'
+require_relative 'helpers'
+require 'minitest/autorun'
 require_relative '../../../lib/wavefront-cli/output/yaml'
 
 # Test YAML output

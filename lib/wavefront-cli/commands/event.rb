@@ -20,7 +20,7 @@ class WavefrontCommandEvent < WavefrontCommandBase
      "wrap #{CMN} [-C command] [-d description] [-S severity] [-T type] " \
      '[-H host...] [-g tag...] <event>',
      tag_commands,
-     'show [-D]']
+     "show #{CMN}"]
   end
 
   def _options

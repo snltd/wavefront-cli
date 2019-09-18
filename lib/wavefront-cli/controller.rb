@@ -4,7 +4,7 @@
 # DEVELOPMENT = true
 
 if defined?(DEVELOPMENT)
-  dir = Pathname.new(__FILE__).dirname.realpath.parent.parent.parent
+  dir = Pathname.new(__dir__).realpath.parent.parent.parent
   $LOAD_PATH.<< dir + 'lib'
   $LOAD_PATH.<< dir + 'wavefront-sdk' + 'lib'
 end
@@ -17,7 +17,7 @@ require_relative 'exception'
 require_relative 'opt_handler'
 require_relative 'stdlib/string'
 
-CMD_DIR = Pathname.new(__FILE__).dirname + 'commands'
+CMD_DIR = Pathname.new(__dir__) + 'commands'
 
 # Dynamically generate a CLI interface from files which describe
 # each subcomand.
@@ -122,10 +122,14 @@ class WavefrontCliController
     abort 'File not found.'
   rescue WavefrontCli::Exception::InsufficientData => e
     abort "Insufficient data. #{e.message}"
+  rescue WavefrontCli::Exception::InvalidQuery => e
+    abort "Invalid query. API message: '#{e.message}'."
   rescue WavefrontCli::Exception::SystemError => e
     abort "Host system error. #{e.message}"
   rescue WavefrontCli::Exception::UnparseableInput => e
     abort "Cannot parse input. #{e.message}"
+  rescue WavefrontCli::Exception::UnparseableSearchPattern
+    abort 'Searches require a key, a value, and a match operator.'
   rescue WavefrontCli::Exception::UnsupportedFileFormat
     abort 'Unsupported file format.'
   rescue WavefrontCli::Exception::UnsupportedOperation => e

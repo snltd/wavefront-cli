@@ -89,8 +89,12 @@ module WavefrontCli
     def in_state(status)
       options[:all] = true
       ret = find_in_state(status)
-      ok_exit(format('No alerts are currently %s.', status)) if ret.empty?
-      ret
+
+      exit if options[:noop]
+
+      return ret unless ret.is_a?(Wavefront::Response) && ret.empty?
+
+      ok_exit(format('No alerts are currently %s.', status))
     end
 
     # Does the work for #in_state
@@ -100,6 +104,8 @@ module WavefrontCli
     #
     def find_in_state(status)
       search = do_search([format('status=%s', status)])
+
+      return if options[:noop]
 
       items = search.response.items.map do |i|
         { name: i.name, id: i.id, time: state_time(i) }

@@ -1,12 +1,11 @@
 #!/usr/bin/env ruby
 
 require 'pathname'
-require_relative(File.join('../../../lib/wavefront-cli/commands',
-                           Pathname.new(__FILE__).basename
-                           .to_s.sub('_spec.rb', '')))
-require_relative 'spec_helper'
+require 'minitest/autorun'
+require_relative '../../constants'
+require_relative '../../../lib/wavefront-cli/commands/base'
 
-# Test base class for commands
+# Abstract class for testing commands
 #
 class WavefrontCommmandBaseTest < MiniTest::Test
   attr_reader :wf, :col_width, :skip_cmd
