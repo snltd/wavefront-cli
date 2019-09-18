@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'base'
 require_relative 'stdlib/string'
 require_relative 'stdlib/array'

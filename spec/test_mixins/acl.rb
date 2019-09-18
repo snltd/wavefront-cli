@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module WavefrontCliTest
   #
   # Include this module to get full ACL tests
@@ -24,8 +26,8 @@ module WavefrontCliTest
       quietly do
         assert_cmd_puts("acl clear #{id}",
                         "/api/v2/#{api_class}/acl/set",
-                        [{ entityId:  id,
-                           viewAcl:   [],
+                        [{ entityId: id,
+                           viewAcl: [],
                            modifyAcl: [everyone_id] }].to_json)
       end
 
@@ -138,7 +140,7 @@ module WavefrontCliTest
     end
 
     def everyone_id
-      'abcd-1234'.freeze
+      'abcd-1234'
     end
 
     def user_acls

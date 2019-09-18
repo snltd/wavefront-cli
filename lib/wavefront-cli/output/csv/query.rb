@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'set'
 require_relative 'base'
 
@@ -21,8 +23,8 @@ module WavefrontCsvOutput
     def post_initialize
       @headers = []
       @formatopts = extract_formatopts
-      @data_map    = options[:raw] ? raw_output : query_output
-      @columns     = all_keys.freeze
+      @data_map = options[:raw] ? raw_output : query_output
+      @columns = all_keys.freeze
     end
 
     # @return [Array[Hash]] which goes in the @data_map
@@ -66,6 +68,7 @@ module WavefrontCsvOutput
     #
     def csv_headers
       return [] unless formatopts.include?('headers')
+
       [columns.map { |c| csv_value(c) }.join(',')]
     end
 
@@ -102,10 +105,10 @@ module WavefrontCsvOutput
     # Tags have their keys removed.
     #
     def csv_format(path, value, timestamp, source, tags = nil)
-      ret = { path:      path,
-              value:     value,
+      ret = { path: path,
+              value: value,
               timestamp: timestamp,
-              source:    source }
+              source: source }
 
       ret.tap { |r| tags.each { |k, v| r[k.to_sym] = tag_val(k, v) } }
     end

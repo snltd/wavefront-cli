@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'base'
 
 module WavefrontCli
@@ -13,7 +15,7 @@ module WavefrontCli
     alias do_permissions do_describe
 
     def do_create
-      wf.create(name:        options[:'<name>'],
+      wf.create(name: options[:'<name>'],
                 permissions: options[:permission])
     end
 

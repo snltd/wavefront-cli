@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module WavefrontOutput
   #
   # WavefrontCli::Base looks for a class WavefrontOutput::Format
@@ -33,6 +35,7 @@ module WavefrontOutput
 
     def filtered_response(resp)
       return resp unless options[:itemsonly]
+
       items_only(resp)
     end
 

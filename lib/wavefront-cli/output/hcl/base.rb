@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'securerandom'
 require 'json'
 
@@ -48,6 +50,7 @@ module WavefrontHclOutput
     #
     def required_fields
       return resp if hcl_fields.empty?
+
       resp.select { |k, _v| hcl_fields.include?(k) }
     end
 

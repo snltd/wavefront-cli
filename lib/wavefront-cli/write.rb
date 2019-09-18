@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'wavefront-sdk/support/mixins'
 require_relative 'base'
 
@@ -10,11 +12,11 @@ module WavefrontCli
   class Write < Base
     attr_reader :fmt
     include Wavefront::Mixins
-    SPLIT_PATTERN = /\s(?=(?:[^"]|"[^"]*")*$)/
+    SPLIT_PATTERN = /\s(?=(?:[^"]|"[^"]*")*$)/.freeze
 
     # rubocop:disable Metrics/AbcSize
     def do_point
-      p = { path:  options[:'<metric>'],
+      p = { path: options[:'<metric>'],
             value: options[:'<value>'].delete('\\').to_f }
 
       tags = tags_to_hash(options[:tag])
@@ -34,9 +36,9 @@ module WavefrontCli
 
     # rubocop:disable Metrics/AbcSize
     def do_distribution
-      p = { path:     options[:'<metric>'],
+      p = { path: options[:'<metric>'],
             interval: options[:interval] || 'M',
-            value:    mk_dist }
+            value: mk_dist }
 
       tags = tags_to_hash(options[:tag])
       p[:tags] = tags unless tags.empty?
@@ -65,24 +67,26 @@ module WavefrontCli
     #
     def _sdk_class
       return 'Wavefront::Distribution' if distribution?
+
       'Wavefront::Write'
     end
 
     def distribution?
       return true if options[:distribution]
+
       options[:infileformat]&.include?('d')
     end
 
     def mk_creds
-      { proxy:    options[:proxy],
-        port:     options[:port] || default_port,
-        socket:   options[:socket],
+      { proxy: options[:proxy],
+        port: options[:port] || default_port,
+        socket: options[:socket],
         endpoint: options[:endpoint],
-        token:    options[:token] }
+        token: options[:token] }
     end
 
     def default_port
-      distribution? ? 40000 : 2878
+      distribution? ? 40_000 : 2878
     end
 
     def validate_opts
@@ -90,10 +94,12 @@ module WavefrontCli
 
       if options[:using] == 'unix'
         return true if options[:socket]
+
         raise(WavefrontCli::Exception::CredentialError, 'No socket path.')
       end
 
       return true if options[:proxy]
+
       raise(WavefrontCli::Exception::CredentialError, 'No proxy address.')
     end
 
@@ -237,6 +243,7 @@ module WavefrontCli
       options[:metric] ? [options[:metric], m].join('.') : m
     rescue TypeError
       return options[:metric] if options[:metric]
+
       raise
     end
 
@@ -268,10 +275,11 @@ module WavefrontCli
     # rubocop:disable Metrics/CyclomaticComplexity
     def process_line(line)
       return true if line.empty?
+
       chunks = line.split(SPLIT_PATTERN, fmt.length)
       enough_fields?(line) # can raise exception
 
-      point = { path:  extract_path(chunks),
+      point = { path: extract_path(chunks),
                 value: extract_value(chunks) }
 
       tags = line_tags(chunks)
@@ -359,6 +367,7 @@ module WavefrontCli
       ncols = line.split(SPLIT_PATTERN).length
       return true if fmt.include?('T') && ncols >= fmt.length
       return true if ncols == fmt.length
+
       raise(WavefrontCli::Exception::UnparseableInput,
             format('Expected %s fields, got %s', fmt.length, ncols))
     end

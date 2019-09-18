@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'wavefront-sdk/support/mixins'
 require_relative 'base'
 
@@ -29,9 +31,9 @@ module WavefrontCli
     end
 
     def build_body
-      ret = { title:              options[:'<title>'],
+      ret = { title: options[:'<title>'],
               startTimeInSeconds: window_start,
-              endTimeInSeconds:   window_end }
+              endTimeInSeconds: window_end }
 
       ret[:reason] = options[:desc] if options[:desc]
       ret

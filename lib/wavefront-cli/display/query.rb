@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'base'
 require_relative 'printer/sparkline'
 
@@ -8,10 +10,10 @@ module WavefrontDisplay
   class Query < Base
     # rubocop:disable Metrics/AbcSize
     def do_default
-      d_obj = { name:       data.name,
-                query:      data.query,
+      d_obj = { name: data.name,
+                query: data.query,
                 timeseries: mk_timeseries(data),
-                events:     mk_events(data) }
+                events: mk_events(data) }
 
       if data.key?(:warnings) && !options[:nowarn]
         d_obj[:warnings] = data[:warnings]
@@ -46,6 +48,7 @@ module WavefrontDisplay
 
     def mk_events(data)
       return [] unless data.key?(:events)
+
       data[:events].map { |s| humanize_event(s) }
     end
 

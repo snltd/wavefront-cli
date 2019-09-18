@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'base'
 
 module WavefrontCli
@@ -43,8 +45,7 @@ module WavefrontCli
 
     def import_to_create(raw)
       { emailAddress: raw['items']['identifier'],
-        groups:       raw['items']['groups'] }.tap do |r|
-
+        groups: raw['items']['groups'] }.tap do |r|
         if raw['items'].key?('userGroups')
           r['userGroups'] = raw['items']['userGroups'].map { |g| g['id'] }
         end
@@ -55,8 +56,8 @@ module WavefrontCli
     #
     def user_body
       { emailAddress: options[:'<id>'],
-        groups:       options[:permission],
-        userGroups:   options[:group] }
+        groups: options[:permission],
+        userGroups: options[:group] }
     end
 
     # Because of the way docopt works, we have to call the user ID

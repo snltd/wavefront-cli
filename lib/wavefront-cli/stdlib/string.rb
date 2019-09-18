@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Extensions to the String class to help with formatting.
 #
 class String

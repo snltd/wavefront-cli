@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 require 'pathname'
 require 'minitest/autorun'
@@ -69,6 +70,7 @@ class WavefrontCommmandBaseTest < MiniTest::Test
 
     wf.commands(600).split("\n")[1..-1].each do |c|
       next if skip_cmd && c.match(skip_cmd)
+
       assert_match(/^  \w+/, c)
       assert_includes(c, CMN) unless c =~ /--help$/
     end
@@ -80,6 +82,7 @@ class WavefrontCommmandBaseTest < MiniTest::Test
 
     wf.options(600).split("\n")[1..-1].each do |o|
       next if o == 'Global options:' || o == 'Options:' || o.empty?
+
       assert_instance_of(String, o)
       assert_match(/^  -\w, --\w+/, o)
       refute o.end_with?('.')
@@ -96,14 +99,14 @@ class WavefrontCommmandBaseTest < MiniTest::Test
     assert_equal(wf.opt_row(
                    '-l, --longoption    a long option with a quite ' \
                    'long description which needs folding', 15
-    ),
+                 ),
                  '  -l, --longoption    a long option with a quite long ' \
                  "description which\n                      needs folding\n")
     assert_equal(wf.opt_row(
                    '-h, --hugeoption    an option with a very long, far ' \
                    'too verbose description which is going need folding ' \
                    'more than one time, let me tell you', 12
-    ),
+                 ),
                  '  -h, --hugeoption an option with a very long, far too ' \
                  "verbose description\n                   which is going " \
                  'need folding more than one time, let me tell' \

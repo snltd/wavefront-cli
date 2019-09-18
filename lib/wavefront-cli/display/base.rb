@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative '../constants'
 
 module WavefrontDisplay
@@ -91,6 +93,7 @@ module WavefrontDisplay
     #
     def run_error(method)
       return unless respond_to?(method)
+
       send(method)
       exit 1
     end
@@ -104,6 +107,7 @@ module WavefrontDisplay
 
     def prioritize_keys(data, keys)
       return _prioritize_keys(data, keys) unless data.is_a?(Array)
+
       data.map { |e| _prioritize_keys(e, keys) }
     end
 
@@ -115,6 +119,7 @@ module WavefrontDisplay
     def _prioritize_keys(data, keys)
       keys.each.with_object(data.is_a?(Map) ? Map.new : {}) do |k, a|
         next unless data.key?(k)
+
         a[k] = data[k]
         data.delete(k)
       end.merge(data)
@@ -171,6 +176,7 @@ module WavefrontDisplay
     #
     def key_width(hash = {}, pad = 2)
       return 0 if hash.keys.empty?
+
       hash.keys.map(&:size).max + pad
     end
 
@@ -360,7 +366,6 @@ module WavefrontDisplay
 
       str = time.to_s
       fmt, out_fmt = time_formats(str)
-      # rubocop:disable Style/DateTime
       ret = DateTime.strptime(str, fmt).to_time
       # rubocop:enable Style/DateTime
       ret = force_utc ? ret.utc : ret.localtime

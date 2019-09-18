@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 require 'minitest/autorun'
 require_relative '../helpers'
@@ -60,35 +61,35 @@ class WavefrontOutputCsvTest < MiniTest::Test
   def test_map_row_to_csv
     assert_equal(',,,,,,,,,,', wfq.map_row_to_csv(merp: 1))
     assert_equal('test.path,1,1544529523,testsource,,"unit test",,,,,',
-                 wfq.map_row_to_csv(path:        'test.path',
-                                    value:       1,
-                                    timestamp:   1_544_529_523,
-                                    source:      'testsource',
+                 wfq.map_row_to_csv(path: 'test.path',
+                                    value: 1,
+                                    timestamp: 1_544_529_523,
+                                    source: 'testsource',
                                     environment: 'unit test'))
     assert_equal('"test.path","1","1544529523","testsource",,"unit test",,,,,',
-                 wfqq.map_row_to_csv(path:        'test.path',
-                                     value:       1,
-                                     timestamp:   1_544_529_523,
-                                     source:      'testsource',
+                 wfqq.map_row_to_csv(path: 'test.path',
+                                     value: 1,
+                                     timestamp: 1_544_529_523,
+                                     source: 'testsource',
                                      environment: 'unit test'))
   end
 
   def test_csv_format
-    assert_equal({ path:        'test.path',
-                   value:       1,
-                   timestamp:   1_544_529_523,
-                   source:      'testsource',
+    assert_equal({ path: 'test.path',
+                   value: 1,
+                   timestamp: 1_544_529_523,
+                   source: 'testsource',
                    environment: 'test',
-                   dc:          'travis' },
+                   dc: 'travis' },
                  wfq.csv_format('test.path', 1, 1_544_529_523, 'testsource',
                                 environment: 'test', dc: 'travis'))
 
-    assert_equal({ path:        'test.path',
-                   value:       1,
-                   timestamp:   1_544_529_523,
-                   source:      'testsource',
+    assert_equal({ path: 'test.path',
+                   value: 1,
+                   timestamp: 1_544_529_523,
+                   source: 'testsource',
                    environment: 'environment=test',
-                   dc:          'dc=travis' },
+                   dc: 'dc=travis' },
                  wft.csv_format('test.path', 1, 1_544_529_523, 'testsource',
                                 environment: 'test', dc: 'travis'))
   end

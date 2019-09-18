@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'yaml'
 require 'json'
 require 'wavefront-sdk/validators'
@@ -121,9 +123,9 @@ module WavefrontCli
     # @return [Hash] containing `token` and `endpoint`.
     #
     def mk_creds
-      { token:    options[:token],
+      { token: options[:token],
         endpoint: options[:endpoint],
-        agent:    "wavefront-cli-#{WF_CLI_VERSION}" }
+        agent: "wavefront-cli-#{WF_CLI_VERSION}" }
     end
 
     # Make a common wavefront-sdk options object from standard CLI
@@ -133,8 +135,8 @@ module WavefrontCli
     # @return [Hash] containing `debug`, `verbose`, and `noop`.
     #
     def mk_opts
-      ret = { debug:   options[:debug],
-              noop:    options[:noop] }
+      ret = { debug: options[:debug],
+              noop: options[:noop] }
 
       ret[:verbose] = options[:noop] ? true : options[:verbose]
 
@@ -258,6 +260,7 @@ module WavefrontCli
 
     def warning_message(status)
       return unless status.status.between?(201, 299)
+
       puts format("API WARNING: '%s'.", status.message)
     end
 
@@ -422,6 +425,7 @@ module WavefrontCli
       [raw].flatten.each do |obj|
         resp = import_object(obj)
         next if options[:noop]
+
         errs += 1 unless resp.ok?
         puts import_message(obj, resp)
       end
@@ -498,7 +502,7 @@ module WavefrontCli
         offset = ALL_PAGE_SIZE
       elsif options[:cursor]
         offset_key = :cursor
-        limit  = options[:limit]
+        limit = options[:limit]
         offset = options[:cursor]
       else
         limit  = options[:limit]

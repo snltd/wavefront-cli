@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # For development against a local checkout of the SDK, uncomment
 # this definition
 #
@@ -192,6 +194,7 @@ class WavefrontCliController
   #
   def import_command(path)
     return if path.extname != '.rb' || path.basename.to_s == 'base.rb'
+
     k_name = path.basename.to_s[0..-4]
     require(CMD_DIR + k_name)
     Object.const_get("WavefrontCommand#{k_name.capitalize}").new

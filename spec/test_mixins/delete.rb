@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module WavefrontCliTest
   #
   # Mixin to test standard 'delete' commands.

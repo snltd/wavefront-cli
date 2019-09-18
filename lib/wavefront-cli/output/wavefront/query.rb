@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'wavefront-sdk/stdlib/hash'
 require_relative '../csv/base'
 

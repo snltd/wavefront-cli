@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'map'
 require_relative '../../stdlib/array'
 

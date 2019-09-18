@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 require_relative '../support/command_base'
 require_relative '../../lib/wavefront-cli/user'
@@ -23,8 +24,8 @@ class UserEndToEndTest < EndToEndTest
       assert_cmd_posts(
         "create #{id}", '/api/v2/user?sendEmail=false',
         {  emailAddress: id,
-           groups:       [],
-           userGroups:   [] },
+           groups: [],
+           userGroups: [] },
         { status: { result: 'OK', message: '', code: 200 },
           response: { identifier: 'test1@sysdef.xyz',
                       customer: 'sysdef',
@@ -56,8 +57,8 @@ class UserEndToEndTest < EndToEndTest
       assert_cmd_posts(
         "create -e #{id}", '/api/v2/user?sendEmail=true',
         {  emailAddress: id,
-           groups:       [],
-           userGroups:   [] },
+           groups: [],
+           userGroups: [] },
         { status: { result: 'OK', message: '', code: 200 },
           response: { identifier: 'test1@sysdef.xyz',
                       customer: 'sysdef',
@@ -90,8 +91,8 @@ class UserEndToEndTest < EndToEndTest
         "create -g #{groups[0]} -g #{groups[1]} #{id}",
         '/api/v2/user?sendEmail=false',
         {  emailAddress: id,
-           groups:       [],
-           userGroups:   groups },
+           groups: [],
+           userGroups: groups },
         { status: { result: 'OK', message: '', code: 200 },
           response: { identifier: 'test1@sysdef.xyz',
                       customer: 'sysdef',
@@ -123,8 +124,8 @@ class UserEndToEndTest < EndToEndTest
       assert_cmd_posts("invite -m #{privilege} -g #{groups[1]} #{id}",
                        '/api/v2/user/invite',
                        [{ emailAddress: id,
-                          groups:       [privilege],
-                          userGroups:   [groups[1]] }].to_json)
+                          groups: [privilege],
+                          userGroups: [groups[1]] }].to_json)
     end
 
     assert_invalid_id("invite -m #{privilege} #{invalid_id}")

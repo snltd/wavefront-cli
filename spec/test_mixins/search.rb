@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module WavefrontCliTest
   #
   # Mixin to test standard 'search' commands
@@ -7,13 +9,13 @@ module WavefrontCliTest
       assert_repeated_output('No matches.') do
         assert_cmd_posts("search id=#{id}",
                          "/api/v2/search/#{api_class}",
-                         limit:  10,
+                         limit: 10,
                          offset: 0,
-                         query:  [{ key: 'id',
-                                    value: id,
-                                    matchingMethod: 'EXACT',
-                                    negated: false }],
-                         sort:   { field: 'id', ascending: true })
+                         query: [{ key: 'id',
+                                   value: id,
+                                   matchingMethod: 'EXACT',
+                                   negated: false }],
+                         sort: { field: 'id', ascending: true })
       end
 
       assert_noop(
@@ -37,13 +39,13 @@ module WavefrontCliTest
       assert_repeated_output('No matches.') do
         assert_cmd_posts("search id=#{id} -L 5 --offset 15",
                          "/api/v2/search/#{api_class}",
-                         limit:  '5',
+                         limit: '5',
                          offset: '15',
-                         query:  [{ key: 'id',
-                                    value: id,
-                                    matchingMethod: 'EXACT',
-                                    negated: false }],
-                         sort:   { field: 'id', ascending: true })
+                         query: [{ key: 'id',
+                                   value: id,
+                                   matchingMethod: 'EXACT',
+                                   negated: false }],
+                         sort: { field: 'id', ascending: true })
       end
 
       assert_abort_on_missing_creds("search id=#{id} -L 5 --offset 15")
@@ -53,17 +55,17 @@ module WavefrontCliTest
       assert_repeated_output('No matches.') do
         assert_cmd_posts("search id=#{id} thing!^word --all",
                          "/api/v2/search/#{api_class}",
-                         limit:  999,
+                         limit: 999,
                          offset: 0,
-                         query:  [{ key: 'id',
-                                    value: id,
-                                    matchingMethod: 'EXACT',
-                                    negated: false },
-                                  { key: 'thing',
-                                    value: 'word',
-                                    matchingMethod: 'STARTSWITH',
-                                    negated: true }],
-                         sort:    { field: 'id', ascending: true })
+                         query: [{ key: 'id',
+                                   value: id,
+                                   matchingMethod: 'EXACT',
+                                   negated: false },
+                                 { key: 'thing',
+                                   value: 'word',
+                                   matchingMethod: 'STARTSWITH',
+                                   negated: true }],
+                         sort: { field: 'id', ascending: true })
       end
 
       assert_abort_on_missing_creds("search id=#{id} thing!^word --all")
@@ -73,13 +75,13 @@ module WavefrontCliTest
       assert_repeated_output('No matches.') do
         assert_cmd_posts('search id!~avoid -L 2',
                          "/api/v2/search/#{api_class}",
-                         limit:  '2',
+                         limit: '2',
                          offset: 0,
-                         query:  [{ key: 'id',
-                                    value: 'avoid',
-                                    matchingMethod: 'CONTAINS',
-                                    negated: true }],
-                         sort:   { field: 'id', ascending: true })
+                         query: [{ key: 'id',
+                                   value: 'avoid',
+                                   matchingMethod: 'CONTAINS',
+                                   negated: true }],
+                         sort: { field: 'id', ascending: true })
       end
 
       assert_abort_on_missing_creds('search id!~avoid -L 2')

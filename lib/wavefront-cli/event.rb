@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'fileutils'
 require 'open3'
 require 'wavefront-sdk/support/mixins'
@@ -43,7 +45,6 @@ module WavefrontCli
     # name, we'll look for something on the stack.  If it does look
     # like a real event, we'll make an API call straight away.
     #
-    # rubocop:disable Metrics/AbcSize
     def do_close(id = nil)
       id ||= options[:'<id>']
       ev_file = id =~ /^\d{13}:.+/ ? state_dir + id : nil
@@ -93,8 +94,8 @@ module WavefrontCli
     # return [Hash] body for #create() method
     #
     def create_body(opts, t_start)
-      { name:        opts[:'<event>'],
-        startTime:   t_start,
+      { name: opts[:'<event>'],
+        startTime: t_start,
         annotations: annotations(opts) }.tap do |r|
           r[:hosts] = opts[:host] if opts[:host]
           r[:tags] = opts[:evtag] if opts[:evtag]
@@ -176,10 +177,10 @@ module WavefrontCli
     # @return [String]
     #
     def event_file_data
-      { hosts:       options[:host],
+      { hosts: options[:host],
         description: options[:desc],
-        severity:    options[:severity],
-        tags:        options[:evtag] }.to_json
+        severity: options[:severity],
+        tags: options[:evtag] }.to_json
     end
 
     def create_dir(state_dir)

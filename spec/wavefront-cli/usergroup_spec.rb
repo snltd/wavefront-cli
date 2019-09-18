@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 require_relative '../support/command_base'
 require_relative '../../lib/wavefront-cli/usergroup'
@@ -98,7 +99,6 @@ class UserGroupEndToEndTest < EndToEndTest
     assert_repeated_output(
       "Granted '#{privileges[1]}' permission to '#{id}'."
     ) do
-
       assert_cmd_posts("grant #{privileges[1]} to #{id}",
                        "/api/v2/usergroup/grant/#{privileges[1]}",
                        [id].to_json)

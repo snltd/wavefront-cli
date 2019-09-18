@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'base'
 require_relative 'command_mixins/tag'
 require_relative 'command_mixins/acl'
@@ -12,6 +14,7 @@ module WavefrontCli
 
     def list_filter(list)
       return list unless options[:nosystem]
+
       list.tap { |l| l.response.items.delete_if { |d| d[:systemOwned] } }
     end
 

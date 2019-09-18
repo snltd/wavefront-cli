@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'base'
 
 module WavefrontDisplay
@@ -30,11 +32,13 @@ module WavefrontDisplay
 
     def groups_as_string(groups)
       return '  <none>' if groups.empty?
+
       data.response.groups.map { |g| format('  %s', g) }.join("\n  ")
     end
 
     def user_groups_as_string(groups)
       return '  <none>' if groups.empty?
+
       groups.map { |g| format('  %s (%s)', g[:name], g[:id]) }.join("\n")
     end
 

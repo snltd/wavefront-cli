@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # The Unicode characters which we use to make a sparkline
 #
 BLOCKS = [' ', "\u2581", "\u2582", "\u2583", "\u2585", "\u2586",
@@ -35,6 +37,7 @@ class WavefrontSparkline
   #
   def make_fit(vals)
     return vals if vals.size < SPARK_WIDTH
+
     vals.<< vals.last if vals.size.odd?
     ret = vals.each_slice(2).with_object([]) { |s, a| a.<< s.inject(:+) / 2 }
     make_fit(ret)

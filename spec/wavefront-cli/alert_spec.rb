@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 require_relative '../support/command_base'
 require_relative '../test_mixins/acl'
@@ -254,10 +255,10 @@ class AlertEndToEndTest < EndToEndTest
   def state_search(state)
     { limit: 999,
       offset: 0,
-      query: [{ key:            'status',
-                value:          state,
+      query: [{ key: 'status',
+                value: state,
                 matchingMethod: 'EXACT',
-                negated:        false }],
+                negated: false }],
       sort: { field: 'status', ascending: true } }
   end
 
@@ -269,11 +270,11 @@ class AlertEndToEndTest < EndToEndTest
   # rubocop:disable Metrics/LineLength
   def import_data
     { name: 'PKS - too many containers not running',
-      condition:      'sum(ts(pks.kube.pod.container.status.running.gauge)) / (sum(ts(pks.kube.pod.container.status.running.gauge)) + sum(ts(pks.kube.pod.container.status.waiting.gauge)) + sum(ts(pks.kube.pod.container.status.terminated.gauge))) < 0.8',
+      condition: 'sum(ts(pks.kube.pod.container.status.running.gauge)) / (sum(ts(pks.kube.pod.container.status.running.gauge)) + sum(ts(pks.kube.pod.container.status.waiting.gauge)) + sum(ts(pks.kube.pod.container.status.terminated.gauge))) < 0.8',
       minutes: 5,
       target: 'target:9wltLtYXsP8Je2kI',
       severity: 'SEVERE',
-      displayExpression:      'sum(ts(pks.kube.pod.container.status.running.gauge)) / (sum(ts(pks.kube.pod.container.status.running.gauge)) + sum(ts(pks.kube.pod.container.status.waiting.gauge)) + sum(ts(pks.kube.pod.container.status.terminated.gauge)))',
+      displayExpression: 'sum(ts(pks.kube.pod.container.status.running.gauge)) / (sum(ts(pks.kube.pod.container.status.running.gauge)) + sum(ts(pks.kube.pod.container.status.waiting.gauge)) + sum(ts(pks.kube.pod.container.status.terminated.gauge)))',
       tags: { customerTags: ['pks'] },
       additionalInformation: nil,
       resolveAfterMinutes: 5,
@@ -282,11 +283,11 @@ class AlertEndToEndTest < EndToEndTest
 
   def update_data
     { name: 'PKS - too many containers not running',
-      condition:    'sum(ts(pks.kube.pod.container.status.running.gauge)) / (sum(ts(pks.kube.pod.container.status.running.gauge)) + sum(ts(pks.kube.pod.container.status.waiting.gauge)) + sum(ts(pks.kube.pod.container.status.terminated.gauge))) < 0.8',
+      condition: 'sum(ts(pks.kube.pod.container.status.running.gauge)) / (sum(ts(pks.kube.pod.container.status.running.gauge)) + sum(ts(pks.kube.pod.container.status.waiting.gauge)) + sum(ts(pks.kube.pod.container.status.terminated.gauge))) < 0.8',
       minutes: 5,
       target: 'target:9wltLtYXsP8Je2kI',
       severity: 'SEVERE',
-      displayExpression:    'sum(ts(pks.kube.pod.container.status.running.gauge)) / (sum(ts(pks.kube.pod.container.status.running.gauge)) + sum(ts(pks.kube.pod.container.status.waiting.gauge)) + sum(ts(pks.kube.pod.container.status.terminated.gauge)))',
+      displayExpression: 'sum(ts(pks.kube.pod.container.status.running.gauge)) / (sum(ts(pks.kube.pod.container.status.running.gauge)) + sum(ts(pks.kube.pod.container.status.waiting.gauge)) + sum(ts(pks.kube.pod.container.status.terminated.gauge)))',
       tags: { customerTags: ['pks'] },
       resolveAfterMinutes: 5,
       id: '1556812163465' }

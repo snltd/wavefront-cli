@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative '../../stdlib/string'
 
 module WavefrontDisplayPrinter
@@ -28,10 +30,10 @@ module WavefrontDisplayPrinter
     # initializer options hash.
     #
     def default_opts
-      { indent:    2,
-        padding:   2,
+      { indent: 2,
+        padding: 2,
         separator: true,
-        none:      true }
+        none: true }
     end
 
     # @param data [Hash] raw data
@@ -41,6 +43,7 @@ module WavefrontDisplayPrinter
     #
     def preened_data(data, fields = nil)
       return data if fields.nil?
+
       data.map { |d| d.select { |k| fields.include?(k.to_sym) }.to_h }
     end
 
@@ -51,6 +54,7 @@ module WavefrontDisplayPrinter
     #
     def preened_value(value)
       return value unless value.is_a?(String) && value =~ /<.*>/
+
       value.gsub(%r{<\/?[^>]*>}, '').delete("\n")
     end
 

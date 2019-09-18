@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 require_relative '../support/command_base'
 require_relative '../test_mixins/tag'
@@ -90,13 +91,13 @@ class SourceEndToEndTest < EndToEndTest
     assert_repeated_output('No matches.') do
       assert_cmd_posts("search id=#{id} -L 5 --cursor box",
                        "/api/v2/search/#{api_class}",
-                       limit:  '5',
+                       limit: '5',
                        cursor: 'box',
-                       query:  [{ key: 'id',
-                                  value: id,
-                                  matchingMethod: 'EXACT',
-                                  negated: false }],
-                       sort:   { field: 'id', ascending: true })
+                       query: [{ key: 'id',
+                                 value: id,
+                                 matchingMethod: 'EXACT',
+                                 negated: false }],
+                       sort: { field: 'id', ascending: true })
     end
 
     assert_abort_on_missing_creds("search id=#{id} -L 5 --cursor box")

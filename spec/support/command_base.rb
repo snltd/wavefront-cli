@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'minitest/autorun'
 require_relative '../support/minitest_assertions'
 require_relative '../test_mixins/general'

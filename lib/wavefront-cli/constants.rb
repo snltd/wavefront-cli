@@ -1,18 +1,20 @@
+# frozen_string_literal: true
+
 require 'pathname'
 
 module WavefrontCli
   # Universal truths
   #
   module Constants
-    HUMAN_TIME_FORMAT = '%F %T'.freeze
-    HUMAN_TIME_FORMAT_MS = '%F %T.%3N'.freeze
+    HUMAN_TIME_FORMAT = '%F %T'
+    HUMAN_TIME_FORMAT_MS = '%F %T.%3N'
 
     # The CLI will use these options if they are not supplied on the
     # command line or in a config file.
     #
     DEFAULT_OPTS = {
       endpoint: 'metrics.wavefront.com',
-      format:   :human
+      format: :human
     }.freeze
 
     # How many objects to get in each request when we are asked for
@@ -26,7 +28,7 @@ module WavefrontCli
 
     # Split regex for searches
     #
-    SEARCH_SPLIT = /\^|!\^|=|!=|~|!~/
+    SEARCH_SPLIT = /\^|!\^|=|!=|~|!~/.freeze
 
     # Where we store local event information
     #

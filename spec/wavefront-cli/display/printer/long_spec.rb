@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 require 'minitest/autorun'
 require_relative '../../../support/output_tester'
@@ -48,16 +49,16 @@ class TestWavefrontDisplayPrinterLong < MiniTest::Test
 
     pr = WavefrontDisplayPrinter::Long.new({}, nil, nil,
                                            indent: 4, padding: 3)
-    assert_equal({ indent:    4,
-                   padding:   3,
+    assert_equal({ indent: 4,
+                   padding: 3,
                    separator: true,
-                   none:      true }, pr.opts)
+                   none: true }, pr.opts)
 
     pr = WavefrontDisplayPrinter::Long.new({}, nil, nil, none: false)
-    assert_equal({ indent:    2,
-                   padding:   2,
+    assert_equal({ indent: 2,
+                   padding: 2,
                    separator: true,
-                   none:      false }, pr.opts)
+                   none: false }, pr.opts)
   end
 
   def test_longest_key_col

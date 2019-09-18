@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'base'
 require_relative 'command_mixins/tag'
 require_relative 'command_mixins/acl'
@@ -122,6 +124,7 @@ module WavefrontCli
     def state_time(item)
       return item[:event][:startTime] if item.key?(:event)
       return item[:snoozed] if item.key?(:snoozed)
+
       nil
     end
 
@@ -133,7 +136,6 @@ module WavefrontCli
     def import_to_create(raw)
       import_fields.each_with_object({}) { |k, a| a[k.to_sym] = raw[k] }
                    .tap do |ret|
-
         if raw.key?(:resolveAfterMinutes)
           ret[:resolveMinutes] = raw[:resolveAfterMinutes]
         end

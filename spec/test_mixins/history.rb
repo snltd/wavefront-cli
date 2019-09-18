@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module WavefrontCliTest
   #
   # Include this module to get history and describe -v tests

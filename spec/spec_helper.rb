@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'json'
 require 'webmock/minitest'
 require 'spy/integration'
@@ -10,16 +12,16 @@ require_relative '../lib/wavefront-cli/controller'
 
 unless defined?(CMD)
   ROOT = Pathname.new(__FILE__).dirname.parent
-  CMD = 'wavefront'.freeze
-  ENDPOINT = 'metrics.wavefront.com'.freeze
-  TOKEN = '0123456789-ABCDEF'.freeze
+  CMD = 'wavefront'
+  ENDPOINT = 'metrics.wavefront.com'
+  TOKEN = '0123456789-ABCDEF'
   RES_DIR = Pathname.new(__FILE__).dirname + 'wavefront-cli' + 'resources'
   CF = RES_DIR + 'wavefront.conf'
   CF_VAL =  IniFile.load(CF)
   JSON_POST_HEADERS = {
     'Content-Type': 'application/json', Accept: 'application/json'
   }.freeze
-  BAD_TAG = '*BAD_TAG*'.freeze
+  BAD_TAG = '*BAD_TAG*'
   TW = 80
   HOME_CONFIG = Pathname.new(ENV['HOME']) + '.wavefront'
 end
@@ -74,10 +76,10 @@ CANNED_RESPONSE = DummyResponse.new
 #   methods in any class. Hash has keys :class, :method, :return.
 # rubocop:disable Metrics/PerceivedComplexity
 def cmd_to_call(word, args, call, sdk_class = nil, spies = [])
-  headers = { 'Accept':          /.*/,
+  headers = { 'Accept': /.*/,
               'Accept-Encoding': /.*/,
-              'Authorization':  'Bearer 0123456789-ABCDEF',
-              'User-Agent':     "wavefront-cli-#{WF_CLI_VERSION}" }
+              'Authorization': 'Bearer 0123456789-ABCDEF',
+              'User-Agent': "wavefront-cli-#{WF_CLI_VERSION}" }
 
   sdk_class ||= Object.const_get("WavefrontCli::#{word.capitalize}")
 
@@ -324,8 +326,8 @@ def tag_tests(cmd, id, bad_id, pth = nil, klass = nil)
               klass)
   cmd_to_call(cmd, "tag set #{id} mytag",
               { method: :post,
-                path:    "/api/v2/#{pth}/#{id}/tag",
-                body:    %w[mytag].to_json,
+                path: "/api/v2/#{pth}/#{id}/tag",
+                body: %w[mytag].to_json,
                 headers: JSON_POST_HEADERS }, klass)
   cmd_to_call(cmd, "tag set #{id} mytag1 mytag2",
               { method: :post,
@@ -338,9 +340,9 @@ def tag_tests(cmd, id, bad_id, pth = nil, klass = nil)
   cmd_to_call(cmd, "tag delete #{id} mytag",
               { method: :delete, path: "/api/v2/#{pth}/#{id}/tag/mytag" },
               klass)
-  cmd_to_call(cmd, "tag clear #{id}", { method:  :post,
-                                        path:    "/api/v2/#{pth}/#{id}/tag",
-                                        body:    [].to_json,
+  cmd_to_call(cmd, "tag clear #{id}", { method: :post,
+                                        path: "/api/v2/#{pth}/#{id}/tag",
+                                        body: [].to_json,
                                         headers: JSON_POST_HEADERS }, klass)
   invalid_ids(cmd, ["tags #{bad_id}",
                     "tag clear #{bad_id}",
@@ -357,53 +359,53 @@ def acl_tests(cmd, id, bad_id, pth = nil, klass = nil)
   cmd_to_call(cmd, "acls #{id}", { path: "/api/v2/#{pth}/acl?id=#{id}" },
               klass)
 
-  spies = [{ class:  "WavefrontCli::#{cmd.capitalize}",
+  spies = [{ class: "WavefrontCli::#{cmd.capitalize}",
              method: :do_acls,
              return: true }]
 
   cmd_to_call(cmd, "acl clear #{id}",
-              { method:  :put,
-                path:    "/api/v2/#{pth}/acl/set",
-                body:    [{ entityId:  id,
-                            viewAcl:   [],
-                            modifyAcl: %w[abcd-1234] }].to_json,
+              { method: :put,
+                path: "/api/v2/#{pth}/acl/set",
+                body: [{ entityId: id,
+                         viewAcl: [],
+                         modifyAcl: %w[abcd-1234] }].to_json,
                 headers: JSON_POST_HEADERS }, klass, [
-                  { class:  "WavefrontCli::#{cmd.capitalize}",
+                  { class: "WavefrontCli::#{cmd.capitalize}",
                     method: :everyone_id,
                     return: 'abcd-1234' },
-                  { class:  "WavefrontCli::#{cmd.capitalize}",
+                  { class: "WavefrontCli::#{cmd.capitalize}",
                     method: :do_acls,
                     return: true }
                 ])
 
   cmd_to_call(cmd, "acl grant view on #{id} to testuser1 testuser2",
-              { method:  :post,
-                path:    "/api/v2/#{pth}/acl/add",
-                body:    [{ entityId:  id,
-                            viewAcl:   %w[testuser1 testuser2],
-                            modifyAcl: [] }].to_json,
+              { method: :post,
+                path: "/api/v2/#{pth}/acl/add",
+                body: [{ entityId: id,
+                         viewAcl: %w[testuser1 testuser2],
+                         modifyAcl: [] }].to_json,
                 headers: JSON_POST_HEADERS }, klass, spies)
   cmd_to_call(cmd, "acl revoke view on #{id} from testuser1",
-              { method:  :post,
-                path:    "/api/v2/#{pth}/acl/remove",
-                body:    [{ entityId:  id,
-                            viewAcl:   %w[testuser1],
-                            modifyAcl: [] }].to_json,
+              { method: :post,
+                path: "/api/v2/#{pth}/acl/remove",
+                body: [{ entityId: id,
+                         viewAcl: %w[testuser1],
+                         modifyAcl: [] }].to_json,
                 headers: JSON_POST_HEADERS }, klass, spies)
 
   cmd_to_call(cmd, "acl grant modify on #{id} to testuser1",
-              { method:  :post,
-                path:    "/api/v2/#{pth}/acl/add",
-                body:    [{ entityId:  id,
-                            viewAcl:   [],
-                            modifyAcl: %w[testuser1] }].to_json,
+              { method: :post,
+                path: "/api/v2/#{pth}/acl/add",
+                body: [{ entityId: id,
+                         viewAcl: [],
+                         modifyAcl: %w[testuser1] }].to_json,
                 headers: JSON_POST_HEADERS }, klass, spies)
   cmd_to_call(cmd, "acl revoke modify on #{id} from testuser1",
-              { method:  :post,
-                path:    "/api/v2/#{pth}/acl/remove",
-                body:    [{ entityId:  id,
-                            viewAcl:   [],
-                            modifyAcl: %w[testuser1] }].to_json,
+              { method: :post,
+                path: "/api/v2/#{pth}/acl/remove",
+                body: [{ entityId: id,
+                         viewAcl: [],
+                         modifyAcl: %w[testuser1] }].to_json,
                 headers: JSON_POST_HEADERS }, klass, spies)
 
   invalid_ids(cmd, ["acls #{bad_id}",

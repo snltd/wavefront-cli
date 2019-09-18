@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 require_relative '../support/command_base'
 require_relative '../test_mixins/acl'
@@ -29,14 +30,14 @@ class DashboardEndToEndTest < EndToEndTest
   def test_favs
     assert_repeated_output('No favourites.') do
       assert_cmd_posts('favs', '/api/v2/search/dashboard',
-                       { limit:  999,
+                       { limit: 999,
                          offset: 0,
-                         query:  [{ key:             'favorite',
-                                    value:           'true',
-                                    matchingMethod: 'EXACT',
-                                    negated:         false }],
-                         sort:   { field:     'id',
-                                   ascending: true } }.to_json)
+                         query: [{ key: 'favorite',
+                                   value: 'true',
+                                   matchingMethod: 'EXACT',
+                                   negated: false }],
+                         sort: { field: 'id',
+                                 ascending: true } }.to_json)
     end
   end
 

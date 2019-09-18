@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'inifile'
 require_relative 'exception'
 require_relative 'base'
@@ -32,7 +34,7 @@ module WavefrontCli
         test: proc { |v| %w[human json yaml].include?(v) } }
     ].freeze
 
-    RX = /^[\da-f]{8}-[\da-f]{4}-[\da-f]{4}-[\da-f]{4}-[\da-f]{12}$/
+    RX = /^[\da-f]{8}-[\da-f]{4}-[\da-f]{4}-[\da-f]{4}-[\da-f]{12}$/.freeze
 
     def initialize(options)
       @options = options
@@ -57,11 +59,11 @@ module WavefrontCli
       require 'wavefront-sdk/defs/version'
       require_relative 'display/base'
 
-      info = { 'wf version':    WF_CLI_VERSION,
-               'wf path':       CMD_PATH.realpath.to_s,
-               'SDK version':   WF_SDK_VERSION,
-               'SDK location':  WF_SDK_LOCATION.to_s,
-               'Ruby version':  RUBY_VERSION,
+      info = { 'wf version': WF_CLI_VERSION,
+               'wf path': CMD_PATH.realpath.to_s,
+               'SDK version': WF_SDK_VERSION,
+               'SDK location': WF_SDK_LOCATION.to_s,
+               'Ruby version': RUBY_VERSION,
                'Ruby platform': Gem::Platform.local.os.capitalize }
 
       WavefrontDisplay::Base.new(info).long_output
@@ -152,15 +154,18 @@ module WavefrontCli
     def validate_input(input, default, test)
       if input.empty?
         raise WavefrontCli::Exception::MandatoryValue if default.nil?
+
         input = default
       end
 
       return input if test.call(input)
+
       raise WavefrontCli::Exception::InvalidValue
     end
 
     def present?
       return true if config_file.exist?
+
       raise WavefrontCli::Exception::ConfigFileNotFound, config_file
     end
 
