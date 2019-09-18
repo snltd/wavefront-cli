@@ -1,0 +1,6 @@
+---
+
+# There are long things in here, but they're fine
+#
+Metrics/MethodLength:
+  Max: 25
