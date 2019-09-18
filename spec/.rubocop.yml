@@ -1,9 +1,3 @@
-AllCops:
-  TargetRubyVersion: 2.2
-
-Style/FormatStringToken:
-  Enabled: false
-
 # Allow long blocks of tests
 #
 Metrics/BlockLength:
@@ -17,9 +11,6 @@ Metrics/AbcSize:
 
 Metrics/ClassLength:
   Max: 300
-
-Metrics/CyclomaticComplexity:
-  Max: 10
 
 Metrics/ModuleLength:
   Max: 200
