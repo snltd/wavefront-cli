@@ -4,6 +4,7 @@ require 'spy'
 require 'webmock/minitest'
 require_relative '../constants'
 
+# rubocop:disable Metrics/ModuleLength
 module Minitest
   #
   # Custom assertions to facilitate CLI command testing
@@ -258,3 +259,4 @@ module Minitest
     end
   end
 end
+# rubocop:enable Metrics/ModuleLength

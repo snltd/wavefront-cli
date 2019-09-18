@@ -75,32 +75,11 @@ class DashboardEndToEndTest < EndToEndTest
   def test_unfav
     assert_repeated_output('No favourites.') do
       all_permutations do |perm|
-        stub_request(
-          :post,
-          "https://#{perm[:endpoint]}/api/v2/search/dashboard"
-        )
-          .with(body: { limit: 999,
-                        offset: 0,
-                        query: [{ key: 'favorite',
-                                  value: 'true',
-                                  matchingMethod: 'EXACT',
-                                  negated: false }],
-                        sort: { field: 'id', ascending: true } },
-                headers: mk_headers(perm[:token]))
-          .to_return(status: 200, body: '', headers: {})
-
-        stub_request(
-          :post,
-          "https://#{perm[:endpoint]}/api/v2/dashboard/test_dashboard" \
-          '/unfavorite'
-        )
-          .with(
-            body: 'null',
-            headers: mk_headers(perm[:token])
-          )
-          .to_return(status: 200, body: '', headers: {})
-
+        search_stub = unfav_search_stub(perm)
+        action_stub = unfav_action_stub(perm)
         wf.new("#{cmd_word} unfav #{id} #{perm[:cmdline]}".split)
+        assert_requested(search_stub)
+        assert_requested(action_stub)
       end
     end
 
@@ -110,6 +89,28 @@ class DashboardEndToEndTest < EndToEndTest
   end
 
   private
+
+  def unfav_search_stub(perm)
+    stub_request(:post, "https://#{perm[:endpoint]}/api/v2/search/dashboard")
+      .with(body: { limit: 999,
+                    offset: 0,
+                    query: [{ key: 'favorite',
+                              value: 'true',
+                              matchingMethod: 'EXACT',
+                              negated: false }],
+                    sort: { field: 'id', ascending: true } },
+            headers: mk_headers(perm[:token]))
+      .to_return(status: 200, body: '', headers: {})
+  end
+
+  def unfav_action_stub(perm)
+    stub_request(:post,
+                 "https://#{perm[:endpoint]}/api/v2/dashboard/test_dashboard" \
+                 '/unfavorite')
+      .with(body: 'null',
+            headers: mk_headers(perm[:token]))
+      .to_return(status: 200, body: '', headers: {})
+  end
 
   def id
     'test_dashboard'

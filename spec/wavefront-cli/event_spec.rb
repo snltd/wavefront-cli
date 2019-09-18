@@ -190,27 +190,8 @@ class EventEndToEndTest < EndToEndTest
     state_file = state_dir + mock_id
 
     all_permutations do |p|
-      open_stub = stub_request(
-        :post,
-        "https://#{p[:endpoint]}/api/v2/event"
-      ).with(body: { name: event_name,
-                     startTime: a_ms_timestamp,
-                     annotations: { details: 'reason' },
-                     hosts: [],
-                     tags: %w[mytag] })
-                  .to_return(body:
-                     { name: event_name,
-                       id: mock_id,
-                       startTime: start_time,
-                       hosts: [],
-                       tags: %w[mytag] }.to_json,
-                             status: 200)
-
-      close_stub = stub_request(
-        :post,
-        "https://#{p[:endpoint]}/api/v2/event/#{mock_id}/close"
-      )
-                   .with(body: 'null')
+      open_stub = wrap_open_stub(p, mock_id)
+      close_stub = wrap_close_stub(p, mock_id)
 
       out, err = capture_io do
         assert_raises(SystemExit) do
@@ -282,6 +263,27 @@ class EventEndToEndTest < EndToEndTest
        1568133440530:ev3:0].each do |f|
       File.open(state_dir + f, 'w') { |fh| fh.puts('dummy_data') }
     end
+  end
+
+  def wrap_open_stub(perm, mock_id)
+    stub_request(:post, "https://#{perm[:endpoint]}/api/v2/event")
+      .with(body: { name: event_name,
+                    startTime: a_ms_timestamp,
+                    annotations: { details: 'reason' },
+                    hosts: [],
+                    tags: %w[mytag] })
+      .to_return(body: { name: event_name,
+                         id: mock_id,
+                         startTime: start_time,
+                         hosts: [],
+                         tags: %w[mytag] }.to_json,
+                 status: 200)
+  end
+
+  def wrap_close_stub(perm, mock_id)
+    stub_request(:post,
+                 "https://#{perm[:endpoint]}/api/v2/event/#{mock_id}/close")
+      .with(body: 'null')
   end
 end
 
