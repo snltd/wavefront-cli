@@ -48,7 +48,7 @@ module WavefrontCli
     def do_close(id = nil)
       id ||= options[:'<id>']
       ev = local_event(id)
-      ev_file = event_file
+      ev_file = event_file(id)
 
       abort "No locally stored event matches '#{id}'." unless ev
 
