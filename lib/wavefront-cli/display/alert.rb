@@ -56,11 +56,10 @@ module WavefrontDisplay
 
     def do_summary
       kw = data.keys.map(&:size).max + 2
-      data.delete_if { |_k, v| v.zero? } unless options[:all]
       data.sort.each do |k, v|
-        puts format("%-#{kw}<key>s%<value>s",
-                    key: k,
-                    value: v)
+        next if v.zero? && !options[:all]
+
+        puts format("%-#{kw}<key>s%<value>s", key: k, value: v)
       end
     end
 

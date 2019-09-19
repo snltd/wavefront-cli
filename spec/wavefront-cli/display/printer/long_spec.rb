@@ -77,12 +77,15 @@ class TestWavefrontDisplayPrinterLong < MiniTest::Test
   end
 
   def test_to_s
-    assert_equal("today\n  weather   sunny\n  day       Tuesday",
+    assert_equal("today\n" \
+                 "  weather   sunny\n" \
+                 '  day       Tuesday',
                  WavefrontDisplayPrinter::Long.new(
                    today: { weather: 'sunny', day: :Tuesday }
                  ).to_s)
 
-    assert_equal("key1   val1\nkey2   val2",
+    assert_equal("key1   val1\n" \
+                 'key2   val2',
                  WavefrontDisplayPrinter::Long.new(
                    key1: 'val1', key2: 'val2'
                  ).to_s)

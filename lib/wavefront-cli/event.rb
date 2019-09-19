@@ -92,6 +92,7 @@ module WavefrontCli
 
     # return [Hash] body for #create() method
     #
+    # rubocop:disable Metrics/MethodLength
     def create_body(opts, t_start)
       { name: opts[:'<event>'],
         startTime: t_start,
@@ -106,6 +107,7 @@ module WavefrontCli
           end
         end
     end
+    # rubocop:enable Metrics/MethodLength
 
     def annotations(opts)
       {}.tap do |r|

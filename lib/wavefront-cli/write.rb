@@ -14,17 +14,19 @@ module WavefrontCli
     include Wavefront::Mixins
     SPLIT_PATTERN = /\s(?=(?:[^"]|"[^"]*")*$)/.freeze
 
+    # rubocop:disable Metrics/AbcSize
     def do_point
+      tags = tags_to_hash(options[:tag])
+
       p = { path: options[:'<metric>'],
             value: options[:'<value>'].delete('\\').to_f }
-
-      tags = tags_to_hash(options[:tag])
 
       p[:tags] = tags unless tags.empty?
       p[:source] = options[:host] if options[:host]
       p[:ts] = parse_time(options[:time]) if options[:time]
       send_point(p)
     end
+    # rubocop:enable Metrics/AbcSize
 
     def do_file
       valid_format?(options[:infileformat])
@@ -33,16 +35,20 @@ module WavefrontCli
     end
 
     def do_distribution
-      p = { path: options[:'<metric>'],
-            interval: options[:interval] || 'M',
-            value: mk_dist }
-
-      tags = tags_to_hash(options[:tag])
-      p[:tags] = tags unless tags.empty?
-      p[:source] = options[:host] if options[:host]
-      p[:ts] = parse_time(options[:time]) if options[:time]
-      send_point(p)
+      send_point(make_distribution_point(tags_to_hash(options[:tag])))
     end
+
+    # rubocop:disable Metrics/AbcSize
+    def make_distribution_point(tags)
+      { path: options[:'<metric>'],
+        interval: options[:interval] || 'M',
+        tags: tags,
+        value: mk_dist }.tap do |p|
+        p[:source] = options[:host] if options[:host]
+        p[:ts] = parse_time(options[:time]) if options[:time]
+      end
+    end
+    # rubocop:enable Metrics/AbcSize
 
     # Turn our user's representation of a distribution into one
     # which suits Wavefront. The SDK can do this for us.
@@ -267,6 +273,8 @@ module WavefrontCli
     #   doesn't look right
     #
     # rubocop:disable Metrics/CyclomaticComplexity
+    # rubocop:disable Metrics/MethodLength
+    # rubocop:disable Metrics/AbcSize
     def process_line(line)
       return true if line.empty?
 
@@ -285,6 +293,8 @@ module WavefrontCli
         p[:interval] = options[:interval] || 'm' if fmt.include?('d')
       end
     end
+    # rubocop:enable Metrics/AbcSize
+    # rubocop:enable Metrics/MethodLength
     # rubocop:enable Metrics/CyclomaticComplexity
 
     # We can get tags from the file, from the -T option, or both.
@@ -322,27 +332,49 @@ module WavefrontCli
     #
     # @param fmt [String] format of input file
     #
-    # rubocop:disable Metrics/PerceivedComplexity
-    # rubocop:disable Metrics/CyclomaticComplexity
     def valid_format?(fmt)
-      err = if fmt.include?('v') && fmt.include?('d')
-              "'v' and 'd' are mutually exclusive"
-            elsif !fmt.include?('v') && !fmt.include?('d')
-              "format string must include 'v' or 'd'"
-            elsif !fmt.match(/^[dmstTv]+$/)
-              'unsupported field in format string'
-            elsif fmt != fmt.squeeze
-              'repeated field in format string'
-            elsif fmt.include?('T') && !fmt.end_with?('T')
-              "if used, 'T' must come at end of format string"
-            end
-
-      return true if err.nil?
-
-      raise(WavefrontCli::Exception::UnparseableInput, err)
+      format_string_has_v_or_d?(fmt)
+      format_string_does_not_have_v_and_d?(fmt)
+      format_string_is_all_valid_chars?(fmt)
+      format_string_has_unique_chars?(fmt)
+      format_string_has_big_t_only_at_the_end?(fmt)
     end
-    # rubocop:enable Metrics/PerceivedComplexity
-    # rubocop:enable Metrics/CyclomaticComplexity
+
+    def format_string_has_v_or_d?(fmt)
+      return true if fmt.include?('v') || fmt.include?('d')
+
+      raise(WavefrontCli::Exception::UnparseableInput,
+            "format string must include 'v' or 'd'")
+    end
+
+    def format_string_does_not_have_v_and_d?(fmt)
+      return true unless fmt.include?('v') && fmt.include?('d')
+
+      raise(WavefrontCli::Exception::UnparseableInput,
+            "'v' and 'd' are mutually exclusive")
+    end
+
+    def format_string_is_all_valid_chars?(fmt)
+      return true if fmt.match(/^[dmstTv]+$/)
+
+      raise(WavefrontCli::Exception::UnparseableInput,
+            'unsupported field in format string')
+    end
+
+    def format_string_has_unique_chars?(fmt)
+      return true if fmt.chars.sort == fmt.chars.uniq.sort
+
+      raise(WavefrontCli::Exception::UnparseableInput,
+            'repeated field in format string')
+    end
+
+    def format_string_has_big_t_only_at_the_end?(fmt)
+      return true unless fmt.include?('T')
+      return true if fmt.end_with?('T')
+
+      raise(WavefrontCli::Exception::UnparseableInput,
+            "if used, 'T' must come at end of format string")
+    end
 
     # Make sure we have the right number of columns, according to
     # the format string. We want to take every precaution we can to

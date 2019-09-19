@@ -9,20 +9,24 @@ module WavefrontDisplay
   #
   class Query < Base
     def do_default
-      d_obj = { name: data.name,
-                query: data.query,
-                timeseries: mk_timeseries(data),
-                events: mk_events(data) }
-
-      if data.key?(:warnings) && !options[:nowarn]
-        d_obj[:warnings] = data[:warnings]
-      end
-
-      @data = d_obj
+      @data = default_data_object
       long_output
     rescue StandardError
       raise(WavefrontCli::Exception::InvalidQuery,
             data[:errorMessage].split("\n").first)
+    end
+
+    def default_data_object
+      { name: data.name,
+        query: data.query,
+        timeseries: mk_timeseries(data),
+        events: mk_events(data) }.tap do |d|
+          d[:warnings] = data[:warnings] if show_warnings?
+        end
+    end
+
+    def show_warnings?
+      data.key?(:warnings) && !options[:nowarn]
     end
 
     # Prioritizing keys does not make sense in this context
@@ -79,25 +83,27 @@ module WavefrontDisplay
       data
     end
 
+    # Prepare a padded line with the timestamp and value. If it's the
+    # @return [String]
+    #
     def humanize_series(data)
       last_date = nil
 
-      data.map! do |row|
-        if row.is_a?(Hash)
-          ht = human_time(row[:timestamp])
-          val = row[:value]
-        else
-          ht = human_time(row[0])
-          val = row[1]
-        end
-
+      data.map do |row|
+        ht, val = row_time_and_val(row)
         date, time = ht.split
-        ds = date == last_date ? '' : date
+        date_string = date == last_date ? '' : date
         last_date = date
         format('%-12<series>s %<time>s    %<value>s',
-               series: ds,
-               time: time,
-               value: val)
+               series: date_string, time: time, value: val)
+      end
+    end
+
+    def row_time_and_val(row)
+      if row.is_a?(Hash)
+        [human_time(row[:timestamp]), row[:value]]
+      else
+        [human_time(row[0]), row[1]]
       end
     end
   end

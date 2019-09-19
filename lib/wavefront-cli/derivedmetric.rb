@@ -27,20 +27,21 @@ module WavefrontCli
     end
 
     def do_create
-      wf.create(build_body)
+      wf.create(create_body)
     end
 
-    def build_body
-      ret = { query: options[:'<query>'],
-              name: options[:'<name>'],
-              minutes: options[:range].to_i,
-              includeObsoleteMetrics: options[:obsolete],
-              processRateMinutes: options[:interval].to_i }
-
-      ret[:additionalInformation] = options[:desc] if options[:desc]
-      ret[:tags] = options[:ctag] if valid_tags?
-      ret
+    # rubocop:disable Metrics/AbcSize
+    def create_body
+      { query: options[:'<query>'],
+        name: options[:'<name>'],
+        minutes: options[:range].to_i,
+        includeObsoleteMetrics: options[:obsolete],
+        processRateMinutes: options[:interval].to_i }.tap do |b|
+          b[:additionalInformation] = options[:desc] if options[:desc]
+          b[:tags] = options[:ctag] if valid_tags?
+        end
     end
+    # rubocop:enable Metrics/AbcSize
 
     def valid_tags?
       !options[:ctag].empty? && validate_tags(options[:ctag])

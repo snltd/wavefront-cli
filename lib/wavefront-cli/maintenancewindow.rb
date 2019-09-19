@@ -63,15 +63,15 @@ module WavefrontCli
 
     def do_extend_by
       cannot_noop!
-
-      begin
-        to_add = options[:'<time>'].to_seconds
-      rescue ArgumentError
-        abort "Could not parse time range '#{options[:'<time>']}'."
-      end
-
+      to_add = parse_range_to_add
       old_end = wf.describe(options[:'<id>']).response.endTimeInSeconds
       change_end_time(old_end + to_add)
+    end
+
+    def parse_range_to_add
+      options[:'<time>'].to_seconds
+    rescue ArgumentError
+      abort "Could not parse time range '#{options[:'<time>']}'."
     end
 
     def do_extend_to

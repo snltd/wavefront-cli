@@ -38,6 +38,7 @@ module WavefrontDisplay
     # find the correct method to deal with the output of the user's
     # command.
     #
+    # rubocop:disable Metrics/MethodLength
     def run(method)
       if method == 'do_list'
         run_list
@@ -51,6 +52,7 @@ module WavefrontDisplay
         long_output
       end
     end
+    # rubocop:enable Metrics/MethodLength
 
     # Choose the correct list handler. The user can specifiy a long
     # listing with the --long options.
@@ -158,13 +160,18 @@ module WavefrontDisplay
     def pagination_line
       return unless raw.respond_to?(:moreItems) && raw.moreItems == true
 
-      enditem = raw.limit.positive? ? raw.offset + raw.limit - 1 : 0
       puts format('List shows items %<first>d to %<last>d. ' \
                   'Use -o and -L for more.',
                   first: raw.offset,
-                  last: enditem)
+                  last: index_of_final_item)
     rescue StandardError
       puts 'List shows paginated output. Use -o and -L for more.'
+    end
+
+    # Return the offset of the final item in view.
+    #
+    def index_of_final_item
+      raw.limit.positive? ? raw.offset + raw.limit - 1 : 0
     end
 
     # Give it a key-value hash, and it will return the size of the first

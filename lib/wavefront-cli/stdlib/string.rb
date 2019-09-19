@@ -42,11 +42,8 @@ class String
 
     return first_line.restored if chunks.empty?
 
-    rest = chunks.join(' ').scan_line(twidth - indent - 5).map do |l|
-      prefix + ' ' * indent + l
-    end
-
-    (first_line + rest.join("\n") + "\n").restored
+    rest = indent_folded_lines(chunks, twidth, indent, prefix)
+    (first_line + rest.join("\n")).restored
   end
 
   # We use a carat as a temporary whitespace character to avoid
@@ -98,6 +95,14 @@ class String
   def to_snake
     gsub(/(.)([A-Z])/) do
       Regexp.last_match[1] + '_' + Regexp.last_match[2].downcase
+    end
+  end
+
+  private
+
+  def indent_folded_lines(chunks, twidth, indent, prefix)
+    chunks.join(' ').scan_line(twidth - indent - 5).map do |line|
+      prefix + ' ' * indent + line
     end
   end
 end

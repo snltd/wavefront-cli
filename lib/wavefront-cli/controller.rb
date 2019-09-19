@@ -35,13 +35,14 @@ class WavefrontCliController
     @usage = docopt_hash
     cmd, opts = parse_args
     @opts = parse_opts(opts)
-    cli_class_obj = load_cli_class(cmd, @opts)
+    cli_class_obj = cli_class(cmd, @opts)
     run_command(cli_class_obj)
   end
 
   # What you see when you do 'wf --help'
   # @return [String]
   #
+  # rubocop:disable Metrics/MethodLength
   def default_help
     s = ['Wavefront CLI',
          '',
@@ -63,6 +64,7 @@ class WavefrontCliController
     s.<< "Use '#{CMD} <command> --help' for further information."
     s.join("\n")
   end
+  # rubocop:enable Metrics/MethodLength
 
   # @return [Hash] command descriptions for docopt.
   #
@@ -81,14 +83,18 @@ class WavefrontCliController
     cmd = args.empty? ? nil : args.first.to_sym
 
     abort e.message unless usage.key?(cmd)
+    parse_cmd(cmd)
+  end
 
-    begin
-      [cmd, sanitize_keys(Docopt.docopt(usage[cmd], argv: args))]
-    rescue Docopt::DocoptLanguageError => e
-      abort "Mangled command description:\n#{e.message}"
-    rescue Docopt::Exit => e
-      abort e.message
-    end
+  # Parse a command.
+  # @param cmd [String] given command
+  #
+  def parse_cmd(cmd)
+    [cmd, sanitize_keys(Docopt.docopt(usage[cmd], argv: args))]
+  rescue Docopt::DocoptLanguageError => e
+    abort "Mangled command description:\n#{e.message}"
+  rescue Docopt::Exit => e
+    abort e.message
   end
 
   def parse_opts(options)
@@ -100,9 +106,8 @@ class WavefrontCliController
   # @param cmd [String]
   # @return WavefrontCli::cmd
   #
-  def load_cli_class(cmd, opts)
-    require_relative File.join('.', cmds[cmd].sdk_file)
-    Object.const_get('WavefrontCli').const_get(cmds[cmd].sdk_class).new(opts)
+  def cli_class(cmd, opts)
+    load_cli_class(cmd, opts)
   rescue WavefrontCli::Exception::UnhandledCommand
     abort 'Fatal error. Unsupported command. Please open a Github issue.'
   rescue WavefrontCli::Exception::InvalidInput => e
@@ -111,6 +116,13 @@ class WavefrontCliController
     abort "Unable to run command. #{e.message}."
   end
 
+  def load_cli_class(cmd, opts)
+    require_relative File.join('.', cmds[cmd].sdk_file)
+    Object.const_get('WavefrontCli').const_get(cmds[cmd].sdk_class).new(opts)
+  end
+
+  # rubocop:disable Metrics/MethodLength
+  # rubocop:disable Metrics/AbcSize
   def run_command(cli_class_obj)
     cli_class_obj.validate_opts
     cli_class_obj.run
@@ -159,6 +171,8 @@ class WavefrontCliController
     backtrace_message(e)
     abort
   end
+  # rubocop:enable Metrics/MethodLength
+  # rubocop:enable Metrics/AbcSize
 
   def backtrace_message(err)
     if opts[:debug]
