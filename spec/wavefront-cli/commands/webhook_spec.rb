@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 require 'pathname'
 require_relative(File.join('../../../lib/wavefront-cli/commands',

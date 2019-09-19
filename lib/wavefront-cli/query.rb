@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'wavefront-sdk/support/mixins'
 require_relative 'base'
 
@@ -31,7 +33,7 @@ module WavefrontCli
     end
 
     def do_run
-      alias_key = format('q_%s', options[:'<alias>']).to_sym
+      alias_key = format('q_%<alias>s', alias: options[:'<alias>']).to_sym
       query = all_aliases.fetch(alias_key, nil)
 
       unless query
@@ -51,17 +53,16 @@ module WavefrontCli
     #
     # rubocop:disable Metrics/AbcSize
     def q_opts
-      ret = { autoEvents:             options[:events],
-              i:                      options[:inclusive],
-              summarization:          options[:summarize] || 'mean',
-              listMode:               true,
-              strict:                 true,
-              includeObsoleteMetrics: options[:obsolete],
-              sorted:                 true }
-
-      ret[:n] = options[:name] if options[:name]
-      ret[:p] = options[:points] if options[:points]
-      ret
+      { autoEvents: options[:events],
+        i: options[:inclusive],
+        summarization: options[:summarize] || 'mean',
+        listMode: true,
+        strict: true,
+        includeObsoleteMetrics: options[:obsolete],
+        sorted: true }.tap do |o|
+          o[:n] = options[:name] if options[:name]
+          o[:p] = options[:points] if options[:points]
+        end
     end
     # rubocop:enable Metrics/AbcSize
 
@@ -103,6 +104,7 @@ module WavefrontCli
 
     def extra_validation
       return unless options[:granularity]
+
       begin
         wf_granularity?(options[:granularity])
       rescue Wavefront::Exception::InvalidGranularity

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'pathname'
 require 'wavefront-sdk/credentials'
 require_relative 'constants.rb'

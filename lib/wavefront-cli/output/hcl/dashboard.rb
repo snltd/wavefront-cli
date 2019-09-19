@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'base'
 require_relative 'stdlib/string'
 require_relative 'stdlib/array'
@@ -54,7 +56,9 @@ module WavefrontHclOutput
       fields = %w[units name description]
 
       lines = chart.each_with_object([]) do |(k, v), a|
-        a.<< format('%s = %s', k, quote_value(v)) if fields.include?(k)
+        next unless fields.include?(k)
+
+        a.<< format('%<key>s = %<value>s', key: k, value: quote_value(v))
       end
 
       lines.<< "source = #{handle_sources(chart[:sources])}"
@@ -66,15 +70,20 @@ module WavefrontHclOutput
     end
 
     def handle_source(source)
-      fields = %w[name query disabled scatterPlotSource querybuilderEnabled
-                  sourceDescription]
-
       source.each_with_object([]) do |(k, v), a|
-        if fields.include?(k)
-          k = 'queryBuilderEnabled' if k == 'querybuilderEnabled'
-          a.<< format('%s = %s', k.to_snake, quote_value(v))
-        end
+        next unless source_fields.include?(k)
+
+        k = 'queryBuilderEnabled' if k == 'querybuilderEnabled'
+
+        a.<< format('%<key>s = %<value>s',
+                    key: k.to_snake,
+                    value: quote_value(v))
       end.to_hcl_obj(14)
+    end
+
+    def source_fields
+      %w[name query disabled scatterPlotSource querybuilderEnabled
+         sourceDescription]
     end
 
     def qhandle_sections(val)

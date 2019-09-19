@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 require 'pathname'
 require_relative(File.join('../../../lib/wavefront-cli/commands',
@@ -21,6 +22,7 @@ class WavefrontCommmandConfigTest < WavefrontCommmandBaseTest
 
     wf.options(600).split("\n")[1..-1].each do |o|
       next if o == 'Global options:' || o == 'Options:' || o.empty?
+
       assert_instance_of(String, o)
       assert_match(/^  -\w, --\w+/, o)
       refute o.end_with?('.')
@@ -35,6 +37,7 @@ class WavefrontCommmandConfigTest < WavefrontCommmandBaseTest
 
     wf.commands(600).split("\n")[1..-1].each do |c|
       next if skip_cmd && c.match(skip_cmd)
+
       assert_match(/^  \w+/, c)
     end
   end

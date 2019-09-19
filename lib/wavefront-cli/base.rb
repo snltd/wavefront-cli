@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'yaml'
 require 'json'
 require 'wavefront-sdk/validators'
@@ -112,7 +114,9 @@ module WavefrontCli
     end
 
     def failed_validation_message(input)
-      format("'%s' is not a valid %s ID.", input, klass_word)
+      format("'%<value>s' is not a valid %<thing>s ID.",
+             value: input,
+             thing: klass_word)
     end
 
     # Make a wavefront-sdk credentials object from standard
@@ -121,9 +125,9 @@ module WavefrontCli
     # @return [Hash] containing `token` and `endpoint`.
     #
     def mk_creds
-      { token:    options[:token],
+      { token: options[:token],
         endpoint: options[:endpoint],
-        agent:    "wavefront-cli-#{WF_CLI_VERSION}" }
+        agent: "wavefront-cli-#{WF_CLI_VERSION}" }
     end
 
     # Make a common wavefront-sdk options object from standard CLI
@@ -133,8 +137,8 @@ module WavefrontCli
     # @return [Hash] containing `debug`, `verbose`, and `noop`.
     #
     def mk_opts
-      ret = { debug:   options[:debug],
-              noop:    options[:noop] }
+      ret = { debug: options[:debug],
+              noop: options[:noop] }
 
       ret[:verbose] = options[:noop] ? true : options[:verbose]
 
@@ -244,7 +248,7 @@ module WavefrontCli
     # @return System exit
     #
     def display_api_error(status)
-      method = format('handle_errcode_%s', status.code).to_sym
+      method = format('handle_errcode_%<code>s', code: status.code).to_sym
 
       msg = if respond_to?(method)
               send(method, status)
@@ -252,13 +256,15 @@ module WavefrontCli
               status.message || 'No further information'
             end
 
-      abort format('ERROR: API code %s. %s.', status.code,
-                   msg.chomp('.')).fold(TW, 7)
+      abort format('ERROR: API code %<code>s. %<message>s.',
+                   code: status.code,
+                   message: msg.chomp('.')).fold(TW, 7)
     end
 
     def warning_message(status)
       return unless status.status.between?(201, 299)
-      puts format("API WARNING: '%s'.", status.message)
+
+      puts format("API WARNING: '%<message>s'.", message: status.message)
     end
 
     def display_no_api_response(data, method)
@@ -286,20 +292,25 @@ module WavefrontCli
       end
     end
 
-    # rubocop:disable Metrics/AbcSize
-    def parseable_output(format, resp)
+    def parseable_output(output_format, resp)
       options[:class] = klass_word
       options[:hcl_fields] = hcl_fields
-      require_relative File.join('output', format.to_s)
-      oclass = Object.const_get(format('WavefrontOutput::%s',
-                                       format.to_s.capitalize))
-      oclass.new(resp, options).run
+      cli_output_class.new(resp, options).run
     rescue LoadError
       raise(WavefrontCli::Exception::UnsupportedOutput,
-            format("The '%s' command does not support '%s' output.",
-                   options[:class], format))
+            unsupported_format_message(output_format))
     end
-    # rubocop:enable Metrics/AbcSize
+
+    def cli_output_class(output_format)
+      require_relative File.join('output', output_format.to_s)
+      Object.const_get(format('WavefrontOutput::%<class>s',
+                              class: output_format.to_s.capitalize))
+    end
+
+    def unsupported_format_message(output_format)
+      format("The '%<command>s' command does not support '%<format>s' output.",
+             command: options[:class], format: output_format)
+    end
 
     def hcl_fields
       []
@@ -341,18 +352,22 @@ module WavefrontCli
       return load_from_stdin if path == '-'
 
       file = Pathname.new(path)
+      extname = file.extname.downcase
 
       raise WavefrontCli::Exception::FileNotFound unless file.exist?
 
-      extname = file.extname.downcase
+      return load_json(file) if extname == '.json'
+      return load_yaml(file) if %w[.yaml .yml].include?(extname)
 
-      if extname == '.json'
-        JSON.parse(IO.read(file), symbolize_names: true)
-      elsif %w[.yaml .yml].include?(extname)
-        YAML.safe_load(IO.read(file), symbolize_names: true)
-      else
-        raise WavefrontCli::Exception::UnsupportedFileFormat
-      end
+      raise WavefrontCli::Exception::UnsupportedFileFormat
+    end
+
+    def load_json(file)
+      JSON.parse(IO.read(file), symbolize_names: true)
+    end
+
+    def load_yaml(file)
+      YAML.safe_load(IO.read(file), symbolize_names: true)
     end
 
     # Read STDIN and return a Ruby object, assuming that STDIN is
@@ -395,18 +410,24 @@ module WavefrontCli
       wf.describe(options[:'<id>'])
     end
 
-    # rubocop:disable Metrics/AbcSize
     def do_dump
       if options[:format] == 'yaml'
-        ok_exit JSON.parse(item_dump_call.to_json).to_yaml
+        ok_exit dump_yaml
       elsif options[:format] == 'json'
-        ok_exit item_dump_call.to_json
+        ok_exit dump_json
       else
-        abort format("Dump format must be 'json' or 'yaml'. (Tried '%s')",
-                     options[:format])
+        abort format("Dump format must be 'json' or 'yaml'. " \
+                     "(Tried '%<format>s')", options)
       end
     end
-    # rubocop:enable Metrics/AbcSize
+
+    def dump_yaml
+      JSON.parse(item_dump_call.to_json).to_yaml
+    end
+
+    def dump_json
+      item_dump_call.to_json
+    end
 
     # Broken out into its own method because 'users' does not use
     # pagination
@@ -422,6 +443,7 @@ module WavefrontCli
       [raw].flatten.each do |obj|
         resp = import_object(obj)
         next if options[:noop]
+
         errs += 1 unless resp.ok?
         puts import_message(obj, resp)
       end
@@ -430,10 +452,10 @@ module WavefrontCli
     end
 
     def import_message(obj, resp)
-      format('%-15s %-10s %s',
-             obj[:id] || obj[:url],
-             resp.ok? ? 'IMPORTED' : 'FAILED',
-             resp.status.message)
+      format('%-15<id>s %-10<status>s %<message>s',
+             id: obj[:id] || obj[:url],
+             status: resp.ok? ? 'IMPORTED' : 'FAILED',
+             message: resp.status.message)
     end
 
     def import_object(raw)
@@ -467,7 +489,10 @@ module WavefrontCli
     def smart_delete_message(object_type)
       desc = wf.describe(options[:'<id>'])
       word = desc.ok? ? 'Soft' : 'Permanently'
-      format("%s deleting %s '%s'", word, object_type, options[:'<id>'])
+      format("%<soft_or_hard>s deleting %<object>s '%<id>s'",
+             soft_or_hard: word,
+             object: object_type,
+             id: options[:'<id>'])
     end
 
     def do_undelete
@@ -490,6 +515,7 @@ module WavefrontCli
     # If the user has specified --all, override any limit and offset
     # values
     #
+    # rubocop:disable Metrics/MethodLength
     def range_hash
       offset_key = :offset
 
@@ -498,7 +524,7 @@ module WavefrontCli
         offset = ALL_PAGE_SIZE
       elsif options[:cursor]
         offset_key = :cursor
-        limit  = options[:limit]
+        limit = options[:limit]
         offset = options[:cursor]
       else
         limit  = options[:limit]
@@ -507,6 +533,7 @@ module WavefrontCli
 
       { limit: limit, offset_key => offset }
     end
+    # rubocop:enable Metrics/MethodLength
 
     # The search URI pattern doesn't always match the command name,
     # or class name. Override this method if this is the case.
@@ -527,11 +554,11 @@ module WavefrontCli
       end
     end
 
-    # rubocop:disable Metrics/CyclomaticComplexity
-    # rubocop:disable Metrics/MethodLength
     # @param cond [String] a search condition, like "key=value"
     # @return [Hash] of matchingMethod and negated
     #
+    # rubocop:disable Metrics/CyclomaticComplexity
+    # rubocop:disable Metrics/MethodLength
     def matching_method(cond)
       case cond
       when /^\w+~/
@@ -550,8 +577,8 @@ module WavefrontCli
         raise(WavefrontCli::Exception::UnparseableSearchPattern, cond)
       end
     end
-    # rubocop:enable Metrics/CyclomaticComplexity
     # rubocop:enable Metrics/MethodLength
+    # rubocop:enable Metrics/CyclomaticComplexity
 
     # Most things will re-import with the POST method if you remove
     # the ID.
@@ -596,6 +623,7 @@ module WavefrontCli
     # @param aggr [Array] values of matched keys
     # @return [Array]
     #
+    # rubocop:disable Metrics/MethodLength
     def extract_values(obj, key, aggr = [])
       if obj.is_a?(Hash)
         obj.each_pair do |k, v|
@@ -611,5 +639,6 @@ module WavefrontCli
 
       aggr
     end
+    # rubocop:enable Metrics/MethodLength
   end
 end

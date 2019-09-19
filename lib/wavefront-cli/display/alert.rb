@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'base'
 
 module WavefrontDisplay
@@ -52,13 +54,14 @@ module WavefrontDisplay
       puts data.max
     end
 
-    # rubocop:disable Metrics/AbcSize
     def do_summary
       kw = data.keys.map(&:size).max + 2
-      data.delete_if { |_k, v| v.zero? } unless options[:all]
-      data.sort.each { |k, v| puts format("%-#{kw}s%s", k, v) }
+      data.sort.each do |k, v|
+        next if v.zero? && !options[:all]
+
+        puts format("%-#{kw}<key>s%<value>s", key: k, value: v)
+      end
     end
-    # rubocop:enable Metrics/AbcSize
 
     def do_queries
       if options[:brief]

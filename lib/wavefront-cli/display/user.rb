@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'base'
 
 module WavefrontDisplay
@@ -15,59 +17,64 @@ module WavefrontDisplay
       if groups.empty?
         puts 'User does not belong to any groups.'
       else
-        groups.each { |u| puts format('%s (%s)', u[:id], u[:name]) }
+        groups.each { |u| puts format('%<id>s (%<name>s)', u) }
       end
     end
 
     def do_create
       info = data[0]
-      puts format("Created user '%s'.\nPermission groups\n%s\n" \
-                  "User groups\n%s",
-                  info[:identifier],
-                  groups_as_string(info[:groups]),
-                  user_groups_as_string(info[:userGroups]))
+      puts format("Created user '%<user>s'.\nPermission groups\n" \
+                  "%<perm_groups>s\nUser groups\n%<user_groups>s",
+                  user: info[:identifier],
+                  perm_groups: groups_as_string(info[:groups]),
+                  user_groups: user_groups_as_string(info[:userGroups]))
     end
 
     def groups_as_string(groups)
       return '  <none>' if groups.empty?
-      data.response.groups.map { |g| format('  %s', g) }.join("\n  ")
+
+      data.response.groups.map do |g|
+        format('  %<group>s', group: g)
+      end.join("\n  ")
     end
 
     def user_groups_as_string(groups)
       return '  <none>' if groups.empty?
-      groups.map { |g| format('  %s (%s)', g[:name], g[:id]) }.join("\n")
+
+      groups.map { |g| format('  %<name>s (%<id>s)', g) }.join("\n")
     end
 
     def do_delete
-      puts format('Deleted %s.', quoted(options[:'<user>']))
+      puts format('Deleted %<quoted_user>s.',
+                  quoted_user: quoted(options[:'<user>']))
     end
 
     def do_invite
-      puts format("Sent invitation to '%s'.", options[:'<id>'])
+      puts format("Sent invitation to '%<id>s'.", id: options[:'<id>'])
     end
 
     def do_grant
-      puts format("Granted '%s' to '%s'.",
-                  options[:'<privilege>'],
-                  options[:'<id>'])
+      puts format("Granted '%<priv>s' to '%<id>s'.",
+                  priv: options[:'<privilege>'],
+                  id: options[:'<id>'])
     end
 
     def do_revoke
-      puts format("Revoked '%s' from '%s'.",
-                  options[:'<privilege>'],
-                  options[:'<id>'])
+      puts format("Revoked '%<priv>s' from '%<id>s'.",
+                  priv: options[:'<privilege>'],
+                  id: options[:'<id>'])
     end
 
     def do_join
-      puts format("Added '%s' to %s.",
-                  options[:'<id>'],
-                  quoted(options[:'<group>']))
+      puts format("Added '%<id>s' to %<quoted_group>s.",
+                  id: options[:'<id>'],
+                  quoted_group: quoted(options[:'<group>']))
     end
 
     def do_leave
-      puts format("Removed '%s' from %s.",
-                  options[:'<id>'],
-                  quoted(options[:'<group>']))
+      puts format("Removed '%<id>s' from %<quoted_group>s.",
+                  id: options[:'<id>'],
+                  quoted_group: quoted(options[:'<group>']))
     end
   end
 end

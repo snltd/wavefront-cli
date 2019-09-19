@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # For development against a local checkout of the SDK, uncomment
 # this definition
 #
@@ -33,20 +35,36 @@ class WavefrontCliController
     @usage = docopt_hash
     cmd, opts = parse_args
     @opts = parse_opts(opts)
-    cli_class_obj = load_cli_class(cmd, @opts)
+    cli_class_obj = cli_class(cmd, @opts)
     run_command(cli_class_obj)
   end
 
   # What you see when you do 'wf --help'
   # @return [String]
   #
+  # rubocop:disable Metrics/MethodLength
   def default_help
-    s = "Wavefront CLI\n\nUsage:\n  #{CMD} command [options]\n" \
-        "  #{CMD} --version\n  #{CMD} --help\n\nCommands:\n"
+    s = ['Wavefront CLI',
+         '',
+         'Usage:',
+         "  #{CMD} command [options]",
+         "  #{CMD} --version",
+         "  #{CMD} --help",
+         '',
+         'Commands:',
+         '']
 
-    cmds.sort.each { |k, v| s.<< format("  %-18s %s\n", k, v.description) }
-    s.<< "\nUse '#{CMD} <command> --help' for further information.\n"
+    cmds.sort.each do |k, v|
+      s.<< format('  %-18<command>s %<desc>s',
+                  command: k,
+                  desc: v.description)
+    end
+
+    s.<< ''
+    s.<< "Use '#{CMD} <command> --help' for further information."
+    s.join("\n")
   end
+  # rubocop:enable Metrics/MethodLength
 
   # @return [Hash] command descriptions for docopt.
   #
@@ -59,23 +77,25 @@ class WavefrontCliController
   # Parse the input. The first Docopt.docopt handles the default
   # options, the second works on the command.
   #
-  # rubocop:disable Metrics/AbcSize
   def parse_args
     Docopt.docopt(usage[:default], version: WF_CLI_VERSION, argv: args)
   rescue Docopt::Exit => e
     cmd = args.empty? ? nil : args.first.to_sym
 
     abort e.message unless usage.key?(cmd)
-
-    begin
-      [cmd, sanitize_keys(Docopt.docopt(usage[cmd], argv: args))]
-    rescue Docopt::DocoptLanguageError => e
-      abort "Mangled command description:\n#{e.message}"
-    rescue Docopt::Exit => e
-      abort e.message
-    end
+    parse_cmd(cmd)
   end
-  # rubocop:enable Metrics/AbcSize
+
+  # Parse a command.
+  # @param cmd [String] given command
+  #
+  def parse_cmd(cmd)
+    [cmd, sanitize_keys(Docopt.docopt(usage[cmd], argv: args))]
+  rescue Docopt::DocoptLanguageError => e
+    abort "Mangled command description:\n#{e.message}"
+  rescue Docopt::Exit => e
+    abort e.message
+  end
 
   def parse_opts(options)
     WavefrontCli::OptHandler.new(options).opts
@@ -86,10 +106,8 @@ class WavefrontCliController
   # @param cmd [String]
   # @return WavefrontCli::cmd
   #
-  # rubocop:disable Metrics/AbcSize
-  def load_cli_class(cmd, opts)
-    require_relative File.join('.', cmds[cmd].sdk_file)
-    Object.const_get('WavefrontCli').const_get(cmds[cmd].sdk_class).new(opts)
+  def cli_class(cmd, opts)
+    load_cli_class(cmd, opts)
   rescue WavefrontCli::Exception::UnhandledCommand
     abort 'Fatal error. Unsupported command. Please open a Github issue.'
   rescue WavefrontCli::Exception::InvalidInput => e
@@ -97,10 +115,14 @@ class WavefrontCliController
   rescue RuntimeError => e
     abort "Unable to run command. #{e.message}."
   end
-  # rubocop:enable Metrics/AbcSize
 
-  # rubocop:disable Metrics/AbcSize
+  def load_cli_class(cmd, opts)
+    require_relative File.join('.', cmds[cmd].sdk_file)
+    Object.const_get('WavefrontCli').const_get(cmds[cmd].sdk_class).new(opts)
+  end
+
   # rubocop:disable Metrics/MethodLength
+  # rubocop:disable Metrics/AbcSize
   def run_command(cli_class_obj)
     cli_class_obj.validate_opts
     cli_class_obj.run
@@ -192,6 +214,7 @@ class WavefrontCliController
   #
   def import_command(path)
     return if path.extname != '.rb' || path.basename.to_s == 'base.rb'
+
     k_name = path.basename.to_s[0..-4]
     require(CMD_DIR + k_name)
     Object.const_get("WavefrontCommand#{k_name.capitalize}").new

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'pathname'
 require 'date'
 
@@ -28,7 +30,7 @@ Gem::Specification.new do |gem|
 
   gem.add_development_dependency 'minitest', '~> 5.11', '>= 5.11.0'
   gem.add_development_dependency 'rake', '~> 12.0'
-  gem.add_development_dependency 'rubocop', '~> 0.54.0'
+  gem.add_development_dependency 'rubocop', '~> 0.74.0'
   gem.add_development_dependency 'spy', '~> 1.0.0'
   gem.add_development_dependency 'webmock', '~> 3.7'
   gem.add_development_dependency 'yard', '~> 0.9.5'

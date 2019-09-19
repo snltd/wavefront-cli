@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative '../constants'
 
 module WavefrontDisplay
@@ -36,6 +38,7 @@ module WavefrontDisplay
     # find the correct method to deal with the output of the user's
     # command.
     #
+    # rubocop:disable Metrics/MethodLength
     def run(method)
       if method == 'do_list'
         run_list
@@ -49,6 +52,7 @@ module WavefrontDisplay
         long_output
       end
     end
+    # rubocop:enable Metrics/MethodLength
 
     # Choose the correct list handler. The user can specifiy a long
     # listing with the --long options.
@@ -91,6 +95,7 @@ module WavefrontDisplay
     #
     def run_error(method)
       return unless respond_to?(method)
+
       send(method)
       exit 1
     end
@@ -104,6 +109,7 @@ module WavefrontDisplay
 
     def prioritize_keys(data, keys)
       return _prioritize_keys(data, keys) unless data.is_a?(Array)
+
       data.map { |e| _prioritize_keys(e, keys) }
     end
 
@@ -115,6 +121,7 @@ module WavefrontDisplay
     def _prioritize_keys(data, keys)
       keys.each.with_object(data.is_a?(Map) ? Map.new : {}) do |k, a|
         next unless data.key?(k)
+
         a[k] = data[k]
         data.delete(k)
       end.merge(data)
@@ -150,17 +157,22 @@ module WavefrontDisplay
 
     # if this is a section of a larger dataset, say so
     #
-    # rubocop:disable Metrics/AbcSize
     def pagination_line
       return unless raw.respond_to?(:moreItems) && raw.moreItems == true
 
-      enditem = raw.limit.positive? ? raw.offset + raw.limit - 1 : 0
-      puts format('List shows items %d to %d. Use -o and -L for more.',
-                  raw.offset, enditem)
+      puts format('List shows items %<first>d to %<last>d. ' \
+                  'Use -o and -L for more.',
+                  first: raw.offset,
+                  last: index_of_final_item)
     rescue StandardError
       puts 'List shows paginated output. Use -o and -L for more.'
     end
-    # rubocop:enable Metrics/AbcSize
+
+    # Return the offset of the final item in view.
+    #
+    def index_of_final_item
+      raw.limit.positive? ? raw.offset + raw.limit - 1 : 0
+    end
 
     # Give it a key-value hash, and it will return the size of the first
     # column to use when formatting that data.
@@ -171,6 +183,7 @@ module WavefrontDisplay
     #
     def key_width(hash = {}, pad = 2)
       return 0 if hash.keys.empty?
+
       hash.keys.map(&:size).max + pad
     end
 
@@ -360,9 +373,8 @@ module WavefrontDisplay
 
       str = time.to_s
       fmt, out_fmt = time_formats(str)
-      # rubocop:disable Style/DateTime
       ret = DateTime.strptime(str, fmt).to_time
-      # rubocop:enable Style/DateTime
+
       ret = force_utc ? ret.utc : ret.localtime
       ret.strftime(out_fmt)
     end

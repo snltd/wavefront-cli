@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'wavefront-sdk/support/mixins'
 require_relative 'base'
 
@@ -29,9 +31,9 @@ module WavefrontCli
     end
 
     def build_body
-      ret = { title:              options[:'<title>'],
+      ret = { title: options[:'<title>'],
               startTimeInSeconds: window_start,
-              endTimeInSeconds:   window_end }
+              endTimeInSeconds: window_end }
 
       ret[:reason] = options[:desc] if options[:desc]
       ret
@@ -59,20 +61,18 @@ module WavefrontCli
       end
     end
 
-    # rubocop:disable Metrics/AbcSize
     def do_extend_by
       cannot_noop!
-
-      begin
-        to_add = options[:'<time>'].to_seconds
-      rescue ArgumentError
-        abort "Could not parse time range '#{options[:'<time>']}'."
-      end
-
+      to_add = parse_range_to_add
       old_end = wf.describe(options[:'<id>']).response.endTimeInSeconds
       change_end_time(old_end + to_add)
     end
-    # rubocop:enable Metrics/AbcSize
+
+    def parse_range_to_add
+      options[:'<time>'].to_seconds
+    rescue ArgumentError
+      abort "Could not parse time range '#{options[:'<time>']}'."
+    end
 
     def do_extend_to
       cannot_noop!
@@ -108,7 +108,8 @@ module WavefrontCli
 
       return ret unless ret.is_a?(Wavefront::Response) && ret.empty?
 
-      ok_exit(format('No maintenance windows in the next %s hours.', range))
+      ok_exit(format('No maintenance windows in the next %<range>s hours.',
+                     range: range))
     end
   end
 end

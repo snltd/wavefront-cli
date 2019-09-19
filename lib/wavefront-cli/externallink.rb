@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'base'
 
 module WavefrontCli
@@ -14,12 +16,12 @@ module WavefrontCli
     end
 
     def do_create
-      body = { name:              options[:'<name>'],
-               template:          options[:'<template>'],
-               description:       options[:'<description>'],
+      body = { name: options[:'<name>'],
+               template: options[:'<template>'],
+               description: options[:'<description>'],
                metricFilterRegex: options[:metricregex],
                sourceFilterRegex: options[:sourceregex],
-               pointFilterRegex:  point_filter_regexes }
+               pointFilterRegex: point_filter_regexes }
 
       wf.create(body.select { |_k, v| v })
     end

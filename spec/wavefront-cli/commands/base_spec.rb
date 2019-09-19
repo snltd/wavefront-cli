@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 require 'pathname'
 require 'minitest/autorun'
@@ -69,6 +70,7 @@ class WavefrontCommmandBaseTest < MiniTest::Test
 
     wf.commands(600).split("\n")[1..-1].each do |c|
       next if skip_cmd && c.match(skip_cmd)
+
       assert_match(/^  \w+/, c)
       assert_includes(c, CMN) unless c =~ /--help$/
     end
@@ -76,38 +78,39 @@ class WavefrontCommmandBaseTest < MiniTest::Test
 
   def test_options
     assert wf.options(600).start_with?("Global options:\n")
-    assert_match(/\nOptions:\n/, wf.options)
+    assert_match(/\nOptions:/, wf.options)
 
     wf.options(600).split("\n")[1..-1].each do |o|
       next if o == 'Global options:' || o == 'Options:' || o.empty?
+
       assert_instance_of(String, o)
       assert_match(/^  -\w, --\w+/, o)
       refute o.end_with?('.')
     end
 
-    assert_equal(wf.options.split("\n").select(&:empty?).size, 1)
+    assert_equal(1, wf.options.split("\n").select(&:empty?).size)
   end
 
   def test_opt_row
     assert_equal(wf.opt_row('-s, --short    short option', 10),
-                 "  -s, --short    short option\n")
+                 '  -s, --short    short option')
     assert_equal(wf.opt_row('-s, --short    short option', 8),
-                 "  -s, --short  short option\n")
+                 '  -s, --short  short option')
     assert_equal(wf.opt_row(
                    '-l, --longoption    a long option with a quite ' \
                    'long description which needs folding', 15
-    ),
+                 ),
                  '  -l, --longoption    a long option with a quite long ' \
-                 "description which\n                      needs folding\n")
+                 "description which\n                      needs folding")
     assert_equal(wf.opt_row(
                    '-h, --hugeoption    an option with a very long, far ' \
                    'too verbose description which is going need folding ' \
                    'more than one time, let me tell you', 12
-    ),
+                 ),
                  '  -h, --hugeoption an option with a very long, far too ' \
                  "verbose description\n                   which is going " \
                  'need folding more than one time, let me tell' \
-                 "\n                   you\n")
+                 "\n                   you")
   end
 
   def test_option_column_width

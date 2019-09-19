@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'base'
 require_relative 'command_mixins/tag'
 require_relative 'command_mixins/acl'
@@ -53,7 +55,7 @@ module WavefrontCli
       if wf.respond_to?(state)
         in_state(state)
       else
-        abort format("'%s' is not a valid alert state.", state)
+        abort format("'%<state>s' is not a valid alert state.", state: state)
       end
     end
 
@@ -94,7 +96,7 @@ module WavefrontCli
 
       return ret unless ret.is_a?(Wavefront::Response) && ret.empty?
 
-      ok_exit(format('No alerts are currently %s.', status))
+      ok_exit(format('No alerts are currently %<status>s.', status: status))
     end
 
     # Does the work for #in_state
@@ -103,7 +105,7 @@ module WavefrontCli
     # @return Wavefront::Response
     #
     def find_in_state(status)
-      search = do_search([format('status=%s', status)])
+      search = do_search([format('status=%<status>s', status: status)])
 
       return if options[:noop]
 
@@ -122,6 +124,7 @@ module WavefrontCli
     def state_time(item)
       return item[:event][:startTime] if item.key?(:event)
       return item[:snoozed] if item.key?(:snoozed)
+
       nil
     end
 
@@ -133,7 +136,6 @@ module WavefrontCli
     def import_to_create(raw)
       import_fields.each_with_object({}) { |k, a| a[k.to_sym] = raw[k] }
                    .tap do |ret|
-
         if raw.key?(:resolveAfterMinutes)
           ret[:resolveMinutes] = raw[:resolveAfterMinutes]
         end

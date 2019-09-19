@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Extensions to the String class to help with formatting.
 #
 class String
@@ -32,26 +34,23 @@ class String
   # @param prefix [String] prepended to every line
   # @return [String] the folded line
   #
-  # rubocop:disable Metrics/AbcSize
   def fold(twidth = TW, indent = 10, prefix = '')
     chunks = gsub(/default: /, 'default:^').scan_line(twidth - 8)
-    first_line = format("%s%s\n", prefix, chunks.shift)
+    first_line = format("%<padding>s%<text>s\n",
+                        padding: prefix,
+                        text: chunks.shift)
 
     return first_line.restored if chunks.empty?
 
-    rest = chunks.join(' ').scan_line(twidth - indent - 5).map do |l|
-      prefix + ' ' * indent + l
-    end
-
-    (first_line + rest.join("\n") + "\n").restored
+    rest = indent_folded_lines(chunks, twidth, indent, prefix)
+    (first_line + rest.join("\n")).restored
   end
-  # rubocop:enable Metrics/AbcSize
 
   # We use a carat as a temporary whitespace character to avoid
   # undesirable line breaking. This puts it back
   #
   def restored
-    tr('^', ' ')
+    tr('^', ' ').chomp("\n")
   end
 
   # Fold long value lines in two-column output. The returned string
@@ -95,8 +94,15 @@ class String
   #
   def to_snake
     gsub(/(.)([A-Z])/) do
-      Regexp.last_match[1] + '_' +
-        Regexp.last_match[2].downcase
+      Regexp.last_match[1] + '_' + Regexp.last_match[2].downcase
+    end
+  end
+
+  private
+
+  def indent_folded_lines(chunks, twidth, indent, prefix)
+    chunks.join(' ').scan_line(twidth - indent - 5).map do |line|
+      prefix + ' ' * indent + line
     end
   end
 end

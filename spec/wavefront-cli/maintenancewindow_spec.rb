@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 require_relative '../support/command_base'
 require_relative '../../lib/wavefront-cli/maintenancewindow'
@@ -18,11 +19,11 @@ class MaintenanceWindowEndToEndTest < EndToEndTest
     quietly do
       assert_cmd_posts('create -d testing --host shark test_window',
                        '/api/v2/maintenancewindow',
-                       endTimeInSeconds:   a_timestamp,
-                       reason:             'testing',
-                       relevantHostNames:  %w[shark],
+                       endTimeInSeconds: a_timestamp,
+                       reason: 'testing',
+                       relevantHostNames: %w[shark],
                        startTimeInSeconds: a_timestamp,
-                       title:              'test_window')
+                       title: 'test_window')
     end
 
     assert_abort_on_missing_creds('create -d testing -H box test_window')
@@ -34,11 +35,11 @@ class MaintenanceWindowEndToEndTest < EndToEndTest
       assert_cmd_posts('create --desc testing -H shark -s 1566776337 ' \
                        '-H box -e 1566776399 test_window',
                        '/api/v2/maintenancewindow',
-                       endTimeInSeconds:   1_566_776_399,
-                       reason:             'testing',
-                       relevantHostNames:  %w[shark box],
+                       endTimeInSeconds: 1_566_776_399,
+                       reason: 'testing',
+                       relevantHostNames: %w[shark box],
                        startTimeInSeconds: 1_566_776_337,
-                       title:              'test_window')
+                       title: 'test_window')
     end
 
     assert_noop(
@@ -47,9 +48,9 @@ class MaintenanceWindowEndToEndTest < EndToEndTest
       'uri: POST https://default.wavefront.com/api/v2/maintenancewindow',
       'body: ' + { title: 'test_window',
                    startTimeInSeconds: 1_566_776_337,
-                   endTimeInSeconds:   1_566_776_399,
-                   reason:             'testing',
-                   relevantHostNames:  %w[shark box] }.to_json
+                   endTimeInSeconds: 1_566_776_399,
+                   reason: 'testing',
+                   relevantHostNames: %w[shark box] }.to_json
     )
   end
 
@@ -58,11 +59,11 @@ class MaintenanceWindowEndToEndTest < EndToEndTest
       assert_cmd_posts('create -d testing -A alert_tag_1 -A alert_tag_2 ' \
                        '--start 1566776337 --end 1566776399 test_window',
                        '/api/v2/maintenancewindow',
-                       endTimeInSeconds:     1_566_776_399,
-                       reason:               'testing',
+                       endTimeInSeconds: 1_566_776_399,
+                       reason: 'testing',
                        relevantCustomerTags: %w[alert_tag_1 alert_tag_2],
-                       startTimeInSeconds:   1_566_776_337,
-                       title:                'test_window')
+                       startTimeInSeconds: 1_566_776_337,
+                       title: 'test_window')
     end
   end
 
@@ -179,8 +180,8 @@ class MaintenanceWindowEndToEndTest < EndToEndTest
                    query: [{ key: 'runningState',
                              value: 'ongoing',
                              matchingMethod: 'EXACT' }],
-                   sort:  { field: 'runningState',
-                            ascending: true } }.to_json
+                   sort: { field: 'runningState',
+                           ascending: true } }.to_json
     )
 
     assert_empty(err)
@@ -205,8 +206,8 @@ class MaintenanceWindowEndToEndTest < EndToEndTest
                    query: [{ key: 'runningState',
                              value: 'pending',
                              matchingMethod: 'EXACT' }],
-                   sort:  { field: 'runningState',
-                            ascending: true } }.to_json
+                   sort: { field: 'runningState',
+                           ascending: true } }.to_json
     )
 
     assert_empty(err)
@@ -270,8 +271,8 @@ class MaintenanceWindowEndToEndTest < EndToEndTest
   def state_search(state)
     { limit: 999,
       offset: 0,
-      query: [{ key:            'runningState',
-                value:          state,
+      query: [{ key: 'runningState',
+                value: state,
                 matchingMethod: 'EXACT' }],
       sort: { field: 'runningState', ascending: true } }
   end

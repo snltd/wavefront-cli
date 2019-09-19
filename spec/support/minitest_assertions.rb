@@ -1,7 +1,10 @@
+# frozen_string_literal: true
+
 require 'spy'
 require 'webmock/minitest'
 require_relative '../constants'
 
+# rubocop:disable Metrics/ModuleLength
 module Minitest
   #
   # Custom assertions to facilitate CLI command testing
@@ -213,34 +216,34 @@ module Minitest
     private
 
     def mk_headers(token = nil)
-      { 'Accept':          /.*/,
+      { 'Accept': /.*/,
         'Accept-Encoding': /.*/,
-        'Authorization':   'Bearer ' + (token || '0123456789-ABCDEF'),
-        'User-Agent':      "wavefront-cli-#{WF_CLI_VERSION}" }
+        'Authorization': 'Bearer ' + (token || '0123456789-ABCDEF'),
+        'User-Agent': "wavefront-cli-#{WF_CLI_VERSION}" }
     end
 
     # Every command we simulate running is done under the following
     # permutations
     #
     def permutations
-      [{ cmdline:  "-t #{TOKEN} -E #{ENDPOINT}",
-         token:    TOKEN,
+      [{ cmdline: "-t #{TOKEN} -E #{ENDPOINT}",
+         token: TOKEN,
          endpoint: ENDPOINT },
 
-       { cmdline:  "-c #{CF}",
-         token:    CF_VAL['default']['token'],
+       { cmdline: "-c #{CF}",
+         token: CF_VAL['default']['token'],
          endpoint: CF_VAL['default']['endpoint'] },
 
-       { cmdline:  "-c #{CF} -P other",
-         token:    CF_VAL['other']['token'],
+       { cmdline: "-c #{CF} -P other",
+         token: CF_VAL['other']['token'],
          endpoint: CF_VAL['other']['endpoint'] },
 
-       { cmdline:  "-c #{CF} --profile other -t #{TOKEN}",
-         token:    TOKEN,
+       { cmdline: "-c #{CF} --profile other -t #{TOKEN}",
+         token: TOKEN,
          endpoint: CF_VAL['other']['endpoint'] },
 
-       { cmdline:  "--config #{CF} -E #{ENDPOINT}",
-         token:    CF_VAL['default']['token'],
+       { cmdline: "--config #{CF} -E #{ENDPOINT}",
+         token: CF_VAL['default']['token'],
          endpoint: ENDPOINT }]
     end
 
@@ -256,3 +259,4 @@ module Minitest
     end
   end
 end
+# rubocop:enable Metrics/ModuleLength

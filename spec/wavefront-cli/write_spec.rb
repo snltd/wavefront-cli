@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 require 'minitest/autorun'
 require_relative '../../lib/wavefront-cli/write'
@@ -101,30 +102,53 @@ class WavefrontCliWriteTest < MiniTest::Test
     %w[v mv vm tmv mtv mvT msvT tmvT].each do |str|
       assert wf.valid_format?(str)
     end
+  end
 
+  def test_invalid_format_v_and_d
     e = assert_raises('WavefrontCli::Exception::UnparseableInput') do
       wf.valid_format?('mvd')
     end
-    assert_equal("'v' and 'd' are mutually exclusive", e.message)
 
+    assert_equal("'v' and 'd' are mutually exclusive", e.message)
+  end
+
+  def test_invalid_format_no_v_or_d
     e = assert_raises('WavefrontCli::Exception::UnparseableInput') do
       wf.valid_format?('mtT')
     end
-    assert_equal("format string must include 'v' or 'd'", e.message)
 
+    assert_equal("format string must include 'v' or 'd'", e.message)
+  end
+
+  def test_invalid_format_invalid_char
     e = assert_raises('WavefrontCli::Exception::UnparseableInput') do
       wf.valid_format?('mxvT')
     end
-    assert_equal('unsupported field in format string', e.message)
 
+    assert_equal('unsupported field in format string', e.message)
+  end
+
+  def test_invalid_format_repeated_char
     e = assert_raises('WavefrontCli::Exception::UnparseableInput') do
       wf.valid_format?('mvvT')
     end
-    assert_equal('repeated field in format string', e.message)
 
+    assert_equal('repeated field in format string', e.message)
+  end
+
+  def test_invalid_format_duplicated_char
+    e = assert_raises('WavefrontCli::Exception::UnparseableInput') do
+      wf.valid_format?('vmvTv')
+    end
+
+    assert_equal('repeated field in format string', e.message)
+  end
+
+  def test_invalid_format_big_t_in_middle
     e = assert_raises('WavefrontCli::Exception::UnparseableInput') do
       wf.valid_format?('mTv')
     end
+
     assert_equal("if used, 'T' must come at end of format string",
                  e.message)
   end

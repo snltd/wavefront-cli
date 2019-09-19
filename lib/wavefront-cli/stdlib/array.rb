@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Extensions to stdlib's Array
 #
 class Array
@@ -6,6 +8,7 @@ class Array
   #
   def max_length
     return 0 if empty?
+
     map(&:to_s).map(&:length).max
   end
 

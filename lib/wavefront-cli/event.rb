@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'fileutils'
 require 'open3'
 require 'wavefront-sdk/support/mixins'
@@ -43,11 +45,10 @@ module WavefrontCli
     # name, we'll look for something on the stack.  If it does look
     # like a real event, we'll make an API call straight away.
     #
-    # rubocop:disable Metrics/AbcSize
     def do_close(id = nil)
       id ||= options[:'<id>']
-      ev_file = id =~ /^\d{13}:.+/ ? state_dir + id : nil
       ev = local_event(id)
+      ev_file = event_file(id)
 
       abort "No locally stored event matches '#{id}'." unless ev
 
@@ -55,7 +56,10 @@ module WavefrontCli
       ev_file.unlink if ev_file&.exist? && res.status.code == 200
       res
     end
-    # rubocop:enable Metrics/AbcSize
+
+    def event_file(id)
+      id =~ /^\d{13}:.+/ ? state_dir + id : nil
+    end
 
     def do_show
       events = local_event_list
@@ -92,9 +96,10 @@ module WavefrontCli
 
     # return [Hash] body for #create() method
     #
+    # rubocop:disable Metrics/MethodLength
     def create_body(opts, t_start)
-      { name:        opts[:'<event>'],
-        startTime:   t_start,
+      { name: opts[:'<event>'],
+        startTime: t_start,
         annotations: annotations(opts) }.tap do |r|
           r[:hosts] = opts[:host] if opts[:host]
           r[:tags] = opts[:evtag] if opts[:evtag]
@@ -106,6 +111,7 @@ module WavefrontCli
           end
         end
     end
+    # rubocop:enable Metrics/MethodLength
 
     def annotations(opts)
       {}.tap do |r|
@@ -176,10 +182,10 @@ module WavefrontCli
     # @return [String]
     #
     def event_file_data
-      { hosts:       options[:host],
+      { hosts: options[:host],
         description: options[:desc],
-        severity:    options[:severity],
-        tags:        options[:evtag] }.to_json
+        severity: options[:severity],
+        tags: options[:evtag] }.to_json
     end
 
     def create_dir(state_dir)

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'base'
 
 module WavefrontCli
@@ -33,6 +35,7 @@ module WavefrontCli
 
     def extra_validation
       return unless options[:'<name>']
+
       begin
         wf_string?(options[:'<name>'])
       rescue Wavefront::Exception::InvalidString

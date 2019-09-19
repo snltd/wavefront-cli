@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module WavefrontCli
   #
   # CLI-specific exceptions. These should generally be caught in the

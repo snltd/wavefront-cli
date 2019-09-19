@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 require_relative '../support/command_base'
 require_relative '../test_mixins/tag'
@@ -22,22 +23,22 @@ class DerivedMetricEndToEndTest < EndToEndTest
     quietly do
       assert_cmd_posts('create mymetric ts(series)',
                        '/api/v2/derivedmetric',
-                       minutes:                5,
-                       name:                   'mymetric',
+                       minutes: 5,
+                       name: 'mymetric',
                        includeObsoleteMetrics: false,
-                       processRateMinutes:     1,
-                       query:                  'ts(series)')
+                       processRateMinutes: 1,
+                       query: 'ts(series)')
     end
 
     assert_noop('create mymetric ts(series)',
                 'uri: POST https://default.wavefront.com/api/v2/' \
                 'derivedmetric',
                 'body: ' + {
-                  query:                  'ts(series)',
-                  name:                   'mymetric',
-                  minutes:                5,
+                  query: 'ts(series)',
+                  name: 'mymetric',
+                  minutes: 5,
                   includeObsoleteMetrics: false,
-                  processRateMinutes:     1
+                  processRateMinutes: 1
                 }.to_json)
 
     assert_usage('create')
@@ -50,11 +51,11 @@ class DerivedMetricEndToEndTest < EndToEndTest
     quietly do
       assert_cmd_posts('create -i 3 -r 7 -b mymetric ts(series)',
                        '/api/v2/derivedmetric',
-                       minutes:                7,
-                       name:                   'mymetric',
+                       minutes: 7,
+                       name: 'mymetric',
                        includeObsoleteMetrics: true,
-                       processRateMinutes:     3,
-                       query:                  'ts(series)')
+                       processRateMinutes: 3,
+                       query: 'ts(series)')
     end
   end
 
@@ -62,12 +63,12 @@ class DerivedMetricEndToEndTest < EndToEndTest
     quietly do
       assert_cmd_posts('create -i 3 -T tag1 -T tag2 mymetric ts(series)',
                        '/api/v2/derivedmetric',
-                       minutes:                5,
-                       name:                   'mymetric',
+                       minutes: 5,
+                       name: 'mymetric',
                        includeObsoleteMetrics: false,
-                       processRateMinutes:     3,
-                       tags:                   %w[tag1 tag2],
-                       query:                  'ts(series)')
+                       processRateMinutes: 3,
+                       tags: %w[tag1 tag2],
+                       query: 'ts(series)')
     end
   end
 

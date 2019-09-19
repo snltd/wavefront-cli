@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'base'
 
 module WavefrontDisplay
@@ -14,23 +16,27 @@ module WavefrontDisplay
     end
 
     def do_add_user
-      puts format("Added %s to '%s'.", quoted(options[:'<user>']),
-                  options[:'<id>']).fold(TW, 0)
+      puts format("Added %<quoted_user>s to '%<group_id>s'.",
+                  quoted_user: quoted(options[:'<user>']),
+                  group_id: options[:'<id>']).fold(TW, 0)
     end
 
     def do_remove_user
-      puts format("Removed %s from '%s'.", quoted(options[:'<user>']),
-                  options[:'<id>']).fold(TW, 0)
+      puts format("Removed %<quoted_user>s from '%<group_id>s'.",
+                  quoted_user: quoted(options[:'<user>']),
+                  group_id: options[:'<id>']).fold(TW, 0)
     end
 
     def do_grant
-      puts format("Granted '%s' permission to '%s'.",
-                  options[:'<permission>'], options[:'<id>'])
+      puts format("Granted '%<perm>s' permission to '%<group_id>s'.",
+                  perm: options[:'<permission>'],
+                  group_id: options[:'<id>'])
     end
 
     def do_revoke
-      puts format("Revoked '%s' permission from '%s'.",
-                  options[:'<permission>'], options[:'<id>'])
+      puts format("Revoked '%<perm>s' permission from '%<group_id>s'.",
+                  perm: options[:'<permission>'],
+                  group_id: options[:'<id>'])
     end
 
     def do_users

@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 require 'minitest/autorun'
 require_relative '../../lib/wavefront-cli/alert'
@@ -16,15 +17,15 @@ class WavefrontCliBaseTest < MiniTest::Test
 
   def setup
     @wf = WavefrontCli::Alert.new(endpoint: 'test.wavefront.com',
-                                  token:    '0123456789-ABCDEF',
-                                  debug:    false,
-                                  noop:     true)
+                                  token: '0123456789-ABCDEF',
+                                  debug: false,
+                                  noop: true)
   end
 
   def test_mk_creds
     assert_equal({ endpoint: 'test.wavefront.com',
-                   token:    '0123456789-ABCDEF',
-                   agent:    "wavefront-cli-#{WF_CLI_VERSION}" },
+                   token: '0123456789-ABCDEF',
+                   agent: "wavefront-cli-#{WF_CLI_VERSION}" },
                  wf.mk_creds)
   end
 

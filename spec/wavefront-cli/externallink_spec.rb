@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 require_relative '../support/command_base'
 require_relative '../../lib/wavefront-cli/externallink'
@@ -18,15 +19,15 @@ class ExternalLinkEndToEndTest < EndToEndTest
     quietly do
       assert_cmd_posts('create myname mydescription mytemplate',
                        '/api/v2/extlink',
-                       name:        'myname',
-                       template:    'mytemplate',
+                       name: 'myname',
+                       template: 'mytemplate',
                        description: 'mydescription')
     end
 
     assert_noop('create myname mydescription mytemplate',
                 'uri: POST https://default.wavefront.com/api/v2/extlink',
-                'body: ' + { name:        'myname',
-                             template:    'mytemplate',
+                'body: ' + { name: 'myname',
+                             template: 'mytemplate',
                              description: 'mydescription' }.to_json)
 
     assert_abort_on_missing_creds('create myname mydescription mytemplate')
@@ -39,9 +40,9 @@ class ExternalLinkEndToEndTest < EndToEndTest
       assert_cmd_posts('create -m metricregex -s sourceregex myname ' \
                        'mydescription mytemplate',
                        '/api/v2/extlink',
-                       name:              'myname',
-                       template:          'mytemplate',
-                       description:       'mydescription',
+                       name: 'myname',
+                       template: 'mytemplate',
+                       description: 'mydescription',
                        metricFilterRegex: 'metricregex',
                        sourceFilterRegex: 'sourceregex')
     end
@@ -52,9 +53,9 @@ class ExternalLinkEndToEndTest < EndToEndTest
       assert_cmd_posts('create -p key1=reg1 -p key2=reg2 ' \
                        '-m metricregex myname mydescription mytemplate',
                        '/api/v2/extlink',
-                       name:              'myname',
-                       template:          'mytemplate',
-                       description:       'mydescription',
+                       name: 'myname',
+                       template: 'mytemplate',
+                       description: 'mydescription',
                        metricFilterRegex: 'metricregex',
                        pointFilterRegex: {
                          key1: 'reg1',

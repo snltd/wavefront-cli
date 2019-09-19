@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'base'
 
 module WavefrontDisplay
@@ -32,6 +34,7 @@ module WavefrontDisplay
 
     def massage_data
       return if options[:all]
+
       drop_cluster_sources
       drop_hidden_sources
     end

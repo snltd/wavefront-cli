@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'inifile'
 require_relative 'exception'
 require_relative 'base'
@@ -32,7 +34,7 @@ module WavefrontCli
         test: proc { |v| %w[human json yaml].include?(v) } }
     ].freeze
 
-    RX = /^[\da-f]{8}-[\da-f]{4}-[\da-f]{4}-[\da-f]{4}-[\da-f]{12}$/
+    RX = /^[\da-f]{8}-[\da-f]{4}-[\da-f]{4}-[\da-f]{4}-[\da-f]{12}$/.freeze
 
     def initialize(options)
       @options = options
@@ -57,11 +59,11 @@ module WavefrontCli
       require 'wavefront-sdk/defs/version'
       require_relative 'display/base'
 
-      info = { 'wf version':    WF_CLI_VERSION,
-               'wf path':       CMD_PATH.realpath.to_s,
-               'SDK version':   WF_SDK_VERSION,
-               'SDK location':  WF_SDK_LOCATION.to_s,
-               'Ruby version':  RUBY_VERSION,
+      info = { 'wf version': WF_CLI_VERSION,
+               'wf path': CMD_PATH.realpath.to_s,
+               'SDK version': WF_SDK_VERSION,
+               'SDK location': WF_SDK_LOCATION.to_s,
+               'Ruby version': RUBY_VERSION,
                'Ruby platform': Gem::Platform.local.os.capitalize }
 
       WavefrontDisplay::Base.new(info).long_output
@@ -90,11 +92,15 @@ module WavefrontCli
     def create_profile(profile)
       puts "Creating profile '#{profile}'."
 
-      str = CONFIGURABLES.each_with_object("[#{profile}]") do |t, a|
-        a.<< format("\n%s=%s", t[:key], read_thing(t))
+      prof_arr = ["[#{profile}]"]
+
+      CONFIGURABLES.each do |c|
+        prof_arr.<< format('%<key>s=%<value>s',
+                           key: c[:key],
+                           value: read_thing(c))
       end
 
-      IniFile.new(content: str)
+      IniFile.new(content: prof_arr.join("\n"))
     end
 
     def do_delete
@@ -114,7 +120,9 @@ module WavefrontCli
 
     def do_envvars
       %w[WAVEFRONT_ENDPOINT WAVEFRONT_TOKEN WAVEFRONT_PROXY].each do |v|
-        puts format('%-20s %s', v, ENV[v] || 'unset')
+        puts format('%-20<var>s %<value>s',
+                    var: v,
+                    value: ENV[v] || 'unset')
       end
     end
 
@@ -127,8 +135,8 @@ module WavefrontCli
     end
 
     def input_prompt(label, default)
-      ret = format('  %s', label)
-      ret.<< format(' [%s]', default) unless default.nil?
+      ret = format('  %<label>s', label: label)
+      ret.<< format(' [%<value>s]', value: default) unless default.nil?
       ret + ':> '
     end
 
@@ -152,15 +160,18 @@ module WavefrontCli
     def validate_input(input, default, test)
       if input.empty?
         raise WavefrontCli::Exception::MandatoryValue if default.nil?
+
         input = default
       end
 
       return input if test.call(input)
+
       raise WavefrontCli::Exception::InvalidValue
     end
 
     def present?
       return true if config_file.exist?
+
       raise WavefrontCli::Exception::ConfigFileNotFound, config_file
     end
 

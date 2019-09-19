@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'minitest/autorun'
 require_relative '../support/minitest_assertions'
 require_relative '../test_mixins/general'
@@ -58,9 +60,9 @@ class EndToEndTest < MiniTest::Test
   end
 
   def start_and_end_opts
-    format('-s %s -e %s',
-           wall_time[0].strftime('%H:%M'),
-           wall_time[1].strftime('%H:%M'))
+    format('-s %<start_time>s -e %<end_time>s',
+           start_time: wall_time[0].strftime('%H:%M'),
+           end_time: wall_time[1].strftime('%H:%M'))
   end
 
   # Set this to true for things that use cursors rather than offsets

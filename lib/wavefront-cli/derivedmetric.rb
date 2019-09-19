@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'base'
 require_relative 'command_mixins/tag'
 
@@ -25,20 +27,19 @@ module WavefrontCli
     end
 
     def do_create
-      wf.create(build_body)
+      wf.create(create_body)
     end
 
     # rubocop:disable Metrics/AbcSize
-    def build_body
-      ret = { query:                  options[:'<query>'],
-              name:                   options[:'<name>'],
-              minutes:                options[:range].to_i,
-              includeObsoleteMetrics: options[:obsolete],
-              processRateMinutes:     options[:interval].to_i }
-
-      ret[:additionalInformation] = options[:desc] if options[:desc]
-      ret[:tags] = options[:ctag] if valid_tags?
-      ret
+    def create_body
+      { query: options[:'<query>'],
+        name: options[:'<name>'],
+        minutes: options[:range].to_i,
+        includeObsoleteMetrics: options[:obsolete],
+        processRateMinutes: options[:interval].to_i }.tap do |b|
+          b[:additionalInformation] = options[:desc] if options[:desc]
+          b[:tags] = options[:ctag] if valid_tags?
+        end
     end
     # rubocop:enable Metrics/AbcSize
 

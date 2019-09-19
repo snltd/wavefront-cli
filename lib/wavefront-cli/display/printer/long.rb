@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative '../../stdlib/string'
 
 module WavefrontDisplayPrinter
@@ -28,10 +30,10 @@ module WavefrontDisplayPrinter
     # initializer options hash.
     #
     def default_opts
-      { indent:    2,
-        padding:   2,
+      { indent: 2,
+        padding: 2,
         separator: true,
-        none:      true }
+        none: true }
     end
 
     # @param data [Hash] raw data
@@ -41,6 +43,7 @@ module WavefrontDisplayPrinter
     #
     def preened_data(data, fields = nil)
       return data if fields.nil?
+
       data.map { |d| d.select { |k| fields.include?(k.to_sym) }.to_h }
     end
 
@@ -51,6 +54,7 @@ module WavefrontDisplayPrinter
     #
     def preened_value(value)
       return value unless value.is_a?(String) && value =~ /<.*>/
+
       value.gsub(%r{<\/?[^>]*>}, '').delete("\n")
     end
 
@@ -96,16 +100,22 @@ module WavefrontDisplayPrinter
     # Turn the list made by #make_list into user output
     # @return [String]
     #
-    # rubocop:disable Metrics/AbcSize
     def to_s
-      list.map do |e|
-        indent = ' ' * opts[:indent] * e.last
-        key_str = (indent + e.first.to_s + '  ' * kw)[0..kw]
-        val = e[1] == :separator ? '-' * (TW - key_str.length) : e[1]
-        line(key_str, val)
+      list.map do |item|
+        stringify_line(item)
       end.join("\n")
     end
-    # rubocop:enable Metrics/AbcSize
+
+    # @param item [Array] of the form [key, value, indent_level]
+    #
+    def stringify_line(item)
+      key_str = format('%<indent>s%<key>s%<gutter>s',
+                       indent: padding(item[2]),
+                       key: item[0].to_s,
+                       gutter: '  ' * kw)[0..kw]
+      line(key_str,
+           item[1] == :separator ? separator_line(key_str.size) : item[1])
+    end
 
     def line(key, val)
       line_length = key.to_s.size + val.to_s.size
@@ -114,10 +124,23 @@ module WavefrontDisplayPrinter
         val = val.value_fold(key.to_s.size)
       end
 
-      format('%s%s', key, val).rstrip
+      format('%<padded_key>s%<value>s', padded_key: key, value: val).rstrip
     end
 
     private
+
+    # @return [String] correctly sized separator line
+    #
+    def separator_line(width)
+      '-' * (TW - width)
+    end
+
+    # @return [String] the correct amount of whitespace indentation for the
+    #   given indent level
+    #
+    def padding(level)
+      ' ' * opts[:indent] * level
+    end
 
     # Part of the #make_list recursion. Deals with a hash.
     #

@@ -1,7 +1,8 @@
+# frozen_string_literal: true
+
 require_relative '../stdlib/string'
 
-CMN = '[-DnVM] [-c file] [-P profile] [-E endpoint] [-t token] ' \
-      '[-f format]'.freeze
+CMN = '[-DnVM] [-c file] [-P profile] [-E endpoint] [-t token] [-f format]'
 
 # A base class which all command classes extend.
 #
@@ -100,45 +101,53 @@ class WavefrontCommandBase
   #   testing far simpler.
   # @return [String] the subcommands the command offers.
   #
-  #
   def commands(term_width = TW)
-    _commands.flatten.each_with_object("Usage:\n") do |cmd, ret|
-      ret.<< '  ' + "#{CMD} #{word} #{cmd}\n".cmd_fold(term_width) + "\n"
-    end + "  #{CMD} #{word} --help"
+    text_arr = %w[Usage:]
+
+    _commands.flatten.each do |cmd|
+      text_arr.<< '  ' + "#{CMD} #{word} #{cmd}\n".cmd_fold(term_width)
+    end
+
+    text_arr.<< "  #{CMD} #{word} --help"
+    text_arr.join("\n")
   end
 
   # @param term_width [Integer] force a terminal width. Makes
   #   testing far simpler.
   # @return [String] the options the command understands.
   #
-  # rubocop:disable Metrics/AbcSize
   def options(term_width = TW)
     width = option_column_width
-    ret = ''
+    text_arr = if global_options.empty?
+                 []
+               else
+                 global_option_text(width, term_width)
+               end
 
-    unless global_options.empty?
-      ret.<< "Global options:\n"
-      global_options.each { |o| ret.<< opt_row(o, width, term_width) }
-      ret.<< "\n"
-    end
-
-    ret.<< "Options:\n"
-    _options.flatten.each { |o| ret.<< opt_row(o, width, term_width) }
-    ret
+    text_arr.<< 'Options:'
+    _options.flatten.each { |o| text_arr.<< opt_row(o, width, term_width) }
+    text_arr.join("\n")
   end
-  # rubocop:enable Metrics/AbcSize
+
+  def global_option_text(width, term_width)
+    text_arr = ['Global options:']
+    global_options.each { |o| text_arr.<< opt_row(o, width, term_width) }
+    text_arr.<< ''
+  end
 
   # Formats an option string.
   #
-  # @param opt [String] the option string
+  # @param opt_str [String] the option string
   # @param width [Integer] the width of the short + long options
   #   columns. This is used to indent following lines
   # @param term_width [Integer] the width of the user's terminal
   #
-  def opt_row(opt, width, term_width = TW)
-    format("  %s %-#{width}s %s\n", *opt.split(/\s+/, 3))
-      .opt_fold(term_width, width + 5)
+  # rubocop:disable Style/FormatStringToken
+  def opt_row(opt_str, width, term_width = TW)
+    format("  %s %-#{width}s %s",
+           *opt_str.split(/\s+/, 3)).opt_fold(term_width, width + 5)
   end
+  # rubocop:enable Style/FormatStringToken
 
   # @return [Integer] the width of the column containing short and
   #   long options

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'base'
 require_relative 'printer/sparkline'
 
@@ -6,24 +8,26 @@ module WavefrontDisplay
   # Format human-readable output for queries.
   #
   class Query < Base
-    # rubocop:disable Metrics/AbcSize
     def do_default
-      d_obj = { name:       data.name,
-                query:      data.query,
-                timeseries: mk_timeseries(data),
-                events:     mk_events(data) }
-
-      if data.key?(:warnings) && !options[:nowarn]
-        d_obj[:warnings] = data[:warnings]
-      end
-
-      @data = d_obj
+      @data = default_data_object
       long_output
     rescue StandardError
       raise(WavefrontCli::Exception::InvalidQuery,
             data[:errorMessage].split("\n").first)
     end
-    # rubocop:enable Metrics/AbcSize
+
+    def default_data_object
+      { name: data.name,
+        query: data.query,
+        timeseries: mk_timeseries(data),
+        events: mk_events(data) }.tap do |d|
+          d[:warnings] = data[:warnings] if show_warnings?
+        end
+    end
+
+    def show_warnings?
+      data.key?(:warnings) && !options[:nowarn]
+    end
 
     # Prioritizing keys does not make sense in this context
     #
@@ -46,6 +50,7 @@ module WavefrontDisplay
 
     def mk_events(data)
       return [] unless data.key?(:events)
+
       data[:events].map { |s| humanize_event(s) }
     end
 
@@ -78,25 +83,28 @@ module WavefrontDisplay
       data
     end
 
-    # rubocop:disable Metrics/MethodLength
+    # Prepare a padded line with the timestamp and value. If it's the
+    # @return [String]
+    #
     def humanize_series(data)
       last_date = nil
 
-      data.map! do |row|
-        if row.is_a?(Hash)
-          ht = human_time(row[:timestamp])
-          val = row[:value]
-        else
-          ht = human_time(row[0])
-          val = row[1]
-        end
-
+      data.map do |row|
+        ht, val = row_time_and_val(row)
         date, time = ht.split
-        ds = date == last_date ? '' : date
+        date_string = date == last_date ? '' : date
         last_date = date
-        format('%-12s %s    %s', ds, time, val)
+        format('%-12<series>s %<time>s    %<value>s',
+               series: date_string, time: time, value: val)
       end
-      # rubocop:enable Metrics/MethodLength
+    end
+
+    def row_time_and_val(row)
+      if row.is_a?(Hash)
+        [human_time(row[:timestamp]), row[:value]]
+      else
+        [human_time(row[0]), row[1]]
+      end
     end
   end
 end
