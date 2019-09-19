@@ -47,14 +47,18 @@ module WavefrontCli
     #
     def do_close(id = nil)
       id ||= options[:'<id>']
-      ev_file = id =~ /^\d{13}:.+/ ? state_dir + id : nil
       ev = local_event(id)
+      ev_file = event_file
 
       abort "No locally stored event matches '#{id}'." unless ev
 
       res = wf.close(ev)
       ev_file.unlink if ev_file&.exist? && res.status.code == 200
       res
+    end
+
+    def event_file(id)
+      id =~ /^\d{13}:.+/ ? state_dir + id : nil
     end
 
     def do_show

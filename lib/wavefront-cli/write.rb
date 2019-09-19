@@ -12,7 +12,7 @@ module WavefrontCli
   class Write < Base
     attr_reader :fmt
     include Wavefront::Mixins
-    SPLIT_PATTERN = /\s(?=(?:[^"]|"[^"]*")*$)/.freeze
+    SPLIT_PATTERN = /\s(?=(?:[^"]|"[^"]*")*$)/
 
     # rubocop:disable Metrics/AbcSize
     def do_point
@@ -355,7 +355,7 @@ module WavefrontCli
     end
 
     def format_string_is_all_valid_chars?(fmt)
-      return true if fmt.match(/^[dmstTv]+$/)
+      return true if fmt =~ /^[dmstTv]+$/
 
       raise(WavefrontCli::Exception::UnparseableInput,
             'unsupported field in format string')

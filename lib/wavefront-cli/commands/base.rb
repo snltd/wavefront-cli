@@ -2,8 +2,7 @@
 
 require_relative '../stdlib/string'
 
-CMN = '[-DnVM] [-c file] [-P profile] [-E endpoint] [-t token] ' \
-      '[-f format]'
+CMN = '[-DnVM] [-c file] [-P profile] [-E endpoint] [-t token] [-f format]'
 
 # A base class which all command classes extend.
 #

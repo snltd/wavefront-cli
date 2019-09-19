@@ -70,17 +70,20 @@ module WavefrontHclOutput
     end
 
     def handle_source(source)
-      fields = %w[name query disabled scatterPlotSource querybuilderEnabled
-                  sourceDescription]
-
       source.each_with_object([]) do |(k, v), a|
-        next unless fields.include?(k)
+        next unless source_fields.include?(k)
 
         k = 'queryBuilderEnabled' if k == 'querybuilderEnabled'
+
         a.<< format('%<key>s = %<value>s',
                     key: k.to_snake,
                     value: quote_value(v))
       end.to_hcl_obj(14)
+    end
+
+    def source_fields
+      %w[name query disabled scatterPlotSource querybuilderEnabled
+         sourceDescription]
     end
 
     def qhandle_sections(val)
