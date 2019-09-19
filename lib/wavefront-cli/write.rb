@@ -12,7 +12,7 @@ module WavefrontCli
   class Write < Base
     attr_reader :fmt
     include Wavefront::Mixins
-    SPLIT_PATTERN = /\s(?=(?:[^"]|"[^"]*")*$)/
+    SPLIT_PATTERN = /\s(?=(?:[^"]|"[^"]*")*$)/.freeze
 
     # rubocop:disable Metrics/AbcSize
     def do_point
