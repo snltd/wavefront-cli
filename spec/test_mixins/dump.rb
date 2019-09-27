@@ -21,6 +21,7 @@ module WavefrontCliTest
         Spy.teardown
       end
 
+      assert_cannot_noop('dump --format=json')
       assert_empty(err)
       assert_equal([].to_s, out.rstrip)
     end
@@ -34,6 +35,7 @@ module WavefrontCliTest
         Spy.teardown
       end
 
+      assert_cannot_noop('dump --format=yaml')
       assert_empty(err)
       assert_equal('--- []', out.rstrip)
     end

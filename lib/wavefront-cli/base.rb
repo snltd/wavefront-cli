@@ -93,7 +93,7 @@ module WavefrontCli
     def validate_input
       validate_id if options[:'<id>']
       validate_tags if options[:'<tag>']
-      send(:extra_validation) if respond_to?(:extra_validation)
+      extra_validation if respond_to?(:extra_validation)
     end
 
     def validate_tags(key = :'<tag>')
@@ -411,6 +411,8 @@ module WavefrontCli
     end
 
     def do_dump
+      cannot_noop!
+
       if options[:format] == 'yaml'
         ok_exit dump_yaml
       elsif options[:format] == 'json'
