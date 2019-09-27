@@ -16,8 +16,12 @@ class EndToEndTest < MiniTest::Test
     @wf = WavefrontCliController
   end
 
-  def api_class
+  def api_path
     cmd_word
+  end
+
+  def search_api_path
+    api_path
   end
 
   def cmd_class
@@ -29,7 +33,7 @@ class EndToEndTest < MiniTest::Test
   end
 
   def sdk_class_name
-    api_class.capitalize
+    api_path.capitalize
   end
 
   # Fields which must not be in import objects
