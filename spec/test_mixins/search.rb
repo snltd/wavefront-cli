@@ -20,7 +20,7 @@ module WavefrontCliTest
 
       assert_noop(
         "search id=#{id}",
-        "uri: POST https://default.wavefront.com/api/v2/search/" \
+        'uri: POST https://default.wavefront.com/api/v2/search/' \
         "#{search_api_path}",
         'body: ' + { limit: 10,
                      offset: 0,
