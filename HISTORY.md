@@ -1,5 +1,7 @@
 # Changelog
 
+* Add `user privileges` command.
+
 ## 4.2.2
 * Refactor of all tests, which exposed the following:
 * Fix noops on `proxy versions`, `window ongoing` and `window

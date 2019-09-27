@@ -22,6 +22,7 @@ class WavefrontCommandUser < WavefrontCommandBase
      "dump #{CMN}",
      "import #{CMN} [-u] <file>",
      "groups #{CMN} <id>",
+     "privileges #{CMN} <id>",
      "join #{CMN} <id> <group>...",
      "leave #{CMN} <id> <group>...",
      "grant #{CMN} <privilege> to <id>",
