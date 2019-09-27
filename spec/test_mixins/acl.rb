@@ -8,12 +8,12 @@ module WavefrontCliTest
   module Acl
     def test_acl
       assert_repeated_output('No data.') do
-        assert_cmd_gets("acls #{id}", "/api/v2/#{api_class}/acl?id=#{id}")
+        assert_cmd_gets("acls #{id}", "/api/v2/#{api_path}/acl?id=#{id}")
       end
 
       assert_noop("acls #{id}",
                   'uri: GET https://default.wavefront.com/api/v2/' \
-                  "#{api_class}/acl")
+                  "#{api_path}/acl")
 
       assert_invalid_id("acls #{invalid_id}")
       assert_usage('acls')
@@ -26,7 +26,7 @@ module WavefrontCliTest
 
       quietly do
         assert_cmd_puts("acl clear #{id}",
-                        "/api/v2/#{api_class}/acl/set",
+                        "/api/v2/#{api_path}/acl/set",
                         [{ entityId: id,
                            viewAcl: [],
                            modifyAcl: [everyone_id] }].to_json)
@@ -46,13 +46,13 @@ module WavefrontCliTest
 
       quietly do
         assert_cmd_posts("acl grant view on #{id} to #{user_acl_names}",
-                         "/api/v2/#{api_class}/acl/add",
+                         "/api/v2/#{api_path}/acl/add",
                          acl_body(id, user_acls, []))
       end
 
       assert_noop("acl grant view on #{id} to #{user_acl_names}",
                   'uri: POST https://default.wavefront.com/api/v2/' \
-                  "#{api_class}/acl/add",
+                  "#{api_path}/acl/add",
                   "body: #{acl_body(id, user_acls, [])}")
 
       assert_invalid_id("acl grant view on #{invalid_id} to user")
@@ -68,13 +68,13 @@ module WavefrontCliTest
 
       quietly do
         assert_cmd_posts("acl grant modify on #{id} to #{group_acls.first}",
-                         "/api/v2/#{api_class}/acl/add",
+                         "/api/v2/#{api_path}/acl/add",
                          acl_body(id, [], group_acls))
       end
 
       assert_noop("acl grant modify on #{id} to #{group_acls.first}",
                   'uri: POST https://default.wavefront.com/api/v2/' \
-                  "#{api_class}/acl/add",
+                  "#{api_path}/acl/add",
                   "body: #{acl_body(id, [], group_acls)}")
 
       assert_invalid_id("acl grant modify on #{invalid_id} to user")
@@ -90,13 +90,13 @@ module WavefrontCliTest
 
       quietly do
         assert_cmd_posts("acl revoke view on #{id} from #{group_acls.first}",
-                         "/api/v2/#{api_class}/acl/remove",
+                         "/api/v2/#{api_path}/acl/remove",
                          acl_body(id, group_acls, []))
       end
 
       assert_noop("acl revoke view on #{id} from #{group_acls.first}",
                   'uri: POST https://default.wavefront.com/api/v2/' \
-                  "#{api_class}/acl/remove",
+                  "#{api_path}/acl/remove",
                   "body: #{acl_body(id, group_acls, [])}")
 
       assert_invalid_id("acl revoke view on #{invalid_id} from user")
@@ -112,13 +112,13 @@ module WavefrontCliTest
 
       quietly do
         assert_cmd_posts("acl revoke modify on #{id} from #{user_acls.first}",
-                         "/api/v2/#{api_class}/acl/remove",
+                         "/api/v2/#{api_path}/acl/remove",
                          acl_body(id, [], user_acls.take(1)))
       end
 
       assert_noop("acl revoke modify on #{id} from #{user_acls.first}",
                   'uri: POST https://default.wavefront.com/api/v2/' \
-                  "#{api_class}/acl/remove",
+                  "#{api_path}/acl/remove",
                   "body: #{acl_body(id, [], user_acls.take(1))}")
 
       assert_invalid_id("acl revoke modify on #{invalid_id} from user")

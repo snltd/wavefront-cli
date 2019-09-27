@@ -7,8 +7,8 @@ module WavefrontCliTest
   module Set
     def test_set
       all_permutations do |p|
-        get_stub = get_stub(p)
-        put_stub = put_stub(p)
+        get_stub = _set_get_stub(p)
+        put_stub = _set_put_stub(p)
         out, err = capture_io { run_command(p) }
         assert_empty(err)
         assert_equal('No data.', out.strip)
@@ -28,17 +28,17 @@ module WavefrontCliTest
       p e
     end
 
-    def get_stub(perm)
+    def _set_get_stub(perm)
       stub_request(:get,
-                   "https://#{perm[:endpoint]}/api/v2/#{api_class}/#{id}")
+                   "https://#{perm[:endpoint]}/api/v2/#{api_path}/#{id}")
         .with(headers: mk_headers(perm[:token]))
         .to_return(status: 200,
                    body: { id: id, set_key => 'old_value' }.to_json,
                    headers: {})
     end
 
-    def put_stub(perm)
-      stub_request(:put, "https://#{perm[:endpoint]}/api/v2/#{api_class}/#{id}")
+    def _set_put_stub(perm)
+      stub_request(:put, "https://#{perm[:endpoint]}/api/v2/#{api_path}/#{id}")
         .with(body: { id: id, set_key => 'new_value' },
               headers: mk_headers(perm[:token]))
         .to_return(status: 200, body: '', headers: {})

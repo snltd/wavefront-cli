@@ -19,7 +19,7 @@ module WavefrontCliTest
     def test_undelete
       out, err = capture_io do
         assert_cmd_posts("undelete #{id}",
-                         "/api/v2/#{api_class}/#{id}/undelete", 'null')
+                         "/api/v2/#{api_path}/#{id}/undelete", 'null')
       end
 
       assert_empty(err)
@@ -33,7 +33,7 @@ module WavefrontCliTest
       assert_noop(
         "undelete #{id}",
         'uri: POST https://default.wavefront.com/api/v2/' \
-        "#{api_class}/#{id}/undelete",
+        "#{api_path}/#{id}/undelete",
         'body: null'
       )
 
@@ -45,12 +45,12 @@ module WavefrontCliTest
 
     def soft_delete(perm)
       stub_request(:get,
-                   "https://#{perm[:endpoint]}/api/v2/#{api_class}/#{id}")
+                   "https://#{perm[:endpoint]}/api/v2/#{api_path}/#{id}")
         .with(headers: mk_headers(perm[:token]))
         .to_return(object_exists_response)
 
       stub_request(:delete,
-                   "https://#{perm[:endpoint]}/api/v2/#{api_class}/#{id}")
+                   "https://#{perm[:endpoint]}/api/v2/#{api_path}/#{id}")
         .with(headers: mk_headers(perm[:token]))
         .to_return(status: 200)
 
@@ -65,18 +65,18 @@ module WavefrontCliTest
 
       assert_requested(
         :get,
-        "https://#{perm[:endpoint]}/api/v2/#{api_class}/#{id}"
+        "https://#{perm[:endpoint]}/api/v2/#{api_path}/#{id}"
       )
     end
 
     def hard_delete(perm)
       stub_request(:get,
-                   "https://#{perm[:endpoint]}/api/v2/#{api_class}/#{id}")
+                   "https://#{perm[:endpoint]}/api/v2/#{api_path}/#{id}")
         .with(headers: mk_headers(perm[:token]))
         .to_return(object_deleted_response)
 
       stub_request(:delete,
-                   "https://#{perm[:endpoint]}/api/v2/#{api_class}/#{id}")
+                   "https://#{perm[:endpoint]}/api/v2/#{api_path}/#{id}")
         .with(headers: mk_headers(perm[:token]))
         .to_return(status: 200)
 
@@ -91,7 +91,7 @@ module WavefrontCliTest
 
       assert_requested(
         :get,
-        "https://#{perm[:endpoint]}/api/v2/#{api_class}/#{id}"
+        "https://#{perm[:endpoint]}/api/v2/#{api_path}/#{id}"
       )
     end
 

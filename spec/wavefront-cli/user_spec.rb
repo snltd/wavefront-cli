@@ -249,10 +249,6 @@ class UserEndToEndTest < EndToEndTest
     'user'
   end
 
-  def set_id_key
-    'identifier'
-  end
-
   def groups
     %w[2659191e-aad4-4302-a94e-9667e1517127
        abcdef12-1234-abcd-1234-abcdef012345]

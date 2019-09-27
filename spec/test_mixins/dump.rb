@@ -16,7 +16,7 @@ module WavefrontCliTest
       out, err = capture_io do
         assert_raises(SystemExit) do
           assert_cmd_gets('dump --format=json',
-                          "/api/v2/#{api_class}?limit=999&offset=0")
+                          "/api/v2/#{api_path}?limit=999&offset=0")
         end
         Spy.teardown
       end
@@ -30,7 +30,7 @@ module WavefrontCliTest
       out, err = capture_io do
         assert_raises(SystemExit) do
           assert_cmd_gets('dump --format=yaml',
-                          "/api/v2/#{api_class}?limit=999&offset=0")
+                          "/api/v2/#{api_path}?limit=999&offset=0")
         end
         Spy.teardown
       end
