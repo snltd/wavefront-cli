@@ -267,9 +267,16 @@ module WavefrontDisplay
     end
 
     def search_display_keys
-      ([:id] + options[:'<condition>'].map do |c|
+      ([search_identifier_key] + options[:'<condition>'].map do |c|
         c.split(SEARCH_SPLIT, 2).first.to_sym
       end).uniq
+    end
+
+    # Most objects refer to themselves by 'id'. Some, like accounts, don't.
+    # Override here.
+    #
+    def search_identifier_key
+      :id
     end
 
     def do_search

@@ -229,7 +229,7 @@ class MaintenanceWindowEndToEndTest < EndToEndTest
     'window'
   end
 
-  def api_class
+  def api_path
     'maintenancewindow'
   end
 

@@ -11,7 +11,7 @@ module WavefrontCliTest
       out, err = capture_io do
         assert_raises(SystemExit) do
           assert_cmd_posts("import #{import_file}",
-                           "/api/v2/#{api_class}",
+                           "/api/v2/#{api_path}",
                            import_data)
           Spy.teardown
         end
@@ -31,7 +31,7 @@ module WavefrontCliTest
       out, err = capture_io do
         assert_raises(SystemExit) do
           assert_cmd_puts("import -u #{update_file}",
-                          "/api/v2/#{api_class}/1556812163465",
+                          "/api/v2/#{api_path}/1556812163465",
                           update_data)
           Spy.teardown
         end
@@ -55,11 +55,11 @@ module WavefrontCliTest
     private
 
     def import_file
-      RES_DIR + 'imports' + "#{api_class}.json"
+      RES_DIR + 'imports' + "#{api_path}.json"
     end
 
     def update_file
-      RES_DIR + 'updates' + "#{api_class}.json"
+      RES_DIR + 'updates' + "#{api_path}.json"
     end
   end
 end

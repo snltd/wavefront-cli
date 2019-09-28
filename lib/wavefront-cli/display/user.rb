@@ -21,6 +21,14 @@ module WavefrontDisplay
       end
     end
 
+    def do_privileges
+      puts(if data.first[:groups].empty?
+             'User does not have any Wavefront privileges.'
+           else
+             data.first[:groups]
+           end)
+    end
+
     def do_create
       info = data[0]
       puts format("Created user '%<user>s'.\nPermission groups\n" \

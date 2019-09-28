@@ -160,6 +160,22 @@ class UserEndToEndTest < EndToEndTest
     assert_usage('groups')
   end
 
+  def test_privileges
+    quietly do
+      assert_cmd_gets("privileges #{id}", "/api/v2/user/#{id}")
+    end
+
+    assert_invalid_id("privileges #{invalid_id}")
+    assert_usage('privileges')
+
+    assert_noop(
+      "privileges #{id}",
+      "uri: GET https://default.wavefront.com/api/v2/user/#{id}"
+    )
+
+    assert_abort_on_missing_creds("privileges #{id}")
+  end
+
   def test_join
     assert_repeated_output("Added '#{id}' to '#{groups[0]}'.") do
       assert_cmd_posts("join #{id} #{groups[0]}",
@@ -247,10 +263,6 @@ class UserEndToEndTest < EndToEndTest
 
   def cmd_word
     'user'
-  end
-
-  def set_id_key
-    'identifier'
   end
 
   def groups

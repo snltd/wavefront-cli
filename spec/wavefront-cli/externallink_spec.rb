@@ -78,7 +78,7 @@ class ExternalLinkEndToEndTest < EndToEndTest
     'link'
   end
 
-  def api_class
+  def api_path
     'extlink'
   end
 

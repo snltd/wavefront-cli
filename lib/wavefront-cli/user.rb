@@ -21,6 +21,7 @@ module WavefrontCli
     end
 
     alias do_groups do_describe
+    alias do_privileges do_describe
 
     def do_join
       wf.add_groups_to_user(options[:'<id>'], options[:'<group>'])

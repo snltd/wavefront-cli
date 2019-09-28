@@ -8,7 +8,7 @@ module WavefrontCliTest
     def test_search_equals
       assert_repeated_output('No matches.') do
         assert_cmd_posts("search id=#{id}",
-                         "/api/v2/search/#{api_class}",
+                         "/api/v2/search/#{search_api_path}",
                          limit: 10,
                          offset: 0,
                          query: [{ key: 'id',
@@ -20,7 +20,8 @@ module WavefrontCliTest
 
       assert_noop(
         "search id=#{id}",
-        "uri: POST https://default.wavefront.com/api/v2/search/#{api_class}",
+        'uri: POST https://default.wavefront.com/api/v2/search/' \
+        "#{search_api_path}",
         'body: ' + { limit: 10,
                      offset: 0,
                      query: [{ key: 'id',
@@ -38,7 +39,7 @@ module WavefrontCliTest
 
       assert_repeated_output('No matches.') do
         assert_cmd_posts("search id=#{id} -L 5 --offset 15",
-                         "/api/v2/search/#{api_class}",
+                         "/api/v2/search/#{search_api_path}",
                          limit: '5',
                          offset: '15',
                          query: [{ key: 'id',
@@ -54,7 +55,7 @@ module WavefrontCliTest
     def test_search_does_not_begin_with
       assert_repeated_output('No matches.') do
         assert_cmd_posts("search id=#{id} thing!^word --all",
-                         "/api/v2/search/#{api_class}",
+                         "/api/v2/search/#{search_api_path}",
                          limit: 999,
                          offset: 0,
                          query: [{ key: 'id',
@@ -71,10 +72,10 @@ module WavefrontCliTest
       assert_abort_on_missing_creds("search id=#{id} thing!^word --all")
     end
 
-    def test_search_contains
+    def test_search_contains_with_limits
       assert_repeated_output('No matches.') do
         assert_cmd_posts('search id!~avoid -L 2',
-                         "/api/v2/search/#{api_class}",
+                         "/api/v2/search/#{search_api_path}",
                          limit: '2',
                          offset: 0,
                          query: [{ key: 'id',

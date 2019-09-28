@@ -90,7 +90,7 @@ class SourceEndToEndTest < EndToEndTest
   def test_search_equals_with_cursor
     assert_repeated_output('No matches.') do
       assert_cmd_posts("search id=#{id} -L 5 --cursor box",
-                       "/api/v2/search/#{api_class}",
+                       "/api/v2/search/#{api_path}",
                        limit: '5',
                        cursor: 'box',
                        query: [{ key: 'id',
