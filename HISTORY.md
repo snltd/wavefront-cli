@@ -2,6 +2,7 @@
 
 * Add `serviceaccount` command.
 * Add `user privileges` command.
+* Require 3.4.x of [the SDK](https://github.com/snltd/wavefront-sdk).
 
 ## 4.2.2
 * Refactor of all tests, which exposed the following:
