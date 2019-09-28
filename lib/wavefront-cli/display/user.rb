@@ -23,7 +23,7 @@ module WavefrontDisplay
 
     def do_privileges
       puts(if data.first[:groups].empty?
-            'User does not have any Wavefront privileges.'
+             'User does not have any Wavefront privileges.'
            else
              data.first[:groups]
            end)

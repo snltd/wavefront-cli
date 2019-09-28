@@ -1,5 +1,6 @@
 # Changelog
 
+* Add `serviceaccount` command.
 * Add `user privileges` command.
 
 ## 4.2.2

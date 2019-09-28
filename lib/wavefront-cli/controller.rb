@@ -134,6 +134,10 @@ class WavefrontCliController
     handle_missing_credentials(e)
   rescue WavefrontCli::Exception::MandatoryValue
     abort 'A value must be supplied.'
+  rescue Wavefront::Exception::InvalidPermission => e
+    abort "'#{e}' is not a valid privilege."
+  rescue Wavefront::Exception::InvalidUserGroupId => e
+    abort "'#{e}' is not a valid user group id."
   rescue WavefrontCli::Exception::InvalidValue => e
     abort "Invalid value for #{e}."
   rescue WavefrontCli::Exception::ProfileExists => e
