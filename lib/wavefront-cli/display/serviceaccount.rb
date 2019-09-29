@@ -25,7 +25,7 @@ module WavefrontDisplay
 
     def do_groups
       if data[:userGroups].empty?
-        puts 'User does not belong to any groups.'
+        puts 'Account does not belong to any groups.'
       else
         data[:userGroups].each { |u| puts format('%<id>s (%<name>s)', u) }
       end
@@ -36,7 +36,7 @@ module WavefrontDisplay
 
     def do_privileges
       if data[:groups].empty?
-        puts 'User does not have any Wavefront privileges.'
+        puts 'Account does not have any Wavefront privileges.'
       else
         puts data[:groups]
       end
@@ -44,6 +44,14 @@ module WavefrontDisplay
 
     alias do_grant do_privileges
     alias do_revoke do_privileges
+
+    def do_apitoken_list
+      if data.empty?
+        puts 'Account does not have any tokens.'
+      else
+        multicolumn(:tokenID, :tokenName)
+      end
+    end
 
     def search_identifier_key
       :identifier
