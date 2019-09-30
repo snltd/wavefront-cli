@@ -84,8 +84,8 @@ module WavefrontCli
 
     def do_apitoken_rename
       wf_apitoken.sa_rename(options[:'<id>'],
-                         options[:'<token_id>'],
-                         options[:'<name>'])
+                            options[:'<token_id>'],
+                            options[:'<name>'])
     end
 
     def extra_validation
@@ -107,7 +107,7 @@ module WavefrontCli
 
       if resp.status.code == 404
         raise WavefrontCli::Exception::UserError,
-          "Cannot find service account '#{options[:'<id>']}'"
+              "Cannot find service account '#{options[:'<id>']}'"
       end
 
       raise resp.status.message

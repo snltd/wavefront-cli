@@ -49,13 +49,11 @@ module WavefrontDisplay
     def do_grant
       puts format("Granted '%<perm>s' to '%<account>s'.",
                   perm: options[:'<permission>'], account: options[:'<id>'])
-
     end
 
     def do_revoke
       puts format("Revoked '%<perm>s' from '%<account>s'.",
                   perm: options[:'<permission>'], account: options[:'<id>'])
-
     end
 
     def do_apitoken_list
