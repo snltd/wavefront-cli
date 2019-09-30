@@ -10,23 +10,6 @@ require 'wavefront-sdk/support/mixins'
 class QueryEndToEndTest < EndToEndTest
   include Wavefront::Mixins
 
-  def test_query_last_two_hours
-    out, err = capture_io do
-      assert_cmd_gets_with_params("--start='-2h' #{query}",
-                                  '/api/v2/chart/api',
-                                  { g: 'm',
-                                    sorted: 'true',
-                                    strict: 'true',
-                                    summarization: 'mean',
-                                    q: query }, canned_response)
-    end
-
-    assert_empty(err)
-    assert_match(/name\s+ts\("cpu.0.pc.user"\)/, out)
-    assert_match(/query\s+ts\("cpu.0.pc.user"\)/, out)
-    assert_match(/sparkline/, out)
-  end
-
   def test_query_specifying_start_of_window_no_sparkline
     out, err = capture_io do
       assert_cmd_gets_with_params("-s #{epoch_time[0]} -k #{query}",
