@@ -1,11 +1,8 @@
 # Changelog
 
-## 4.3.0
+## 4.3.0 (2019-09-30)
 * Add `serviceaccount` command.
 * Add `user privileges` command.
-* Require 3.5.x of [the SDK](https://github.com/snltd/wavefront-sdk).
-
-## 4.2.2
 * Refactor of all tests, which exposed the following:
 * Fix noops on `proxy versions`, `window ongoing` and `window
   pending`.
@@ -24,7 +21,7 @@
 * Removed `user set` command, because it didn't do anything.
 * Improve output of `user` and `usergroup` commands.
 * Refactor of `event` command handling.
-* Require 3.3.3 of [the SDK](https://github.com/snltd/wavefront-sdk).
+* Require 3.5.x of [the SDK](https://github.com/snltd/wavefront-sdk).
 
 ## 4.2.1 (2019-07-26)
 * Remove tagging subcommands from `apitoken` command's usage info, because you
