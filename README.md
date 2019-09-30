@@ -31,7 +31,7 @@ Usage:
 
 Commands:
   alert              view and manage alerts
-  apitoken           view and manage API tokens
+  apitoken           view and your own API tokens
   cloudintegration   view and manage cloud integrations
   config             create and manage local configuration
   dashboard          view and manage dashboards
@@ -45,6 +45,7 @@ Commands:
   proxy              view and manage proxies
   query              run Wavefront queries
   savedsearch        view and manage saved searches
+  serviceaccount     view and manage service accounts
   settings           view and manage system preferences
   source             view and manage source tags and descriptions
   user               view and manage Wavefront users
