@@ -5,6 +5,10 @@ require_relative 'base'
 # Define the apitoken command.
 #
 class WavefrontCommandApitoken < WavefrontCommandBase
+  def description
+    "view and your own #{things}"
+  end
+
   def thing
     'API token'
   end

@@ -21,7 +21,7 @@ class WavefrontCommandServiceaccount < WavefrontCommandBase
     ["list #{CMN} [-l] [-O fields]",
      "describe #{CMN} <id>",
      "create #{CMN} [-I] [-d description] [-m permission...] [-g group...] " \
-     '[-k token...] <id>',
+     '[-k usertoken...] <id>',
      "activate #{CMN} <id>",
      "deactivate #{CMN} <id>",
      "dump #{CMN}",
@@ -33,6 +33,10 @@ class WavefrontCommandServiceaccount < WavefrontCommandBase
      "revoke #{CMN} <privilege> from <id>",
      "set #{CMN} <key=value> <id>",
      "import #{CMN} [-u] <file>",
+     "apitoken list #{CMN} [-O fields] <id>",
+     "apitoken create #{CMN} [-N name] <id>",
+     "apitoken delete #{CMN} <id> <token_id>",
+     "apitoken rename #{CMN} <id> <token_id> <name>",
      "search #{CMN} [-al] [-o offset] [-L limit] <condition>..."]
   end
 
@@ -48,6 +52,7 @@ class WavefrontCommandServiceaccount < WavefrontCommandBase
      "-d, --desc=STRING        description of #{thing}",
      "-m, --permission=STRING  give #{thing} this permission",
      "-g, --group=STRING       add #{thing} to this user group",
-     '-k, --apitoken=STRING    API token']
+     '-N, --name=STRING        name of token',
+     '-k, --usertoken=STRING   API token']
   end
 end

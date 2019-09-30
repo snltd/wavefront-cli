@@ -1,12 +1,19 @@
 # frozen_string_literal: true
 
 require_relative 'base'
+require 'wavefront-sdk/apitoken'
 
 module WavefrontCli
   #
   # CLI coverage for the v2 'serviceaccount' API.
   #
   class ServiceAccount < WavefrontCli::Base
+    attr_reader :wf_apitoken
+
+    def post_initialize(_options)
+      @wf_apitoken = Wavefront::ApiToken.new(mk_creds, mk_opts)
+    end
+
     def do_list
       wf.list
     end
@@ -61,6 +68,24 @@ module WavefrontCli
 
       body = remove_priv_from_list(current_state, options[:'<privilege>'])
       wf.update(options[:'<id>'], body)
+    end
+
+    def do_apitoken_list
+      wf_apitoken.list(options[:'<id>'])
+    end
+
+    def do_apitoken_create
+      wf_apitoken.create(options[:'<id>'], options[:name])
+    end
+
+    def do_apitoken_delete
+      wf_apitoken.delete(options[:'<id>'], options[:'<token_id>'])
+    end
+
+    def do_apitoken_rename
+      wf_apitoken.rename(options[:'<id>'],
+                         options[:'<token_id>'],
+                         options[:'<name>'])
     end
 
     def extra_validation
@@ -123,7 +148,7 @@ module WavefrontCli
       { identifier: options[:'<id>'],
         active: active_account?,
         groups: options[:permission],
-        tokens: options[:apitoken],
+        tokens: options[:usertoken],
         userGroups: options[:group] }.tap do |b|
           b[:description] = options[:desc] if options[:desc]
         end
@@ -140,7 +165,7 @@ module WavefrontCli
     end
 
     def validate_tokens
-      options[:apitoken].each { |t| wf_apitoken_id?(t) }
+      options[:usertoken].each { |t| wf_apitoken_id?(t) }
     rescue Wavefront::Exception::InvalidApiTokenId => e
       raise e, 'Invalid API token'
     end

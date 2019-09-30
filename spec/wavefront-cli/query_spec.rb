@@ -10,24 +10,7 @@ require 'wavefront-sdk/support/mixins'
 class QueryEndToEndTest < EndToEndTest
   include Wavefront::Mixins
 
-  def _test_query_last_two_hours
-    out, err = capture_io do
-      assert_cmd_gets_with_params("--start='-2h' #{query}",
-                                  '/api/v2/chart/api',
-                                  { g: 'h',
-                                    sorted: 'true',
-                                    strict: 'true',
-                                    summarization: 'mean',
-                                    q: query }, canned_response)
-    end
-
-    assert_empty(err)
-    assert_match(/name\s+ts\("cpu.0.pc.user"\)/, out)
-    assert_match(/query\s+ts\("cpu.0.pc.user"\)/, out)
-    assert_match(/sparkline/, out)
-  end
-
-  def _test_query_specifying_start_of_window_no_sparkline
+  def test_query_specifying_start_of_window_no_sparkline
     out, err = capture_io do
       assert_cmd_gets_with_params("-s #{epoch_time[0]} -k #{query}",
                                   '/api/v2/chart/api',
@@ -126,7 +109,7 @@ class QueryEndToEndTest < EndToEndTest
     assert_match(/query\s+ts\("cpu.0.pc.user"\)/, out)
   end
 
-  def _test_raw
+  def test_raw
     assert_cmd_gets('raw dev.cli.test',
                     '/api/v2/chart/raw?metric=dev.cli.test')
 
@@ -136,7 +119,7 @@ class QueryEndToEndTest < EndToEndTest
     assert_abort_on_missing_creds('raw dev.cli.test')
   end
 
-  def _test_error_if_the_query_is_a_literal_raw
+  def test_error_if_the_query_is_a_literal_raw
     out, err = capture_io do
       assert_raises(SystemExit) do
         assert_cmd_gets_with_params('raw',
@@ -150,7 +133,7 @@ class QueryEndToEndTest < EndToEndTest
     assert_equal("Invalid query. API message: 'mock error'.", err.strip)
   end
 
-  def _test_raw_with_host
+  def test_raw_with_host
     assert_cmd_gets('raw -H h1 dev.cli.test',
                     '/api/v2/chart/raw?metric=dev.cli.test&source=h1')
   end
