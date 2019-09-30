@@ -12,7 +12,11 @@ module WavefrontDisplay
     end
 
     def do_list_brief
-      multicolumn(:identifier, :description)
+      if data.empty?
+        puts 'You have no service accounts.'
+      else
+        multicolumn(:identifier, :description)
+      end
     end
 
     def do_activate
@@ -34,27 +38,44 @@ module WavefrontDisplay
     alias do_join do_groups
     alias do_leave do_groups
 
-    def do_privileges
+    def do_permissions
       if data[:groups].empty?
-        puts 'Account does not have any Wavefront privileges.'
+        puts 'Account does not have any Wavefront permissions.'
       else
         puts data[:groups]
       end
     end
 
-    alias do_grant do_privileges
-    alias do_revoke do_privileges
+    def do_grant
+      puts format("Granted '%<perm>s' to '%<account>s'.",
+                  perm: options[:'<permission>'], account: options[:'<id>'])
+
+    end
+
+    def do_revoke
+      puts format("Revoked '%<perm>s' from '%<account>s'.",
+                  perm: options[:'<permission>'], account: options[:'<id>'])
+
+    end
 
     def do_apitoken_list
       if data.empty?
-        puts 'Account does not have any tokens.'
+        puts 'Account does not have any API tokens.'
       else
         multicolumn(:tokenID, :tokenName)
       end
     end
 
+    def do_apitoken_delete
+      puts format("Deleted API token '#{options[:'<token_id>']}'.")
+    end
+
     def search_identifier_key
       :identifier
+    end
+
+    def priority_keys
+      %i[identifier]
     end
   end
 end

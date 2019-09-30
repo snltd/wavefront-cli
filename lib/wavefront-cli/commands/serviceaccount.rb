@@ -20,17 +20,17 @@ class WavefrontCommandServiceaccount < WavefrontCommandBase
   def _commands
     ["list #{CMN} [-l] [-O fields]",
      "describe #{CMN} <id>",
-     "create #{CMN} [-I] [-d description] [-m permission...] [-g group...] " \
+     "create #{CMN} [-I] [-d description] [-p permission...] [-g group...] " \
      '[-k usertoken...] <id>',
      "activate #{CMN} <id>",
      "deactivate #{CMN} <id>",
      "dump #{CMN}",
      "groups #{CMN} <id>",
-     "privileges #{CMN} <id>",
+     "permissions #{CMN} <id>",
      "join #{CMN} <id> <group>...",
      "leave #{CMN} <id> <group>...",
-     "grant #{CMN} <privilege> to <id>",
-     "revoke #{CMN} <privilege> from <id>",
+     "grant #{CMN} <permission> to <id>",
+     "revoke #{CMN} <permission> from <id>",
      "set #{CMN} <key=value> <id>",
      "import #{CMN} [-u] <file>",
      "apitoken list #{CMN} [-O fields] <id>",
@@ -50,7 +50,7 @@ class WavefrontCommandServiceaccount < WavefrontCommandBase
      "-u, --update             update an existing #{thing}",
      "-I, --inactive           create an inactive #{thing}",
      "-d, --desc=STRING        description of #{thing}",
-     "-m, --permission=STRING  give #{thing} this permission",
+     "-p, --permission=STRING  give #{thing} this permission",
      "-g, --group=STRING       add #{thing} to this user group",
      '-N, --name=STRING        name of token',
      '-k, --usertoken=STRING   API token']

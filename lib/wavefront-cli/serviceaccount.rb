@@ -23,7 +23,7 @@ module WavefrontCli
     end
 
     alias do_groups do_describe
-    alias do_privileges do_describe
+    alias do_permissions do_describe
 
     def do_create
       wf_user_id?(options[:'<id>'])
@@ -56,34 +56,34 @@ module WavefrontCli
 
     def do_grant
       cannot_noop!
-      wf_permission?(options[:'<privilege>'])
+      wf_permission?(options[:'<permission>'])
 
-      body = add_priv_to_list(current_state, options[:'<privilege>'])
+      body = add_perm_to_list(current_state, options[:'<permission>'])
       wf.update(options[:'<id>'], body)
     end
 
     def do_revoke
       cannot_noop!
-      wf_permission?(options[:'<privilege>'])
+      wf_permission?(options[:'<permission>'])
 
-      body = remove_priv_from_list(current_state, options[:'<privilege>'])
+      body = remove_perm_from_list(current_state, options[:'<permission>'])
       wf.update(options[:'<id>'], body)
     end
 
     def do_apitoken_list
-      wf_apitoken.list(options[:'<id>'])
+      wf_apitoken.sa_list(options[:'<id>'])
     end
 
     def do_apitoken_create
-      wf_apitoken.create(options[:'<id>'], options[:name])
+      wf_apitoken.sa_create(options[:'<id>'], options[:name])
     end
 
     def do_apitoken_delete
-      wf_apitoken.delete(options[:'<id>'], options[:'<token_id>'])
+      wf_apitoken.sa_delete(options[:'<id>'], options[:'<token_id>'])
     end
 
     def do_apitoken_rename
-      wf_apitoken.rename(options[:'<id>'],
+      wf_apitoken.sa_rename(options[:'<id>'],
                          options[:'<token_id>'],
                          options[:'<name>'])
     end
@@ -101,27 +101,36 @@ module WavefrontCli
     private
 
     def current_state
-      wf.describe(options[:'<id>']).response
-    end
+      resp = wf.describe(options[:'<id>'])
 
-    def add_priv_to_list(state, priv)
-      if state[:groups].include?(priv)
-        ok_exit(format("'%<account>s' already has the '%<priv>s' privilege.",
-                       account: options[:'<id>'],
-                       priv: priv))
+      return resp.response if resp.ok?
+
+      if resp.status.code == 404
+        raise WavefrontCli::Exception::UserError,
+          "Cannot find service account '#{options[:'<id>']}'"
       end
 
-      { groups: state[:groups].push(priv), userGroups: user_group_ids(state) }
+      raise resp.status.message
     end
 
-    def remove_priv_from_list(state, priv)
-      unless state[:groups].include?(priv)
-        ok_exit(format("'%<account>s' does not have the '%<priv>s' privilege.",
+    def add_perm_to_list(state, perm)
+      if state[:groups].include?(perm)
+        ok_exit(format("'%<account>s' already has the '%<perm>s' permission.",
                        account: options[:'<id>'],
-                       priv: priv))
+                       perm: perm))
       end
 
-      { groups: state[:groups].reject { |g| g == options[:'<privilege>'] },
+      { groups: state[:groups].push(perm), userGroups: user_group_ids(state) }
+    end
+
+    def remove_perm_from_list(state, perm)
+      unless state[:groups].include?(perm)
+        ok_exit(format("'%<account>s' does not have the '%<perm>s' permission.",
+                       account: options[:'<id>'],
+                       perm: perm))
+      end
+
+      { groups: state[:groups].reject { |g| g == options[:'<permission>'] },
         userGroups: user_group_ids(state) }
     end
 
