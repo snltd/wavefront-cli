@@ -1,5 +1,8 @@
 # Changelog
 
+## 4.3.1 (2019-09-30)
+* Bugfix `serviceaccount` command.
+
 ## 4.3.0 (2019-09-30)
 * Add `serviceaccount` command.
 * Add `user privileges` command.

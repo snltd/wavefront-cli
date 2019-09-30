@@ -41,20 +41,20 @@ class ServiceAccountEndToEndTest < EndToEndTest
     assert_abort_on_missing_creds("groups #{id}")
   end
 
-  def test_privileges
+  def test_permissions
     quietly do
-      assert_cmd_gets("privileges #{id}", "/api/v2/#{api_path}/#{id}")
+      assert_cmd_gets("permissions #{id}", "/api/v2/#{api_path}/#{id}")
     end
 
-    assert_invalid_id("privileges #{invalid_id}")
-    assert_usage('privileges')
+    assert_invalid_id("permissions #{invalid_id}")
+    assert_usage('permissions')
 
     assert_noop(
-      "privileges #{id}",
+      "permissions #{id}",
       "uri: GET https://default.wavefront.com/api/v2/#{api_path}/#{id}"
     )
 
-    assert_abort_on_missing_creds("privileges #{id}")
+    assert_abort_on_missing_creds("permissions #{id}")
   end
 
   def test_activate
@@ -143,7 +143,7 @@ class ServiceAccountEndToEndTest < EndToEndTest
 
   def test_create_account_with_permissions
     quietly do
-      assert_cmd_posts("create -m #{permissions[0]} -m #{permissions[1]} #{id}",
+      assert_cmd_posts("create -p #{permissions[0]} -p #{permissions[1]} #{id}",
                        '/api/v2/account/serviceaccount',
                        identifier: id,
                        active: true,
@@ -160,7 +160,7 @@ class ServiceAccountEndToEndTest < EndToEndTest
 
   def test_create_invalid_permission
     assert_exits_with('Unable to run command. Invalid permission.',
-                      "create -m 123456 #{id}")
+                      "create -p 123456 #{id}")
   end
 
   def test_create_invalid_token

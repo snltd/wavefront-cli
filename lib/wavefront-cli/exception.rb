@@ -27,5 +27,6 @@ module WavefrontCli
     class UnsupportedOperation < RuntimeError; end
     class UnsupportedOutput < RuntimeError; end
     class UserGroupNotFound < RuntimeError; end
+    class UserError < RuntimeError; end
   end
 end
