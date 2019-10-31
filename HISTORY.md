@@ -1,5 +1,8 @@
 # Changelog
 
+## 4.4.0 (2019-10-31)
+* Add `-O fields` option to `search` subcommands.
+
 ## 4.3.1 (2019-09-30)
 * Bugfix `serviceaccount` command.
 

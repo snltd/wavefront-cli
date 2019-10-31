@@ -27,7 +27,7 @@ class WavefrontCommandUser < WavefrontCommandBase
      "leave #{CMN} <id> <group>...",
      "grant #{CMN} <privilege> to <id>",
      "revoke #{CMN} <privilege> from <id>",
-     "search #{CMN} [-al] [-o offset] [-L limit] <condition>..."]
+     "search #{CMN} [-al] [-o offset] [-L limit] [-O fields] <condition>..."]
   end
 
   def _options

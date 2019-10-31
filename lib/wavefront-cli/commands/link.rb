@@ -26,7 +26,7 @@ class WavefrontCommandLink < WavefrontCommandBase
      "dump #{CMN}",
      "import #{CMN} [-u] <file>",
      "set #{CMN} <key=value> <id>",
-     "search #{CMN} [-al] [-o offset] [-L limit] <condition>..."]
+     "search #{CMN} [-al] [-o offset] [-L limit] [-O fields] <condition>..."]
   end
 
   def _options

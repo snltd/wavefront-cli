@@ -84,7 +84,15 @@ module WavefrontDisplay
     # listing with the --long options.
     #
     def run_search
-      options[:long] ? do_search : do_search_brief
+      if data.empty?
+        puts 'No matches.'
+      elsif options[:long]
+        do_search
+      elsif options[:fields]
+        do_search_fields
+      else
+        do_search_brief
+      end
     end
 
     # Display classes can provide a do_method_code() method, which
@@ -234,15 +242,17 @@ module WavefrontDisplay
     def do_search_brief
       search_keys = search_display_keys
 
-      if data.empty?
-        puts 'No matches.'
-      elsif search_keys.include?(:freetext)
+      if search_keys.include?(:freetext)
         display_brief_freetext_results
       else
         multicolumn(*search_keys)
       end
     rescue KeyError
       raise WavefrontCli::Exception::ImpossibleSearch
+    end
+
+    def do_search_fields
+      do_list_fields
     end
 
     # For freetext searches, we just display the matching fields in "brief"
@@ -280,11 +290,7 @@ module WavefrontDisplay
     end
 
     def do_search
-      if data.empty?
-        puts 'No matches.'
-      else
-        long_output
-      end
+      long_output
     end
 
     def do_tag_add

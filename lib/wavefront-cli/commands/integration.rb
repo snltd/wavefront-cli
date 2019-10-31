@@ -20,7 +20,7 @@ class WavefrontCommandIntegration < WavefrontCommandBase
      "alert install #{CMN} <id>",
      "alert uninstall #{CMN} <id>",
      "installed #{CMN}",
-     "search #{CMN} [-al] [-o offset] [-L limit] <condition>..."]
+     "search #{CMN} [-al] [-o offset] [-L limit] [-O fields] <condition>..."]
   end
 
   def _options
