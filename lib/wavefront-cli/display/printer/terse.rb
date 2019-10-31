@@ -44,6 +44,8 @@ module WavefrontDisplayPrinter
 
     def to_s
       data.map { |e| format(fmt, e).rstrip }.join("\n")
+    rescue KeyError
+      raise WavefrontCli::Exception::UserError, 'field not found'
     end
   end
 end
