@@ -363,11 +363,11 @@ module WavefrontCli
     end
 
     def load_json(file)
-      JSON.parse(IO.read(file), symbolize_names: true)
+      read_json(IO.read(file))
     end
 
     def load_yaml(file)
-      YAML.safe_load(IO.read(file), symbolize_names: true)
+      read_yaml(IO.read(file))
     end
 
     # Read STDIN and return a Ruby object, assuming that STDIN is
@@ -383,9 +383,9 @@ module WavefrontCli
       raw = STDIN.read
 
       if raw.start_with?('---')
-        YAML.safe_load(raw)
+        read_yaml(raw)
       else
-        JSON.parse(raw)
+        read_json(raw)
       end
     rescue RuntimeError
       raise Wavefront::Exception::UnparseableInput
@@ -642,5 +642,15 @@ module WavefrontCli
       aggr
     end
     # rubocop:enable Metrics/MethodLength
+
+    private
+
+    def read_json(io)
+      JSON.parse(io, symbolize_names: true)
+    end
+
+    def read_yaml(io)
+      YAML.safe_load(io, symbolize_names: true)
+    end
   end
 end
