@@ -39,7 +39,9 @@ module WavefrontDisplayPrinter
     #
     def value_as_string(value)
       return value.join(', ') if value.is_a?(Array)
+
       return map_to_string(value) if value.is_a?(Map)
+
       value
     end
 
