@@ -1,3 +1,3 @@
 # frozen_string_literal: true
 
-WF_CLI_VERSION = '4.4.0'
+WF_CLI_VERSION = '4.4.1'
