@@ -17,7 +17,7 @@ class WavefrontDisplayPrinterTerse < MiniTest::Test
     @wf = WavefrontDisplayPrinter::Terse.new(TERSE_DATA, %i[id name])
   end
 
-  def test_fmt
+  def test_format_string
     assert_equal('%-3<id>s', wf.format_string(TERSE_DATA, [:id]))
     assert_equal('%-3<id>s  %-5<name>s',
                  wf.format_string(TERSE_DATA, %i[id name]))
@@ -45,12 +45,19 @@ class WavefrontDisplayPrinterTerse < MiniTest::Test
                               [:things]))
   end
 
-  def test_to_string
-    assert_equal('a, b, c', wf.to_string(%w[a b c]))
-    assert_equal('abc', wf.to_string('abc'))
+  def test_map_to_string
+    assert_equal('key1=value1;key2=value2;key3=value3',
+                 wf.map_to_string(key1: 'value1',
+                                  key2: 'value2',
+                                  key3: 'value3'))
   end
 
-  def test_end_to_end
+  def test_value_as_string
+    assert_equal('a, b, c', wf.value_as_string(%w[a b c]))
+    assert_equal('abc', wf.value_as_string('abc'))
+  end
+
+  def test_end_to_end_1
     input, expected = OutputTester.new.in_and_out('alerts-input.json',
                                                   'alerts-human-terse')
     out = WavefrontDisplayPrinter::Terse.new(input, %i[id status name]).to_s
