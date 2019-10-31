@@ -37,7 +37,7 @@ class WavefrontCommandServiceaccount < WavefrontCommandBase
      "apitoken create #{CMN} [-N name] <id>",
      "apitoken delete #{CMN} <id> <token_id>",
      "apitoken rename #{CMN} <id> <token_id> <name>",
-     "search #{CMN} [-al] [-o offset] [-L limit] <condition>..."]
+     "search #{CMN} [-al] [-o offset] [-L limit] [-O fields] <condition>..."]
   end
 
   def _options

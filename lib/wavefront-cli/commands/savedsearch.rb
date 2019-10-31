@@ -27,7 +27,7 @@ class WavefrontCommandSavedsearch < WavefrontCommandBase
      "delete #{CMN} <id>",
      "dump #{CMN}",
      "import #{CMN} [-u] <file>",
-     "search #{CMN} [-al] [-o offset] [-L limit] <condition>..."]
+     "search #{CMN} [-al] [-o offset] [-L limit] [-O fields] <condition>..."]
   end
 
   def _options
