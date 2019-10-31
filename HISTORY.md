@@ -1,5 +1,7 @@
 # Changelog
 
+## 4.4.2 (2019-10-31)
+* Bugfix: `dashboard import --update` didn't work when reading from stdin.
 * Better handling of tag values in brief listings.
 
 ## 4.4.1 (2019-10-31)
