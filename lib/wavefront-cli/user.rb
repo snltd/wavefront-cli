@@ -44,6 +44,11 @@ module WavefrontCli
       wf.invite([user_body])
     end
 
+    def do_business_functions
+      wf_user_id?(options[:'<id>'])
+      wf.business_functions(options[:'<id>'])
+    end
+
     def import_to_create(raw)
       { emailAddress: raw['items']['identifier'],
         groups: raw['items']['groups'] }.tap do |r|
