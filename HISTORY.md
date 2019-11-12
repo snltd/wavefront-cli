@@ -1,5 +1,8 @@
 # Changelog
 
+## 4.5.0 (2019-11-12)
+* Add `user business functions` command.
+
 ## 4.4.2 (2019-10-31)
 * Bugfix: `dashboard import --update` didn't work when reading from stdin.
 * Better handling of tag values in brief listings.

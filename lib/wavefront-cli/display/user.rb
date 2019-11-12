@@ -84,5 +84,9 @@ module WavefrontDisplay
                   id: options[:'<id>'],
                   quoted_group: quoted(options[:'<group>']))
     end
+
+    def do_business_functions
+      puts data.sort
+    end
   end
 end

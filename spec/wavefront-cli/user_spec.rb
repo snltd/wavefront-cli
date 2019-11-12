@@ -251,6 +251,20 @@ class UserEndToEndTest < EndToEndTest
                  '- identifier: user2@example.com', out.strip)
   end
 
+  def test_business_functions
+    quietly do
+      assert_cmd_gets("business functions #{id}",
+                      "/api/v2/user/#{id}/businessFunctions")
+    end
+
+    assert_noop("business functions #{id}",
+                'uri: GET https://default.wavefront.com/api/v2/user/' \
+                "#{id}/businessFunctions")
+    assert_invalid_id("business functions #{invalid_id}")
+    assert_abort_on_missing_creds("business functions #{id}")
+    assert_usage('business functions')
+  end
+
   private
 
   def id
