@@ -110,6 +110,8 @@ module WavefrontCsvOutput
               timestamp: timestamp,
               source: source }
 
+      return ret if tags.nil?
+
       ret.tap { |r| tags.each { |k, v| r[k.to_sym] = tag_val(k, v) } }
     end
 
