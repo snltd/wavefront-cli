@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative '../../exception'
+
 module WavefrontCsvOutput
   #
   # Standard output template

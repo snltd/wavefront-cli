@@ -8,7 +8,7 @@ require_relative '../../../../lib/wavefront-cli/output/csv/query'
 # Test CSV output
 #
 class WavefrontOutputCsvTest < MiniTest::Test
-  attr_reader :wfq, :wfr, :wfqq, :wfh, :wft
+  attr_reader :wfq, :wfr, :wfqq, :wfh, :wft, :wftl
 
   def setup
     @wfq = WavefrontCsvOutput::Query.new(load_query_response, {})
@@ -24,6 +24,17 @@ class WavefrontOutputCsvTest < MiniTest::Test
                                          formatopts: 'headers')
     @wft = WavefrontCsvOutput::Query.new(load_query_response,
                                          formatopts: 'tagkeys')
+    @wftl = WavefrontCsvOutput::Query.new(response_without_tags,
+                                          formatopts: 'tagkeys')
+  end
+
+  def response_without_tags
+    load_query_response.tap do |q|
+      q[:timeseries].map do |r|
+        r[:tags] = nil
+        r
+      end
+    end
   end
 
   def test_all_keys
@@ -72,6 +83,14 @@ class WavefrontOutputCsvTest < MiniTest::Test
                                      timestamp: 1_544_529_523,
                                      source: 'testsource',
                                      environment: 'unit test'))
+  end
+
+  def test_map_row_to_csv_without_tags
+    assert_equal('test.path,1,1544529523,testsource',
+                 wftl.map_row_to_csv(path: 'test.path',
+                                     value: 1,
+                                     timestamp: 1_544_529_523,
+                                     source: 'testsource'))
   end
 
   def test_csv_format

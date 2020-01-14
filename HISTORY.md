@@ -1,5 +1,8 @@
 # Changelog
 
+## 4.5.1 (2020-01-14)
+* Bugfix. CSV query output errored on metrics without tags.
+
 ## 4.5.0 (2019-11-12)
 * Add `user business functions` command.
 
