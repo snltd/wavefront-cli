@@ -1,5 +1,9 @@
 # Changelog
 
+## 4.5.2 (2020-01-15)
+* Test build against, and fix warning messages on, Ruby 2.7.0
+* Bump SDK dependency to 3.6.1
+
 ## 4.5.1 (2020-01-14)
 * Bugfix. CSV query output errored on metrics without tags.
 

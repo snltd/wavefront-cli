@@ -267,7 +267,7 @@ class AlertEndToEndTest < EndToEndTest
        tags target name]
   end
 
-  # rubocop:disable Metrics/LineLength
+  # rubocop:disable Layout/LineLength
   def import_data
     { name: 'PKS - too many containers not running',
       condition: 'sum(ts(pks.kube.pod.container.status.running.gauge)) / (sum(ts(pks.kube.pod.container.status.running.gauge)) + sum(ts(pks.kube.pod.container.status.waiting.gauge)) + sum(ts(pks.kube.pod.container.status.terminated.gauge))) < 0.8',
@@ -292,5 +292,5 @@ class AlertEndToEndTest < EndToEndTest
       resolveAfterMinutes: 5,
       id: '1556812163465' }
   end
-  # rubocop:enable Metrics/LineLength
+  # rubocop:enable Layout/LineLength
 end

@@ -83,7 +83,7 @@ module WavefrontCsvOutput
     # Do escaping and quoting
     #
     def csv_value(value)
-      if (formatopts.include?('quote') || value =~ /[,\s"]/) &&
+      if (formatopts.include?('quote') || value.to_s =~ /[,\s"]/) &&
          !value.to_s.empty?
         quote_value(value)
       else
