@@ -184,5 +184,9 @@ module WavefrontCli
     rescue Wavefront::Exception::InvalidPermission => e
       raise e, 'Invalid permission'
     end
+
+    def descriptive_name
+      'service account'
+    end
   end
 end

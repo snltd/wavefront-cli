@@ -5,21 +5,30 @@ require_relative 'base'
 
 module WavefrontCli
   #
-  # CLI coverage for the v2 'maintenancewindow' API.
+  # CLI coverage for the ingestion policy part of the v2 'usage' API.
   #
-  class MaintenanceWindow < WavefrontCli::Base
+  class IngestionPolicy < WavefrontCli::Base
     include Wavefront::Mixins
 
-    def validator_method
-      :wf_maintenance_window_id?
+    def validator_exception
+      Wavefront::Exception::InvalidIngestionPolicyId
     end
 
-    def validator_exception
-      Wavefront::Exception::InvalidMaintenanceWindowId
+    def do_create
+      wf.create(create_body)
+    end
+
+    def create_body
+      { name: options[:'<name>'], description: options[:desc] }.compact
     end
 
     def descriptive_name
-      'maintenance window'
+      'ingestion policy'
+    end
+
+=begin
+    def validator_method
+      :wf_maintenance_window_id?
     end
 
     def do_create
@@ -115,5 +124,6 @@ module WavefrontCli
       ok_exit(format('No maintenance windows in the next %<range>s hours.',
                      range: range))
     end
+=end
   end
 end
