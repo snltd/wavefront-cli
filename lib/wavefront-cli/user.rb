@@ -49,6 +49,10 @@ module WavefrontCli
       wf.business_functions(options[:'<id>'])
     end
 
+    def do_validate
+      wf.validate_users(options[:'<user>'])
+    end
+
     def import_to_create(raw)
       { emailAddress: raw['items']['identifier'],
         groups: raw['items']['groups'] }.tap do |r|

@@ -265,6 +265,15 @@ class UserEndToEndTest < EndToEndTest
     assert_usage('business functions')
   end
 
+  def test_validate
+    quietly do
+      assert_cmd_posts("validate #{user_list.join(' ')}",
+                       '/api/v2/user/validateUsers',
+                       user_list.to_json,
+                       IO.read(RES_DIR + 'responses' + 'user-validate.json'))
+    end
+  end
+
   private
 
   def id
@@ -291,5 +300,12 @@ class UserEndToEndTest < EndToEndTest
 
   def privilege
     'alerts_management'
+  end
+
+  def user_list
+    %w[rob@somewhere.xyz
+       services@elsewhere.net
+       rob@elsewhere.net
+       no-such-thing]
   end
 end

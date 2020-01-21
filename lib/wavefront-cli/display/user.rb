@@ -88,5 +88,16 @@ module WavefrontDisplay
     def do_business_functions
       puts data.sort
     end
+
+    def do_validate_brief
+      valid = data[0][:validUsers]
+      invalid = data[0][:invalidIdentifiers]
+
+      puts 'valid ',
+           valid.empty? ? '  <none>' : valid.map { |u| "  #{u[:identifier]}" }
+
+      puts 'invalid',
+           invalid.empty? ? '  <none>' : invalid.map { |u| "  #{u}" }
+    end
   end
 end
