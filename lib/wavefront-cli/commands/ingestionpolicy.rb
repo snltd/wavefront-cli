@@ -25,6 +25,10 @@ class WavefrontCommandIngestionpolicy < WavefrontCommandBase
      "dump #{CMN}",
      "import #{CMN} [-u] <file>",
      "set #{CMN} <key=value> <id>",
+     "add user #{CMN} <id> <user>...",
+     "remove user #{CMN} <id> <user>...",
+     "members #{CMN} <id>",
+     "for #{CMN} <user>",
      "search #{CMN} [-al] [-o offset] [-L limit] [-O fields] <condition>..."]
   end
 

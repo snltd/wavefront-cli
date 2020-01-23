@@ -46,6 +46,10 @@ module WavefrontCli
       wf.update(options[:'<id>'], body)
     end
 
+    def do_delete
+      account_hook.delete_accounts(options[:'<account>'])
+    end
+
     def do_leave
       cannot_noop!
       options[:'<group>'].each { |g| wf_usergroup_id?(g) }
@@ -187,6 +191,13 @@ module WavefrontCli
 
     def descriptive_name
       'service account'
+    end
+
+    private
+
+    def account_hook
+      require 'wavefront-sdk/account'
+      Wavefront::Account.new(mk_creds, mk_opts)
     end
   end
 end

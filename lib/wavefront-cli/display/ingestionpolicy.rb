@@ -7,29 +7,22 @@ module WavefrontDisplay
   # Format human-readable output of ingestion policies.
   #
   class IngestionPolicy < Base
-  def thing
-    'ingestion policy'
-  end
-=begin
-    def do_describe
-      readable_time(:startTimeInSeconds, :endTimeInSeconds,
-                    :createdEpochMillis, :updatedEpochMillis)
-      drop_fields(:hostTagGroupHostNamesGroupAnded, :relevantHostTagsAnded)
-      long_output
+    def do_add_user
+      puts format("Added %<quoted_user>s to '%<group_id>s'.",
+                  quoted_user: quoted(options[:'<user>']),
+                  group_id: options[:'<id>']).fold(TW, 0)
     end
 
-    def do_list_brief
-      multicolumn(:id, :title)
+    def do_remove_user
+      puts format("Removed %<quoted_user>s from '%<group_id>s'.",
+                  quoted_user: quoted(options[:'<user>']),
+                  group_id: options[:'<id>']).fold(TW, 0)
     end
 
-    def do_pending
-      do_ongoing
+    def do_for
+      puts data
     end
 
-    def do_ongoing
-      readable_time_arr(:startTimeInSeconds, :endTimeInSeconds)
-      multicolumn(:id, :reason, :startTimeInSeconds, :endTimeInSeconds)
-    end
-=end
+    alias do_members do_for
   end
 end
