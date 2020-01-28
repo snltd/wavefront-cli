@@ -22,5 +22,9 @@ module WavefrontCli
     def validator_exception
       Wavefront::Exception::InvalidSavedSearchId
     end
+
+    def descriptive_name
+      'saved search'
+    end
   end
 end

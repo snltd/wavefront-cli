@@ -68,6 +68,11 @@ module WavefrontDisplay
       puts format("Deleted API token '#{options[:'<token_id>']}'.")
     end
 
+    def do_delete
+      puts format("Deleted #{friendly_name} %<quoted_account>s.",
+                  quoted_account: quoted(options[:'<account>']))
+    end
+
     def search_identifier_key
       :identifier
     end

@@ -1,5 +1,9 @@
 # Changelog
 
+## 4.6.0
+* Add `ingestionpolicy` and `usage` commands.
+* Require 3.7.x of [the SDK](https://github.com/snltd/wavefront-sdk).
+
 ## 4.5.2 (2020-01-15)
 * Test build against, and fix warning messages on, Ruby 2.7.0
 * Bump SDK dependency to 3.6.1

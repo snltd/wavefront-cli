@@ -23,6 +23,7 @@ class WavefrontCommandServiceaccount < WavefrontCommandBase
      "create #{CMN} [-I] [-d description] [-p permission...] [-g group...] " \
      '[-k usertoken...] <id>',
      "activate #{CMN} <id>",
+     "delete #{CMN} <account>...",
      "deactivate #{CMN} <id>",
      "dump #{CMN}",
      "groups #{CMN} <id>",

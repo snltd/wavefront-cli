@@ -15,6 +15,10 @@ module WavefrontCli
       Wavefront::Exception::InvalidExternalLinkId
     end
 
+    def descriptive_name
+      'external link'
+    end
+
     def do_create
       body = { name: options[:'<name>'],
                template: options[:'<template>'],

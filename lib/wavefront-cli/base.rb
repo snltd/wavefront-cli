@@ -116,7 +116,11 @@ module WavefrontCli
     def failed_validation_message(input)
       format("'%<value>s' is not a valid %<thing>s ID.",
              value: input,
-             thing: klass_word)
+             thing: descriptive_name)
+    end
+
+    def descriptive_name
+      klass_word
     end
 
     # Make a wavefront-sdk credentials object from standard

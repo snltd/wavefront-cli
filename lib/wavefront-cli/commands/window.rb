@@ -20,8 +20,8 @@ class WavefrontCommandWindow < WavefrontCommandBase
   def _commands
     ["list #{CMN} [-al] [-O fields] [-o offset] [-L limit]",
      "describe #{CMN} <id>",
-     "create #{CMN} -d reason [-s time] [-e time] " \
-     '[-A alert_tag...] [-T host_tag...] [-H host...] <title>',
+     "create #{CMN} [-s time] [-e time] " \
+     '[-A alert_tag...] [-T host_tag...] [-H host...] -d reason <title>',
      "close #{CMN} <id>",
      "extend #{CMN} (by|to) <time> <id>",
      "delete #{CMN} <id>",

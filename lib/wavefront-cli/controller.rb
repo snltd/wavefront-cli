@@ -51,8 +51,7 @@ class WavefrontCliController
          "  #{CMD} --version",
          "  #{CMD} --help",
          '',
-         'Commands:',
-         '']
+         'Commands:']
 
     cmds.sort.each do |k, v|
       s.<< format('  %-18<command>s %<desc>s',

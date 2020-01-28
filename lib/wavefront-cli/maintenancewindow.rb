@@ -18,6 +18,10 @@ module WavefrontCli
       Wavefront::Exception::InvalidMaintenanceWindowId
     end
 
+    def descriptive_name
+      'maintenance window'
+    end
+
     def do_create
       body = build_body
 
