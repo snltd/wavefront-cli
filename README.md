@@ -37,6 +37,7 @@ Commands:
   dashboard          view and manage dashboards
   derivedmetric      view and manage derived metrics
   event              open, close, view, and manage events
+  ingestionpolicy    view and manage ingestion policies
   integration        view and manage Wavefront integrations
   link               view and manage external links
   message            read and mark user messages
@@ -48,6 +49,7 @@ Commands:
   serviceaccount     view and manage service accounts
   settings           view and manage system preferences
   source             view and manage source tags and descriptions
+  usage              view and manage usage reports
   user               view and manage Wavefront users
   usergroup          view and manage Wavefront user groups
   webhook            view and manage webhooks
