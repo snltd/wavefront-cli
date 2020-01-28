@@ -32,17 +32,20 @@ module WavefrontCli
 
     def do_for
       resp = do_list
-
-      parent_policies = resp.response.items.select do |p|
-        p[:sampledUserAccounts].include?(options[:'<user>'][0]) ||
-        p[:sampledServiceAccounts].include?(options[:'<user>'][0])
-      end
-
+      parent_policies = parent_policies(options[:'<user>'][0],
+                                        resp.response.items)
       resp.response = parent_policies.map { |p| p[:id] }
       resp
     end
 
     private
+
+    def parent_policies(user, items)
+      items.select do |p|
+        p[:sampledUserAccounts].include?(user) ||
+          p[:sampledServiceAccounts].include?(user)
+      end
+    end
 
     def create_body
       { name: options[:'<name>'], description: options[:desc] }.compact

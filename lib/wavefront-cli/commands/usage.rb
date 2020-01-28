@@ -10,7 +10,7 @@ class WavefrontCommandUsage < WavefrontCommandBase
   end
 
   def _commands
-     ["export csv #{CMN} [-s time] [-e time] "]
+    ["export csv #{CMN} [-s time] [-e time] "]
   end
 
   def _options

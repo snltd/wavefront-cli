@@ -41,11 +41,11 @@ class UsageEndToEndTest < EndToEndTest
   end
 
   def start_time
-    1579500000
+    1_579_500_000
   end
 
   def end_time
-    1579533333
+    1_579_533_333
   end
 
   def response

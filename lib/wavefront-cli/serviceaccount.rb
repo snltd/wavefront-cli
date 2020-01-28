@@ -193,8 +193,6 @@ module WavefrontCli
       'service account'
     end
 
-    private
-
     def account_hook
       require 'wavefront-sdk/account'
       Wavefront::Account.new(mk_creds, mk_opts)
