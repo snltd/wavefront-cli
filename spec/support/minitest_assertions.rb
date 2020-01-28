@@ -59,7 +59,7 @@ module Minitest
       end
 
       assert_empty(out)
-      assert_match(/is not a valid \w+ ID.$/, err)
+      assert_match(/is not a valid [\w ]+ ID.$/, err)
     end
 
     def assert_usage(command)
