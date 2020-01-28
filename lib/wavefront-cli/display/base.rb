@@ -44,7 +44,7 @@ module WavefrontDisplay
         run_list
       elsif method == 'do_search'
         run_search
-      elsif respond_to?("#{method}_brief")
+      elsif respond_to?("#{method}_brief") && !options[:long]
         send("#{method}_brief")
       elsif respond_to?(method)
         send(method)
