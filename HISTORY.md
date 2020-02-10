@@ -1,6 +1,10 @@
 # Changelog
 
-## 4.6.0
+## 4.6.1 (2020-02-09)
+* Fix bug which broke reporting of points sent via a proxy.
+* Require 3.7.1 of [the SDK](https://github.com/snltd/wavefront-sdk).
+
+## 4.6.0 (2020-01-28)
 * Add `ingestionpolicy` and `usage` commands.
 * Require 3.7.x of [the SDK](https://github.com/snltd/wavefront-sdk).
 

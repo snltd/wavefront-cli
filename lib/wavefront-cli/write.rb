@@ -5,9 +5,7 @@ require_relative 'base'
 
 module WavefrontCli
   #
-  # Send points via a proxy. This inherits from the same base class
-  # as Report, but has to do a couple of things differently, as it
-  # speaks to a proxy rather than to the API.
+  # Send points via any method supported by the SDK
   #
   class Write < Base
     attr_reader :fmt
