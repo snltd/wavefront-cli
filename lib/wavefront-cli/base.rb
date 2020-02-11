@@ -270,7 +270,7 @@ module WavefrontCli
     end
 
     def warning_message(status)
-      return unless status.status.between?(201, 299)
+      return unless status.code.between?(201, 299)
 
       puts format("API WARNING: '%<message>s'.", message: status.message)
     end
