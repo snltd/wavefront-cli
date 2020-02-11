@@ -35,10 +35,14 @@ module WavefrontCli
 
       options_and_exit if options[:help]
 
-      require File.join('wavefront-sdk', @klass_word)
+      require_sdk_class
       @klass = Object.const_get(sdk_class)
 
       send(:post_initialize, options) if respond_to?(:post_initialize)
+    end
+
+    def require_sdk_class
+      require File.join('wavefront-sdk', @klass_word)
     end
 
     # Normally we map the class name to a similar one in the SDK.
