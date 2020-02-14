@@ -10,19 +10,20 @@ class WavefrontCommandSpy < WavefrontCommandBase
   end
 
   def _common_opts
-    "#{CMN} [-e timeout] [-p prefix] [-r rate] [-T tag_key...] [-m]"
+    "#{CMN} [-e timeout] [-p prefix] [-r rate] [-m]"
   end
 
   def _commands
-    ["#{_common_opts} [-H host] points",
-     "#{_common_opts} [-H host] histograms",
-     "#{_common_opts} [-H host] traces",
-     "#{_common_opts} [-y type] ids"]
+    ["points #{_common_opts} [-T tag_key...] [-H host]",
+     "histograms #{_common_opts} [-T tag_key...] [-H host]",
+     "spans #{_common_opts} [-T tag_key...] [-H host]",
+     "ids #{_common_opts} [-y type]"]
   end
 
   def _options
     [common_options,
-     '-e, --end-after=SECONDS  stop spying after this many seconds',
+     '-e, --end-after=SECONDS  stop spying after (approximately) the given ' \
+     'number of seconds',
      '-m, --timestamp          prefix each block of output with the current ' \
      'time',
      '-r, --rate=NUMBER        sampling rate to use, from 0.01 to 0.5 ' \
@@ -36,6 +37,6 @@ class WavefrontCommandSpy < WavefrontCommandBase
 
   def postscript
     "\nNOTE: This command uses the unofficial 'spy' API endpoint, which " \
-      'is not guaranteed to remain stable.'
+      'is not guaranteed to remain stable.'.cmd_fold(TW, 0)
   end
 end

@@ -19,6 +19,14 @@ module WavefrontDisplay
       multicolumn(:host, :last_update)
     end
 
+    def do_list_under
+      bail_out if data.empty?
+
+      puts data.sort
+    end
+
+    alias do_list_all do_list_under
+
     def no_data?
       data.empty? || data.hosts.empty?
     end

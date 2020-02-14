@@ -3,7 +3,7 @@
 # For development against a local checkout of the SDK, uncomment
 # this definition
 #
-DEVELOPMENT = true
+# DEVELOPMENT = true
 
 if defined?(DEVELOPMENT)
   dir = Pathname.new(__dir__).realpath.parent.parent.parent
@@ -133,6 +133,8 @@ class WavefrontCliController
     handle_missing_credentials(e)
   rescue WavefrontCli::Exception::MandatoryValue
     abort 'A value must be supplied.'
+  rescue Wavefront::Exception::NetworkTimeout
+    abort 'Connection timed out.'
   rescue Wavefront::Exception::InvalidPermission => e
     abort "'#{e}' is not a valid privilege."
   rescue Wavefront::Exception::InvalidUserGroupId => e
@@ -171,6 +173,8 @@ class WavefrontCliController
     abort "User error: #{e.message}."
   rescue WavefrontCli::Exception::ImpossibleSearch
     abort 'Search on non-existent key. Please use a top-level field.'
+  rescue Wavefront::Exception::InvalidSamplingValue
+    abort 'Sampling rates must be between 0 and 0.05.'
   rescue StandardError => e
     warn "general error: #{e}"
     backtrace_message(e)

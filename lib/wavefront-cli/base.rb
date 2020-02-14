@@ -326,7 +326,11 @@ module WavefrontCli
 
     def load_display_class
       require_relative File.join('display', klass_word)
-      Object.const_get(klass.name.sub('Wavefront', 'WavefrontDisplay'))
+      Object.const_get(display_class)
+    end
+
+    def display_class
+      klass.name.sub('Wavefront', 'WavefrontDisplay')
     end
 
     # There are things we need to have. If we don't have them, stop
