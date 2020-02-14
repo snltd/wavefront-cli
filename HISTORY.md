@@ -1,5 +1,7 @@
 # Changelog
 
+* Remove support for Ruby 2.3. (Potentially breaking change.)
+
 ## 4.6.1 (2020-02-09)
 * Fix bug which broke reporting of points sent via a proxy.
 * Require 3.7.1 of [the SDK](https://github.com/snltd/wavefront-sdk).
