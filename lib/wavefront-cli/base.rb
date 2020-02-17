@@ -35,10 +35,14 @@ module WavefrontCli
 
       options_and_exit if options[:help]
 
-      require File.join('wavefront-sdk', @klass_word)
+      require_sdk_class
       @klass = Object.const_get(sdk_class)
 
       send(:post_initialize, options) if respond_to?(:post_initialize)
+    end
+
+    def require_sdk_class
+      require File.join('wavefront-sdk', @klass_word)
     end
 
     # Normally we map the class name to a similar one in the SDK.
@@ -266,7 +270,7 @@ module WavefrontCli
     end
 
     def warning_message(status)
-      return unless status.status.between?(201, 299)
+      return unless status.code.between?(201, 299)
 
       puts format("API WARNING: '%<message>s'.", message: status.message)
     end
@@ -322,7 +326,11 @@ module WavefrontCli
 
     def load_display_class
       require_relative File.join('display', klass_word)
-      Object.const_get(klass.name.sub('Wavefront', 'WavefrontDisplay'))
+      Object.const_get(display_class)
+    end
+
+    def display_class
+      klass.name.sub('Wavefront', 'WavefrontDisplay')
     end
 
     # There are things we need to have. If we don't have them, stop

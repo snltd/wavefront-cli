@@ -26,7 +26,7 @@ Gem::Specification.new do |gem|
 
   gem.add_runtime_dependency 'docopt', '~> 0.6.0'
   gem.add_runtime_dependency 'inifile', '~> 3.0'
-  gem.add_runtime_dependency 'wavefront-sdk', '~> 3.7', '>= 3.7.1'
+  gem.add_runtime_dependency 'wavefront-sdk', '~> 4.0', '>= 4.0.0'
 
   gem.add_development_dependency 'minitest', '~> 5.11', '>= 5.11.0'
   gem.add_development_dependency 'rake', '~> 12.0'
@@ -35,5 +35,5 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'webmock', '~> 3.7'
   gem.add_development_dependency 'yard', '~> 0.9.5'
 
-  gem.required_ruby_version = Gem::Requirement.new('>= 2.3.0')
+  gem.required_ruby_version = Gem::Requirement.new('>= 2.4.0')
 end

@@ -1,5 +1,12 @@
 # Changelog
 
+## 5.0.0 (2020-02-17)
+* Remove support for Ruby 2.3. (Potentially breaking change.)
+* Add `cluster` command to manage monitored clusters.
+* Add `spy` command to speak to (unstable) `spy` API.
+* Add `metric list` sub-commands to speak to (unstable) `metric` API.
+* Require 4.0.0 of [the SDK](https://github.com/snltd/wavefront-sdk).
+
 ## 4.6.1 (2020-02-09)
 * Fix bug which broke reporting of points sent via a proxy.
 * Require 3.7.1 of [the SDK](https://github.com/snltd/wavefront-sdk).
