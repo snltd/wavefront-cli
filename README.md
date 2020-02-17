@@ -50,6 +50,7 @@ Commands:
   serviceaccount     view and manage service accounts
   settings           view and manage system preferences
   source             view and manage source tags and descriptions
+  spy                monitor traffic going into Wavefront
   usage              view and manage usage reports
   user               view and manage Wavefront users
   usergroup          view and manage Wavefront user groups
