@@ -7,3 +7,10 @@ Metrics/AbcSize:
 
 Metrics/ClassLength:
   Max: 300
+
+Style/HashEachMethods:
+    Enabled: true
+Style/HashTransformKeys:
+    Enabled: true
+Style/HashTransformValues:
+    Enabled: true

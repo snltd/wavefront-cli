@@ -1,5 +1,8 @@
 # Changelog
 
+## 5.0.1 (2020-02-18)
+* Bugfix: threshold alerts could not be imported.
+
 ## 5.0.0 (2020-02-17)
 * Remove support for Ruby 2.3. (Potentially breaking change.)
 * Add `cluster` command to manage monitored clusters.
