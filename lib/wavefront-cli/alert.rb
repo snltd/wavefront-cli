@@ -13,8 +13,9 @@ module WavefrontCli
     include WavefrontCli::Mixin::Acl
 
     def import_fields
-      %i[name condition minutes target severity displayExpression
-         tags additionalInformation resolveAfterMinutes]
+      %i[name condition minutes target severity displayExpression tags
+         additionalInformation resolveAfterMinutes alertType severityList
+         conditions acl]
     end
 
     def do_describe
@@ -143,7 +144,7 @@ module WavefrontCli
         if raw.key?('customerTagsWithCounts')
           ret[:sharedTags] = raw['customerTagsWithCounts'].keys
         end
-      end
+      end.compact
     end
   end
 end

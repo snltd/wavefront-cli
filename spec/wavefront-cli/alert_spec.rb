@@ -263,8 +263,8 @@ class AlertEndToEndTest < EndToEndTest
   end
 
   def import_fields
-    %i[condition displayExpression resolveAfterMinutes minutes severity
-       tags target name]
+    %i[name condition minutes target severity displayExpression tags
+       resolveAfterMinutes]
   end
 
   # rubocop:disable Layout/LineLength
@@ -278,7 +278,7 @@ class AlertEndToEndTest < EndToEndTest
       tags: { customerTags: ['pks'] },
       additionalInformation: nil,
       resolveAfterMinutes: 5,
-      resolveMinutes: 5 }
+      resolveMinutes: 5 }.compact
   end
 
   def update_data
