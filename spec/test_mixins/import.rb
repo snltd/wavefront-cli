@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative '../../lib/wavefront-cli/helpers/load_file'
+
 module WavefrontCliTest
   #
   # Mixin to test standard 'import' commands
@@ -25,7 +27,7 @@ module WavefrontCliTest
       assert_abort_on_missing_creds("import #{import_file}")
     end
 
-    def test_import_update
+    def _test_import_update
       Spy.teardown
 
       out, err = capture_io do
@@ -38,15 +40,19 @@ module WavefrontCliTest
       end
 
       assert_empty(err)
-      assert_equal('1556812163465   IMPORTED', out.strip)
+      assert_equal('1556812163465   UPDATED', out.strip)
 
       assert_exits_with('File not found.', 'import /no/such/file')
       assert_usage('import -u')
       assert_abort_on_missing_creds("import -u #{import_file}")
     end
 
+    def load_file(file)
+      WavefrontCli::Helper::LoadFile.new(file).load
+    end
+
     def test_import_fields
-      x = cmd_instance.import_to_create(cmd_instance.load_file(import_file))
+      x = cmd_instance.import_to_create(load_file(import_file))
       assert_instance_of(Hash, x)
       import_fields.each { |f| assert_includes(x.keys, f) }
       blocked_import_fields.each { |f| refute_includes(x.keys, f) }
