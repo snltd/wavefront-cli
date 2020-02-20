@@ -24,7 +24,7 @@ class WavefrontCommandLink < WavefrontCommandBase
      '<description> <template>',
      "delete #{CMN} <id>",
      "dump #{CMN}",
-     "import #{CMN} [-u] <file>",
+     "import #{CMN} [-uU] <file>",
      "set #{CMN} <key=value> <id>",
      "search #{CMN} [-al] [-o offset] [-L limit] [-O fields] <condition>..."]
   end
@@ -39,6 +39,7 @@ class WavefrontCommandLink < WavefrontCommandBase
      '-m, --metric-regex=REGEX metric filter regular expression',
      '-s, --source-regex=REGEX source filter regular expression',
      '-p, --point-regex=REGEX  point filter regular expression',
-     "-u, --update             update an existing #{thing}"]
+     "-u, --update             update an existing #{thing}",
+     "-U, --upsert             import new or update existing #{thing}"]
   end
 end

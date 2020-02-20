@@ -17,7 +17,7 @@ class WavefrontCommandNotificant < WavefrontCommandBase
     ["list #{CMN} [-al] [-O fields] [-o offset] [-L limit]",
      "describe #{CMN} <id>",
      "dump #{CMN}",
-     "import #{CMN} [-u] <file>",
+     "import #{CMN} [-uU] <file>",
      "delete #{CMN} <id>",
      "test #{CMN} <id>",
      "set #{CMN} <key=value> <id>",
@@ -31,6 +31,7 @@ class WavefrontCommandNotificant < WavefrontCommandBase
      "-o, --offset=n           start from nth #{thing}",
      '-O, --fields=F1,F2,...   only show given fields',
      "-L, --limit=COUNT        number of #{things} to list",
-     "-u, --update             update an existing #{thing}"]
+     "-u, --update             update an existing #{thing}",
+     "-U, --upsert             import new or update existing #{thing}"]
   end
 end

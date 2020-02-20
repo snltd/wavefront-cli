@@ -23,7 +23,7 @@ class WavefrontCommandCluster < WavefrontCommandBase
      "delete #{CMN} <id>",
      "create #{CMN} [-v version] <platform> <name> <id>",
      "dump #{CMN}",
-     "import #{CMN} [-u] <file>",
+     "import #{CMN} [-uU] <file>",
      "set #{CMN} <key=value> <id>",
      tag_commands,
      "search #{CMN} [-al] [-o offset] [-L limit] [-O fields] <condition>...",
@@ -38,6 +38,7 @@ class WavefrontCommandCluster < WavefrontCommandBase
      '-O, --fields=F1,F2,...  only show given fields',
      "-L, --limit=COUNT       number of #{things} to list",
      "-u, --update            update an existing #{thing}",
+     "-U, --upsert            import new or update existing #{thing}",
      "-v, --version=VERSION   version of #{thing}"]
   end
 end

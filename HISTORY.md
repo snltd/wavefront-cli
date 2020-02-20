@@ -1,5 +1,8 @@
 # Changelog
 
+## 5.1.0 (2020-02-20)
+* Add `-U` (`--upsert`) option to `import` sub-commands.
+
 ## 5.0.1 (2020-02-18)
 * Bugfix: threshold alerts could not be imported.
 
