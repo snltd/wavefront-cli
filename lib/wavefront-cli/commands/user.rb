@@ -20,7 +20,7 @@ class WavefrontCommandUser < WavefrontCommandBase
      "invite #{CMN} [-m permission...] [-g group...] <id>",
      "delete #{CMN} <user>...",
      "dump #{CMN}",
-     "import #{CMN} [-u] <file>",
+     "import #{CMN} [-uU] <file>",
      "groups #{CMN} <id>",
      "privileges #{CMN} <id>",
      "join #{CMN} <id> <group>...",
@@ -40,6 +40,7 @@ class WavefrontCommandUser < WavefrontCommandBase
      "-L, --limit=COUNT        number of #{things} to list",
      '-O, --fields=F1,F2,...   only show given fields',
      "-u, --update             update an existing #{thing}",
+     "-U, --upsert             import new or update existing #{thing}",
      "-e, --email              send e-mail to #{thing} on account creation",
      "-m, --permission=STRING  give #{thing} this permission",
      "-g, --group=STRING       add #{thing} to this user group"]

@@ -23,7 +23,7 @@ class WavefrontCommandDerivedmetric < WavefrontCommandBase
      "create #{CMN} [-d description] [-T tag...] [-b] [-i interval] " \
      '[-r range] <name> <query>',
      "dump #{CMN}",
-     "import #{CMN} [-u] <file>",
+     "import #{CMN} [-uU] <file>",
      "set #{CMN} <key=value> <id>",
      "delete #{CMN} <id>",
      "undelete #{CMN} <id>",
@@ -46,6 +46,7 @@ class WavefrontCommandDerivedmetric < WavefrontCommandBase
      '-i, --interval=INTEGER  execute query every n minutes [default: 1]',
      '-r, --range=INTEGER     include results in the last n minutes ' \
                               '[default: 5]',
-     "-u, --update             update an existing #{thing}"]
+     "-u, --update            update an existing #{thing}",
+     "-U, --upsert            import new or update existing #{thing}"]
   end
 end

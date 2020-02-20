@@ -23,7 +23,7 @@ class WavefrontCommandIngestionpolicy < WavefrontCommandBase
      "describe #{CMN} <id>",
      "delete #{CMN} <id>",
      "dump #{CMN}",
-     "import #{CMN} [-u] <file>",
+     "import #{CMN} [-uU] <file>",
      "set #{CMN} <key=value> <id>",
      "add user #{CMN} <id> <user>...",
      "remove user #{CMN} <id> <user>...",
@@ -40,6 +40,7 @@ class WavefrontCommandIngestionpolicy < WavefrontCommandBase
      '-O, --fields=F1,F2,...  only show given fields',
      "-L, --limit=COUNT       number of #{things} to list",
      "-d, --desc=STRING       reason for #{thing}",
-     "-u, --update            update an existing #{thing}"]
+     "-u, --update            update an existing #{thing}",
+     "-U, --upsert            import new or update existing #{thing}"]
   end
 end

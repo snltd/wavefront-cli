@@ -16,7 +16,7 @@ class WavefrontCommandAlert < WavefrontCommandBase
      "history #{CMN} [-o offset] [-L limit] <id>",
      "latest #{CMN} <id>",
      "dump #{CMN}",
-     "import #{CMN} [-u] <file>",
+     "import #{CMN} [-uU] <file>",
      "snooze #{CMN} [-T time] <id>",
      "set #{CMN} <key=value> <id>",
      "unsnooze #{CMN} <id>",
@@ -39,6 +39,7 @@ class WavefrontCommandAlert < WavefrontCommandBase
      "-L, --limit=COUNT        number of #{things} to list",
      '-O, --fields=F1,F2,...   only show given fields',
      "-u, --update             update an existing #{thing}",
+     "-U, --upsert             import new or update existing #{thing}",
      '-T, --time=SECONDS       how long to snooze (default 3600)',
      "-b, --brief              do not show #{thing} names"]
   end

@@ -27,7 +27,7 @@ class WavefrontCommandUsergroup < WavefrontCommandBase
      "create #{CMN} [-p permission...] <name>",
      "delete #{CMN} <id>",
      "dump #{CMN}",
-     "import #{CMN} [-u] <file>",
+     "import #{CMN} [-uU] <file>",
      "set #{CMN} <key=value> <id>",
      "users #{CMN} <id>",
      "permissions #{CMN} <id>",
@@ -46,6 +46,7 @@ class WavefrontCommandUsergroup < WavefrontCommandBase
      "-L, --limit=COUNT        number of #{things} to list",
      '-O, --fields=F1,F2,...   only show given fields',
      "-u, --update             update an existing #{thing}",
+     "-U, --upsert             import new or update existing #{thing}",
      '-p, --permission=STRING  Wavefront permission']
   end
 

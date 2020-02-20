@@ -25,7 +25,7 @@ class WavefrontCommandCloudintegration < WavefrontCommandBase
      "enable #{CMN} <id>",
      "disable #{CMN} <id>",
      "dump #{CMN}",
-     "import #{CMN} [-u] <file>",
+     "import #{CMN} [-uU] <file>",
      "search #{CMN} [-al] [-o offset] [-L limit] [-O fields] <condition>..."]
   end
 
@@ -36,6 +36,7 @@ class WavefrontCommandCloudintegration < WavefrontCommandBase
      "-o, --offset=n           start from nth #{thing}",
      '-O, --fields=F1,F2,...   only show given fields',
      "-L, --limit=COUNT        number of #{things} to list",
-     "-u, --update             update an existing #{thing}"]
+     "-u, --update             update an existing #{thing}",
+     "-U, --upsert             import new or update existing #{thing}"]
   end
 end

@@ -476,11 +476,21 @@ module WavefrontCli
       raw = preprocess_rawfile(raw) if respond_to?(:preprocess_rawfile)
       prepped = import_to_create(raw)
 
-      if options[:update]
+      if options[:upsert]
+        import_upsert(raw, prepped)
+      elsif options[:update]
         import_update(raw)
       else
         wf.create(prepped)
       end
+    end
+
+    def import_upsert(raw, prepped)
+      update_call = import_update(raw)
+      return update_call if update_call.ok?
+
+      puts 'update failed, inserting' if options[:verbose] || options[:debug]
+      wf.create(prepped)
     end
 
     def import_update(raw)

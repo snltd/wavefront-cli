@@ -10,7 +10,7 @@ class WavefrontCommandWebhook < WavefrontCommandBase
      "describe #{CMN} <id>",
      "delete #{CMN} <id>",
      "dump #{CMN}",
-     "import #{CMN} [-u] <file>",
+     "import #{CMN} [-uU] <file>",
      "set #{CMN} <key=value> <id>",
      "search #{CMN} [-al] [-o offset] [-L limit] [-O fields] <condition>..."]
   end
@@ -22,6 +22,7 @@ class WavefrontCommandWebhook < WavefrontCommandBase
      "-o, --offset=n           start list from nth #{thing}",
      '-O, --fields=F1,F2,...   only show given fields',
      "-L, --limit=COUNT        number of #{things} to list",
-     "-u, --update             update an existing #{thing}"]
+     "-u, --update             update an existing #{thing}",
+     "-U, --upsert             import new or update existing #{thing}"]
   end
 end
