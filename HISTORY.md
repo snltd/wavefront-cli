@@ -1,5 +1,8 @@
 # Changelog
 
+## 5.2.1 (2020-02-20)
+* Say whether `--upsert` did and update or an import.
+
 ## 5.1.0 (2020-02-20)
 * Add `-U` (`--upsert`) option to `import` sub-commands.
 

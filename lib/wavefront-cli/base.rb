@@ -46,7 +46,7 @@ module WavefrontCli
     end
 
     # Normally we map the class name to a similar one in the SDK.
-    # Overriding his method lets you map to something else.
+    # Overriding this method lets you map to something else.
     #
     def _sdk_class
       self.class.name.sub(/Cli/, '')
@@ -349,60 +349,6 @@ module WavefrontCli
       raise(WavefrontCli::Exception::CredentialError, 'Missing API endpoint.')
     end
 
-    # Give it a path to a file (as a string) and it will return the
-    # contents of that file as a Ruby object. Automatically detects
-    # JSON and YAML. Raises an exception if it doesn't look like
-    # either. If path is '-' then it will read STDIN.
-    #
-    # @param path [String] the file to load
-    # @return [Hash] a Ruby object of the loaded file
-    # @raise WavefrontCli::Exception::UnsupportedFileFormat if the
-    #   filetype is unknown.
-    # @raise pass through any error loading or parsing the file
-    #
-    def load_file(path)
-      return load_from_stdin if path == '-'
-
-      file = Pathname.new(path)
-      extname = file.extname.downcase
-
-      raise WavefrontCli::Exception::FileNotFound unless file.exist?
-
-      return load_json(file) if extname == '.json'
-      return load_yaml(file) if %w[.yaml .yml].include?(extname)
-
-      raise WavefrontCli::Exception::UnsupportedFileFormat
-    end
-
-    def load_json(file)
-      read_json(IO.read(file))
-    end
-
-    def load_yaml(file)
-      read_yaml(IO.read(file))
-    end
-
-    # Read STDIN and return a Ruby object, assuming that STDIN is
-    # valid JSON or YAML. This is a dumb method, it does no
-    # buffering, so STDIN must be a single block of data. This
-    # appears to be a valid assumption for use-cases of this CLI.
-    #
-    # @return [Object]
-    # @raise Wavefront::Exception::UnparseableInput if the input
-    #   does not parse
-    #
-    def load_from_stdin
-      raw = STDIN.read
-
-      if raw.start_with?('---')
-        read_yaml(raw)
-      else
-        read_json(raw)
-      end
-    rescue RuntimeError
-      raise Wavefront::Exception::UnparseableInput
-    end
-
     # Below here are common methods. Most are used by most classes,
     # but if they don't match a command described in the docopt
     # text, the dispatcher will never call them. So, there's no
@@ -451,50 +397,8 @@ module WavefrontCli
     end
 
     def do_import
-      raw = load_file(options[:'<file>'])
-      errs = 0
-
-      [raw].flatten.each do |obj|
-        resp = import_object(obj)
-        next if options[:noop]
-
-        errs += 1 unless resp.ok?
-        puts import_message(obj, resp)
-      end
-
-      exit errs
-    end
-
-    def import_message(obj, resp)
-      format('%-15<id>s %-10<status>s %<message>s',
-             id: obj[:id] || obj[:url],
-             status: resp.ok? ? 'IMPORTED' : 'FAILED',
-             message: resp.status.message)
-    end
-
-    def import_object(raw)
-      raw = preprocess_rawfile(raw) if respond_to?(:preprocess_rawfile)
-      prepped = import_to_create(raw)
-
-      if options[:upsert]
-        import_upsert(raw, prepped)
-      elsif options[:update]
-        import_update(raw)
-      else
-        wf.create(prepped)
-      end
-    end
-
-    def import_upsert(raw, prepped)
-      update_call = import_update(raw)
-      return update_call if update_call.ok?
-
-      puts 'update failed, inserting' if options[:verbose] || options[:debug]
-      wf.create(prepped)
-    end
-
-    def import_update(raw)
-      wf.update(raw[:id], raw, false)
+      require_relative 'subcommands/import'
+      WavefrontCli::Subcommand::Import.new(self, options).run!
     end
 
     def do_delete
@@ -604,18 +508,6 @@ module WavefrontCli
     # rubocop:enable Metrics/MethodLength
     # rubocop:enable Metrics/CyclomaticComplexity
 
-    # Most things will re-import with the POST method if you remove
-    # the ID.
-    #
-    def import_to_create(raw)
-      raw.each_with_object({}) do |(k, v), a|
-        a[k.to_sym] = v unless k == :id
-      end
-    rescue StandardError => e
-      puts e if options[:debug]
-      raise WavefrontCli::Exception::UnparseableInput
-    end
-
     # Return a detailed description of one item, if an ID has been
     # given, or all items if it has not.
     #
@@ -665,14 +557,16 @@ module WavefrontCli
     end
     # rubocop:enable Metrics/MethodLength
 
-    private
-
-    def read_json(io)
-      JSON.parse(io, symbolize_names: true)
-    end
-
-    def read_yaml(io)
-      YAML.safe_load(io, symbolize_names: true)
+    # Most things will re-import with the POST method if you remove
+    # the ID.
+    #
+    def import_to_create(raw)
+      raw.each_with_object({}) do |(k, v), a|
+        a[k.to_sym] = v unless k == :id
+      end
+    rescue StandardError => e
+      puts e if options[:debug]
+      raise WavefrontCli::Exception::UnparseableInput
     end
   end
 end
