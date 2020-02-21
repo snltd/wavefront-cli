@@ -370,30 +370,8 @@ module WavefrontCli
 
     def do_dump
       cannot_noop!
-
-      if options[:format] == 'yaml'
-        ok_exit dump_yaml
-      elsif options[:format] == 'json'
-        ok_exit dump_json
-      else
-        abort format("Dump format must be 'json' or 'yaml'. " \
-                     "(Tried '%<format>s')", options)
-      end
-    end
-
-    def dump_yaml
-      JSON.parse(item_dump_call.to_json).to_yaml
-    end
-
-    def dump_json
-      item_dump_call.to_json
-    end
-
-    # Broken out into its own method because 'users' does not use
-    # pagination
-    #
-    def item_dump_call
-      wf.list(ALL_PAGE_SIZE, :all).response.items
+      require_relative 'subcommands/dump'
+      WavefrontCli::Subcommand::Dump.new(self, options).run!
     end
 
     def do_import
@@ -567,6 +545,13 @@ module WavefrontCli
     rescue StandardError => e
       puts e if options[:debug]
       raise WavefrontCli::Exception::UnparseableInput
+    end
+
+    # Broken out into its own method at this level because 'users' does not
+    # use pagination.
+    #
+    def item_dump_call
+      wf.list(ALL_PAGE_SIZE, :all).response.items
     end
   end
 end

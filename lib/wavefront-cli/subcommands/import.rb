@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require_relative 'base'
 require_relative '../helpers/load_file'
 
 module WavefrontCli
@@ -7,13 +8,10 @@ module WavefrontCli
     #
     # Stuff to import an object
     #
-    class Import
+    class Import < Base
       attr_reader :wf, :options
 
-      def initialize(calling_class, options)
-        @calling_class = calling_class
-        @wf = calling_class.wf
-        @options = options
+      def post_initialize
         @message = 'IMPORTED'
       end
 
