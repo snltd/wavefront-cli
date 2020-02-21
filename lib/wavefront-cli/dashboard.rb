@@ -41,10 +41,11 @@ module WavefrontCli
     end
 
     def do_favs
-      require 'wavefront-sdk/search'
-      wfs = Wavefront::Search.new(mk_creds, mk_opts)
-      query = conds_to_query(['favorite=true'])
-      wfs.search(:dashboard, query, limit: :all, sort_field: :id)
+      require_relative 'subcommands/search'
+      wfs = WavefrontCli::Subcommand::Search.new(self, options)
+      wfs.cond_search(:dashboard,
+                      ['favorite=true'],
+                      limit: :all, sort_field: :id)
     end
 
     def do_fav

@@ -379,6 +379,11 @@ module WavefrontCli
       WavefrontCli::Subcommand::Import.new(self, options).run!
     end
 
+    def do_search(cond = options[:'<condition>'])
+      require_relative 'subcommands/search'
+      WavefrontCli::Subcommand::Search.new(self, options).run!(cond)
+    end
+
     def do_delete
       wf.delete(options[:'<id>'])
     end
@@ -410,81 +415,6 @@ module WavefrontCli
       k, v = options[:'<key=value>'].split('=', 2)
       wf.update(options[:'<id>'], k => v)
     end
-
-    def do_search(cond = options[:'<condition>'])
-      require 'wavefront-sdk/search'
-      wfs = Wavefront::Search.new(mk_creds, mk_opts)
-      query = conds_to_query(cond)
-      wfs.search(search_key, query, range_hash)
-    end
-
-    # If the user has specified --all, override any limit and offset
-    # values
-    #
-    # rubocop:disable Metrics/MethodLength
-    def range_hash
-      offset_key = :offset
-
-      if options[:all]
-        limit  = :all
-        offset = ALL_PAGE_SIZE
-      elsif options[:cursor]
-        offset_key = :cursor
-        limit = options[:limit]
-        offset = options[:cursor]
-      else
-        limit  = options[:limit]
-        offset = options[:offset]
-      end
-
-      { limit: limit, offset_key => offset }
-    end
-    # rubocop:enable Metrics/MethodLength
-
-    # The search URI pattern doesn't always match the command name,
-    # or class name. Override this method if this is the case.
-    #
-    def search_key
-      klass_word
-    end
-
-    # Turn a list of search conditions into an API query
-    #
-    # @param conds [Array]
-    # @return [Array[Hash]]
-    #
-    def conds_to_query(conds)
-      conds.map do |cond|
-        key, value = cond.split(SEARCH_SPLIT, 2)
-        { key: key, value: value }.merge(matching_method(cond))
-      end
-    end
-
-    # @param cond [String] a search condition, like "key=value"
-    # @return [Hash] of matchingMethod and negated
-    #
-    # rubocop:disable Metrics/CyclomaticComplexity
-    # rubocop:disable Metrics/MethodLength
-    def matching_method(cond)
-      case cond
-      when /^\w+~/
-        { matchingMethod: 'CONTAINS', negated: false }
-      when /^\w+!~/
-        { matchingMethod: 'CONTAINS', negated: true }
-      when /^\w+=/
-        { matchingMethod: 'EXACT', negated: false }
-      when /^\w+!=/
-        { matchingMethod: 'EXACT', negated: true }
-      when /^\w+\^/
-        { matchingMethod: 'STARTSWITH', negated: false }
-      when /^\w+!\^/
-        { matchingMethod: 'STARTSWITH', negated: true }
-      else
-        raise(WavefrontCli::Exception::UnparseableSearchPattern, cond)
-      end
-    end
-    # rubocop:enable Metrics/MethodLength
-    # rubocop:enable Metrics/CyclomaticComplexity
 
     # Return a detailed description of one item, if an ID has been
     # given, or all items if it has not.
@@ -552,6 +482,13 @@ module WavefrontCli
     #
     def item_dump_call
       wf.list(ALL_PAGE_SIZE, :all).response.items
+    end
+
+    # The search URI pattern doesn't always match the command name,
+    # or class name. Override this method if this is the case.
+    #
+    def search_key
+      klass_word
     end
   end
 end
