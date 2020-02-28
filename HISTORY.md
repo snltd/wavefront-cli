@@ -1,5 +1,7 @@
 # Changelog
 
+* Properly handle unavailable port when sending distributions to a proxy.
+
 ## 5.2.1 (2020-02-20)
 * Say whether `--upsert` did and update or an import.
 
