@@ -121,7 +121,7 @@ module WavefrontCli
     def send_point(point)
       call_write(point)
     rescue Wavefront::Exception::InvalidEndpoint
-      abort format("Could not connect to proxy '%<proxy>s:%<port>s'.", options)
+      abort format("Could not connect to proxy '%<proxy>s:%<port>s'.", wf.creds)
     end
 
     # Read the input, from a file or from STDIN, and turn each line

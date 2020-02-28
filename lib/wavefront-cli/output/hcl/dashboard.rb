@@ -91,7 +91,7 @@ module WavefrontHclOutput
     end
 
     def quote_value(val)
-      val.gsub!(/\$/, '$$') if v.is_a?(String)
+      val.gsub!(/\$/, '$$') if val.is_a?(String)
       super
     end
   end
