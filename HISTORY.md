@@ -2,6 +2,7 @@
 
 ## 5.1.2 (2020-02-28)
 * Fix regression in HCL dashboard export.
+* Properly handle unavailable port when sending distributions to a proxy.
 
 ## 5.1.1 (2020-02-20)
 * Say whether `--upsert` did and update or an import.
