@@ -1,6 +1,9 @@
 # Changelog
 
-## 5.2.1 (2020-02-20)
+## 5.1.2 (2020-02-28)
+* Fix regression in HCL dashboard export.
+
+## 5.1.1 (2020-02-20)
 * Say whether `--upsert` did and update or an import.
 
 ## 5.1.0 (2020-02-20)
