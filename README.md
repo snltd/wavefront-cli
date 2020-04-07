@@ -33,7 +33,6 @@ Commands:
   alert              view and manage alerts
   apitoken           view and your own API tokens
   cloudintegration   view and manage cloud integrations
-  cluster            view and manage monitored clusters
   config             create and manage local configuration
   dashboard          view and manage dashboards
   derivedmetric      view and manage derived metrics

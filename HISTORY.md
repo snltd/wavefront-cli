@@ -1,5 +1,8 @@
 # Changelog
 
+## 6.0.0 (2020-04-07)
+* Remove `cluster` command. (Breaking change.)
+
 ## 5.1.2 (2020-02-28)
 * Fix regression in HCL dashboard export.
 * Properly handle unavailable port when sending distributions to a proxy.
