@@ -10,7 +10,7 @@ class WavefrontCommandProxy < WavefrontCommandBase
   end
 
   def _commands
-    ["list #{CMN} [-al] [-O fields] [-o offset] [-L limit]",
+    ["list #{CMN} [-laA] [-O fields] [-o offset] [-L limit]",
      "describe #{CMN} <id>",
      "delete #{CMN} <id>",
      "undelete #{CMN} <id>",
@@ -23,6 +23,7 @@ class WavefrontCommandProxy < WavefrontCommandBase
     [common_options,
      "-l, --long                list #{things} in detail",
      "-a, --all                 list all #{things}",
+     "-A, --active              only show active #{things}",
      "-o, --offset=n            start from nth #{thing}",
      '-O, --fields=F1,F2,...    only show given fields',
      "-L, --limit=COUNT         number of #{things} to list"]

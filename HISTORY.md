@@ -1,5 +1,8 @@
 # Changelog
 
+## 6.1.0 (2020-06-02)
+* Add `-A` flag to `proxy list` command, to only list active proxies
+
 ## 6.0.0 (2020-04-07)
 * Remove `cluster` command. (Breaking change.)
 
