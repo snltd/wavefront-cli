@@ -6,6 +6,9 @@ AllCops:
 Metrics/ClassLength:
   Max: 400
 
+Style/IfUnlessModifier:
+  Enabled: false # because it wants to make lines >80 chars
+
 Style/HashEachMethods:
     Enabled: true
 Style/HashTransformKeys:
