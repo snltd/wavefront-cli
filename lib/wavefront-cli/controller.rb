@@ -3,7 +3,7 @@
 # For development against a local checkout of the SDK, uncomment
 # this definition
 #
-# DEVELOPMENT = true
+DEVELOPMENT = true
 
 if defined?(DEVELOPMENT)
   dir = Pathname.new(__dir__).realpath.parent.parent.parent
@@ -136,9 +136,15 @@ class WavefrontCliController
   rescue Wavefront::Exception::NetworkTimeout
     abort 'Connection timed out.'
   rescue Wavefront::Exception::InvalidPermission => e
-    abort "'#{e}' is not a valid privilege."
+    abort "'#{e}' is not a valid Wavefront permission."
   rescue Wavefront::Exception::InvalidUserGroupId => e
-    abort "'#{e}' is not a valid user group id."
+    abort "'#{e}' is not a valid user group ID."
+  rescue Wavefront::Exception::InvalidAccountId => e
+    abort "'#{e}' is not a valid system or user account ID."
+  rescue Wavefront::Exception::InvalidRoleId => e
+    abort "'#{e}' is not a valid role ID."
+  rescue Wavefront::Exception::InvalidIngestionPolicyId => e
+    abort "'#{e}' is not a valid ingestion policy ID."
   rescue WavefrontCli::Exception::InvalidValue => e
     abort "Invalid value for #{e}."
   rescue WavefrontCli::Exception::ProfileExists => e

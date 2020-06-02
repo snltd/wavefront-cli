@@ -51,7 +51,6 @@ Commands:
   source             view and manage source tags and descriptions
   spy                monitor traffic going into Wavefront
   usage              view and manage usage reports
-  user               view and manage Wavefront users
   usergroup          view and manage Wavefront user groups
   webhook            view and manage webhooks
   window             view and manage maintenance windows
@@ -103,7 +102,7 @@ $ wf proxy list
 
 You can get more verbose listings with the `-l` flag. Results may be
 paginated. You can progress through pages with the `-L` and `-o`
-options, or user `--all` to get everything in one go.
+options, or use `--all` to get everything in one go.
 
 ### Describing Things
 
@@ -151,7 +150,7 @@ mentioned above, human-readable listings and desctiptions may omit
 data which is not likely to be useful, or which is extremely hard to
 present in a readable way.
 
-If you `describe` an object like a dashboard, user, webhook etc as
+If you `describe` an object like a dashboard, account, webhook etc as
 `json` or `yaml`, and send the output to a file, you can re-import
 that data. The format of the file to be imported is automatically
 detected.

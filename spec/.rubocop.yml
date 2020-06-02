@@ -14,3 +14,17 @@ Style/HashTransformKeys:
     Enabled: true
 Style/HashTransformValues:
     Enabled: true
+
+# 0.83 compatabilities
+Layout/EmptyLinesAroundAttributeAccessor:
+  Enabled: true
+Layout/SpaceAroundMethodCallOperator:
+  Enabled: true
+Lint/RaiseException:
+  Enabled: true
+Lint/StructNewOverride:
+  Enabled: true
+Style/ExponentialNotation:
+  Enabled: true
+Style/SlicingWithRange:
+  Enabled: true
