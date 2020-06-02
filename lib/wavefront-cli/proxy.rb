@@ -7,6 +7,11 @@ module WavefrontCli
   # CLI coverage for the v2 'proxy' API.
   #
   class Proxy < WavefrontCli::Base
+    def do_list
+      options[:all] = true if options[:active]
+      super
+    end
+
     def no_api_response
       %w[do_versions]
     end

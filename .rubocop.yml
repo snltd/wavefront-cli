@@ -1,7 +1,7 @@
 ---
 
 AllCops:
-  TargetRubyVersion: 2.3
+  TargetRubyVersion: 2.4
 
 Metrics/ClassLength:
   Max: 400
