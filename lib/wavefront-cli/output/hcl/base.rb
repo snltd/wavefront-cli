@@ -92,7 +92,7 @@ module WavefrontHclOutput
     def quote_value(val)
       case val.class.to_s.to_sym
       when :String
-        format('"%<value>s"', value: val.gsub(/\"/, '\"'))
+        format('"%<value>s"', value: val.gsub(/"/, '\"'))
       else
         val
       end
