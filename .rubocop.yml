@@ -13,7 +13,7 @@ Style/HashTransformKeys:
 Style/HashTransformValues:
     Enabled: true
 
-# 0.83 compatabilities
+# New compatabilities
 Layout/EmptyLinesAroundAttributeAccessor:
   Enabled: true
 Layout/SpaceAroundMethodCallOperator:
@@ -26,3 +26,15 @@ Style/ExponentialNotation:
   Enabled: true
 Style/SlicingWithRange:
   Enabled: true
+Lint/DeprecatedOpenSSLConstant:
+  Enabled: true
+Lint/MixedRegexpCaptureTypes:
+  Enabled: true
+Style/RedundantRegexpCharacterClass:
+  Enabled: true
+Style/RedundantRegexpEscape:
+  Enabled: true
+
+# Is nothing sacred?
+Layout/LineLength:
+  Max: 80
