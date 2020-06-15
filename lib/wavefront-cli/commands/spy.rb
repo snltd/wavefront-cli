@@ -34,9 +34,4 @@ class WavefrontCommandSpy < WavefrontCommandBase
      '-T, --tag-key=TAG        only show metrics with the given point tag key',
      '-y, --type=STRING        one of METRIC, SPAN, HOST, or STRING']
   end
-
-  def postscript
-    "\nNOTE: This command uses the unofficial 'spy' API endpoint, which " \
-      'is not guaranteed to remain stable.'.cmd_fold(TW, 0)
-  end
 end
