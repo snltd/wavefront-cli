@@ -57,11 +57,13 @@ module WavefrontCli
         i: options[:inclusive],
         summarization: options[:summarize] || 'mean',
         listMode: true,
-        strict: true,
+        strict: !options[:nostrict],
         includeObsoleteMetrics: options[:obsolete],
         sorted: true }.tap do |o|
           o[:n] = options[:name] if options[:name]
           o[:p] = options[:points] if options[:points]
+          o[:view] = 'HISTOGRAM' if options[:histogramview]
+          o[:cached] = false if options[:nocache]
         end
     end
     # rubocop:enable Metrics/AbcSize

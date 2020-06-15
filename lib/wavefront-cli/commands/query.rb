@@ -12,7 +12,7 @@ class WavefrontCommandQuery < WavefrontCommandBase
   def _commands
     ['aliases [-DV] [-c file] [-P profile]',
      "#{CMN} [-g granularity] [-s time] [-e time] " \
-           '[-WikvO] [-S mode] [-N name] [-p points] [-F options] <query>',
+           '[-ikvCGKOW] [-S mode] [-N name] [-p points] [-F options] <query>',
      "raw #{CMN} [-H host] [-s time] [-e time] " \
            '[-F options] <metric>',
      "run #{CMN} [-g granularity] [-s time] [-e time] " \
@@ -36,6 +36,9 @@ class WavefrontCommandQuery < WavefrontCommandBase
      '-F, --format-opts=STRING  comma-separated options to pass to ' \
                                 'output formatter',
      '-k, --nospark             do not show sparkline',
+     '-C, --nocache             do not use the query cache',
+     '-K, --nostrict            allow points outside the query window',
+     '-G, --histogram-view      use histogram view rather than metric',
      '-W, --nowarn              do not show API warning messages']
   end
 

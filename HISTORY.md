@@ -3,6 +3,8 @@
 ## 6.0.0 (2020-04-07)
 * Remove `cluster` command. (Breaking change.)
 * Add `role` command.
+* Add `--nocache`, `--nostrict` and `--histogram-view` options to `query`
+  command.
 * Require 5.x of [the SDK](https://github.com/snltd/wavefront-sdk).
 
 ## 5.1.2 (2020-02-28)
