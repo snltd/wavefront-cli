@@ -10,9 +10,9 @@ module WavefrontCli
     alias do_permissions do_describe
 
     def do_create
-      wf.create( { name: options[:'<name>'],
-                   description: options[:description],
-                   permissions: options[:permission] }.compact)
+      wf.create({ name: options[:'<name>'],
+                  description: options[:description],
+                  permissions: options[:permission] }.compact)
     end
 
     def do_accounts
@@ -51,19 +51,17 @@ module WavefrontCli
                  limit: :all, sort_field: :id)
     end
 
-=begin
-    def do_add_user
-      wf.add_users_to_group(options[:'<id>'], options[:'<user>'])
-    end
-
-    def do_remove_user
-      wf.remove_users_from_group(options[:'<id>'], options[:'<user>'])
-    end
-
-    def import_to_create(raw)
-      raw['emailAddress'] = raw['identifier']
-      raw.delete_if { |k, _v| %w[customer identifier].include?(k) }
-    end
-=end
+    #     def do_add_user
+    #       wf.add_users_to_group(options[:'<id>'], options[:'<user>'])
+    #     end
+    #
+    #     def do_remove_user
+    #       wf.remove_users_from_group(options[:'<id>'], options[:'<user>'])
+    #     end
+    #
+    #     def import_to_create(raw)
+    #       raw['emailAddress'] = raw['identifier']
+    #       raw.delete_if { |k, _v| %w[customer identifier].include?(k) }
+    #     end
   end
 end

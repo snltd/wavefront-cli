@@ -42,20 +42,19 @@ class WavefrontCommandAccount < WavefrontCommandBase
      "-a, --all                list all #{things}",
      "-o, --offset=n           start from nth #{thing}",
      "-L, --limit=COUNT        number of #{things} to list",
-     "-s, --service            list only service accounts",
-     "-S, --user               list only user accounts",
+     '-s, --service            list only service accounts',
+     '-S, --user               list only user accounts',
      '-O, --fields=F1,F2,...   only show given fields',
      "-u, --update             update an existing #{thing}",
      "-U, --upsert             import new or update existing #{thing}",
-     "-m, --permission=STRING  Wavefront permission name",
-     "-g, --groupid=STRING     Wavefront usergroup ID",
-     "-r, --roleid=STRING      Wavefront role ID",
-     "-i, --policyid=STRING    Wavefront ingestion policy ID",
-    ]
+     '-m, --permission=STRING  Wavefront permission name',
+     '-g, --groupid=STRING     Wavefront usergroup ID',
+     '-r, --roleid=STRING      Wavefront role ID',
+     '-i, --policyid=STRING    Wavefront ingestion policy ID']
   end
 
   def postscript
-    "Service accounts can be partially managed with this command, but " \
+    'Service accounts can be partially managed with this command, but ' \
     "'wf serviceaccount' has more features.\n\nFor a list of permissions, " \
     "run 'wf settings list permissions'.".fold(TW, 0)
   end

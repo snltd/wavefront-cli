@@ -8,8 +8,10 @@ module WavefrontDisplay
   #
   class Role < Base
     def do_list_brief
-      data.map! { |d| d.merge(acct_count: "#{d[:linkedAccountsCount]} accounts",
-                              group_count: "#{d[:linkedGroupsCount]} groups") }
+      data.map! do |d|
+        d.merge(acct_count: "#{d[:linkedAccountsCount]} accounts",
+                group_count: "#{d[:linkedGroupsCount]} groups")
+      end
       multicolumn(:id, :name, :acct_count, :group_count)
     end
 

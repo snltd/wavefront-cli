@@ -33,8 +33,8 @@ class WavefrontCommandUsergroup < WavefrontCommandBase
      "permissions #{CMN} <id>",
      "add user #{CMN} <id> <user>...",
      "remove user #{CMN} <id> <user>...",
-     "grant #{CMN} <permission> to <id>",
-     "revoke #{CMN} <permission> from <id>",
+     "add role #{CMN} <id> <role>...",
+     "remove role #{CMN} <id> <role>...",
      "search #{CMN} [-al] [-o offset] [-L limit] [-O fields] <condition>..."]
   end
 

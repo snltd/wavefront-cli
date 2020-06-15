@@ -27,16 +27,16 @@ module WavefrontDisplay
                   group_id: options[:'<id>']).fold(TW, 0)
     end
 
-    def do_grant
-      puts format("Granted '%<perm>s' permission to '%<group_id>s'.",
-                  perm: options[:'<permission>'],
-                  group_id: options[:'<id>'])
+    def do_add_role
+      puts format("Added %<quoted_role>s to '%<group_id>s'.",
+                  quoted_role: quoted(options[:'<role>']),
+                  group_id: options[:'<id>']).fold(TW, 0)
     end
 
-    def do_revoke
-      puts format("Revoked '%<perm>s' permission from '%<group_id>s'.",
-                  perm: options[:'<permission>'],
-                  group_id: options[:'<id>'])
+    def do_remove_role
+      puts format("Removed %<quoted_role>s from '%<group_id>s'.",
+                  quoted_role: quoted(options[:'<role>']),
+                  group_id: options[:'<id>']).fold(TW, 0)
     end
 
     def do_users

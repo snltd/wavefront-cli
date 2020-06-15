@@ -27,12 +27,12 @@ module WavefrontCli
       wf.remove_users_from_group(options[:'<id>'], options[:'<user>'])
     end
 
-    def do_grant
-      wf.grant(options[:'<permission>'], Array(options[:'<id>']))
+    def do_add_role
+      wf.add_roles_to_group(options[:'<id>'], options[:'<role>'])
     end
 
-    def do_revoke
-      wf.revoke(options[:'<permission>'], Array(options[:'<id>']))
+    def do_remove_role
+      wf.remove_roles_from_group(options[:'<id>'], options[:'<role>'])
     end
 
     def import_to_create(raw)

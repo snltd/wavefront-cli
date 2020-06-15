@@ -95,26 +95,41 @@ class UserGroupEndToEndTest < EndToEndTest
     end
   end
 
-  def test_grant
-    assert_repeated_output(
-      "Granted '#{privileges[1]}' permission to '#{id}'."
-    ) do
-      assert_cmd_posts("grant #{privileges[1]} to #{id}",
-                       "/api/v2/usergroup/grant/#{privileges[1]}",
-                       [id].to_json)
+  def test_add_role
+    quietly do
+      assert_cmd_posts("add role #{id} #{roles[0]}",
+                       "/api/v2/usergroup/#{id}/addRoles",
+                       [roles[0]].to_json)
     end
 
-    assert_abort_on_missing_creds("grant #{privileges[1]} to #{id}")
-    assert_invalid_id("grant #{privileges[1]} to #{invalid_id}")
+    assert_abort_on_missing_creds("add role #{id} #{roles[0]}")
+    assert_invalid_id("add role #{invalid_id} #{roles[0]}")
   end
 
-  def test_revoke
-    assert_repeated_output(
-      "Revoked '#{privileges[0]}' permission from '#{id}'."
-    ) do
-      assert_cmd_posts("revoke #{privileges[0]} from #{id}",
-                       "/api/v2/usergroup/revoke/#{privileges[0]}",
-                       [id].to_json)
+  def test_add_multiple_roles
+    quietly do
+      assert_cmd_posts("add role #{id} #{roles[0]} #{roles[1]}",
+                       "/api/v2/usergroup/#{id}/addRoles",
+                       roles.to_json)
+    end
+  end
+
+  def test_remove_role
+    quietly do
+      assert_cmd_posts("remove role #{id} #{roles[0]}",
+                       "/api/v2/usergroup/#{id}/removeRoles",
+                       [roles[0]].to_json)
+    end
+
+    assert_abort_on_missing_creds("remove role #{id} #{roles[0]}")
+    assert_invalid_id("remove role #{invalid_id} #{roles[0]}")
+  end
+
+  def test_remove_multiple_roles
+    quietly do
+      assert_cmd_posts("remove role #{id} #{roles[0]} #{roles[1]}",
+                       "/api/v2/usergroup/#{id}/removeRoles",
+                       roles.to_json)
     end
   end
 
@@ -150,5 +165,10 @@ class UserGroupEndToEndTest < EndToEndTest
 
   def users
     %w[someone@somewhere.com other@elsewhere.com]
+  end
+
+  def roles
+    %w[01234567-aad4-4302-a94e-9667e1517127
+       abcdefab-abcd-4302-a94e-9667e1517127]
   end
 end

@@ -10,7 +10,7 @@ module WavefrontCli
     alias do_roles do_describe
     alias do_groups do_describe
     alias do_ingestionpolicy do_describe
-    alias do_privileges do_describe
+    alias do_permissions do_describe
 
     def do_role_add_to
       wf_account_id?(options[:'<id>'])
@@ -75,6 +75,10 @@ module WavefrontCli
       wf.user_invite([user_body])
     end
 
+    def do_validate
+      wf.validate_accounts(options[:'<account>'])
+    end
+
     private
 
     # Object used to create and invite users.
@@ -82,55 +86,50 @@ module WavefrontCli
     def user_body
       { emailAddress: options[:'<id>'],
         groups: options[:permission],
-        roles:  options[:roleid],
+        roles: options[:roleid],
         ingestionPolicyId: options[:policyid],
-        userGroups: options[:groupid] }.reject { |k, v| v&.empty?}.compact
+        userGroups: options[:groupid] }.reject { |_k, v| v&.empty? }.compact
     end
 
-=begin
-    def do_leave
-      wf.remove_groups_from_user(options[:'<id>'], options[:'<group>'])
-    end
-
-    def do_grant
-      wf.grant(options[:'<id>'], options[:'<privilege>'])
-    end
-
-    def do_revoke
-      wf.revoke(options[:'<id>'], options[:'<privilege>'])
-    end
-
-    def do_validate
-      wf.validate_users(options[:'<user>'])
-    end
-
-    def import_to_create(raw)
-      { emailAddress: raw['items']['identifier'],
-        groups: raw['items']['groups'] }.tap do |r|
-        if raw['items'].key?('userGroups')
-          r['userGroups'] = raw['items']['userGroups'].map { |g| g['id'] }
-        end
-      end
-    end
-
-    # Because of the way docopt works, we have to call the user ID
-    # parameter something else on the delete command. This means the
-    # automatic validtion doesn't work, and we have to do it
-    # ourselves.
+    #     def do_leave
+    #       wf.remove_groups_from_user(options[:'<id>'], options[:'<group>'])
+    #     end
     #
-    def extra_validation
-      options[:'<user>']&.each { |u| validate_user(u) }
-    end
-
-    def validate_user(user)
-      wf_user_id?(user)
-    rescue Wavefront::Exception::InvalidUserId
-      abort failed_validation_message(user)
-    end
-
-    def item_dump_call
-      wf.list.response.items
-    end
-=end
+    #     def do_grant
+    #       wf.grant(options[:'<id>'], options[:'<privilege>'])
+    #     end
+    #
+    #     def do_revoke
+    #       wf.revoke(options[:'<id>'], options[:'<privilege>'])
+    #     end
+    #
+    #
+    #     def import_to_create(raw)
+    #       { emailAddress: raw['items']['identifier'],
+    #         groups: raw['items']['groups'] }.tap do |r|
+    #         if raw['items'].key?('userGroups')
+    #           r['userGroups'] = raw['items']['userGroups'].map { |g| g['id'] }
+    #         end
+    #       end
+    #     end
+    #
+    #     # Because of the way docopt works, we have to call the user ID
+    #     # parameter something else on the delete command. This means the
+    #     # automatic validtion doesn't work, and we have to do it
+    #     # ourselves.
+    #     #
+    #     def extra_validation
+    #       options[:'<user>']&.each { |u| validate_user(u) }
+    #     end
+    #
+    #     def validate_user(user)
+    #       wf_user_id?(user)
+    #     rescue Wavefront::Exception::InvalidUserId
+    #       abort failed_validation_message(user)
+    #     end
+    #
+    #     def item_dump_call
+    #       wf.list.response.items
+    #     end
   end
 end

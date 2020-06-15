@@ -7,7 +7,6 @@ require_relative '../../lib/wavefront-cli/account'
 # Ensure 'account' commands produce the correct API calls.
 #
 class AccountEndToEndTest < EndToEndTest
-=begin
   include WavefrontCliTest::List
   include WavefrontCliTest::Delete
   include WavefrontCliTest::Describe
@@ -99,9 +98,9 @@ class AccountEndToEndTest < EndToEndTest
     end
 
     out, err = capture_io do
-       assert_raises(SystemExit) do
-         wf.new("account revoke #{invalid_permission} from #{id}".split)
-       end
+      assert_raises(SystemExit) do
+        wf.new("account revoke #{invalid_permission} from #{id}".split)
+      end
     end
 
     assert_empty out
@@ -126,28 +125,28 @@ class AccountEndToEndTest < EndToEndTest
   def test_add_ingestionpolicy_to
     assert_repeated_output("Added '#{policy}' to '#{id}'.") do
       assert_cmd_posts("ingestionpolicy add to #{id} #{policy}",
-                       "/api/v2/account/addingestionpolicy",
+                       '/api/v2/account/addingestionpolicy',
                        { ingestionPolicyId: policy,
                          accounts: [id] }.to_json)
     end
 
     assert_invalid_id("ingestionpolicy add to #{invalid_id} #{policy}")
     assert_invalid_id("ingestionpolicy add to #{id} #{invalid_policy}")
-    assert_abort_on_missing_creds( "ingestionpolicy add to #{id} #{policy}")
+    assert_abort_on_missing_creds("ingestionpolicy add to #{id} #{policy}")
     assert_usage("ingestionpolicy add to #{policy}")
   end
 
   def test_remove_ingestionpolicy_remove
     assert_repeated_output("Removed '#{policy}' from '#{id}'.") do
       assert_cmd_posts("ingestionpolicy remove from #{id} #{policy}",
-                       "/api/v2/account/removeingestionpolicies",
+                       '/api/v2/account/removeingestionpolicies',
                        { ingestionPolicyId: policy,
                          accounts: [id] }.to_json)
     end
 
     assert_invalid_id("ingestionpolicy remove from #{invalid_id} #{policy}")
     assert_invalid_id("ingestionpolicy remove from #{id} #{invalid_policy}")
-    assert_abort_on_missing_creds( "ingestionpolicy remove from #{id} #{policy}")
+    assert_abort_on_missing_creds("ingestionpolicy remove from #{id} #{policy}")
     assert_usage("ingestionpolicy remove from #{policy}")
   end
 
@@ -184,8 +183,8 @@ class AccountEndToEndTest < EndToEndTest
 
   def test_invite_with_group_and_permission
     expected_body = [{ emailAddress: id,
-                          groups: [permission],
-                          userGroups: [groups.first] }].to_json
+                       groups: [permission],
+                       userGroups: [groups.first] }].to_json
 
     assert_repeated_output("Sent invitation to '#{id}'.") do
       assert_cmd_posts("invite user -m #{permission} -g #{groups.first} #{id}",
@@ -208,9 +207,11 @@ class AccountEndToEndTest < EndToEndTest
                        ingestionPolicyId: policy }].to_json
 
     assert_repeated_output("Sent invitation to '#{id}'.") do
-      assert_cmd_posts("invite user -r #{roles.join(' -r ')} -i #{policy} #{id}",
-                       '/api/v2/account/user/invite',
-                       expected_body)
+      assert_cmd_posts(
+        "invite user -r #{roles.join(' -r ')} -i #{policy} #{id}",
+        '/api/v2/account/user/invite',
+        expected_body
+      )
     end
 
     assert_noop("invite user -r #{roles.join(' -r ')} -i #{policy} #{id}",
@@ -221,12 +222,11 @@ class AccountEndToEndTest < EndToEndTest
     assert_abort_on_missing_creds("invite user -m #{permission} #{id}")
     assert_usage('invite user')
   end
-=end
 
   def test_create_with_group_and_permission
     expected_body = { emailAddress: id,
-                       groups: [permission],
-                       userGroups: [groups.first] }.to_json
+                      groups: [permission],
+                      userGroups: [groups.first] }.to_json
 
     quietly do
       assert_cmd_posts("create user -m #{permission} -g #{groups.first} #{id}",
@@ -243,12 +243,21 @@ class AccountEndToEndTest < EndToEndTest
   end
 
   def test_validate
+    cmd = "validate #{user_list.join(' ')}"
+
     quietly do
-      assert_cmd_posts("validate #{user_list.join(' ')}",
-                       '/api/v2/user/validateUsers',
+      assert_cmd_posts(cmd,
+                       '/api/v2/account/validateAccounts',
                        user_list.to_json,
                        IO.read(RES_DIR + 'responses' + 'user-validate.json'))
     end
+
+    assert_noop(cmd,
+                'uri: POST https://default.wavefront.com/api/v2/account' \
+                '/validateAccounts',
+                "body: #{user_list.to_json}")
+    assert_abort_on_missing_creds(cmd)
+    assert_usage('validate')
   end
 
   private
