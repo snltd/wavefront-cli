@@ -8,6 +8,7 @@ module WavefrontDisplay
   #
   class Settings < Base
     def do_list_permissions
+      data.sort_by! { |p| p[:groupName] }
       options[:long] ? long_output : multicolumn(:groupName)
     end
 
