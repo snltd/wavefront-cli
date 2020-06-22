@@ -50,18 +50,5 @@ module WavefrontCli
                  conds_to_query(["roles~#{role}"]),
                  limit: :all, sort_field: :id)
     end
-
-    #     def do_add_user
-    #       wf.add_users_to_group(options[:'<id>'], options[:'<user>'])
-    #     end
-    #
-    #     def do_remove_user
-    #       wf.remove_users_from_group(options[:'<id>'], options[:'<user>'])
-    #     end
-    #
-    #     def import_to_create(raw)
-    #       raw['emailAddress'] = raw['identifier']
-    #       raw.delete_if { |k, _v| %w[customer identifier].include?(k) }
-    #     end
   end
 end
