@@ -209,4 +209,48 @@ class WavefrontCliWriteTest < MiniTest::Test
     refute WavefrontCli::Write.new(infileformat: 'fma').distribution?
     refute WavefrontCli::Write.new({}).distribution?
   end
+
+  def test_sane_value
+    assert_equal(0, wf.sane_value(0))
+    assert_equal(0, wf.sane_value(''))
+    assert_equal(-10, wf.sane_value('-10.0'))
+    assert_equal(10, wf.sane_value('   10'))
+    assert_equal(10, wf.sane_value('\\10'))
+    assert_equal(10, wf.sane_value('\10'))
+    assert_raises(WavefrontCli::Exception::InvalidValue) { wf.sane_value(nil) }
+    assert_raises(WavefrontCli::Exception::InvalidValue) { wf.sane_value({}) }
+    assert_raises(WavefrontCli::Exception::InvalidValue) { wf.sane_value([]) }
+  end
+
+  def test_random_value_asymmetric_range
+    lower_bound = -5
+    upper_bound = 20
+
+    max = (1..1000).map { wf.random_value(lower_bound, upper_bound) }.max
+    min = (1..1000).map { wf.random_value(lower_bound, upper_bound) }.min
+
+    assert(max <= upper_bound)
+    assert(min >= lower_bound)
+    refute_equal(max, min)
+  end
+
+  def test_random_value_symmetric_range
+    lower_bound = -15
+    upper_bound = 15
+
+    max = (1..1000).map { wf.random_value(lower_bound, upper_bound) }.max
+    min = (1..1000).map { wf.random_value(lower_bound, upper_bound) }.min
+
+    assert(max <= upper_bound)
+    assert(min >= lower_bound)
+    refute_equal(max, min)
+  end
+
+  def test_random_value_single_value
+    lower_bound = 5
+    upper_bound = 5
+
+    assert_equal([5, 5, 5, 5, 5, 5, 5, 5, 5, 5],
+                 (1..10).map { wf.random_value(lower_bound, upper_bound) })
+  end
 end

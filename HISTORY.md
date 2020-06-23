@@ -1,5 +1,7 @@
 # Changelog
 
+* Add `write noise` command to send a flow of random data to an endpoint.
+
 ## 6.1.0 (2020-06-02)
 * Add `-A` flag to `proxy list` command, to only list active proxies
 
