@@ -102,7 +102,7 @@ class QueryEndToEndTest < EndToEndTest
                                     i: 'false',
                                     strict: 'false',
                                     s: epoch_time[0].to_s,
-                                    cached: 'false'}, canned_response)
+                                    cached: 'false' }, canned_response)
     end
 
     assert_empty(err)

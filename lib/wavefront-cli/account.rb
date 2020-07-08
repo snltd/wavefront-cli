@@ -81,14 +81,20 @@ module WavefrontCli
 
     private
 
-    # Object used to create and invite users.
+    # Object used to create and invite users. We deal with the permissions
+    # seperately because if we don't supply any and they get compacted out,
+    # the user is created with a default set of perms, and we don't want that.
     #
     def user_body
-      { emailAddress: options[:'<id>'],
-        groups: options[:permission],
+      raw = {
+        emailAddress: options[:'<id>'],
         roles: options[:roleid],
         ingestionPolicyId: options[:policyid],
-        userGroups: options[:groupid] }.reject { |_k, v| v&.empty? }.compact
+        userGroups: options[:groupid]
+      }.reject { |_k, v| v&.empty? }.compact
+
+      raw[:groups] = options[:permission]
+      raw
     end
 
     #     def do_leave

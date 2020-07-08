@@ -181,30 +181,31 @@ class AccountEndToEndTest < EndToEndTest
     assert_usage('permissions')
   end
 
-  def test_invite_with_group_and_permission
+  def test_invite_with_group
     expected_body = [{ emailAddress: id,
-                       groups: [permission],
-                       userGroups: [groups.first] }].to_json
+                       userGroups: [groups.first],
+                       groups: [] }].to_json
 
     assert_repeated_output("Sent invitation to '#{id}'.") do
-      assert_cmd_posts("invite user -m #{permission} -g #{groups.first} #{id}",
+      assert_cmd_posts("invite user -g #{groups.first} #{id}",
                        '/api/v2/account/user/invite',
                        expected_body)
     end
 
-    assert_noop("invite user -m #{permission} -g #{groups.first} #{id}",
+    assert_noop("invite user -g #{groups.first} #{id}",
                 'uri: POST https://default.wavefront.com/api/v2/account/user' \
                 '/invite',
                 "body: #{expected_body}")
-    assert_invalid_id("invite user -m #{permission} #{invalid_id}")
-    assert_abort_on_missing_creds("invite user -m #{permission} #{id}")
+    assert_invalid_id("invite user -g #{groups.first} #{invalid_id}")
+    assert_abort_on_missing_creds("invite user -g #{groups.first} #{id}")
     assert_usage('invite user')
   end
 
   def test_invite_with_role_and_policy
     expected_body = [{ emailAddress: id,
                        roles: roles,
-                       ingestionPolicyId: policy }].to_json
+                       ingestionPolicyId: policy,
+                       groups: [] }].to_json
 
     assert_repeated_output("Sent invitation to '#{id}'.") do
       assert_cmd_posts(
@@ -221,25 +222,6 @@ class AccountEndToEndTest < EndToEndTest
     assert_invalid_id("invite user -m #{permission} #{invalid_id}")
     assert_abort_on_missing_creds("invite user -m #{permission} #{id}")
     assert_usage('invite user')
-  end
-
-  def test_create_with_group_and_permission
-    expected_body = { emailAddress: id,
-                      groups: [permission],
-                      userGroups: [groups.first] }.to_json
-
-    quietly do
-      assert_cmd_posts("create user -m #{permission} -g #{groups.first} #{id}",
-                       '/api/v2/account/user',
-                       expected_body)
-    end
-
-    assert_noop("create user -m #{permission} -g #{groups.first} #{id}",
-                'uri: POST https://default.wavefront.com/api/v2/account/user',
-                "body: #{expected_body}")
-    assert_invalid_id("create user -m #{permission} #{invalid_id}")
-    assert_abort_on_missing_creds("create user -m #{permission} #{id}")
-    assert_usage('create user')
   end
 
   def test_validate

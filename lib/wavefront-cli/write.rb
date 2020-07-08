@@ -271,7 +271,6 @@ module WavefrontCli
     # @raise WavefrontCli::Exception::UnparseableInput if the line
     #   doesn't look right
     #
-    # rubocop:disable Metrics/CyclomaticComplexity
     # rubocop:disable Metrics/MethodLength
     # rubocop:disable Metrics/AbcSize
     def process_line(line)
@@ -294,7 +293,6 @@ module WavefrontCli
     end
     # rubocop:enable Metrics/AbcSize
     # rubocop:enable Metrics/MethodLength
-    # rubocop:enable Metrics/CyclomaticComplexity
 
     # We can get tags from the file, from the -T option, or both.
     # Merge them, making the -T win if there is a collision.

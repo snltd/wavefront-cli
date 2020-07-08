@@ -15,13 +15,13 @@ module WavefrontDisplay
       puts "Deleted user group '#{options[:'<id>']}'."
     end
 
-    def do_add_user
+    def do_add_to
       puts format("Added %<quoted_user>s to '%<group_id>s'.",
                   quoted_user: quoted(options[:'<user>']),
                   group_id: options[:'<id>']).fold(TW, 0)
     end
 
-    def do_remove_user
+    def do_remove_from
       puts format("Removed %<quoted_user>s from '%<group_id>s'.",
                   quoted_user: quoted(options[:'<user>']),
                   group_id: options[:'<id>']).fold(TW, 0)
@@ -47,12 +47,16 @@ module WavefrontDisplay
            end)
     end
 
-    def do_permissions
-      puts(if !data.include?(:permissions) || data[:permissions].empty?
-             "Group '#{options[:'<id>']}' has no permissions."
+    def do_roles
+      puts(if !data.include?(:roles) || data[:roles].empty?
+             "Group '#{options[:'<id>']}' has no roles attached."
            else
-             data[:permissions]
+             data[:roles].map { |r| r[:id] }
            end)
+    end
+
+    def do_permissions
+      puts data[:roles].map { |r| r[:permissions] }.flatten.sort.uniq
     end
   end
 end

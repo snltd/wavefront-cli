@@ -24,17 +24,18 @@ class WavefrontCommandUsergroup < WavefrontCommandBase
   def _commands
     ["list #{CMN} [-al] [-O fields] [-o offset] [-L limit]",
      "describe #{CMN} <id>",
-     "create #{CMN} [-p permission...] <name>",
+     "create #{CMN} [-r role_id...] <name>",
      "delete #{CMN} <id>",
      "dump #{CMN}",
      "import #{CMN} [-uU] <file>",
      "set #{CMN} <key=value> <id>",
+     "add to #{CMN} <id> <user>...",
+     "remove from #{CMN} <id> <user>...",
      "users #{CMN} <id>",
-     "permissions #{CMN} <id>",
-     "add user #{CMN} <id> <user>...",
-     "remove user #{CMN} <id> <user>...",
      "add role #{CMN} <id> <role>...",
      "remove role #{CMN} <id> <role>...",
+     "roles #{CMN} <id>",
+     "permissions #{CMN} <id>",
      "search #{CMN} [-al] [-o offset] [-L limit] [-O fields] <condition>..."]
   end
 
@@ -47,11 +48,6 @@ class WavefrontCommandUsergroup < WavefrontCommandBase
      '-O, --fields=F1,F2,...   only show given fields',
      "-u, --update             update an existing #{thing}",
      "-U, --upsert             import new or update existing #{thing}",
-     '-p, --permission=STRING  Wavefront permission']
-  end
-
-  def postscript
-    "'wf settings list permissions' will give you a list of all " \
-    'currently supported permissions.'.fold(TW, 0)
+     '-r, --role-id=STRING     Wavefront role ID']
   end
 end

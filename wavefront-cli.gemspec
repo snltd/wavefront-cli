@@ -26,7 +26,7 @@ Gem::Specification.new do |gem|
 
   gem.add_runtime_dependency 'docopt', '~> 0.6.0'
   gem.add_runtime_dependency 'inifile', '~> 3.0'
-  gem.add_runtime_dependency 'wavefront-sdk', '~> 5.0', '>= 5.0.0'
+  gem.add_runtime_dependency 'wavefront-sdk', '~> 5.0', '>= 5.0.1'
 
   gem.add_development_dependency 'minitest', '~> 5.11', '>= 5.11.0'
   gem.add_development_dependency 'rake', '~> 13.0'

@@ -485,7 +485,6 @@ module WavefrontCli
     # @param cond [String] a search condition, like "key=value"
     # @return [Hash] of matchingMethod and negated
     #
-    # rubocop:disable Metrics/CyclomaticComplexity
     # rubocop:disable Metrics/MethodLength
     def matching_method(cond)
       case cond
@@ -506,7 +505,6 @@ module WavefrontCli
       end
     end
     # rubocop:enable Metrics/MethodLength
-    # rubocop:enable Metrics/CyclomaticComplexity
 
     # Return a detailed description of one item, if an ID has been
     # given, or all items if it has not.

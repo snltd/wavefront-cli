@@ -12,18 +12,18 @@ module WavefrontCli
     end
 
     alias do_users do_describe
+    alias do_roles do_describe
     alias do_permissions do_describe
 
     def do_create
-      wf.create(name: options[:'<name>'],
-                permissions: options[:permission])
+      wf.create(name: options[:'<name>'], roleIDs: options[:roleid])
     end
 
-    def do_add_user
+    def do_add_to
       wf.add_users_to_group(options[:'<id>'], options[:'<user>'])
     end
 
-    def do_remove_user
+    def do_remove_from
       wf.remove_users_from_group(options[:'<id>'], options[:'<user>'])
     end
 

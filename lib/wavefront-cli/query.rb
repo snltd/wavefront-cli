@@ -52,6 +52,7 @@ module WavefrontCli
     # @return [Hash] options for the SDK query method
     #
     # rubocop:disable Metrics/AbcSize
+    # rubocop:disable Metrics/MethodLength
     def q_opts
       { autoEvents: options[:events],
         i: options[:inclusive],
@@ -66,6 +67,7 @@ module WavefrontCli
           o[:cached] = false if options[:nocache]
         end
     end
+    # rubocop:enable Metrics/MethodLength
     # rubocop:enable Metrics/AbcSize
 
     # @return [Integer] start of query window. If one has been
