@@ -2,40 +2,24 @@
 
 require_relative 'base'
 
-# Define the usergroup command.
+# Define the 'role' command.
 #
-class WavefrontCommandUsergroup < WavefrontCommandBase
-  def thing
-    'user group'
-  end
-
-  def description
-    "view and manage Wavefront #{things}"
-  end
-
-  def sdk_class
-    'UserGroup'
-  end
-
-  def sdk_file
-    'usergroup'
-  end
-
+class WavefrontCommandRole < WavefrontCommandBase
   def _commands
     ["list #{CMN} [-al] [-O fields] [-o offset] [-L limit]",
      "describe #{CMN} <id>",
-     "create #{CMN} [-r role_id...] <name>",
+     "create #{CMN} [-d description] [-p permission...] <name>",
      "delete #{CMN} <id>",
      "dump #{CMN}",
      "import #{CMN} [-uU] <file>",
      "set #{CMN} <key=value> <id>",
-     "add to #{CMN} <id> <user>...",
-     "remove from #{CMN} <id> <user>...",
-     "users #{CMN} <id>",
-     "add role #{CMN} <id> <role>...",
-     "remove role #{CMN} <id> <role>...",
-     "roles #{CMN} <id>",
+     "accounts #{CMN} <id>",
+     "groups #{CMN} <id>",
      "permissions #{CMN} <id>",
+     "give #{CMN} <id> to <member>...",
+     "take #{CMN} <id> from <member>...",
+     "grant #{CMN} <permission> to <id>",
+     "revoke #{CMN} <permission> from <id>",
      "search #{CMN} [-al] [-o offset] [-L limit] [-O fields] <condition>..."]
   end
 
@@ -48,6 +32,13 @@ class WavefrontCommandUsergroup < WavefrontCommandBase
      '-O, --fields=F1,F2,...   only show given fields',
      "-u, --update             update an existing #{thing}",
      "-U, --upsert             import new or update existing #{thing}",
-     '-r, --role-id=STRING     Wavefront role ID']
+     "-d, --description=STRING description of #{thing}",
+     '-p, --permission=STRING  Wavefront permission']
+  end
+
+  def postscript
+    "A role 'member' can be an account ID or a usergroup ID. 'wf settings " \
+    "list permissions' will give you a list of all currently supported " \
+    'permissions.'.fold(TW, 0)
   end
 end

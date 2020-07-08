@@ -8,6 +8,7 @@ module WavefrontDisplayPrinter
   #
   class Long
     attr_reader :opts, :list, :kw
+
     #
     # @param data [Hash] of data to display
     # @param fields [Array[Symbol]] requred fields
@@ -55,7 +56,7 @@ module WavefrontDisplayPrinter
     def preened_value(value)
       return value unless value.is_a?(String) && value =~ /<.*>/
 
-      value.gsub(%r{<\/?[^>]*>}, '').delete("\n")
+      value.gsub(%r{</?[^>]*>}, '').delete("\n")
     end
 
     # A recursive function which takes a structure, most likely a

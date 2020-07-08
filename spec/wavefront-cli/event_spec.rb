@@ -13,8 +13,8 @@ TEST_EVENT_DIR = Pathname.new('/tmp/wf_event_test')
 #
 class EventEndToEndTest < EndToEndTest
   attr_reader :test_state_dir
-  include Wavefront::Mixins
 
+  include Wavefront::Mixins
   include WavefrontCliTest::Describe
   include WavefrontCliTest::Delete
   # Ones above work, ones below don't

@@ -18,19 +18,18 @@ class UserGroupEndToEndTest < EndToEndTest
     quietly do
       assert_cmd_posts("create #{groupname}",
                        '/api/v2/usergroup',
-                       name: groupname, permissions: [])
+                       name: groupname, roleIDs: [])
     end
 
     assert_abort_on_missing_creds("create #{groupname}")
     assert_usage('create')
   end
 
-  def test_create_with_privileges
+  def test_create_with_roles
     quietly do
-      assert_cmd_posts("create -p #{privileges[0]} -p #{privileges[1]} " \
-                       "#{groupname}",
+      assert_cmd_posts("create -r #{roles[0]} -r #{roles[1]} #{groupname}",
                        '/api/v2/usergroup',
-                       name: groupname, permissions: privileges)
+                       name: groupname, roleIDs: roles)
     end
   end
 
@@ -44,25 +43,15 @@ class UserGroupEndToEndTest < EndToEndTest
     assert_usage('users')
   end
 
-  def test_permissions
-    assert_repeated_output("Group '#{id}' has no permissions.") do
-      assert_cmd_gets("permissions #{id}", "/api/v2/usergroup/#{id}")
-    end
-
-    assert_abort_on_missing_creds("permissions #{id}")
-    assert_invalid_id("permissions #{invalid_id}")
-    assert_usage('permissions')
-  end
-
   def test_add_user
     assert_repeated_output("Added '#{users[0]}' to '#{id}'.") do
-      assert_cmd_posts("add user #{id} #{users[0]}",
+      assert_cmd_posts("add to #{id} #{users[0]}",
                        "/api/v2/usergroup/#{id}/addUsers",
                        [users[0]].to_json)
     end
 
-    assert_abort_on_missing_creds("add user #{id} #{users[0]}")
-    assert_invalid_id("add user #{invalid_id} #{users[0]}")
+    assert_abort_on_missing_creds("add to #{id} #{users[0]}")
+    assert_invalid_id("add to #{invalid_id} #{users[0]}")
   end
 
   # assert_repeated_output can't cope with line wrapping, and suppressing it
@@ -70,7 +59,7 @@ class UserGroupEndToEndTest < EndToEndTest
   #
   def test_add_multiple_users
     quietly do
-      assert_cmd_posts("add user #{id} #{users[0]} #{users[1]}",
+      assert_cmd_posts("add to #{id} #{users[0]} #{users[1]}",
                        "/api/v2/usergroup/#{id}/addUsers",
                        users.to_json)
     end
@@ -78,43 +67,58 @@ class UserGroupEndToEndTest < EndToEndTest
 
   def test_remove_user
     quietly do
-      assert_cmd_posts("remove user #{id} #{users[0]}",
+      assert_cmd_posts("remove from #{id} #{users[0]}",
                        "/api/v2/usergroup/#{id}/removeUsers",
                        [users[0]].to_json)
     end
 
-    assert_abort_on_missing_creds("remove user #{id} #{users[0]}")
-    assert_invalid_id("remove user #{invalid_id} #{users[0]}")
+    assert_abort_on_missing_creds("remove from #{id} #{users[0]}")
+    assert_invalid_id("remove from #{invalid_id} #{users[0]}")
   end
 
   def test_remove_multiple_users
     quietly do
-      assert_cmd_posts("remove user #{id} #{users[0]} #{users[1]}",
+      assert_cmd_posts("remove from #{id} #{users[0]} #{users[1]}",
                        "/api/v2/usergroup/#{id}/removeUsers",
                        users.to_json)
     end
   end
 
-  def test_grant
-    assert_repeated_output(
-      "Granted '#{privileges[1]}' permission to '#{id}'."
-    ) do
-      assert_cmd_posts("grant #{privileges[1]} to #{id}",
-                       "/api/v2/usergroup/grant/#{privileges[1]}",
-                       [id].to_json)
+  def test_add_role
+    quietly do
+      assert_cmd_posts("add role #{id} #{roles[0]}",
+                       "/api/v2/usergroup/#{id}/addRoles",
+                       [roles[0]].to_json)
     end
 
-    assert_abort_on_missing_creds("grant #{privileges[1]} to #{id}")
-    assert_invalid_id("grant #{privileges[1]} to #{invalid_id}")
+    assert_abort_on_missing_creds("add role #{id} #{roles[0]}")
+    assert_invalid_id("add role #{invalid_id} #{roles[0]}")
   end
 
-  def test_revoke
-    assert_repeated_output(
-      "Revoked '#{privileges[0]}' permission from '#{id}'."
-    ) do
-      assert_cmd_posts("revoke #{privileges[0]} from #{id}",
-                       "/api/v2/usergroup/revoke/#{privileges[0]}",
-                       [id].to_json)
+  def test_add_multiple_roles
+    quietly do
+      assert_cmd_posts("add role #{id} #{roles[0]} #{roles[1]}",
+                       "/api/v2/usergroup/#{id}/addRoles",
+                       roles.to_json)
+    end
+  end
+
+  def test_remove_role
+    quietly do
+      assert_cmd_posts("remove role #{id} #{roles[0]}",
+                       "/api/v2/usergroup/#{id}/removeRoles",
+                       [roles[0]].to_json)
+    end
+
+    assert_abort_on_missing_creds("remove role #{id} #{roles[0]}")
+    assert_invalid_id("remove role #{invalid_id} #{roles[0]}")
+  end
+
+  def test_remove_multiple_roles
+    quietly do
+      assert_cmd_posts("remove role #{id} #{roles[0]} #{roles[1]}",
+                       "/api/v2/usergroup/#{id}/removeRoles",
+                       roles.to_json)
     end
   end
 
@@ -144,11 +148,12 @@ class UserGroupEndToEndTest < EndToEndTest
     'testgroup'
   end
 
-  def privileges
-    %w[alerts_management events_management]
-  end
-
   def users
     %w[someone@somewhere.com other@elsewhere.com]
+  end
+
+  def roles
+    %w[01234567-aad4-4302-a94e-9667e1517127
+       abcdefab-abcd-4302-a94e-9667e1517127]
   end
 end

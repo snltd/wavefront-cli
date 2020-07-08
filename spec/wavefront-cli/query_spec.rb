@@ -27,9 +27,10 @@ class QueryEndToEndTest < EndToEndTest
     assert_noop(
       "-s #{epoch_time[0]} -k #{query}",
       'uri: GET https://default.wavefront.com/api/v2/chart/api',
-      'params: {:i=>false, :summarization=>"mean", :listMode=>true, ' \
-      ':strict=>true, :sorted=>true, :q=>"ts(\"dev.cli.test\")", ' \
-      ":g=>:m, :s=>#{epoch_time[0]}}"
+      'params: {:autoEvents=>false, :i=>false, :summarization=>"mean", ' \
+      ':listMode=>true, :strict=>true, :includeObsoleteMetrics=>false, ' \
+      ':sorted=>true, :q=>"ts(\"dev.cli.test\")", :g=>:m, ' \
+      ":s=>#{epoch_time[0]}}"
     )
   end
 
@@ -86,6 +87,22 @@ class QueryEndToEndTest < EndToEndTest
                                     includeObsoleteMetrics: 'true',
                                     s: epoch_time[0].to_s,
                                     e: epoch_time[1].to_s }, canned_response)
+    end
+
+    assert_empty(err)
+    assert_match(/query\s+ts\("cpu.0.pc.user"\)/, out)
+  end
+
+  def test_query_with_start_and_end_and_nostrict_and_nocache
+    out, err = capture_io do
+      assert_cmd_gets_with_params("-s #{epoch_time[0]} -CK #{query}",
+                                  '/api/v2/chart/api',
+                                  { q: query,
+                                    g: 'm',
+                                    i: 'false',
+                                    strict: 'false',
+                                    s: epoch_time[0].to_s,
+                                    cached: 'false' }, canned_response)
     end
 
     assert_empty(err)

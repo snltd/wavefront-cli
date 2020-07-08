@@ -173,20 +173,14 @@ module WavefrontCli
 
     def validate_groups
       options[:group].each { |g| wf_usergroup_id?(g) }
-    rescue Wavefront::Exception::InvalidUserGroupId => e
-      raise e, 'Invalid usergroup ID'
     end
 
     def validate_tokens
       options[:usertoken].each { |t| wf_apitoken_id?(t) }
-    rescue Wavefront::Exception::InvalidApiTokenId => e
-      raise e, 'Invalid API token'
     end
 
     def validate_perms
       options[:permission].each { |p| wf_permission?(p) }
-    rescue Wavefront::Exception::InvalidPermission => e
-      raise e, 'Invalid permission'
     end
 
     def descriptive_name

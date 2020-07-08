@@ -15,8 +15,7 @@ module WavefrontCliTest
 
       assert_noop(
         "delete #{id}",
-        'uri: DELETE https://default.wavefront.com/api/v2/' \
-        "#{api_path}/#{id}"
+        "uri: DELETE https://default.wavefront.com/api/v2/#{api_path}/#{id}"
       )
 
       assert_abort_on_missing_creds("delete #{id}")

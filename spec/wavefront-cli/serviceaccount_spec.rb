@@ -154,17 +154,17 @@ class ServiceAccountEndToEndTest < EndToEndTest
   end
 
   def test_create_invalid_usergroup
-    assert_exits_with('Unable to run command. Invalid usergroup ID.',
+    assert_exits_with("'abcdefg' is not a valid user group ID.",
                       "create -g abcdefg #{id}")
   end
 
   def test_create_invalid_permission
-    assert_exits_with('Unable to run command. Invalid permission.',
+    assert_exits_with("'123456' is not a valid Wavefront permission.",
                       "create -p 123456 #{id}")
   end
 
   def test_create_invalid_token
-    assert_exits_with('Unable to run command. Invalid API token.',
+    assert_exits_with("'abcdefg' is not a valid API token ID.",
                       "create -k abcdefg #{id}")
   end
 
