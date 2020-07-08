@@ -14,25 +14,21 @@ module WavefrontCli
 
     def do_role_add_to
       wf_account_id?(options[:'<id>'])
-      options[:'<role>'].each { |g| wf_role_id?(g) }
       wf.add_roles(options[:'<id>'], options[:'<role>'])
     end
 
     def do_role_remove_from
       wf_account_id?(options[:'<id>'])
-      options[:'<role>'].each { |g| wf_role_id?(g) }
       wf.remove_roles(options[:'<id>'], options[:'<role>'])
     end
 
     def do_group_add_to
       wf_account_id?(options[:'<id>'])
-      options[:'<group>'].each { |g| wf_usergroup_id?(g) }
       wf.add_user_groups(options[:'<id>'], options[:'<group>'])
     end
 
     def do_group_remove_from
       wf_account_id?(options[:'<id>'])
-      options[:'<group>'].each { |g| wf_usergroup_id?(g) }
       wf.remove_user_groups(options[:'<id>'], options[:'<group>'])
     end
 
@@ -42,20 +38,15 @@ module WavefrontCli
     end
 
     def do_grant_to
-      wf_permission?(options[:'<permission>'])
-      options[:'<account>'].each { |a| wf_account_id?(a) }
       wf.grant(options[:'<account>'], options[:'<permission>'])
     end
 
     def do_revoke_from
-      wf_permission?(options[:'<permission>'])
-      options[:'<account>'].each { |a| wf_account_id?(a) }
       wf.revoke(options[:'<account>'], options[:'<permission>'])
     end
 
     def do_ingestionpolicy_add_to
       wf_account_id?(options[:'<id>'])
-      wf_ingestionpolicy_id?(options[:'<policy>'])
       wf.add_ingestion_policy(options[:'<policy>'], [options[:'<id>']])
     end
 
@@ -79,7 +70,35 @@ module WavefrontCli
       wf.validate_accounts(options[:'<account>'])
     end
 
+    def extra_validation
+      validate_policy
+      validate_permission
+      validate_roles
+      validate_groups
+      validate_accounts
+    end
+
     private
+
+    def validate_policy
+      wf_ingestionpolicy_id?(options[:'<policy>']) if options[:'<policy>']
+    end
+
+    def validate_permission
+      wf_permission?(options[:'<permission>']) if options[:'<permission>']
+    end
+
+    def validate_roles
+      options[:'<role>'].each { |r| wf_role_id?(r) }
+    end
+
+    def validate_groups
+      options[:'<group>'].each { |g| wf_usergroup_id?(g) }
+    end
+
+    def validate_accounts
+      options[:'<account>'].each { |a| wf_account_id?(a) }
+    end
 
     # Object used to create and invite users. We deal with the permissions
     # seperately because if we don't supply any and they get compacted out,
@@ -96,46 +115,5 @@ module WavefrontCli
       raw[:groups] = options[:permission]
       raw
     end
-
-    #     def do_leave
-    #       wf.remove_groups_from_user(options[:'<id>'], options[:'<group>'])
-    #     end
-    #
-    #     def do_grant
-    #       wf.grant(options[:'<id>'], options[:'<privilege>'])
-    #     end
-    #
-    #     def do_revoke
-    #       wf.revoke(options[:'<id>'], options[:'<privilege>'])
-    #     end
-    #
-    #
-    #     def import_to_create(raw)
-    #       { emailAddress: raw['items']['identifier'],
-    #         groups: raw['items']['groups'] }.tap do |r|
-    #         if raw['items'].key?('userGroups')
-    #           r['userGroups'] = raw['items']['userGroups'].map { |g| g['id'] }
-    #         end
-    #       end
-    #     end
-    #
-    #     # Because of the way docopt works, we have to call the user ID
-    #     # parameter something else on the delete command. This means the
-    #     # automatic validtion doesn't work, and we have to do it
-    #     # ourselves.
-    #     #
-    #     def extra_validation
-    #       options[:'<user>']&.each { |u| validate_user(u) }
-    #     end
-    #
-    #     def validate_user(user)
-    #       wf_user_id?(user)
-    #     rescue Wavefront::Exception::InvalidUserId
-    #       abort failed_validation_message(user)
-    #     end
-    #
-    #     def item_dump_call
-    #       wf.list.response.items
-    #     end
   end
 end
