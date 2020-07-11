@@ -4,8 +4,6 @@
 #
 Metrics/MethodLength:
   Max: 25
-<<<<<<< HEAD
-=======
 
 Style/HashEachMethods:
     Enabled: true
@@ -47,4 +45,3 @@ Style/RedundantFetchBlock:
 # Is nothing sacred?
 Layout/LineLength:
   Max: 80
->>>>>>> master
