@@ -50,6 +50,14 @@ module WavefrontCli
       wf.history(options[:'<id>'], options[:offset], options[:limit])
     end
 
+    def do_affected_hosts
+      if options[:'<id>']
+        affected_hosts_for_id(options[:'<id>'])
+      else
+        all_affected_hosts
+      end
+    end
+
     def do_currently
       state = options[:'<state>'].to_s
 
@@ -145,6 +153,27 @@ module WavefrontCli
           ret[:sharedTags] = raw['customerTagsWithCounts'].keys
         end
       end.compact
+    end
+
+    def all_affected_hosts
+      cannot_noop!
+      in_state(:firing).tap do |r|
+        r.response = r.response.items.each_with_object({}) do |alert, aggr|
+          aggr[alert[:id]] = affected_hosts_for_id(alert[:id]).response
+        end
+      end
+    end
+
+    def affected_hosts_for_id(id)
+      resp = wf.describe(id)
+
+      return if options[:noop]
+
+      return resp unless resp.ok? && resp.response.key?(:failingHostLabelPairs)
+
+      resp.tap do |r|
+        r.response = r.response[:failingHostLabelPairs].map { |h| h[:host] }
+      end
     end
   end
 end

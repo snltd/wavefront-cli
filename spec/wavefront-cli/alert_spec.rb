@@ -238,6 +238,34 @@ class AlertEndToEndTest < EndToEndTest
     assert_abort_on_missing_creds('currently in_maintenance')
   end
 
+  def test_affected_hosts_single
+    quietly do
+      assert_cmd_gets("affected hosts #{id}", "/api/v2/alert/#{id}")
+    end
+    assert_abort_on_missing_creds("affected hosts #{id}")
+    assert_invalid_id("affected hosts #{invalid_id}")
+
+    assert_noop(
+      "affected hosts #{id}",
+      "uri: GET https://default.wavefront.com/api/v2/alert/#{id}"
+    )
+  end
+
+  def test_affected_hosts_all
+    out, err = capture_io do
+      assert_raises(SystemExit) do
+        assert_cmd_posts('affected hosts',
+                         '/api/v2/search/alert',
+                         state_search('firing').to_json)
+      end
+    end
+
+    assert_empty(err)
+    assert_equal('No alerts are currently firing.', out.rstrip)
+    assert_cannot_noop('affected hosts')
+    assert_abort_on_missing_creds('affected hosts')
+  end
+
   private
 
   def id
