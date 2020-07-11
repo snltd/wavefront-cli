@@ -1,5 +1,12 @@
 # Changelog
 
+## 7.0.0 (2020-07-11)
+* Remove `user` command. (Breaking change.)
+* Add `account` command.
+* Complete coverage of roles and user groups.
+* Add `alert affected hosts` command to show which hosts are affected by one
+  or all firing alerts.
+* Remove obsolete `group` subcommands. (`grant` and `revoke`).
 * Add `write noise` command to send a flow of random data to an endpoint.
 
 ## 6.1.0 (2020-06-02)
@@ -7,13 +14,17 @@
 
 ## 6.0.0 (2020-04-07)
 * Remove `cluster` command. (Breaking change.)
+* Add `role` command.
+* Add `--nocache`, `--nostrict` and `--histogram-view` options to `query`
+  command.
+* Require 5.x of [the SDK](https://github.com/snltd/wavefront-sdk).
 
 ## 5.1.2 (2020-02-28)
 * Fix regression in HCL dashboard export.
 * Properly handle unavailable port when sending distributions to a proxy.
 
 ## 5.1.1 (2020-02-20)
-* Say whether `--upsert` did and update or an import.
+* Say whether `--upsert` did an update or an import.
 
 ## 5.1.0 (2020-02-20)
 * Add `-U` (`--upsert`) option to `import` sub-commands.

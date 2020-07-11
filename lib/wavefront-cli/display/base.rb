@@ -112,7 +112,7 @@ module WavefrontDisplay
     # long listing objects. Subclasses may define their own.
     #
     def priority_keys
-      %i[id name]
+      %i[id name identifier]
     end
 
     def prioritize_keys(data, keys)

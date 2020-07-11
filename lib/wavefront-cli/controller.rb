@@ -17,6 +17,7 @@ require_relative 'version'
 require_relative 'constants'
 require_relative 'exception'
 require_relative 'opt_handler'
+require_relative 'exception_handler'
 require_relative 'stdlib/string'
 
 CMD_DIR = Pathname.new(__dir__) + 'commands'
@@ -28,6 +29,7 @@ class WavefrontCliController
   attr_reader :args, :usage, :opts, :cmds, :tw
 
   include WavefrontCli::Constants
+  include WavefrontCli::ExceptionMixins
 
   def initialize(args)
     @args = args
@@ -107,12 +109,8 @@ class WavefrontCliController
   #
   def cli_class(cmd, opts)
     load_cli_class(cmd, opts)
-  rescue WavefrontCli::Exception::UnhandledCommand
-    abort 'Fatal error. Unsupported command. Please open a Github issue.'
-  rescue WavefrontCli::Exception::InvalidInput => e
-    abort "Invalid input. #{e.message}"
-  rescue RuntimeError => e
-    abort "Unable to run command. #{e.message}."
+  rescue StandardError => e
+    exception_handler(e)
   end
 
   def load_cli_class(cmd, opts)
@@ -120,68 +118,12 @@ class WavefrontCliController
     Object.const_get('WavefrontCli').const_get(cmds[cmd].sdk_class).new(opts)
   end
 
-  # rubocop:disable Metrics/MethodLength
-  # rubocop:disable Metrics/AbcSize
   def run_command(cli_class_obj)
     cli_class_obj.validate_opts
     cli_class_obj.run
-  rescue Interrupt
-    abort "\nOperation aborted at user request."
-  rescue WavefrontCli::Exception::ConfigFileNotFound => e
-    abort "Configuration file #{e}' not found."
-  rescue WavefrontCli::Exception::CredentialError => e
-    handle_missing_credentials(e)
-  rescue WavefrontCli::Exception::MandatoryValue
-    abort 'A value must be supplied.'
-  rescue Wavefront::Exception::NetworkTimeout
-    abort 'Connection timed out.'
-  rescue Wavefront::Exception::InvalidPermission => e
-    abort "'#{e}' is not a valid privilege."
-  rescue Wavefront::Exception::InvalidUserGroupId => e
-    abort "'#{e}' is not a valid user group id."
-  rescue WavefrontCli::Exception::InvalidValue => e
-    abort "Invalid value for #{e}."
-  rescue WavefrontCli::Exception::ProfileExists => e
-    abort "Profile '#{e}' already exists."
-  rescue WavefrontCli::Exception::ProfileNotFound => e
-    abort "Profile '#{e}' not found."
-  rescue WavefrontCli::Exception::FileNotFound
-    abort 'File not found.'
-  rescue WavefrontCli::Exception::InsufficientData => e
-    abort "Insufficient data. #{e.message}"
-  rescue WavefrontCli::Exception::InvalidQuery => e
-    abort "Invalid query. API message: '#{e.message}'."
-  rescue WavefrontCli::Exception::SystemError => e
-    abort "Host system error. #{e.message}"
-  rescue WavefrontCli::Exception::UnparseableInput => e
-    abort "Cannot parse input. #{e.message}"
-  rescue WavefrontCli::Exception::UnparseableSearchPattern
-    abort 'Searches require a key, a value, and a match operator.'
-  rescue WavefrontCli::Exception::UnsupportedFileFormat
-    abort 'Unsupported file format.'
-  rescue WavefrontCli::Exception::UnsupportedOperation => e
-    abort "Unsupported operation.\n#{e.message}"
-  rescue WavefrontCli::Exception::UnsupportedOutput => e
-    abort e.message
-  rescue WavefrontCli::Exception::UnsupportedNoop
-    abort 'Multiple API call operations cannot be performed as no-ops.'
-  rescue WavefrontCli::Exception::UserGroupNotFound => e
-    abort "Cannot find user group '#{e.message}'."
-  rescue Wavefront::Exception::UnsupportedWriter => e
-    abort "Unsupported writer '#{e.message}'."
-  rescue WavefrontCli::Exception::UserError => e
-    abort "User error: #{e.message}."
-  rescue WavefrontCli::Exception::ImpossibleSearch
-    abort 'Search on non-existent key. Please use a top-level field.'
-  rescue Wavefront::Exception::InvalidSamplingValue
-    abort 'Sampling rates must be between 0 and 0.05.'
   rescue StandardError => e
-    warn "general error: #{e}"
-    backtrace_message(e)
-    abort
+    exception_handler(e)
   end
-  # rubocop:enable Metrics/MethodLength
-  # rubocop:enable Metrics/AbcSize
 
   def backtrace_message(err)
     if opts[:debug]

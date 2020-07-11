@@ -8,6 +8,7 @@ class WavefrontCommandAlert < WavefrontCommandBase
   def _commands
     ["list #{CMN} [-al] [-O fields] [-o offset] [-L limit]",
      "firing #{CMN} [-o offset] [-L limit]",
+     "affected #{CMN} hosts [<id>]",
      "snoozed #{CMN} [-o offset] [-L limit]",
      "describe #{CMN} [-v version] <id>",
      "delete #{CMN} <id>",

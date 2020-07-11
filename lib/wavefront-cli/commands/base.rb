@@ -165,6 +165,6 @@ class WavefrontCommandBase
   # @return [String] a full options string which docopt understands
   #
   def docopt
-    commands + "\n\n" + options + "\n" + postscript
+    commands + "\n\n" + options + "\n\n" + postscript
   end
 end

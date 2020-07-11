@@ -42,14 +42,6 @@ module WavefrontCli
 
     private
 
-    def require_sdk_class
-      require 'wavefront-sdk/unstable/spy'
-    end
-
-    def _sdk_class
-      'Wavefront::Unstable::Spy'
-    end
-
     def rate
       return 0.01 unless options[:rate]
 

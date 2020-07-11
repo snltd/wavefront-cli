@@ -51,20 +51,26 @@ module WavefrontCli
 
     # @return [Hash] options for the SDK query method
     #
-    # rubocop:disable Metrics/AbcSize
     def q_opts
+      basic_q_opts.tap do |o|
+        o[:n] = options[:name]
+        o[:p] = options[:points]
+        o[:view] = 'HISTOGRAM' if options[:histogramview]
+        o[:cached] = false if options[:nocache]
+      end.compact
+    end
+
+    # Every query gets these options. They're modified by q_opts
+    #
+    def basic_q_opts
       { autoEvents: options[:events],
         i: options[:inclusive],
         summarization: options[:summarize] || 'mean',
         listMode: true,
-        strict: true,
+        strict: !options[:nostrict],
         includeObsoleteMetrics: options[:obsolete],
-        sorted: true }.tap do |o|
-          o[:n] = options[:name] if options[:name]
-          o[:p] = options[:points] if options[:points]
-        end
+        sorted: true }
     end
-    # rubocop:enable Metrics/AbcSize
 
     # @return [Integer] start of query window. If one has been
     #   given, that; if not, ten minutes ago
