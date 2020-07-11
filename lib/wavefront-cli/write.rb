@@ -14,11 +14,11 @@ module WavefrontCli
     SPLIT_PATTERN = /\s(?=(?:[^"]|"[^"]*")*$)/.freeze
 
     # rubocop:disable Metrics/AbcSize
-    def do_point
+    def do_point(value = options[:'<value>'])
       tags = tags_to_hash(options[:tag])
 
       p = { path: options[:'<metric>'],
-            value: options[:'<value>'].delete('\\').to_f }
+            value: sane_value(value) }
 
       p[:tags] = tags unless tags.empty?
       p[:source] = options[:host] if options[:host]
@@ -35,6 +35,31 @@ module WavefrontCli
 
     def do_distribution
       send_point(make_distribution_point(tags_to_hash(options[:tag])))
+    end
+
+    def do_noise
+      loop do
+        do_point(random_value(options[:min] || -10, options[:max] || 10))
+        sleep(sleep_time)
+      end
+    end
+
+    def random_value(min, max)
+      return min if min == max
+
+      rand(max.to_f - min.to_f) + min.to_f
+    end
+
+    def sane_value(value)
+      return value if value.is_a?(Numeric)
+
+      raise WavefrontCli::Exception::InvalidValue unless value.is_a?(String)
+
+      value.delete('\\').to_f
+    end
+
+    def sleep_time
+      options[:interval] ? options[:interval].to_f : 1
     end
 
     # rubocop:disable Metrics/AbcSize

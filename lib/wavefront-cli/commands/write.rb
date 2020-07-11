@@ -18,7 +18,9 @@ class WavefrontCommandWrite < WavefrontCommandBase
      '<metric> [--] <val>...',
      'file [-DnViq] [-c file] [-P profile] [-E proxy] [-H host] ' \
      '[-p port] [-F infileformat] [-m metric] [-T tag...] [-I interval] ' \
-     '[-u method] [-S socket] <file>']
+     '[-u method] [-S socket] <file>',
+     'noise [-DnViq] [-P profile] [-E proxy] [-H host] [-p port] ' \
+     '[-T tag...] [-I interval] [-x value] [-X value] <metric>']
   end
 
   def _options
@@ -33,9 +35,12 @@ class WavefrontCommandWrite < WavefrontCommandBase
      'a file will be assigned. If the file contains a metric name, ' \
      'the two will be dot-concatenated, with this value first',
      '-i, --delta                increment metric by given value',
-     "-I, --interval=INTERVAL    interval of distribution (default 'm')",
+     "-I, --interval=INTERVAL    interval of distribution (default 'm'), or " \
+     'time in seconds between noise values (default 1)',
      '-u, --using=METHOD         method by which to send points',
      '-S, --socket=FILE          Unix datagram socket',
+     '-x, --min=NUMERIC          lower bound of random values (default -10)',
+     '-X, --max=NUMERIC          upper bound of random values (default 10)',
      "-q, --quiet                don't report the points sent summary " \
      '(unless there were errors)']
   end

@@ -8,7 +8,6 @@ Metrics/ClassLength:
 
 Style/IfUnlessModifier:
   Enabled: false # because it wants to make lines >80 chars
-
 Style/HashEachMethods:
     Enabled: true
 Style/HashTransformKeys:

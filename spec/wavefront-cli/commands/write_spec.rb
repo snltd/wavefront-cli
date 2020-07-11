@@ -13,6 +13,6 @@ class WavefrontCommmandWriteTest < WavefrontCommmandBaseTest
   def setup
     @wf = WavefrontCommandWrite.new
     @col_width = 25
-    @skip_cmd = /write (point|file|distribution)/
+    @skip_cmd = /write (point|file|distribution|noise)/
   end
 end
