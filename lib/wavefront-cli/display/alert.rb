@@ -74,5 +74,13 @@ module WavefrontDisplay
     def do_version
       puts data.max
     end
+
+    def do_affected_hosts
+      if data == [nil]
+        puts 'Alert event is not attached to any hosts.'
+      else
+        long_output
+      end
+    end
   end
 end

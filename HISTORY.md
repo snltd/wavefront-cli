@@ -1,5 +1,14 @@
 # Changelog
 
+## 7.0.0 (2020-07-11)
+* Remove `user` command. (Breaking change.)
+* Add `account` command.
+* Complete coverage of roles and user groups.
+* Add `alert affected hosts` command to show which hosts are affected by one
+  or all firing alerts.
+* Remove obsolete `group` subcommands. (`grant` and `revoke`).
+* Add `write noise`
+
 ## 6.1.0 (2020-06-02)
 * Add `-A` flag to `proxy list` command, to only list active proxies
 
