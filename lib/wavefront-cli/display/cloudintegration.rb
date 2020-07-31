@@ -8,11 +8,12 @@ module WavefrontDisplay
   #
   class CloudIntegration < Base
     def do_list_brief
-      multicolumn(:id, :service)
+      multicolumn(:id, :service, :name)
     end
 
     def do_describe
-      readable_time(:lastReceivedDataPointMs, :lastProcessingTimestamp)
+      readable_time(:lastReceivedDataPointMs, :lastProcessingTimestamp,
+                    :createdEpochMillis, :updatedEpochMillis)
       drop_fields(:forceSave, :inTrash, :deleted)
       long_output
     end
