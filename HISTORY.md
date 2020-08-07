@@ -1,5 +1,8 @@
 # Changelog
 
+## 7.1.0 (2020-08-07)
+* Better information when working with cloud integrations.
+
 ## 7.0.0 (2020-07-11)
 * Remove `user` command. (Breaking change.)
 * Add `account` command.
