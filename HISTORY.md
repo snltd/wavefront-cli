@@ -1,6 +1,6 @@
 # Changelog
 
-## 7.0.0 (2020-08-07)
+## 7.1.0 (2020-08-07)
 * Remove `user` command. (Breaking change.)
 * Add `account` command.
 * Complete coverage of roles and user groups.
@@ -9,6 +9,8 @@
 * Remove obsolete `group` subcommands. (`grant` and `revoke`).
 * Add `write noise` command to send a flow of random data to an endpoint.
 * Better information when working with cloud integrations.
+
+## 7.0.0 (unreleased)
 
 ## 6.1.0 (2020-06-02)
 * Add `-A` flag to `proxy list` command, to only list active proxies
