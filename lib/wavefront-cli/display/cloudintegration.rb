@@ -25,5 +25,17 @@ module WavefrontDisplay
     def do_disable
       puts "Disabled '#{options[:'<id>']}'."
     end
+
+    def do_awsid_generate
+      puts data
+    end
+
+    def do_awsid_delete
+      puts "Deleted external ID '#{options[:'<external_id>']}'."
+    end
+
+    def do_awsid_confirm
+      puts "'#{data}' is a registered external ID."
+    end
   end
 end

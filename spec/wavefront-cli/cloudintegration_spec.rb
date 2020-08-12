@@ -7,12 +7,11 @@ require_relative '../../lib/wavefront-cli/cloudintegration'
 # Ensure 'cloudintegration' commands produce the correct API calls.
 #
 class CloudIntegrationEndToEndTest < EndToEndTest
-  include WavefrontCliTest::DeleteUndelete
-  include WavefrontCliTest::Describe
-  include WavefrontCliTest::Dump
-  include WavefrontCliTest::List
-  # include WavefrontCliTest::Import
-  include WavefrontCliTest::Search
+  # include WavefrontCliTest::DeleteUndelete
+  # include WavefrontCliTest::Describe
+  # include WavefrontCliTest::Dump
+  # include WavefrontCliTest::List
+  # include WavefrontCliTest::Search
 
   def test_enable
     assert_repeated_output("Enabled '#{id}'.") do
@@ -43,6 +42,20 @@ class CloudIntegrationEndToEndTest < EndToEndTest
     assert_noop("disable #{id}",
                 'uri: POST https://default.wavefront.com/api/v2/' \
                 "cloudintegration/#{id}/disable",
+                'body: null')
+  end
+
+  def test_aws_id_generate
+    # assert_repeated_output("Disabled '#{id}'.") do
+    # assert_cmd_posts("disable #{id}",
+    # "/api/v2/cloudintegration/#{id}/disable")
+    # end
+
+    assert_abort_on_missing_creds('awsid generate')
+
+    assert_noop('awsid generate',
+                'uri: POST https://default.wavefront.com/api/v2/' \
+                'cloudintegration/awsExternalId',
                 'body: null')
   end
 

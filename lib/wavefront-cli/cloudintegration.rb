@@ -22,5 +22,17 @@ module WavefrontCli
     def do_disable
       wf.disable(options[:'<id>'])
     end
+
+    def do_awsid_generate
+      wf.create_aws_external_id
+    end
+
+    def do_awsid_delete
+      wf.delete_aws_external_id(options[:'<external_id>'])
+    end
+
+    def do_awsid_confirm
+      wf.confirm_aws_external_id(options[:'<external_id>'])
+    end
   end
 end
