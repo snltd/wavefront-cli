@@ -31,6 +31,8 @@ module WavefrontCli
         abort "'#{exception}' is not a valid user group ID."
       when Wavefront::Exception::InvalidAccountId
         abort "'#{exception}' is not a valid system or user account ID."
+      when Wavefront::Exception::InvalidAwsExternalId
+        abort "'#{exception}' is not a valid AWS external ID."
       when Wavefront::Exception::InvalidRoleId
         abort "'#{exception}' is not a valid role ID."
       when Wavefront::Exception::InvalidApiTokenId

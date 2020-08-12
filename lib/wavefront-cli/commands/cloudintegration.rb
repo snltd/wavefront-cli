@@ -26,7 +26,10 @@ class WavefrontCommandCloudintegration < WavefrontCommandBase
      "disable #{CMN} <id>",
      "dump #{CMN}",
      "import #{CMN} [-uU] <file>",
-     "search #{CMN} [-al] [-o offset] [-L limit] [-O fields] <condition>..."]
+     "search #{CMN} [-al] [-o offset] [-L limit] [-O fields] <condition>...",
+     "awsid #{CMN} generate",
+     "awsid #{CMN} delete <external_id>",
+     "awsid #{CMN} confirm <external_id>"]
   end
 
   def _options

@@ -1,5 +1,11 @@
 # Changelog
 
+## 7.2.0 (2020-08-12)
+* Add `cloudintegration awsid generate` command.
+* Add `cloudintegration awsid delete <external_id>` command.
+* Add `cloudintegration awsid validate <external_id>` command.
+* Require 5.1.x of [the SDK](https://github.com/snltd/wavefront-sdk).
+
 ## 7.1.0 (2020-08-07)
 * Remove `user` command. (Breaking change.)
 * Add `account` command.
