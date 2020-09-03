@@ -1,5 +1,9 @@
 # Changelog
 
+## 7.2.1 (2020-09-04)
+* If the user specifies a config stanza and it is not found, exit with an
+  error rather than silently falling back to env vars.
+
 ## 7.2.0 (2020-08-12)
 * Add `cloudintegration awsid generate` command.
 * Add `cloudintegration awsid delete <external_id>` command.
