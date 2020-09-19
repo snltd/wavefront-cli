@@ -75,16 +75,17 @@ module WavefrontDisplayPrinter
     #
     # Make an array of hashes: { key, value, depth }
     #
+    # rubocop:disable Style/CaseLikeIf
     def make_list(data, aggr = [], depth = 0, last_key = nil)
-      case data.class
-      when Hash
+      if data.is_a?(Hash)
         append_hash(data, aggr, depth)
-      when Array
+      elsif data.is_a?(Array)
         append_array(data, aggr, depth, last_key)
       else
         aggr.<< ['', preened_value(data), depth]
       end
     end
+    # rubocop:enable Style/CaseLikeIf
 
     def smart_value(val)
       val.to_s.empty? && opts[:none] ? '<none>' : preened_value(val)
@@ -151,13 +152,12 @@ module WavefrontDisplayPrinter
     # @param depth [Integer]
     # @return [Array[Array]]
     #
-    # rubocop:disable Metrics/MethodLength
+    # rubocop:disable Style/CaseLikeIf
     def append_hash(data, aggr, depth)
       data.each_pair do |k, v|
-        case v.class
-        when Hash
+        if v.is_a?(Hash)
           aggr = append_hash_values(k, v, aggr, depth)
-        when Array
+        elsif v.is_a?(Array)
           aggr = append_array_values(k, v, aggr, depth)
         else
           aggr.<< [k, smart_value(v), depth]
@@ -166,7 +166,7 @@ module WavefrontDisplayPrinter
 
       aggr
     end
-    # rubocop:enable Metrics/MethodLength
+    # rubocop:enable Style/CaseLikeIf
 
     # Part of the #make_list recursion. Deals with arrays.
     #
