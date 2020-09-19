@@ -193,7 +193,7 @@ module WavefrontCli
     #
     def read_stdin
       open_connection
-      STDIN.each_line { |l| call_write(process_line(l.strip), false) }
+      $stdin.each_line { |l| call_write(process_line(l.strip), false) }
       close_connection
     rescue SystemExit, Interrupt
       puts 'ctrl-c. Exiting.'

@@ -57,7 +57,7 @@ module WavefrontCli
       #   does not parse
       #
       def load_from_stdin
-        raw = STDIN.read
+        raw = $stdin.read
 
         if raw.start_with?('---')
           read_yaml(raw)

@@ -76,9 +76,10 @@ module WavefrontDisplayPrinter
     # Make an array of hashes: { key, value, depth }
     #
     def make_list(data, aggr = [], depth = 0, last_key = nil)
-      if data.is_a?(Hash)
+      case data.class
+      when Hash
         append_hash(data, aggr, depth)
-      elsif data.is_a?(Array)
+      when Array
         append_array(data, aggr, depth, last_key)
       else
         aggr.<< ['', preened_value(data), depth]
@@ -150,11 +151,13 @@ module WavefrontDisplayPrinter
     # @param depth [Integer]
     # @return [Array[Array]]
     #
+    # rubocop:disable Metrics/MethodLength
     def append_hash(data, aggr, depth)
       data.each_pair do |k, v|
-        if v.is_a?(Hash)
+        case v.class
+        when Hash
           aggr = append_hash_values(k, v, aggr, depth)
-        elsif v.is_a?(Array)
+        when Array
           aggr = append_array_values(k, v, aggr, depth)
         else
           aggr.<< [k, smart_value(v), depth]
@@ -163,6 +166,7 @@ module WavefrontDisplayPrinter
 
       aggr
     end
+    # rubocop:enable Metrics/MethodLength
 
     # Part of the #make_list recursion. Deals with arrays.
     #
