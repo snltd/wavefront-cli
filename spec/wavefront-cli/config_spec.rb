@@ -48,7 +48,7 @@ class WavefrontCliConfigTest < MiniTest::Test
 
   def test_read_input
     ["value  \n", " value\n", "    value  \t\n", "value\n"].each do |v|
-      STDIN.stub(:gets, v) { assert_equal('value', wf.read_input) }
+      $stdin.stub(:gets, v) { assert_equal('value', wf.read_input) }
     end
   end
 

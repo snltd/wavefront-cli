@@ -75,6 +75,7 @@ module WavefrontDisplayPrinter
     #
     # Make an array of hashes: { key, value, depth }
     #
+    # rubocop:disable Style/CaseLikeIf
     def make_list(data, aggr = [], depth = 0, last_key = nil)
       if data.is_a?(Hash)
         append_hash(data, aggr, depth)
@@ -84,6 +85,7 @@ module WavefrontDisplayPrinter
         aggr.<< ['', preened_value(data), depth]
       end
     end
+    # rubocop:enable Style/CaseLikeIf
 
     def smart_value(val)
       val.to_s.empty? && opts[:none] ? '<none>' : preened_value(val)
@@ -150,6 +152,7 @@ module WavefrontDisplayPrinter
     # @param depth [Integer]
     # @return [Array[Array]]
     #
+    # rubocop:disable Style/CaseLikeIf
     def append_hash(data, aggr, depth)
       data.each_pair do |k, v|
         if v.is_a?(Hash)
@@ -163,6 +166,7 @@ module WavefrontDisplayPrinter
 
       aggr
     end
+    # rubocop:enable Style/CaseLikeIf
 
     # Part of the #make_list recursion. Deals with arrays.
     #

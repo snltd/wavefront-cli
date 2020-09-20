@@ -15,7 +15,7 @@ $ gem install wavefront-cli
 
 It is built on [our Wavefront Ruby
 SDK](https://github.com/snltd/wavefront-sdk) and requires Ruby >=
-2.4. It has no "native extension" dependencies.
+2.5. It has no "native extension" dependencies.
 
 For a far more comprehensive overview/tutorial, please read [this
 article](https://sysdef.xyz/article/wavefront-cli).

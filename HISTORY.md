@@ -1,5 +1,8 @@
 # Changelog
 
+## 8.0.0 (2020-09-20
+* Drop Ruby 2.4.0 support. (Breaking change.)
+
 ## 7.2.0 (2020-08-12)
 * Add `cloudintegration awsid generate` command.
 * Add `cloudintegration awsid delete <external_id>` command.
