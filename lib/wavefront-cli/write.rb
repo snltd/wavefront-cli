@@ -167,12 +167,10 @@ module WavefrontCli
     #
     def process_input_file(data)
       data.each_with_object([]) do |l, a|
-        begin
-          a.<< process_line(l)
-        rescue WavefrontCli::Exception::UnparseableInput => e
-          puts "Bad input. #{e.message}."
-          next
-        end
+        a.<< process_line(l)
+      rescue WavefrontCli::Exception::UnparseableInput => e
+        puts "Bad input. #{e.message}."
+        next
       end
     end
 

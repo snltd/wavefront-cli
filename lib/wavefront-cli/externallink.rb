@@ -38,12 +38,10 @@ module WavefrontCli
 
     def point_filter_regexes
       ret = options[:pointregex].each_with_object({}) do |r, a|
-        begin
-          k, v = r.split('=', 2)
-          a[k.to_sym] = v
-        rescue StandardError
-          puts "cannot parse point regex '#{r}'. Skipping."
-        end
+        k, v = r.split('=', 2)
+        a[k.to_sym] = v
+      rescue StandardError
+        puts "cannot parse point regex '#{r}'. Skipping."
       end
 
       ret.empty? ? nil : ret

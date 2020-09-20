@@ -177,8 +177,6 @@ class WavefrontCliController
   # return [Hash] h with modified keys
   #
   def sanitize_keys(options)
-    options.each_with_object({}) do |(k, v), r|
-      r[k.to_s.delete('-').to_sym] = v
-    end
+    options.transform_keys { |k| k.to_s.delete('-').to_sym }
   end
 end

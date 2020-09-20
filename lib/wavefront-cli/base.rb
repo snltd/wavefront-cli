@@ -102,12 +102,10 @@ module WavefrontCli
 
     def validate_tags(key = :'<tag>')
       Array(options[key]).each do |t|
-        begin
-          send(:wf_tag?, t)
-        rescue Wavefront::Exception::InvalidTag
-          raise(WavefrontCli::Exception::InvalidInput,
-                "'#{t}' is not a valid tag.")
-        end
+        send(:wf_tag?, t)
+      rescue Wavefront::Exception::InvalidTag
+        raise(WavefrontCli::Exception::InvalidInput,
+              "'#{t}' is not a valid tag.")
       end
     end
 
