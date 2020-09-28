@@ -1,7 +1,12 @@
 # Changelog
 
+## 8.0.1 (2020-09-28)
+* If the user specifies a config stanza and it is not found, exit with an
+  error rather than silently falling back to env vars.
+
 ## 8.0.0 (2020-09-20
 * Drop Ruby 2.4.0 support. (Breaking change.)
+>>>>>>> master
 
 ## 7.2.0 (2020-08-12)
 * Add `cloudintegration awsid generate` command.

@@ -35,6 +35,8 @@ module WavefrontCli
       abort "Configuration file '#{e}' not found."
     rescue Wavefront::Exception::InvalidConfigFile => e
       abort "Could not load configuration file '#{e.message}'."
+    rescue Wavefront::Exception::MissingConfigProfile => e
+      abort "Cannot find profile '#{e}'."
     end
 
     # Create an options hash to pass to the Wavefront::Credentials
@@ -45,7 +47,7 @@ module WavefrontCli
     #   :profile
     #
     def setup_cred_opts(cli_opts)
-      cred_opts = {}
+      cred_opts = { raise_on_no_profile: true }
 
       if cli_opts[:config]
         cred_opts[:file] = Pathname.new(cli_opts[:config])

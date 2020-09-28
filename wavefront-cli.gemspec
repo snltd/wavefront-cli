@@ -26,13 +26,13 @@ Gem::Specification.new do |gem|
 
   gem.add_runtime_dependency 'docopt', '~> 0.6.0'
   gem.add_runtime_dependency 'inifile', '~> 3.0'
-  gem.add_runtime_dependency 'wavefront-sdk', '~> 5.1'
+  gem.add_runtime_dependency 'wavefront-sdk', '~> 5.2'
 
-  gem.add_development_dependency 'minitest', '~> 5.11', '>= 5.11.0'
+  gem.add_development_dependency 'minitest', '~> 5.14'
   gem.add_development_dependency 'rake', '~> 13.0'
   gem.add_development_dependency 'rubocop', '0.91.0'
   gem.add_development_dependency 'spy', '~> 1.0.0'
-  gem.add_development_dependency 'webmock', '~> 3.7'
+  gem.add_development_dependency 'webmock', '~> 3.8'
   gem.add_development_dependency 'yard', '~> 0.9.5'
 
   gem.required_ruby_version = Gem::Requirement.new('>= 2.5.0')
