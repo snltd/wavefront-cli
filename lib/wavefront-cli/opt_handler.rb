@@ -2,7 +2,7 @@
 
 require 'pathname'
 require 'wavefront-sdk/credentials'
-require_relative 'constants.rb'
+require_relative 'constants'
 
 module WavefrontCli
   #
@@ -71,7 +71,7 @@ module WavefrontCli
     #
     def load_profile(cred_opts)
       creds = Wavefront::Credentials.new(cred_opts).config
-      Hash[creds.map { |k, v| [k.to_sym, v] }]
+      creds.transform_keys(&:to_sym)
     end
   end
 end

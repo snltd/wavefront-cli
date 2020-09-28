@@ -102,12 +102,10 @@ module WavefrontCli
 
     def validate_tags(key = :'<tag>')
       Array(options[key]).each do |t|
-        begin
-          send(:wf_tag?, t)
-        rescue Wavefront::Exception::InvalidTag
-          raise(WavefrontCli::Exception::InvalidInput,
-                "'#{t}' is not a valid tag.")
-        end
+        send(:wf_tag?, t)
+      rescue Wavefront::Exception::InvalidTag
+        raise(WavefrontCli::Exception::InvalidInput,
+              "'#{t}' is not a valid tag.")
       end
     end
 
@@ -371,9 +369,10 @@ module WavefrontCli
     def do_dump
       cannot_noop!
 
-      if options[:format] == 'yaml'
+      case options[:format]
+      when 'yaml'
         ok_exit dump_yaml
-      elsif options[:format] == 'json'
+      when 'json'
         ok_exit dump_json
       else
         abort format("Dump format must be 'json' or 'yaml'. " \
@@ -539,7 +538,8 @@ module WavefrontCli
     #
     # rubocop:disable Metrics/MethodLength
     def extract_values(obj, key, aggr = [])
-      if obj.is_a?(Hash)
+      case obj.class
+      when Hash
         obj.each_pair do |k, v|
           if k == key && !v.to_s.empty?
             aggr.<< v
@@ -547,7 +547,7 @@ module WavefrontCli
             extract_values(v, key, aggr)
           end
         end
-      elsif obj.is_a?(Array)
+      when Array
         obj.each { |e| extract_values(e, key, aggr) }
       end
 

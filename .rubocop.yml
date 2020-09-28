@@ -1,49 +1,18 @@
 ---
 
 AllCops:
-  TargetRubyVersion: 2.4
+  TargetRubyVersion: 2.5
+  NewCops: enable
 
 Metrics/ClassLength:
   Max: 400
 
 Style/IfUnlessModifier:
   Enabled: false # because it wants to make lines >80 chars
-Style/HashEachMethods:
-    Enabled: true
-Style/HashTransformKeys:
-    Enabled: true
-Style/HashTransformValues:
-    Enabled: true
-
-# New compatabilities
-Layout/EmptyLinesAroundAttributeAccessor:
-  Enabled: true
-Layout/SpaceAroundMethodCallOperator:
-  Enabled: true
-Lint/RaiseException:
-  Enabled: true
-Lint/StructNewOverride:
-  Enabled: true
-Style/ExponentialNotation:
-  Enabled: true
-Style/SlicingWithRange:
-  Enabled: true
-Lint/DeprecatedOpenSSLConstant:
-  Enabled: true
-Lint/MixedRegexpCaptureTypes:
-  Enabled: true
-Style/RedundantRegexpCharacterClass:
-  Enabled: true
-Style/RedundantRegexpEscape:
-  Enabled: true
-Style/AccessorGrouping:
-  Enabled: true
-Style/BisectedAttrAccessor:
-  Enabled: true
-Style/RedundantAssignment:
-  Enabled: true
-Style/RedundantFetchBlock:
-  Enabled: true
+Style/StringConcatenation:
+  Enabled: false
+Style/OptionalBooleanParameter:
+  Enabled: false
 
 # Is nothing sacred?
 Layout/LineLength:

@@ -167,12 +167,10 @@ module WavefrontCli
     #
     def process_input_file(data)
       data.each_with_object([]) do |l, a|
-        begin
-          a.<< process_line(l)
-        rescue WavefrontCli::Exception::UnparseableInput => e
-          puts "Bad input. #{e.message}."
-          next
-        end
+        a.<< process_line(l)
+      rescue WavefrontCli::Exception::UnparseableInput => e
+        puts "Bad input. #{e.message}."
+        next
       end
     end
 
@@ -193,7 +191,7 @@ module WavefrontCli
     #
     def read_stdin
       open_connection
-      STDIN.each_line { |l| call_write(process_line(l.strip), false) }
+      $stdin.each_line { |l| call_write(process_line(l.strip), false) }
       close_connection
     rescue SystemExit, Interrupt
       puts 'ctrl-c. Exiting.'

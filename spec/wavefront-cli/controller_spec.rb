@@ -79,9 +79,11 @@ end
 # so we can get at the methods without triggering one of the things
 # tested above.
 #
+# rubocop:disable Lint/MissingSuper
 class Giblets < WavefrontCliController
   def initialize; end
 end
+# rubocop:enable Lint/MissingSuper
 
 # Here's the subclass
 #

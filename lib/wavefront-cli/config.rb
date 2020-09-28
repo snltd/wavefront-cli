@@ -36,11 +36,13 @@ module WavefrontCli
 
     RX = /^[\da-f]{8}-[\da-f]{4}-[\da-f]{4}-[\da-f]{4}-[\da-f]{12}$/.freeze
 
+    # rubocop:disable Lint/MissingSuper
     def initialize(options)
       @options = options
       @config_file = _config_file
       @profile = options[:'<profile>'] || 'default'
     end
+    # rubocop:enable Lint/MissingSuper
 
     def do_location
       puts config_file
@@ -144,7 +146,7 @@ module WavefrontCli
     # catch a ctrl-d
     #
     def read_input
-      STDIN.gets.strip
+      $stdin.gets.strip
     rescue NoMethodError
       abort "\nInput aborted at user request."
     end
