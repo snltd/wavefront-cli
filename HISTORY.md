@@ -1,5 +1,8 @@
 # Changelog
 
+## 8.1.0 (2020-10-04)
+* Display traces in human-readable query output.
+
 ## 8.0.1 (2020-09-28)
 * If the user specifies a config stanza and it is not found, exit with an
   error rather than silently falling back to env vars.
