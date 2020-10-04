@@ -20,6 +20,7 @@ module WavefrontDisplay
       { name: data.name,
         query: data.query,
         timeseries: mk_timeseries(data),
+        traces: mk_traces(data),
         events: mk_events(data) }.tap do |d|
           d[:warnings] = data[:warnings] if show_warnings?
         end
@@ -52,6 +53,12 @@ module WavefrontDisplay
       return [] unless data.key?(:events)
 
       data[:events].map { |s| humanize_event(s) }
+    end
+
+    def mk_traces(data)
+      return [] unless data.key?(:traces)
+
+      data[:traces].map { |t| humanize_trace(t) }
     end
 
     def do_run
@@ -96,6 +103,23 @@ module WavefrontDisplay
         last_date = date
         format('%-12<series>s %<time>s    %<value>s',
                series: date_string, time: time, value: val)
+      end
+    end
+
+    def humanize_trace(data)
+      data.tap do |t|
+        t[:start] = human_time(t[:start_ms])
+        t[:end] = human_time(t[:end_ms])
+        t.delete(:start_ms)
+        t.delete(:end_ms)
+        t.delete(:startMs)
+        t.spans = t.spans.map { |s| humanize_span(s) }
+      end
+    end
+
+    def humanize_span(span)
+      span.tap do |s|
+        s[:startMs] = human_time(s[:startMs])
       end
     end
 

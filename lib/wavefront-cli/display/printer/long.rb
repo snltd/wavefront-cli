@@ -179,7 +179,7 @@ module WavefrontDisplayPrinter
       data.each.with_index(1) do |element, i|
         aggr = make_list(element, aggr, depth, last_key)
 
-        if opts[:separator] && element.is_a?(Hash) && i < data.size
+        if opts[:separator] && element.is_a?(Hash) && i < data.size && depth < 3
           aggr.<< ['', :separator, depth]
         end
       end
