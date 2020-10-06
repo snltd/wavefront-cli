@@ -29,11 +29,13 @@ module WavefrontDisplayPrinter
 
     # Default options. Can all be overridden by passing them in the
     # initializer options hash.
+    # After sep_depth indentations we do not print separator lines
     #
     def default_opts
       { indent: 2,
         padding: 2,
         separator: true,
+        sep_depth: 3,
         none: true }
     end
 
@@ -179,7 +181,8 @@ module WavefrontDisplayPrinter
       data.each.with_index(1) do |element, i|
         aggr = make_list(element, aggr, depth, last_key)
 
-        if opts[:separator] && element.is_a?(Hash) && i < data.size && depth < 3
+        if opts[:separator] && element.is_a?(Hash) && i < data.size &&
+           depth < opts[:sep_depth]
           aggr.<< ['', :separator, depth]
         end
       end

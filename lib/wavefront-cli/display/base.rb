@@ -33,6 +33,7 @@ module WavefrontDisplay
 
       @data = prioritize_keys(data, priority_keys)
       @options = options
+      @printer_opts = {}
     end
 
     # find the correct method to deal with the output of the user's
@@ -152,7 +153,8 @@ module WavefrontDisplay
         puts 'No data.'
       else
         require_relative 'printer/long'
-        puts WavefrontDisplayPrinter::Long.new(data, fields, modified_data)
+        puts WavefrontDisplayPrinter::Long.new(data, fields, modified_data,
+                                               @printer_opts)
         pagination_line
       end
     end
