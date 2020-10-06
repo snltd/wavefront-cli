@@ -52,12 +52,14 @@ class TestWavefrontDisplayPrinterLong < MiniTest::Test
     assert_equal({ indent: 4,
                    padding: 3,
                    separator: true,
+                   sep_depth: 3,
                    none: true }, pr.opts)
 
     pr = WavefrontDisplayPrinter::Long.new({}, nil, nil, none: false)
     assert_equal({ indent: 2,
                    padding: 2,
                    separator: true,
+                   sep_depth: 3,
                    none: false }, pr.opts)
   end
 

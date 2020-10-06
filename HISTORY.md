@@ -1,5 +1,8 @@
 # Changelog
 
+## 8.2.0 (2020-10-06)
+* Display spans in human-readable query output.
+
 ## 8.1.0 (2020-10-04)
 * Display traces in human-readable query output.
 

@@ -16,15 +16,18 @@ module WavefrontDisplay
             data[:errorMessage].split("\n").first)
     end
 
+    # rubocop:disable Metrics/AbcSize
     def default_data_object
       { name: data.name,
         query: data.query,
         timeseries: mk_timeseries(data),
         traces: mk_traces(data),
+        spans: mk_spans(data),
         events: mk_events(data) }.tap do |d|
           d[:warnings] = data[:warnings] if show_warnings?
         end
     end
+    # rubocop:enable Metrics/AbcSize
 
     def show_warnings?
       data.key?(:warnings) && !options[:nowarn]
@@ -59,6 +62,12 @@ module WavefrontDisplay
       return [] unless data.key?(:traces)
 
       data[:traces].map { |t| humanize_trace(t) }
+    end
+
+    def mk_spans(data)
+      return [] unless data.key?(:spans)
+
+      data[:spans].map { |t| humanize_span(t) }
     end
 
     def do_run
@@ -107,17 +116,24 @@ module WavefrontDisplay
     end
 
     def humanize_trace(data)
+      @printer_opts[:sep_depth] = 3
+
       data.tap do |t|
         t[:start] = human_time(t[:start_ms])
         t[:end] = human_time(t[:end_ms])
         t.delete(:start_ms)
         t.delete(:end_ms)
         t.delete(:startMs)
-        t.spans = t.spans.map { |s| humanize_span(s) }
+        t.spans = t.spans.map { |s| humanize_trace_span(s) }
       end
     end
 
-    def humanize_span(span)
+    def humanize_span(data)
+      @printer_opts[:sep_depth] = 2
+      data
+    end
+
+    def humanize_trace_span(span)
       span.tap do |s|
         s[:startMs] = human_time(s[:startMs])
       end
