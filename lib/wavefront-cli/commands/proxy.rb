@@ -16,6 +16,7 @@ class WavefrontCommandProxy < WavefrontCommandBase
      "undelete #{CMN} <id>",
      "rename #{CMN} <id> <name>",
      "search #{CMN} [-al] [-o offset] [-L limit] [-O fields] <condition>...",
+     "shutdown #{CMN} <id>",
      "versions #{CMN}"]
   end
 

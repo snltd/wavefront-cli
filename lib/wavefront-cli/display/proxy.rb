@@ -26,6 +26,10 @@ module WavefrontDisplay
       multicolumn(:id, :version, :name)
     end
 
+    def do_shutdown
+      puts "Requested shutdown of proxy '#{options[:'<id>']}'."
+    end
+
     private
 
     def filter_inactive_proxies!
