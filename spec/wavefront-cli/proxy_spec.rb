@@ -36,6 +36,19 @@ class ProxyEndToEndTest < EndToEndTest
     assert_abort_on_missing_creds("rename #{id} newname")
   end
 
+  def test_shutdown
+    assert_output("Requested shutdown of proxy '#{id}'.\n") do
+      assert_cmd_puts("shutdown #{id}", "/api/v2/proxy/#{id}",
+                      { shutdown: true }.to_json)
+    end
+
+    assert_noop("shutdown #{id}",
+                "uri: PUT https://default.wavefront.com/api/v2/proxy/#{id}",
+                'body: {"shutdown":true}')
+    assert_invalid_id("shutdown #{invalid_id}")
+    assert_abort_on_missing_creds("shutdown #{id}")
+  end
+
   private
 
   def id

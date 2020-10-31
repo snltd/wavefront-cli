@@ -32,6 +32,10 @@ module WavefrontCli
       version_info(raw).sort_by { |p| Gem::Version.new(p[:version]) }.reverse
     end
 
+    def do_shutdown
+      wf.shutdown(options[:'<id>'])
+    end
+
     def version_info(raw)
       raw.response.items.map do |i|
         { id: i.id, version: i.version, name: i.name }
