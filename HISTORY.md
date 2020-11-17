@@ -1,5 +1,8 @@
 # Changelog
 
+## 8.3.1 (2020-11-17)
+* Catch ctrl-c properly.
+
 ## 8.3.0 (2020-10-31)
 * Add `wf proxy shutdown` command.
 
