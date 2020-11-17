@@ -40,6 +40,12 @@ class WavefrontCliController
     cli_class_obj = cli_class(cmd, @opts)
     run_command(cli_class_obj)
   rescue Interrupt
+    handle_interrupt!
+  end
+
+  def handle_interrupt!
+    raise if opts[:debug]
+
     puts "\nCancelled at user's request."
     exit 0
   end
