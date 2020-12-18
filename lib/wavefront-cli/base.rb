@@ -147,6 +147,7 @@ module WavefrontCli
               noop: options[:noop] }
 
       ret[:verbose] = options[:noop] ? true : options[:verbose]
+      ret[:raw_response] = true if options[:format] == 'raw'
 
       ret.merge!(extra_options) if respond_to?(:extra_options)
       ret
@@ -227,6 +228,8 @@ module WavefrontCli
       end
 
       exit if options[:noop]
+
+      ok_exit data if options[:format] == 'raw'
 
       check_response_blocks(data)
       warning_message(data.status)

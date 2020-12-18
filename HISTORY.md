@@ -1,5 +1,10 @@
 # Changelog
 
+## 8.4.0 (2020-12-16)
+* Add `-f raw` option to dump the raw API response.
+* Bugfix `set` subcommand, which was not reliable on certain object types.
+* Require >=5.4.1 of [the SDK](https://github.com/snltd/wavefront-sdk).
+
 ## 8.3.1 (2020-11-17)
 * Catch ctrl-c properly.
 
@@ -18,7 +23,6 @@
 
 ## 8.0.0 (2020-09-20
 * Drop Ruby 2.4.0 support. (Breaking change.)
->>>>>>> master
 
 ## 7.2.0 (2020-08-12)
 * Add `cloudintegration awsid generate` command.
