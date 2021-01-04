@@ -1,5 +1,8 @@
 # Changelog
 
+## 8.4.1 (2021-01-04)
+* Bugfix docopt error on `event` command.
+
 ## 8.4.0 (2020-12-16)
 * Add `-f raw` option to dump the raw API response.
 * Bugfix `set` subcommand, which was not reliable on certain object types.
