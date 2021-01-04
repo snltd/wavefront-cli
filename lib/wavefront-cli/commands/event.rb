@@ -13,7 +13,7 @@ class WavefrontCommandEvent < WavefrontCommandBase
     ["list #{CMN} [-l] [-O fields] [-s start] [-e end] " \
      '[-L limit] [-o cursor]',
      "describe #{CMN} <id>",
-     "create #{CMN} [-d description] [-s time] [-i | -e time] " \
+     "create #{CMN} [-d description] [-s start] [-i | -e end] " \
      '[-S severity] [-T type] [-H host...] [-g tag...] [-N] <event>',
      "close #{CMN} [<id>]",
      "delete #{CMN} <id>",
@@ -31,8 +31,10 @@ class WavefrontCommandEvent < WavefrontCommandBase
      "-o, --cursor=EVENT        start listing from given #{thing}",
      '-O, --fields=F1,F2,...    only show given fields',
      "-L, --limit=COUNT         number of #{things} to list",
-     "-s, --start=TIME          time at which #{thing} begins",
-     "-e, --end=TIME            time at which #{thing} ends",
+     "-s, --start=TIME          start of listed #{things} or time at which " \
+     "#{thing} begins",
+     "-e, --end=TIME            end of listed #{things} or time at which " \
+     "#{thing} ends",
      "-S, --severity=SEVERITY   severity of #{thing}",
      "-i, --instant             create an instantaneous #{thing}",
      "-T, --type=TYPE           type of #{thing}",

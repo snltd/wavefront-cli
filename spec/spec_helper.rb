@@ -22,7 +22,6 @@ unless defined?(CMD)
     'Content-Type': 'application/json', Accept: 'application/json'
   }.freeze
   BAD_TAG = '*BAD_TAG*'
-  TW = 80
   HOME_CONFIG = Pathname.new(ENV['HOME']) + '.wavefront'
 end
 

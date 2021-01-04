@@ -2,6 +2,7 @@
 
 require 'fileutils'
 require 'open3'
+require 'etc'
 require 'wavefront-sdk/support/mixins'
 require_relative 'base'
 require_relative 'command_mixins/tag'

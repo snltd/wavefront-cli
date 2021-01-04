@@ -22,6 +22,18 @@ class WavefrontCliHelpTest < MiniTest::Test
     assert_match(/^  \w+ --help$/, e.message)
   end
 
+  def test_commands_no_args
+    SupportedCommands.new.all.each do |cmd|
+      _test_command_no_args(cmd)
+    end
+  end
+
+  def _test_command_no_args(cmd)
+    capture_io { WavefrontCliController.new([cmd]) }
+  rescue SystemExit => e
+    assert e.message.end_with?("wf #{cmd} --help")
+  end
+
   def test_version
     capture_io { WavefrontCliController.new(%w[--version]) }
   rescue SystemExit => e
