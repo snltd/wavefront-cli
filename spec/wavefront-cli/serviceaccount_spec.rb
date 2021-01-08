@@ -41,20 +41,36 @@ class ServiceAccountEndToEndTest < EndToEndTest
     assert_abort_on_missing_creds("groups #{id}")
   end
 
-  def test_permissions
+  def test_roles
     quietly do
-      assert_cmd_gets("permissions #{id}", "/api/v2/#{api_path}/#{id}")
+      assert_cmd_gets("roles #{id}", "/api/v2/#{api_path}/#{id}")
     end
 
-    assert_invalid_id("permissions #{invalid_id}")
-    assert_usage('permissions')
+    assert_invalid_id("roles #{invalid_id}")
+    assert_usage('roles')
 
     assert_noop(
-      "permissions #{id}",
+      "roles #{id}",
       "uri: GET https://default.wavefront.com/api/v2/#{api_path}/#{id}"
     )
 
-    assert_abort_on_missing_creds("permissions #{id}")
+    assert_abort_on_missing_creds("roles #{id}")
+  end
+
+  def test_ingestionpolicy
+    quietly do
+      assert_cmd_gets("ingestionpolicy #{id}", "/api/v2/#{api_path}/#{id}")
+    end
+
+    assert_invalid_id("ingestionpolicy #{invalid_id}")
+    assert_usage('ingestionpolicy')
+
+    assert_noop(
+      "ingestionpolicy #{id}",
+      "uri: GET https://default.wavefront.com/api/v2/#{api_path}/#{id}"
+    )
+
+    assert_abort_on_missing_creds("ingestionpolicy #{id}")
   end
 
   def test_activate
@@ -85,7 +101,7 @@ class ServiceAccountEndToEndTest < EndToEndTest
                        '/api/v2/account/serviceaccount',
                        identifier: id,
                        active: true,
-                       groups: [],
+                       roles: [],
                        tokens: [],
                        userGroups: [])
     end
@@ -95,8 +111,8 @@ class ServiceAccountEndToEndTest < EndToEndTest
       'uri: POST https://default.wavefront.com/api/v2/account/serviceaccount',
       'body: ' + { identifier: id,
                    active: true,
-                   groups: [],
                    tokens: [],
+                   roles: [],
                    userGroups: [] }.to_json
     )
 
@@ -111,21 +127,33 @@ class ServiceAccountEndToEndTest < EndToEndTest
                        identifier: id,
                        description: 'words',
                        active: false,
-                       groups: [],
+                       roles: [],
                        tokens: [],
                        userGroups: [])
     end
   end
 
-  def test_create_account_in_usergroups
+  def test_create_account_with_usergroups
     quietly do
       assert_cmd_posts("create -g #{usergroups[0]} -g #{usergroups[1]} #{id}",
                        '/api/v2/account/serviceaccount',
                        identifier: id,
                        active: true,
-                       groups: [],
                        tokens: [],
+                       roles: [],
                        userGroups: usergroups)
+    end
+  end
+
+  def test_create_account_with_roles
+    quietly do
+      assert_cmd_posts("create -r #{roles[0]} -r #{roles[1]} #{id}",
+                       '/api/v2/account/serviceaccount',
+                       identifier: id,
+                       active: true,
+                       tokens: [],
+                       roles: roles,
+                       userGroups: [])
     end
   end
 
@@ -135,19 +163,20 @@ class ServiceAccountEndToEndTest < EndToEndTest
                        '/api/v2/account/serviceaccount',
                        identifier: id,
                        active: true,
-                       groups: [],
                        tokens: tokens,
+                       roles: [],
                        userGroups: [])
     end
   end
 
-  def test_create_account_with_permissions
+  def test_create_account_with_ingestion_policy
     quietly do
-      assert_cmd_posts("create -p #{permissions[0]} -p #{permissions[1]} #{id}",
+      assert_cmd_posts("create -p #{ingestion_policy} #{id}",
                        '/api/v2/account/serviceaccount',
                        identifier: id,
                        active: true,
-                       groups: permissions,
+                       ingestionPolicyId: ingestion_policy,
+                       roles: [],
                        tokens: [],
                        userGroups: [])
     end
@@ -158,8 +187,8 @@ class ServiceAccountEndToEndTest < EndToEndTest
                       "create -g abcdefg #{id}")
   end
 
-  def test_create_invalid_permission
-    assert_exits_with("'123456' is not a valid Wavefront permission.",
+  def test_create_invalid_ingestion_policy
+    assert_exits_with("'123456' is not a valid ingestion policy ID.",
                       "create -p 123456 #{id}")
   end
 
@@ -358,8 +387,9 @@ class ServiceAccountEndToEndTest < EndToEndTest
     'service account'
   end
 
-  def permissions
-    %w[alerts_management events_management]
+  def roles
+    %w[07fc5cdd-0979-489e-8f70-325f39d15e55
+       0a42adf6-e738-4c5d-9e53-fd10bd979a31]
   end
 
   def tokens
@@ -370,6 +400,10 @@ class ServiceAccountEndToEndTest < EndToEndTest
   def usergroups
     %w[2659191e-aad4-4302-a94e-9667e1517127
        abcdef12-1234-abcd-1234-abcdef012345]
+  end
+
+  def ingestion_policy
+    'test-policy-1607616352537'
   end
 
   def import_fields
