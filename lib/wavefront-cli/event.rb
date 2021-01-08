@@ -12,14 +12,13 @@ module WavefrontCli
   # CLI coverage for the v2 'event' API.
   #
   class Event < Base
-    attr_reader :state_dir
+    attr_reader :state
 
     include Wavefront::Mixins
     include WavefrontCli::Mixin::Tag
 
-    def post_initialize(_options)
-      @state_dir = event_state_dir + (Etc.getlogin || 'notty')
-      create_dir(state_dir)
+    def post_initialize(options)
+      @state = WavefrontCli::LocalEventStore.new(options)
     end
 
     def do_list
@@ -32,34 +31,10 @@ module WavefrontCli
       t_start = parse_time(opts[:start], true)
       body = create_body(opts, t_start)
       resp = wf.create(body)
-      create_state_file(resp.response[:id]) if state_file_needed?(opts)
+      return if opts[:noop]
+
+      state.create!(resp.response[:id])
       resp
-    end
-
-    def state_file_needed?(opts)
-      !(opts[:nostate] || opts[:end] || opts[:instant])
-    end
-
-    # The user doesn't have to give us an event ID.  If no event
-    # name is given, we'll pop the last event off the stack. If an
-    # event name is given and it doesn't look like a full WF event
-    # name, we'll look for something on the stack.  If it does look
-    # like a real event, we'll make an API call straight away.
-    #
-    def do_close(id = nil)
-      id ||= options[:'<id>']
-      ev = local_event(id)
-      ev_file = event_file(id)
-
-      abort "No locally stored event matches '#{id}'." unless ev
-
-      res = wf.close(ev)
-      ev_file.unlink if ev_file&.exist? && res.status.code == 200
-      res
-    end
-
-    def event_file(id)
-      id =~ /^\d{13}:.+/ ? state_dir + id : nil
     end
 
     def do_show
@@ -84,15 +59,37 @@ module WavefrontCli
       exit exit_code
     end
 
-    # We can override the temp directory with the WF_EVENT_STATE_DIR. This is
-    # primarily for testing.
+    # The user doesn't have to give us an event ID.  If no event
+    # name is given, we'll pop the last event off the stack. If an
+    # event name is given and it doesn't look like a full WF event
+    # name, we'll look for something on the stack.  If it does look
+    # like a real event, we'll make an API call straight away.
     #
-    def event_state_dir
-      if ENV['WF_EVENT_STATE_DIR']
-        Pathname.new(ENV['WF_EVENT_STATE_DIR'])
-      else
-        EVENT_STATE_DIR
-      end
+    def do_close(id = nil)
+      id ||= options[:'<id>']
+      ev = local_event(id)
+      ev_file = event_file(id)
+
+      abort "No locally stored event matches '#{id}'." unless ev
+
+      res = wf.close(ev)
+      ev_file.unlink if ev_file&.exist? && res.status.code == 200
+      res
+    end
+
+    def list_args
+      [window_start,
+       window_end,
+       options[:limit] || 100,
+       options[:cursor] || nil]
+    end
+
+    def window_start
+      parse_time((options[:start] || Time.now - 600), true)
+    end
+
+    def window_end
+      parse_time((options[:end] || Time.now), true)
     end
 
     # return [Hash] body for #create() method
@@ -123,6 +120,56 @@ module WavefrontCli
         r[:type] = opts[:type] if opts[:type]
       end
     end
+  end
+end
+
+require_relative 'constants'
+
+module WavefrontCli
+  #
+  # Encapsulation of everything needed to manage the locally stored state of
+  # events opened by the CLI. This is our own addition, entirely separate from
+  # Wavefront's API.
+  #
+  # When the user creates an open-ended event (i.e. one that does not have and
+  # end time, and is not instantaneous) a state file is created in a local
+  # directory. (*)
+  #
+  # That directory isw
+  #
+  # (*) The user may specifically request that no state file be created with the
+  # --nostate flag.
+  #
+  #
+  class LocalEventStore
+    include WavefrontCli::Constants
+
+    attr_reader :dir, :options
+
+    # @param state_dir [Pathname] override the default dir for testing
+    #
+    def initialize(options, state_dir = nil)
+      @options = options
+      @dir = event_state_dir(state_dir) + (Etc.getlogin || 'notty')
+      create_dir(dir)
+    end
+
+    def state_file_needed?
+      !(options[:nostate] || options[:end] || options[:instant])
+    end
+
+    def event_file(id)
+      id =~ /^\d{13}:.+/ ? dir + id : nil
+    end
+
+    # We can override the temp directory with the WF_EVENT_STATE_DIR env var.
+    # This is primarily for testing.
+    #
+    def event_state_dir(state_dir)
+      return EVENT_STATE_DIR if state_dir.nil?
+
+      Pathname.new(state_dir)
+    end
 
     # @return a local event from the stack directory
     #
@@ -137,7 +184,7 @@ module WavefrontCli
     end
 
     def local_event_list
-      events = state_dir.children
+      events = dir.children
       abort 'No locally recorded events.' if events.empty?
 
       events
@@ -171,11 +218,14 @@ module WavefrontCli
     # file. These aren't currently used by anything in the CLI, but they
     # might be useful to someone, somewhere, someday.
     #
-    def create_state_file(id)
-      fname = state_dir + id
+    def create!(id)
+      return unless state_file_needed?
+
+      fname = dir + id
       File.open(fname, 'w') { |fh| fh.puts(event_file_data) }
       puts "Event state recorded at #{fname}."
-    rescue StandardError
+    rescue StandardError => e
+      pp e
       puts 'NOTICE: event was created but state file was not.'
     end
 
@@ -232,19 +282,5 @@ module WavefrontCli
       list.select { |f| f.basename.to_s.split(':').last == name }
     end
 
-    def list_args
-      [window_start,
-       window_end,
-       options[:limit] || 100,
-       options[:cursor] || nil]
-    end
-
-    def window_start
-      parse_time((options[:start] || Time.now - 600), true)
-    end
-
-    def window_end
-      parse_time((options[:end] || Time.now), true)
-    end
   end
 end

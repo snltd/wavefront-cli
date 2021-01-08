@@ -10,8 +10,7 @@ class WavefrontCommandEvent < WavefrontCommandBase
   end
 
   def _commands
-    ["list #{CMN} [-l] [-O fields] [-s start] [-e end] " \
-     '[-L limit] [-o cursor]',
+    ["list #{CMN} [-l] [-O fields] [-s start] [-e end] [-L limit] [-o cursor]",
      "describe #{CMN} <id>",
      "create #{CMN} [-d description] [-s start] [-i | -e end] " \
      '[-S severity] [-T type] [-H host...] [-g tag...] [-N] <event>',
