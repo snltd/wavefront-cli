@@ -35,14 +35,22 @@ module WavefrontDisplay
       end
     end
 
+    def do_roles
+      if data[:roles].empty?
+        puts 'Account does not have any roles attached.'
+      else
+        data[:roles].each { |r| puts format('%<id>s (%<name>s)', r) }
+      end
+    end
+
     alias do_join do_groups
     alias do_leave do_groups
 
-    def do_permissions
-      if data[:groups].empty?
-        puts 'Account does not have any Wavefront permissions.'
+    def do_ingestionpolicy
+      if data[:ingestionPolicy].empty?
+        puts 'Account does not have an ingestion policy attached.'
       else
-        puts data[:groups]
+        puts format('%<id>s (%<name>s)', data[:ingestionPolicy])
       end
     end
 
