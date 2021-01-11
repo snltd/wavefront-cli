@@ -1,8 +1,11 @@
 # Changelog
 
+<<<<<<< HEAD
 * Refactor `event` command. This improves test coverage, fixes handling
   event names with numeric suffix, and fixes searching.
 
+=======
+>>>>>>> master
 ## 8.5.0 (2021-01-08)
 * Allow attachment of roles and ingestion policies when creating service
   accounts.
