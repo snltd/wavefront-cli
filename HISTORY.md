@@ -1,5 +1,10 @@
 # Changelog
 
+## 8.5.0 (2021-01-08)
+* Allow attachment of roles and ingestion policies when creating service
+  accounts.
+* Improved introspection of service accounts.
+
 ## 8.4.1 (2021-01-04)
 * Bugfix docopt error on `event` command.
 

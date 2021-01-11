@@ -23,7 +23,8 @@ module WavefrontCli
     end
 
     alias do_groups do_describe
-    alias do_permissions do_describe
+    alias do_ingestionpolicy do_describe
+    alias do_roles do_describe
 
     def do_create
       wf_user_id?(options[:'<id>'])
@@ -95,7 +96,7 @@ module WavefrontCli
     def extra_validation
       validate_groups
       validate_tokens
-      validate_perms
+      validate_ingestion_policy
     end
 
     def validator_exception
@@ -157,15 +158,18 @@ module WavefrontCli
       !options[:inactive]
     end
 
+    # rubocop:disable Metrics/AbcSize
     def user_body
       { identifier: options[:'<id>'],
         active: active_account?,
-        groups: options[:permission],
+        ingestionPolicyId: options[:policy],
         tokens: options[:usertoken],
-        userGroups: options[:group] }.tap do |b|
+        roles: options[:role],
+        userGroups: options[:group] }.compact.tap do |b|
           b[:description] = options[:desc] if options[:desc]
         end
     end
+    # rubocop:enable Metrics/AbcSize
 
     def item_dump_call
       wf.list.response
@@ -175,12 +179,18 @@ module WavefrontCli
       options[:group].each { |g| wf_usergroup_id?(g) }
     end
 
+    def validate_roles
+      options[:role].each { |r| wf_role_id?(r) }
+    end
+
     def validate_tokens
       options[:usertoken].each { |t| wf_apitoken_id?(t) }
     end
 
-    def validate_perms
-      options[:permission].each { |p| wf_permission?(p) }
+    def validate_ingestion_policy
+      return true unless options[:policy]
+
+      wf_ingestionpolicy_id?(options[:policy])
     end
 
     def descriptive_name

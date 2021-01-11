@@ -20,14 +20,15 @@ class WavefrontCommandServiceaccount < WavefrontCommandBase
   def _commands
     ["list #{CMN} [-l] [-O fields]",
      "describe #{CMN} <id>",
-     "create #{CMN} [-I] [-d description] [-p permission...] [-g group...] " \
-     '[-k usertoken...] <id>',
+     "create #{CMN} [-I] [-d description] [-p policy] [-r role...] " \
+     '[-g group...] [-k usertoken...] <id>',
      "activate #{CMN} <id>",
      "delete #{CMN} <account>...",
      "deactivate #{CMN} <id>",
      "dump #{CMN}",
      "groups #{CMN} <id>",
-     "permissions #{CMN} <id>",
+     "roles #{CMN} <id>",
+     "ingestionpolicy #{CMN} <id>",
      "join #{CMN} <id> <group>...",
      "leave #{CMN} <id> <group>...",
      "grant #{CMN} <permission> to <id>",
@@ -52,7 +53,8 @@ class WavefrontCommandServiceaccount < WavefrontCommandBase
      "-U, --upsert             import new or update existing #{thing}",
      "-I, --inactive           create an inactive #{thing}",
      "-d, --desc=STRING        description of #{thing}",
-     "-p, --permission=STRING  give #{thing} this permission",
+     "-r, --role=STRING        give #{thing} this role",
+     "-p, --policy=STRING      give #{thing} this ingestion policy",
      "-g, --group=STRING       add #{thing} to this user group",
      '-N, --name=STRING        name of token',
      '-k, --usertoken=STRING   API token']
