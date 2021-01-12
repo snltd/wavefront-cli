@@ -3,6 +3,7 @@
 
 require 'tmpdir'
 require_relative '../support/command_base'
+require_relative '../test_mixins/tag'
 require_relative '../../lib/wavefront-cli/event'
 require 'wavefront-sdk/support/mixins'
 
@@ -15,12 +16,11 @@ class EventEndToEndTest < EndToEndTest
   attr_reader :test_state_dir
 
   include Wavefront::Mixins
-  include WavefrontCliTest::Describe
-  include WavefrontCliTest::Delete
-  # Ones above work, ones below don't
+  # include WavefrontCliTest::Describe
+  # include WavefrontCliTest::Delete
   # include WavefrontCliTest::Search
-  # include WavefrontCliTest::Set
-  # include WavefrontCliTest::Tags
+  # #include WavefrontCliTest::Set
+  # include WavefrontCliTest::Tag
 
   def before_setup
     @test_state_dir = Pathname.new(Dir.mktmpdir)
@@ -29,11 +29,6 @@ class EventEndToEndTest < EndToEndTest
 
   def teardown
     FileUtils.rm_r(test_state_dir)
-  end
-
-  def cmd_instance
-    cmd_class.new(event_state_dir: TEST_EVENT_DIR)
-    puts cmd_class
   end
 
   def test_list_no_options
@@ -63,6 +58,22 @@ class EventEndToEndTest < EndToEndTest
                       "&cursor=#{id}" \
                       '&limit=8')
     end
+  end
+
+  def test_show_with_no_local_events
+    assert_exits_with('No locally recorded events.', 'show')
+  end
+
+  def test_show
+    setup_test_state_dir
+
+    out, err = capture_io do
+      assert_raises(SystemExit) { wf.new("event show -c #{CF}".split) }
+    end
+
+    assert_empty(err)
+    assert_equal("1568133440530:ev3:0\n1568133440520:ev2:0\n" \
+                 "1568133440515:ev1:1\n1568133440510:ev1:0\n", out)
   end
 
   def test_create
@@ -100,8 +111,8 @@ class EventEndToEndTest < EndToEndTest
     refute state_file.exist?
 
     out, err = capture_io do
-      assert_cmd_posts('create -d reason -H host1 -H host2 -g ' \
-                       "mytag #{event_name}",
+      assert_cmd_posts('create -d reason -H host1 -H host2 -g mytag ' \
+                       "#{event_name}",
                        '/api/v2/event',
                        { name: event_name,
                          startTime: a_ms_timestamp,
@@ -146,15 +157,6 @@ class EventEndToEndTest < EndToEndTest
     assert_match(/^id            1481553823153:test_event:1\n/, out)
     assert_match(/\nannotations   <none>\n/, out)
     assert_match(/\ntags          tag1\n              tag2\n/, out)
-  end
-
-  def test_close_named_event
-    quietly do
-      assert_cmd_posts('close 1568133440520:ev2:0',
-                       '/api/v2/event/1568133440520:ev2:0/close')
-    end
-
-    assert_abort_on_missing_creds("close #{id}")
   end
 
   def test_close_with_no_local_events
@@ -212,26 +214,47 @@ class EventEndToEndTest < EndToEndTest
     end
   end
 
-  def test_show
-    setup_test_state_dir
+  def test_window_start
+    wfse = WavefrontCli::Event.new(start: wall_time[0], end: wall_time[1])
+    assert_kind_of(Numeric, wfse.window_start)
+    assert_equal(epoch_ms_time[0], wfse.window_start)
+  end
 
-    out, err = capture_io do
-      assert_raises(SystemExit) { wf.new("event show -c #{CF}".split) }
-    end
+  def test_window_end
+    wfse = WavefrontCli::Event.new(start: wall_time[0], end: wall_time[1])
+    assert_kind_of(Numeric, wfse.window_end)
+    assert_equal(epoch_ms_time[1], wfse.window_end)
+  end
 
-    assert_empty(err)
-    assert_equal("1568133440530:ev3:0\n1568133440520:ev2:0\n" \
-                 "1568133440515:ev1:1\n1568133440510:ev1:0\n", out)
+  def test_list_args_defaults
+    wfe = WavefrontCli::Event.new({})
+    x = wfe.list_args
+    assert_instance_of(Array, x)
+    assert_equal(4, x.size)
+    assert_in_delta(((Time.now - 600).to_i * 1000), x[0], 1000)
+    assert_in_delta((Time.now.to_i * 1000), x[1], 1000)
+    assert_equal(100, x[2])
+    assert_nil(x[3])
+  end
+
+  def test_list_args_options
+    wfse = WavefrontCli::Event.new(limit: 55,
+                                   start: wall_time[0],
+                                   cursor: id,
+                                   end: wall_time[1])
+    x = wfse.list_args
+    assert_instance_of(Array, x)
+    assert_equal(4, x.size)
+    assert_equal(epoch_ms_time[0], x[0])
+    assert_equal(epoch_ms_time[1], x[1])
+    assert_equal(55, x[2])
+    assert_equal(id, x[3])
   end
 
   private
 
   def id
-    '1481553823153:testev'
-  end
-
-  def event_name
-    'test_event'
+    '1481553823153:testev:0'
   end
 
   def invalid_id
@@ -242,18 +265,24 @@ class EventEndToEndTest < EndToEndTest
     'event'
   end
 
+  def event_name
+    'test_event'
+  end
+
   def start_time
     1_481_553_823_153
   end
 
-  def import_fields
-    %i[method title creatorId triggers template]
+  def epoch_ms_time
+    wall_time.map { |t| (t.to_i * 1000) }
   end
 
   def state_dir
     test_state_dir + (Etc.getlogin || 'notty')
   end
 
+  # Puts some test events in the state directory
+  #
   def setup_test_state_dir
     FileUtils.mkdir_p(state_dir)
 
@@ -285,79 +314,10 @@ class EventEndToEndTest < EndToEndTest
                  "https://#{perm[:endpoint]}/api/v2/event/#{mock_id}/close")
       .with(body: 'null')
   end
-end
 
-# Unit tests for class methods
-#
-class EventMethodTests < Minitest::Test
-  attr_reader :wf, :wfse
-
-  def setup
-    @wf = WavefrontCli::Event.new({})
-    @wfse = WavefrontCli::Event.new(start: wall_time[0],
-                                    end: wall_time[1],
-                                    limit: 55,
-                                    cursor: '1481553823153:testev')
-  end
-
-  def test_create_dir_ok
-    base = Pathname.new(Dir.mktmpdir)
-    dir = base + 'testdir'
-    refute dir.exist?
-    wf.create_dir(dir)
-    assert dir.exist?
-    dir.unlink
-    base.unlink
-  end
-
-  def test_create_dir_fail
-    spy = Spy.on(FileUtils, :mkdir_p).and_return(false)
-
-    assert_raises(WavefrontCli::Exception::SystemError) do
-      wf.create_dir(Pathname.new('/any/old/directory'))
-    end
-
-    assert spy.has_been_called?
-    spy.unhook
-  end
-
-  def test_list_args_defaults
-    x = wf.list_args
-    assert_instance_of(Array, x)
-    assert_equal(4, x.size)
-    assert_in_delta(((Time.now - 600).to_i * 1000), x[0], 1000)
-    assert_in_delta((Time.now.to_i * 1000), x[1], 1000)
-    assert_equal(100, x[2])
-    assert_nil(x[3])
-  end
-
-  def test_list_args_options
-    x = wfse.list_args
-    assert_instance_of(Array, x)
-    assert_equal(4, x.size)
-    assert_equal(epoch_ms_time[0], x[0])
-    assert_equal(epoch_ms_time[1], x[1])
-    assert_equal(55, x[2])
-    assert_equal('1481553823153:testev', x[3])
-  end
-
-  def test_window_start
-    assert_kind_of(Numeric, wf.window_start)
-    assert_equal(epoch_ms_time[0], wfse.window_start)
-  end
-
-  def test_window_end
-    assert_kind_of(Numeric, wf.window_end)
-    assert_equal(epoch_ms_time[1], wfse.window_end)
-  end
-
-  private
-
-  def wall_time
-    [Time.at(1_568_112_000), Time.at(1_568_112_999)]
-  end
-
-  def epoch_ms_time
-    wall_time.map { |t| (t.to_i * 1000) }
+  # Event searching uses a cursor, not an offset
+  #
+  def cannot_handle_offsets
+    true
   end
 end

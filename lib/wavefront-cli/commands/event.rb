@@ -10,15 +10,14 @@ class WavefrontCommandEvent < WavefrontCommandBase
   end
 
   def _commands
-    ["list #{CMN} [-l] [-O fields] [-s start] [-e end] " \
-     '[-L limit] [-o cursor]',
+    ["list #{CMN} [-l] [-O fields] [-s start] [-e end] [-L limit] [-o cursor]",
      "describe #{CMN} <id>",
      "create #{CMN} [-d description] [-s start] [-i | -e end] " \
      '[-S severity] [-T type] [-H host...] [-g tag...] [-N] <event>',
      "close #{CMN} [<id>]",
      "delete #{CMN} <id>",
      "set #{CMN} <key=value> <id>",
-     "search #{CMN} [-o offset] [-L limit] [-l] [-O fields] <condition>...",
+     "search #{CMN} [-al] [-o cursor] [-L limit] [-O fields] <condition>...",
      "wrap #{CMN} [-C command] [-d description] [-S severity] [-T type] " \
      '[-H host...] [-g tag...] <event>',
      tag_commands,
@@ -28,6 +27,7 @@ class WavefrontCommandEvent < WavefrontCommandBase
   def _options
     [common_options,
      "-l, --long                list #{things} in detail",
+     "-a, --all                 list all #{things}",
      "-o, --cursor=EVENT        start listing from given #{thing}",
      '-O, --fields=F1,F2,...    only show given fields',
      "-L, --limit=COUNT         number of #{things} to list",
