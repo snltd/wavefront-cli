@@ -1,6 +1,6 @@
 # Changelog
 
-## 8.5.0 (2021-01-08)
+## 8.5.0 (2021-01-12)
 * Allow attachment of roles and ingestion policies when creating service
   accounts.
 * Improved introspection of service accounts.
