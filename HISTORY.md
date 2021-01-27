@@ -1,5 +1,7 @@
 # Changelog
 
+* Fix stack trace when specifying an invalid time such as `Sunday`.
+
 ## 8.5.0 (2021-01-12)
 * Allow attachment of roles and ingestion policies when creating service
   accounts.
