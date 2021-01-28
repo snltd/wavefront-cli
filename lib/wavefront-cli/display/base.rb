@@ -399,9 +399,10 @@ module WavefrontDisplay
     # @return [String, String] DateTime formatter, strptime formatter
     #
     def time_formats(str)
-      if str =~ /^\d{13}$/
+      case str
+      when /^\d{13}$/
         ['%Q', HUMAN_TIME_FORMAT_MS]
-      elsif str =~ /^\d{10}$/
+      when /^\d{10}$/
         ['%s', HUMAN_TIME_FORMAT]
       else
         raise ArgumentError

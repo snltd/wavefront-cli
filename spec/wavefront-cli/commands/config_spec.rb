@@ -28,7 +28,7 @@ class WavefrontCommmandConfigTest < WavefrontCommmandBaseTest
       refute o.end_with?('.')
     end
 
-    assert_equal(wf.options.split("\n").select(&:empty?).size, 0)
+    assert_equal(wf.options.split("\n").count(&:empty?), 0)
   end
 
   def test_commands

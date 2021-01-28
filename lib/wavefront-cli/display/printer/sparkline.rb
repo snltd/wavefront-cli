@@ -39,7 +39,7 @@ class WavefrontSparkline
     return vals if vals.size < SPARK_WIDTH
 
     vals.<< vals.last if vals.size.odd?
-    ret = vals.each_slice(2).with_object([]) { |s, a| a.<< s.inject(:+) / 2 }
+    ret = vals.each_slice(2).with_object([]) { |s, a| a.<< s.sum / 2 }
     make_fit(ret)
   end
 

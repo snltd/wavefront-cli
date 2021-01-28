@@ -7,6 +7,8 @@ module WavefrontCli
   # CLI coverage for the v2 'settings' API.
   #
   class Settings < WavefrontCli::Base
+    JOBS = %w[invitePermissions defaultUserGroups].freeze
+
     def do_list_permissions
       wf.permissions
     end
@@ -24,10 +26,7 @@ module WavefrontCli
         k, v = o.split('=', 2)
         next unless v && !v.empty?
 
-        if %w[invitePermissions defaultUserGroups].include?(k)
-          v = v.include?(',') ? v.split(',') : [v]
-        end
-
+        v = v.include?(',') ? v.split(',') : [v] if JOBS.include?(k)
         a[k] = v
       end
 

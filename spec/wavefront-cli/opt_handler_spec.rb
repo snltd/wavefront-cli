@@ -19,7 +19,7 @@ class OptHandlerTest < MiniTest::Test
     x = WavefrontCli::OptHandler.new
     assert x.is_a?(WavefrontCli::OptHandler)
     assert x.opts.is_a?(Hash)
-    assert x.opts.keys.include?(:endpoint)
+    assert x.opts.key?(:endpoint)
   end
 
   def test_missing_config
@@ -36,7 +36,7 @@ class OptHandlerTest < MiniTest::Test
     o = x.opts
     assert x.is_a?(WavefrontCli::OptHandler)
     assert o.is_a?(Hash)
-    refute o.keys.include?(:token)
+    refute o.key?(:token)
     assert_equal(o[:endpoint], 'metrics.wavefront.com')
   end
 
@@ -52,7 +52,7 @@ class OptHandlerTest < MiniTest::Test
     assert_equal(o[:token], 'abcd1234')
     assert_nil o[:config]
     assert_equal(o[:endpoint], 'myendpoint.wavefront.com')
-    refute o.keys.include?(:proxy)
+    refute o.key?(:proxy)
     ENV['WAVEFRONT_TOKEN'] = nil
     ENV['WAVEFRONT_ENDPOINT'] = nil
   end

@@ -50,7 +50,7 @@ class String
   # undesirable line breaking. This puts it back
   #
   def restored
-    tr('^', ' ').chomp("\n")
+    tr('^', ' ').chomp
   end
 
   # Fold long value lines in two-column output. The returned string

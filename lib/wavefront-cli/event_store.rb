@@ -41,7 +41,7 @@ module WavefrontCli
     end
 
     def event_file(id)
-      id =~ /^\d{13}:.+/ ? dir + id : nil
+      /^\d{13}:.+/.match?(id) ? dir + id : nil
     end
 
     # We can override the temp directory with the WF_EVENT_STATE_DIR env var.
@@ -70,7 +70,7 @@ module WavefrontCli
     def event(id)
       if !id
         pop_event!
-      elsif id =~ /^\d{13}:.+:\d+/
+      elsif /^\d{13}:.+:\d+/.match?(id)
         id
       else
         pop_event!(id)

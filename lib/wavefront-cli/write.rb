@@ -375,7 +375,7 @@ module WavefrontCli
     end
 
     def format_string_is_all_valid_chars?(fmt)
-      return true if fmt =~ /^[dmstTv]+$/
+      return true if /^[dmstTv]+$/.match?(fmt)
 
       raise(WavefrontCli::Exception::UnparseableInput,
             'unsupported field in format string')

@@ -214,9 +214,9 @@ module Minitest
     private
 
     def mk_headers(token = nil)
-      { 'Accept': /.*/,
+      { Accept: /.*/,
         'Accept-Encoding': /.*/,
-        'Authorization': 'Bearer ' + (token || '0123456789-ABCDEF'),
+        Authorization: 'Bearer ' + (token || '0123456789-ABCDEF'),
         'User-Agent': "wavefront-cli-#{WF_CLI_VERSION}" }
     end
 

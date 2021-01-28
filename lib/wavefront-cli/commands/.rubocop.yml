@@ -1,19 +1,8 @@
 ---
-AllCops:
-  NewCops: enable
+inherit_from:
+  - ../../../.rubocop.yml
 
 # There are long things in here, but they're fine
 #
 Metrics/MethodLength:
   Max: 25
-
-# Is nothing sacred?
-Layout/LineLength:
-  Max: 80
-
-Style/IfUnlessModifier:
-  Enabled: false # because it wants to make lines >80 chars
-Style/StringConcatenation:
-  Enabled: false
-Style/OptionalBooleanParameter:
-  Enabled: false

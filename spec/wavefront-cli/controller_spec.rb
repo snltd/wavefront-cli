@@ -52,6 +52,7 @@ class WavefrontCliHelpTest < MiniTest::Test
     end
   end
 
+  # rubocop:disable Style/RedundantBegin
   def test_command_help
     SupportedCommands.new.all.each do |cmd|
       begin
@@ -66,6 +67,7 @@ class WavefrontCliHelpTest < MiniTest::Test
       end
     end
   end
+  # rubocop:enable Style/RedundantBegin
 
   def test_malformed_config
     capture_io do

@@ -29,7 +29,7 @@ module WavefrontCli
 
     def initialize(cli_opts = {})
       cred_opts = setup_cred_opts(cli_opts)
-      cli_opts.reject! { |_k, v| v.nil? }
+      cli_opts.compact!
       @opts = DEFAULT_OPTS.merge(load_profile(cred_opts)).merge(cli_opts)
     rescue WavefrontCli::Exception::ConfigFileNotFound => e
       abort "Configuration file '#{e}' not found."

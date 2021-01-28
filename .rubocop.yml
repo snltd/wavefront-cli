@@ -1,19 +1,23 @@
 ---
-
 AllCops:
   TargetRubyVersion: 2.5
   NewCops: enable
 
+require:
+  - rubocop-rake
+  - rubocop-minitest
+  - rubocop-performance
+  - rubocop-performance
+
+Layout/LineLength:
+  Max: 80 # Is nothing sacred?
 Metrics/ClassLength:
   Max: 400
-
+Naming/VariableNumber:
+  Enabled: false
 Style/IfUnlessModifier:
   Enabled: false # because it wants to make lines >80 chars
 Style/StringConcatenation:
   Enabled: false
 Style/OptionalBooleanParameter:
   Enabled: false
-
-# Is nothing sacred?
-Layout/LineLength:
-  Max: 80

@@ -72,7 +72,7 @@ class WavefrontCommmandBaseTest < MiniTest::Test
       next if skip_cmd && c.match(skip_cmd)
 
       assert_match(/^  \w+/, c)
-      assert_includes(c, CMN) unless c =~ /--help$/
+      assert_includes(c, CMN) unless /--help$/.match?(c)
     end
   end
 
@@ -88,7 +88,7 @@ class WavefrontCommmandBaseTest < MiniTest::Test
       refute o.end_with?('.')
     end
 
-    assert_equal(1, wf.options.split("\n").select(&:empty?).size)
+    assert_equal(1, wf.options.split("\n").count(&:empty?))
   end
 
   def test_opt_row

@@ -6,7 +6,6 @@ require_relative '../../lib/wavefront-cli/serviceaccount'
 
 # Ensure 'serviceaccount' commands produce the correct API calls.
 #
-# rubocop:disable Metrics/ClassLength
 class ServiceAccountEndToEndTest < EndToEndTest
   include WavefrontCliTest::Describe
   # include WavefrontCliTest::Import
@@ -430,4 +429,3 @@ class ServiceAccountEndToEndTest < EndToEndTest
       identifier: 'sa::test' }
   end
 end
-# rubocop:enable Metrics/ClassLength

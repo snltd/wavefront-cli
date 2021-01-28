@@ -8,6 +8,7 @@ module WavefrontCli
     # rubocop:disable Metrics/MethodLength
     # rubocop:disable Metrics/AbcSize
     # rubocop:disable Metrics/CyclomaticComplexity
+    # rubocop:disable Metrics/PerceivedComplexity
     def exception_handler(exception)
       case exception
       when WavefrontCli::Exception::UnhandledCommand
@@ -82,6 +83,7 @@ module WavefrontCli
         abort
       end
     end
+    # rubocop:enable Metrics/PerceivedComplexity
     # rubocop:enable Metrics/MethodLength
     # rubocop:enable Metrics/AbcSize
     # rubocop:enable Metrics/CyclomaticComplexity
