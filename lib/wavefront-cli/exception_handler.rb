@@ -26,6 +26,8 @@ module WavefrontCli
         abort 'Connection timed out.'
       when Wavefront::Exception::InvalidPermission
         abort "'#{exception}' is not a valid Wavefront permission."
+      when Wavefront::Exception::InvalidTimestamp
+        abort "'#{exception}' is not a parseable time."
       when Wavefront::Exception::InvalidUserGroupId
         abort "'#{exception}' is not a valid user group ID."
       when Wavefront::Exception::InvalidAccountId
