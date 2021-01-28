@@ -1,5 +1,8 @@
 # Changelog
 
+## 8.5.1 (2021-01-28)
+* Better handle "invalid timestamp" errors.
+
 ## 8.5.0 (2021-01-12)
 * Allow attachment of roles and ingestion policies when creating service
   accounts.
