@@ -213,11 +213,11 @@ module Minitest
 
     private
 
-    def mk_headers(token = nil)
+    def mk_headers(token = nil, extra = {})
       { Accept: /.*/,
         'Accept-Encoding': /.*/,
         Authorization: 'Bearer ' + (token || '0123456789-ABCDEF'),
-        'User-Agent': "wavefront-cli-#{WF_CLI_VERSION}" }
+        'User-Agent': "wavefront-cli-#{WF_CLI_VERSION}" }.merge(extra)
     end
 
     # Every command we simulate running is done under the following
