@@ -10,25 +10,24 @@ class WavefrontCommandWrite < WavefrontCommandBase
   end
 
   def _commands
-    ['point [-DnViq] [-c file] [-P profile] [-E proxy] [-t time] ' \
-     '[-p port] [-H host] [-T tag...] [-u method] [-S socket] <metric> ' \
-     '[--] <value>',
-     'distribution [-DnViq] [-c file] [-P profile] [-E proxy] [-H host] ' \
-     '[-p port] [-T tag...] [-u method] [-S socket] [-I interval] ' \
+    ["point [-DnViq] [-c file] [-P profile] [-t token] [-E endpoint] ' \
+     '[-s timestamp] [-p port] [-H host] [-T tag...] [-u method] [-S socket] ' \
+     '<metric> [--] <value>',
+     'distribution [-DnViq] [-c file] [-P profile] [-t token] [-E endpoint] ' \
+     '[-H host] [-p port] [-T tag...] [-u method] [-S socket] [-I interval] ' \
      '<metric> [--] <val>...',
-     'file [-DnViq] [-c file] [-P profile] [-E proxy] [-H host] ' \
-     '[-p port] [-F infileformat] [-m metric] [-T tag...] [-I interval] ' \
-     '[-u method] [-S socket] <file>',
-     'noise [-DnViq] [-P profile] [-E proxy] [-H host] [-p port] ' \
-     '[-T tag...] [-I interval] [-x value] [-X value] <metric>']
+     'file [-DnViq] [-c file] [-P profile] [-E endpoint] [-t token] ' \
+     '[-H host] [-p port] [-F infileformat] [-m metric] [-T tag...] ' \
+     [-I interval] [-u method] [-S socket] <file>',
+     'noise [-DnViq] [-P profile] [-E endpoint] [-t token] [-H host] ' \
+     '[-p port] [-T tag...] [-I interval] [-x value] [-X value] <metric>']
   end
 
   def _options
-    ['-E, --proxy=URI            proxy endpoint',
-     '-t, --time=TIME            time of data point (omit to use ' \
-     'current time)',
-     '-H, --host=STRING          source host', \
-     '-p, --port=INT             Wavefront proxy port',
+    ['-E, --endpoint=URI         proxy or API endpoint (schema not required)',
+     "-s, --ts=TIME              timestamp for data point (omit to use 'now')",
+     '-H, --host=STRING          source host',
+     '-p, --port=INT             Wavefront proxy port (not required for API)',
      '-T, --tag=TAG              point tag in key=value form',
      '-F, --infileformat=STRING  format of input file or stdin',
      '-m, --metric=STRING        the metric path to which contents of ' \
