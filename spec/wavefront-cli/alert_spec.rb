@@ -21,6 +21,25 @@ class AlertEndToEndTest < EndToEndTest
   include WavefrontCliTest::History
   include WavefrontCliTest::Acl
 
+  # This test isn't run if whoever runs it has a config file, because it tests
+  # wf's behaviour only if that file does not exist. CI will never have that
+  # file.
+  #
+  def test_no_config_no_envvars
+    skip if (Pathname.new(ENV['HOME']) + '.wavefront').exist?
+
+    blank_envvars
+    wf = WavefrontCliController
+
+    out, err = capture_io do
+      assert_raises(SystemExit) { wf.new(%w[alert list]) }
+    end
+
+    assert_empty(err)
+    assert out.start_with?('Credential error. Missing API token.')
+    assert_match(/You may also run 'wf config setup'/, out)
+  end
+
   def test_latest
     quietly do
       assert_cmd_gets("latest #{id}", "/api/v2/alert/#{id}/history")

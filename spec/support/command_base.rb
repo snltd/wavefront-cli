@@ -79,4 +79,10 @@ class EndToEndTest < MiniTest::Test
     { status: { result: 'OK', message: '', code: 200 },
       items: [] }.to_json
   end
+
+  def blank_envvars
+    %w[WAVEFRONT_ENDPOINT WAVEFRONT_PROXY WAVEFRONT_TOKEN].each do |v|
+      ENV[v] = nil
+    end
+  end
 end

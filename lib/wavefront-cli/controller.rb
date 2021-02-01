@@ -145,15 +145,16 @@ class WavefrontCliController
   # @param error [WavefrontCli::Exception::CredentialError]
   #
   def handle_missing_credentials(error)
-    if DEFAULT_CONFIG.exist? && DEFAULT_CONFIG.file?
-      abort "Credential error. #{error.message}"
-    else
-      puts 'No credentials supplied on the command line or via ' \
-           'environment variables, and no configuration file found. ' \
-           "Please run 'wf config setup' to create configuration."
-        .fold(TW, 0)
-      exit 1
+    puts "Credential error. #{error.message}"
+
+    unless DEFAULT_CONFIG.exist? && DEFAULT_CONFIG.file?
+      puts
+      puts 'You can pass credentials on the command line or via ' \
+           "environment variables. You may also run 'wf config setup' to " \
+           'create a config file.'.fold(TW, 0)
     end
+
+    exit 1
   end
 
   # Each command is defined in its own file. Dynamically load all
