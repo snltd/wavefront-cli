@@ -74,8 +74,8 @@ module WavefrontCli
     end
     # rubocop:enable Metrics/AbcSize
 
-    # Turn our user's representation of a distribution into one
-    # which suits Wavefront. The SDK can do this for us.
+    # Turn our user's representation of a distribution into one which suits
+    # Wavefront. The SDK can do this for us.
     #
     def mk_dist
       xpanded = expand_dist(options[:'<val>'])
@@ -108,6 +108,7 @@ module WavefrontCli
         port: options[:port] || default_port,
         socket: options[:socket],
         endpoint: options[:endpoint],
+        agent: "wavefront-cli-#{WF_CLI_VERSION}",
         token: options[:token] }
     end
 
