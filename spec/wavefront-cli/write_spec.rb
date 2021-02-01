@@ -8,10 +8,36 @@ require_relative '../../lib/wavefront-cli/write'
 #
 class WriteEndToEndTest < EndToEndTest
   def test_write_point_via_api
-    assert_cmd_posts('-u api -H tester point test.path 1',
-                     '/report?f=wavefront',
-                     'test.path 1.0 source=tester',
-                    )
+    out, err = capture_io do
+      assert_cmd_posts('-u api -H tester point test.path 1',
+                      '/report?f=wavefront',
+                      'test.path 1.0 source=tester',
+                      nil,
+                      'Content-Type': 'application/octet-stream')
+    end
+
+    assert_empty(err)
+    assert_match(/ sent 1$/, out)
+    assert_match(/ rejected 0$/, out)
+    assert_match(/ unsent 0$/, out)
+
+    assert_noop('-u api -H tester point test.path 1',
+                'uri: POST https://default.wavefront.com/report',
+                'body: test.path 1.0 source=tester')
+
+    assert_usage('write point test.path')
+    assert_usage('write point')
+  end
+
+  def test_write_point_via_api_fail
+    bad_response = { status: { result: 'OK', message: '', code: 200 },
+                     items: [] }.to_json
+
+      assert_cmd_posts('-u api -H tester point test.path 1',
+                      '/report?f=wavefront',
+                      'test.path 1.0 source=tester',
+                      bad_response,
+                      'Content-Type': 'application/octet-stream')
   end
 
   def _test_create_without_options
