@@ -13,7 +13,8 @@ module WavefrontDisplay
     def do_point
       @not_sent = data['rejected'] + data['unsent']
       report unless nothing_to_say?
-      exit not_sent.zero? ? 0 : 1
+
+      raise unless not_sent.zero?
     end
 
     def nothing_to_say?

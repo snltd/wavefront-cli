@@ -147,10 +147,13 @@ module Minitest
     end
 
     def assert_cmd_posts(command, api_path, payload = 'null',
-                         response = dummy_response)
+                         response = nil, extra_headers = {})
+      response ||= dummy_response
       all_permutations do |p|
         assert_posts("https://#{p[:endpoint]}#{api_path}",
-                     mk_headers(p[:token]), payload, response) do
+                     mk_headers(p[:token], extra_headers),
+                     payload,
+                     response) do
           wf.new("#{cmd_word} #{command} #{p[:cmdline]}".split)
         end
       end
@@ -213,11 +216,11 @@ module Minitest
 
     private
 
-    def mk_headers(token = nil)
+    def mk_headers(token = nil, extra_headers = {})
       { Accept: /.*/,
         'Accept-Encoding': /.*/,
         Authorization: 'Bearer ' + (token || '0123456789-ABCDEF'),
-        'User-Agent': "wavefront-cli-#{WF_CLI_VERSION}" }
+        'User-Agent': "wavefront-cli-#{WF_CLI_VERSION}" }.merge(extra_headers)
     end
 
     # Every command we simulate running is done under the following
