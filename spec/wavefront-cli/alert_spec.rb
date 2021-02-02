@@ -26,7 +26,7 @@ class AlertEndToEndTest < EndToEndTest
   # file.
   #
   def test_no_config_no_envvars
-    skip if (Pathname.new(ENV['HOME']) + '.wavefront').exist?
+    skip if have_config?
 
     blank_envvars
     wf = WavefrontCliController
@@ -36,7 +36,7 @@ class AlertEndToEndTest < EndToEndTest
     end
 
     assert_empty(err)
-    assert out.start_with?('Credential error. Missing API token.')
+    assert out.start_with?('Credential error. Missing api token.')
     assert_match(/You may also run 'wf config setup'/, out)
   end
 

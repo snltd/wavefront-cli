@@ -85,4 +85,8 @@ class EndToEndTest < MiniTest::Test
       ENV[v] = nil
     end
   end
+
+  def have_config?
+    (Pathname.new(ENV['HOME']) + '.wavefront').exist?
+  end
 end

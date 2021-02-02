@@ -145,7 +145,10 @@ class WavefrontCliController
   # @param error [WavefrontCli::Exception::CredentialError]
   #
   def handle_missing_credentials(error)
-    puts "Credential error. #{error.message}"
+    message = error.message.capitalize
+    message.<<('.') unless message.end_with?('.')
+
+    puts "Credential error. #{message}"
 
     unless DEFAULT_CONFIG.exist? && DEFAULT_CONFIG.file?
       puts
