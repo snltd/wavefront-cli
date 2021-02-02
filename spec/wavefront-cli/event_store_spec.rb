@@ -66,11 +66,11 @@ class Test < MiniTest::Test
     x = wf.list
     assert(x.all? { |e| e.is_a?(Pathname) })
     assert_equal(4, x.size)
-
     empty_test_state_dir
   end
 
   def test_list_empty_stack
+    wf = WavefrontCli::EventStore.new({}, TEST_EVENT_STORE_DIR)
     out, err = capture_io { assert_raises(SystemExit) { wf.list } }
     assert_empty(out)
     assert_equal("No locally recorded events.\n", err)
@@ -107,6 +107,7 @@ class Test < MiniTest::Test
   end
 
   def test_pop_event_empty_stack
+    wf = WavefrontCli::EventStore.new({}, TEST_EVENT_STORE_DIR)
     out, err = capture_io { assert_raises(SystemExit) { wf.pop_event! } }
     assert_empty(out)
     assert_equal("No locally recorded events.\n", err)
@@ -148,7 +149,7 @@ class Test < MiniTest::Test
   def test_create
     refute (wf.dir + id).exist?
     out, err = capture_io { wf.create!(id) }
-    assert_match(/Event state recorded at .*1481553823153:testev:0./, out)
+    assert_match(/Event state recorded at .*#{id}./, out)
     assert_empty(err)
     assert (wf.dir + id).exist?
   end
@@ -161,7 +162,7 @@ class Test < MiniTest::Test
   private
 
   def id
-    '1481553823153:testev:0'
+    '1481553823153:testevstore:0'
   end
 
   def dummy_event_files
