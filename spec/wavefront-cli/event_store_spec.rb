@@ -29,6 +29,7 @@ class Test < MiniTest::Test
   end
 
   def test_state_file_needed?
+    puts __method__
     wf1 = WavefrontCli::EventStore.new({}, TEST_EVENT_STORE_DIR)
     assert wf1.state_file_needed?
 
@@ -44,6 +45,7 @@ class Test < MiniTest::Test
   end
 
   def test_event_file
+    puts __method__
     x = wf.event_file(id)
     assert_instance_of(Pathname, x)
     assert_equal(wf.dir, x.dirname)
@@ -53,6 +55,7 @@ class Test < MiniTest::Test
   end
 
   def test_create_dir_ok
+    puts __method__
     dir = TEST_EVENT_STORE_DIR + 'testdir'
     refute dir.exist?
     wf.create_dir(dir)
@@ -61,6 +64,7 @@ class Test < MiniTest::Test
   end
 
   def test_list
+    puts __method__
     setup_test_state_dir
 
     x = wf.list
@@ -70,6 +74,7 @@ class Test < MiniTest::Test
   end
 
   def test_list_empty_stack
+    puts __method__
     wf = WavefrontCli::EventStore.new({}, TEST_EVENT_STORE_DIR)
     out, err = capture_io { assert_raises(SystemExit) { wf.list } }
     assert_empty(out)
@@ -77,6 +82,7 @@ class Test < MiniTest::Test
   end
 
   def test_pop_event
+    puts __method__
     setup_test_state_dir
 
     assert (wf.dir + '1568133440530:ev3:0').exist?
@@ -87,6 +93,7 @@ class Test < MiniTest::Test
   end
 
   def test_pop_event_named
+    puts __method__
     setup_test_state_dir
 
     assert (wf.dir + '1568133440515:ev1:1').exist?
@@ -97,6 +104,7 @@ class Test < MiniTest::Test
   end
 
   def test_event_specific
+    puts __method__
     setup_test_state_dir
 
     assert (wf.dir + '1568133440515:ev1:1').exist?
@@ -107,6 +115,7 @@ class Test < MiniTest::Test
   end
 
   def test_pop_event_empty_stack
+    puts __method__
     wf = WavefrontCli::EventStore.new({}, TEST_EVENT_STORE_DIR)
     out, err = capture_io { assert_raises(SystemExit) { wf.pop_event! } }
     assert_empty(out)
@@ -114,6 +123,7 @@ class Test < MiniTest::Test
   end
 
   def test_event_state_dir
+    puts __method__
     ENV['WF_EVENT_STATE_DIR'] = nil
     assert_equal(EVENT_STATE_DIR, wf.event_state_dir)
 
@@ -125,6 +135,7 @@ class Test < MiniTest::Test
   end
 
   def test_create_dir_fail
+    puts __method__
     spy = Spy.on(FileUtils, :mkdir_p).and_return(false)
 
     assert_raises(WavefrontCli::Exception::SystemError) do
@@ -136,6 +147,7 @@ class Test < MiniTest::Test
   end
 
   def test_event_file_data
+    puts __method__
     wf = WavefrontCli::EventStore.new({ desc: 'test event' },
                                       TEST_EVENT_STORE_DIR)
     x = wf.event_file_data
@@ -147,6 +159,7 @@ class Test < MiniTest::Test
   end
 
   def test_create
+    puts __method__
     refute (wf.dir + id).exist?
     out, err = capture_io { wf.create!(id) }
     assert_match(/Event state recorded at .*#{id}./, out)
@@ -155,6 +168,7 @@ class Test < MiniTest::Test
   end
 
   def test_create_with_nostate
+    puts __method__
     wf1 = WavefrontCli::EventStore.new(nostate: true)
     assert_nil wf1.create!(id)
   end
