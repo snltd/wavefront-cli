@@ -19,7 +19,8 @@ module WavefrontCli
         abort "\nOperation aborted at user request."
       when WavefrontCli::Exception::ConfigFileNotFound
         abort "Configuration file #{exception}' not found."
-      when WavefrontCli::Exception::CredentialError
+      when WavefrontCli::Exception::CredentialError,
+           Wavefront::Exception::CredentialError
         handle_missing_credentials(exception)
       when WavefrontCli::Exception::MandatoryValue
         abort 'A value must be supplied.'
