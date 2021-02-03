@@ -197,7 +197,6 @@ module Minitest
     #
     def all_permutations
       perms = permutations
-      perms = [perms[2]]
 
       perms.each do |p|
         yield(p)
