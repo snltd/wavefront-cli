@@ -164,7 +164,10 @@ class Test < MiniTest::Test
     out, err = capture_io { wf.create!(id) }
     assert_match(/Event state recorded at .*#{id}./, out)
     assert_empty(err)
-    assert (wf.dir + id).exist?
+    event_file = wf.dir + id
+    assert event_file.exist?
+    event_file.unlink
+    refute event_file.exist?
   end
 
   def test_create_with_nostate
