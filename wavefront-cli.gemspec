@@ -8,7 +8,6 @@ require_relative 'lib/wavefront-cli/version'
 Gem::Specification.new do |gem|
   gem.name          = 'wavefront-cli'
   gem.version       = WF_CLI_VERSION
-  gem.date          = Date.today.to_s
 
   gem.summary       = 'CLI for Wavefront API v2'
   gem.description   = 'CLI for Wavefront (wavefront.com) API v2 '
