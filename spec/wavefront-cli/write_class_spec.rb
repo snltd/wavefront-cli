@@ -13,16 +13,21 @@ class WavefrontCliWriteTest < MiniTest::Test
     @wf = WavefrontCli::Write.new({})
   end
 
-  def test_validate_opts
+  def _test_validate_opts_unix
     assert WavefrontCli::Write.new(using: 'unix',
                                    socket: '/tmp/sock').validate_opts
-    assert WavefrontCli::Write.new(proxy: 'wavefront').validate_opts
-    assert_raises 'WavefrontCli::Exception::CredentialError' do
-      WavefrontCli::Write.new.validate_opts
-    end
 
     assert_raises 'WavefrontCli::Exception::CredentialError' do
       WavefrontCli::Write.new(using: 'unix').validate_opts
+    end
+  end
+
+  def test_validate_opts_proxy
+    pp WavefrontCli::Write.new(proxy: 'wavefront').validate_opts
+    assert WavefrontCli::Write.new(proxy: 'wavefront').validate_opts
+
+    assert_raises 'WavefrontCli::Exception::CredentialError' do
+      WavefrontCli::Write.new.validate_opts
     end
   end
 

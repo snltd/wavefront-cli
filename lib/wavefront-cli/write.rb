@@ -116,18 +116,9 @@ module WavefrontCli
       distribution? ? 40_000 : 2878
     end
 
+    # The SDK writer plugins validate the credentials they need
     def validate_opts
       validate_opts_file if options[:file]
-
-      if options[:using] == 'unix'
-        return true if options[:socket]
-
-        raise(WavefrontCli::Exception::CredentialError, 'No socket path.')
-      end
-
-      return true if options[:proxy]
-
-      raise(WavefrontCli::Exception::CredentialError, 'No proxy address.')
     end
 
     def validate_opts_file
