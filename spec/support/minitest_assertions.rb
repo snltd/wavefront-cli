@@ -147,10 +147,13 @@ module Minitest
     end
 
     def assert_cmd_posts(command, api_path, payload = 'null',
-                         response = dummy_response)
+                         response = nil, extra_headers = {})
+      response ||= dummy_response
       all_permutations do |p|
         assert_posts("https://#{p[:endpoint]}#{api_path}",
-                     mk_headers(p[:token]), payload, response) do
+                     mk_headers(p[:token], extra_headers),
+                     payload,
+                     response) do
           wf.new("#{cmd_word} #{command} #{p[:cmdline]}".split)
         end
       end
@@ -166,7 +169,7 @@ module Minitest
     end
 
     def assert_cmd_deletes(command, api_path, response = dummy_response)
-      permutations.each do |p|
+      all_permutations do |p|
         assert_deletes("https://#{p[:endpoint]}#{api_path}",
                        mk_headers(p[:token]), response) do
           wf.new("#{cmd_word} #{command} #{p[:cmdline]}".split)
@@ -188,13 +191,14 @@ module Minitest
       assert_empty(err)
     end
 
-    # Run tests with all available permutations. We'll always need
-    # to mock out display, unless we don't, when even if we do, it
-    # won't matter.
+    # Run tests with all available permutations, unless the single_perm class
+    # variable is set. This lets us run tests faster by running fewer (but
+    # still a good random selection) and lets us run tests which must only be
+    # run once, like tests which pop stuff off the event stack.
     #
     def all_permutations
       perms = permutations
-      perms = [perms[2]]
+      perms = perms.shuffle.take(1) if @single_perm
 
       perms.each do |p|
         yield(p)
@@ -213,11 +217,11 @@ module Minitest
 
     private
 
-    def mk_headers(token = nil)
+    def mk_headers(token = nil, extra_headers = {})
       { Accept: /.*/,
         'Accept-Encoding': /.*/,
         Authorization: 'Bearer ' + (token || '0123456789-ABCDEF'),
-        'User-Agent': "wavefront-cli-#{WF_CLI_VERSION}" }
+        'User-Agent': "wavefront-cli-#{WF_CLI_VERSION}" }.merge(extra_headers)
     end
 
     # Every command we simulate running is done under the following

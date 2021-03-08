@@ -37,7 +37,7 @@ class ProxyEndToEndTest < EndToEndTest
   end
 
   def test_shutdown
-    assert_output("Requested shutdown of proxy '#{id}'.\n") do
+    assert_repeated_output("Requested shutdown of proxy '#{id}'.") do
       assert_cmd_puts("shutdown #{id}", "/api/v2/proxy/#{id}",
                       { shutdown: true }.to_json)
     end
