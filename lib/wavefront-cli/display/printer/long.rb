@@ -219,7 +219,7 @@ module WavefrontDisplayPrinter
     def append_array_values(key, values, aggr, depth)
       if values.empty? && opts[:none]
         aggr.<< [key, '<none>', depth]
-      elsif values.all? { |w| w.is_a?(String) }
+      elsif values.all?(String)
         values.sort!
         aggr.<< [key, preened_value(values.shift), depth]
         make_list(values, aggr, depth, key)
