@@ -9,11 +9,13 @@ require_relative '../../lib/wavefront-cli/controller'
 # commands.
 #
 class EndToEndTest < MiniTest::Test
+  attr_accessor :single_perm
   attr_reader :wf
 
   def setup
     before_setup if respond_to?(:before_setup)
     @wf = WavefrontCliController
+    @single_perm = false
   end
 
   def api_path
@@ -78,5 +80,15 @@ class EndToEndTest < MiniTest::Test
   def dummy_response
     { status: { result: 'OK', message: '', code: 200 },
       items: [] }.to_json
+  end
+
+  def blank_envvars
+    %w[WAVEFRONT_ENDPOINT WAVEFRONT_PROXY WAVEFRONT_TOKEN].each do |v|
+      ENV[v] = nil
+    end
+  end
+
+  def have_config?
+    (Pathname.new(ENV['HOME']) + '.wavefront').exist?
   end
 end

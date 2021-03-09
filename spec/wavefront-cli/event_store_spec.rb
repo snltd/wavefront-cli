@@ -68,7 +68,7 @@ class Test < MiniTest::Test
     setup_test_state_dir
 
     x = wf.list
-    assert(x.all? { |e| e.is_a?(Pathname) })
+    assert(x.all?(Pathname))
     assert_equal(4, x.size)
     empty_test_state_dir
   end

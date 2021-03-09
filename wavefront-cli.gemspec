@@ -8,7 +8,6 @@ require_relative 'lib/wavefront-cli/version'
 Gem::Specification.new do |gem|
   gem.name          = 'wavefront-cli'
   gem.version       = WF_CLI_VERSION
-  gem.date          = Date.today.to_s
 
   gem.summary       = 'CLI for Wavefront API v2'
   gem.description   = 'CLI for Wavefront (wavefront.com) API v2 '
@@ -26,11 +25,11 @@ Gem::Specification.new do |gem|
 
   gem.add_runtime_dependency 'docopt', '~> 0.6.0'
   gem.add_runtime_dependency 'inifile', '~> 3.0'
-  gem.add_runtime_dependency 'wavefront-sdk', '~> 5.4', '>= 5.4.2'
+  gem.add_runtime_dependency 'wavefront-sdk', '~> 5.4', '>= 5.4.4'
 
   gem.add_development_dependency 'minitest', '~> 5.14'
   gem.add_development_dependency 'rake', '~> 13.0'
-  gem.add_development_dependency 'rubocop', '~> 1.9'
+  gem.add_development_dependency 'rubocop', '~> 1.11'
   gem.add_development_dependency 'rubocop-minitest', '~> 0.10'
   gem.add_development_dependency 'rubocop-performance', '~> 1.3'
   gem.add_development_dependency 'rubocop-rake', '~> 0.5'
