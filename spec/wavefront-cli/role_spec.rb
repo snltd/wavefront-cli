@@ -94,7 +94,7 @@ class RoleEndToEndTest < EndToEndTest
                       { permissions: permissions }.to_json)
     end
 
-    assert_equal(permissions.join("\n"), out.strip)
+    assert_equal(permissions, out.split("\n").uniq)
     assert_empty err
 
     assert_abort_on_missing_creds("permissions #{id}")
@@ -120,8 +120,9 @@ class RoleEndToEndTest < EndToEndTest
                        accounts.to_json)
     end
 
-    assert_equal("Took '#{id}' from '#{accounts.first}', '#{accounts.last}'.",
-                 out.strip.tr("\n", ' '))
+    assert out.strip.tr("\n", ' ').start_with?(
+      "Took '#{id}' from '#{accounts.first}', '#{accounts.last}'."
+    )
 
     assert_empty err
 
