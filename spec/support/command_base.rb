@@ -9,11 +9,13 @@ require_relative '../../lib/wavefront-cli/controller'
 # commands.
 #
 class EndToEndTest < MiniTest::Test
+  attr_accessor :single_perm
   attr_reader :wf
 
   def setup
     before_setup if respond_to?(:before_setup)
     @wf = WavefrontCliController
+    @single_perm = false
   end
 
   def api_path

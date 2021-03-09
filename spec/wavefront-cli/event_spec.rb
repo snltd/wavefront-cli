@@ -16,11 +16,11 @@ class EventEndToEndTest < EndToEndTest
   attr_reader :test_state_dir
 
   include Wavefront::Mixins
-  # include WavefrontCliTest::Describe
-  # include WavefrontCliTest::Delete
-  # include WavefrontCliTest::Search
-  # #include WavefrontCliTest::Set
-  # include WavefrontCliTest::Tag
+  include WavefrontCliTest::Describe
+  include WavefrontCliTest::Delete
+  include WavefrontCliTest::Search
+  include WavefrontCliTest::Set
+  include WavefrontCliTest::Tag
 
   def before_setup
     @test_state_dir = Pathname.new(Dir.mktmpdir)
@@ -170,6 +170,8 @@ class EventEndToEndTest < EndToEndTest
   end
 
   def test_close_with_local_events_pop
+    @single_perm = true
+
     setup_test_state_dir
     assert((state_dir + '1568133440530:ev3:0').exist?)
 
@@ -185,6 +187,7 @@ class EventEndToEndTest < EndToEndTest
     end
 
     refute((state_dir + '1568133440520:ev2:0').exist?)
+    @single_perm = false
   end
 
   def test_wrap

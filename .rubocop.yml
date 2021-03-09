@@ -7,7 +7,6 @@ require:
   - rubocop-rake
   - rubocop-minitest
   - rubocop-performance
-  - rubocop-performance
 
 Layout/LineLength:
   Max: 80 # Is nothing sacred?
