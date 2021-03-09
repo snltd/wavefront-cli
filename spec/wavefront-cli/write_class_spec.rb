@@ -2,6 +2,7 @@
 # frozen_string_literal: true
 
 require 'minitest/autorun'
+require_relative '../../lib/wavefront-cli/controller'
 require_relative '../../lib/wavefront-cli/write'
 
 # Test base writer
@@ -13,22 +14,57 @@ class WavefrontCliWriteTest < MiniTest::Test
     @wf = WavefrontCli::Write.new({})
   end
 
-  def _test_validate_opts_unix
-    assert WavefrontCli::Write.new(using: 'unix',
-                                   socket: '/tmp/sock').validate_opts
+  def test_validate_opts_proxy
+    assert wf.klass.new({ proxy: 'wavefront' }, writer: :proxy)
 
-    assert_raises 'WavefrontCli::Exception::CredentialError' do
-      WavefrontCli::Write.new(using: 'unix').validate_opts
+    x = assert_raises 'WavefrontCli::Exception::CredentialError' do
+      wf.klass.new({ socket: '/tmp/sock' }, writer: :proxy)
     end
+
+    assert_equal('credentials must contain proxy address', x.message)
   end
 
-  def test_validate_opts_proxy
-    pp WavefrontCli::Write.new(proxy: 'wavefront').validate_opts
-    assert WavefrontCli::Write.new(proxy: 'wavefront').validate_opts
+  def test_validate_opts_api
+    assert wf.klass.new({ endpoint: 'metrics.wavefront.com',
+                          token: 'ABCDE-12345' }, writer: :api)
 
-    assert_raises 'WavefrontCli::Exception::CredentialError' do
-      WavefrontCli::Write.new.validate_opts
+    x1 = assert_raises 'WavefrontCli::Exception::CredentialError' do
+      wf.klass.new({ endpoint: 'metrics.wavefront.com' }, writer: :api)
     end
+
+    assert_equal('credentials must contain API token', x1.message)
+
+    x2 = assert_raises 'WavefrontCli::Exception::CredentialError' do
+      wf.klass.new({ proxy: 'wavefront' }, writer: :api)
+    end
+
+    assert_equal('credentials must contain API endpoint', x2.message)
+
+    x3 = assert_raises 'WavefrontCli::Exception::CredentialError' do
+      wf.klass.new({ token: 'ABCDE-12345' }, writer: :api)
+    end
+
+    assert_equal('credentials must contain API endpoint', x3.message)
+  end
+
+  def test_validate_opts_http
+    assert wf.klass.new({ proxy: 'wavefront.localnet' }, writer: :http)
+
+    x = assert_raises 'WavefrontCli::Exception::CredentialError' do
+      wf.klass.new({ endpoint: 'wavefront.localnet' }, writer: :http)
+    end
+
+    assert_equal('credentials must contain proxy address', x.message)
+  end
+
+  def test_validate_opts_socket
+    assert wf.klass.new({ socket: '/tmp/sock' }, writer: :socket)
+
+    x = assert_raises 'WavefrontCli::Exception::CredentialError' do
+      wf.klass.new({ proxy: 'wavefront.localnet' }, writer: :socket)
+    end
+
+    assert_equal('credentials must contain socket file path', x.message)
   end
 
   def test_validate_opts_file
