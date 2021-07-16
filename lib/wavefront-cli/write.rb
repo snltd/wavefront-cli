@@ -83,7 +83,11 @@ module WavefrontCli
     end
 
     def extra_options
-      options[:using] ? { writer: options[:using] } : {}
+      if options[:using]
+        { writer: options[:using] }
+      else
+        { writer: :http }
+      end
     end
 
     # I chose to prioritise UI consistency over internal elegance

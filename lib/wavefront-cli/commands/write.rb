@@ -50,9 +50,9 @@ class WavefrontCommandWrite < WavefrontCommandBase
     "with the '-F' option.  Use 't' for timestamp, 'm' for metric " \
     "name, 'v' for value, 's' for source, 'd' for a comma-separated " \
     "distribution, and 'T' for tags. Put 'T' last.  Currently " \
-    "supported transport methods are 'socket' (write to a proxy: the " \
-    "default); 'api' (write directly to Wavefront); 'http' (write to " \
-    "a proxy over HTTP); and 'unix' (write to a local Unix socket)."
+    "supported transport methods are 'http' (write to a proxy over HTTP: " \
+    "the default); 'api' (write directly to Wavefront); 'proxy' (send raw " \
+    "data to a proxy); and 'socket' (write to a local Unix socket)."
       .cmd_fold(TW, 0)
   end
 end
