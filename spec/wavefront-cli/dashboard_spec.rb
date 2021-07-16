@@ -45,7 +45,7 @@ class DashboardEndToEndTest < EndToEndTest
     assert_repeated_output('No favourites.') do
       all_permutations do |perm|
         stub_request(:post, "https://#{perm[:endpoint]}/api/v2/search" \
-                     '/dashboard')
+                            '/dashboard')
           .with(body: { limit: 999,
                         offset: 0,
                         query: [{ key: 'favorite',
