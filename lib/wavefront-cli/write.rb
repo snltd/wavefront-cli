@@ -428,7 +428,7 @@ module WavefrontCli
     end
 
     def setup_fmt(fmt)
-      @fmt = fmt.split('')
+      @fmt = fmt.chars
     end
 
     def load_data(file)

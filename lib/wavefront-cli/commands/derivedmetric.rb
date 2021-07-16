@@ -45,7 +45,7 @@ class WavefrontCommandDerivedmetric < WavefrontCommandBase
      '-d, --desc=STRING       additional information about query',
      '-i, --interval=INTEGER  execute query every n minutes [default: 1]',
      '-r, --range=INTEGER     include results in the last n minutes ' \
-                              '[default: 5]',
+     '[default: 5]',
      "-u, --update            update an existing #{thing}",
      "-U, --upsert            import new or update existing #{thing}"]
   end

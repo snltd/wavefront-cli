@@ -23,8 +23,8 @@ class WavefrontCommandMetric < WavefrontCommandBase
 
   def postscript
     "\nNOTE: the 'list under' and 'list all' sub-commands use the unoffical " \
-      "'chart' endpoint, which is not guaranteed to remain stable.\n\n" \
-      'Both commands have to make a lot of API calls, and may take a ' \
-      'very long time to run.'.cmd_fold(TW, 0)
+    "'chart' endpoint, which is not guaranteed to remain stable.\n\n" \
+    'Both commands have to make a lot of API calls, and may take a ' \
+    'very long time to run.'.cmd_fold(TW, 0)
   end
 end
