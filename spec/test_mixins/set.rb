@@ -23,7 +23,7 @@ module WavefrontCliTest
 
     def run_command(perm)
       wf.new("#{cmd_word} set #{set_key}=new_value #{id} " \
-            "#{perm[:cmdline]}".split)
+             "#{perm[:cmdline]}".split)
     rescue SystemExit => e
       p e
     end
