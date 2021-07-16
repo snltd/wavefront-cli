@@ -43,11 +43,10 @@ module WavefrontCli
     # constructor.
     # @param cli_opts [Hash] options from docopt, which may include
     #   the location of the config file and the stanza within it
-    # @return [Hash] keys are none, one, or both of :file and
-    #   :profile
+    # @return [Hash] keys are none, one, or both of :file and :profile
     #
     def setup_cred_opts(cli_opts)
-      cred_opts = { raise_on_no_profile: true }
+      cred_opts = cli_opts[:config] ? { raise_on_no_profile: true } : {}
 
       if cli_opts[:config]
         cred_opts[:file] = Pathname.new(cli_opts[:config])

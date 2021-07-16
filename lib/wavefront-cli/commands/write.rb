@@ -10,24 +10,24 @@ class WavefrontCommandWrite < WavefrontCommandBase
   end
 
   def _commands
-    ['point [-DnViq] [-c file] [-P profile] [-E proxy] [-t time] ' \
+    ["point #{CMN} [-iq] [-y proxy] [-t time] " \
      '[-p port] [-H host] [-T tag...] [-u method] [-S socket] <metric> ' \
      '[--] <value>',
-     'distribution [-DnViq] [-c file] [-P profile] [-E proxy] [-H host] ' \
-     '[-p port] [-T tag...] [-u method] [-S socket] [-I interval] ' \
+     "distribution #{CMN} [-iq] [-y proxy] " \
+     '[-H host] [-p port] [-T tag...] [-u method] [-S socket] [-I interval] ' \
      '<metric> [--] <val>...',
-     'file [-DnViq] [-c file] [-P profile] [-E proxy] [-H host] ' \
+     "file #{CMN} [-iq] [-y proxy] [-H host] " \
      '[-p port] [-F infileformat] [-m metric] [-T tag...] [-I interval] ' \
      '[-u method] [-S socket] <file>',
-     'noise [-DnViq] [-P profile] [-E proxy] [-H host] [-p port] ' \
+     "noise #{CMN} [-iq] [-y proxy] [-H host] [-p port] " \
      '[-T tag...] [-I interval] [-x value] [-X value] <metric>']
   end
 
   def _options
-    ['-E, --proxy=URI            proxy endpoint',
-     '-t, --time=TIME            time of data point (omit to use ' \
-     'current time)',
-     '-H, --host=STRING          source host', \
+    [common_options,
+     '-y, --proxy=URI            proxy endpoint',
+     '-s, --ts=TIME              timestamp of data point (omit for "now")',
+     '-H, --host=STRING          source host',
      '-p, --port=INT             Wavefront proxy port',
      '-T, --tag=TAG              point tag in key=value form',
      '-F, --infileformat=STRING  format of input file or stdin',
