@@ -83,7 +83,11 @@ module WavefrontCli
     end
 
     def extra_options
-      options[:using] ? { writer: options[:using] } : {}
+      if options[:using]
+        { writer: options[:using] }
+      else
+        { writer: :http }
+      end
     end
 
     # I chose to prioritise UI consistency over internal elegance
@@ -424,7 +428,7 @@ module WavefrontCli
     end
 
     def setup_fmt(fmt)
-      @fmt = fmt.split('')
+      @fmt = fmt.chars
     end
 
     def load_data(file)
