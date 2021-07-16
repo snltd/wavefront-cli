@@ -1,5 +1,12 @@
 # Changelog
 
+* `wf write` has changed.  Tokens and API endpoints are now specified exactly
+  like other commands. This means certain options had to change.  A proxy is
+  now specified with `-y` instead of `-E`; A timestamp is given with `-s`, not
+  `-t`. (Breaking change.)
+* Unless told otherwise, `wf write` will write to a proxy over HTTP, rather
+  than over a socket. (Breaking change.)
+
 ## 8.5.1 (2021-01-28)
 * Fix stack trace when specifying an invalid time such as `Sunday`.
 

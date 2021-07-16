@@ -29,7 +29,7 @@ class WavefrontCommandBase
   # @return [Array]
   #
   def common_options
-    ['-E, --endpoint=URI       cluster endpoint',
+    ['-E, --endpoint=URI       Wavefront cluster endpoint',
      '-t, --token=TOKEN        Wavefront authentication token']
   end
 
