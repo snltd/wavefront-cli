@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'inifile'
+require 'wavefront-sdk/internals'
 require_relative 'exception'
 require_relative 'base'
 
@@ -41,6 +42,7 @@ module WavefrontCli
       @options = options
       @config_file = _config_file
       @profile = options[:'<profile>'] || 'default'
+      @iklass = Wavefront::Internals.new
     end
     # rubocop:enable Lint/MissingSuper
 
@@ -75,7 +77,7 @@ module WavefrontCli
       return read_config if config_file.exist?
 
       puts "Creating new configuration file at #{config_file}."
-      IniFile.new
+       niFile.new
     end
 
     def do_setup
@@ -89,6 +91,22 @@ module WavefrontCli
 
       config = config.merge(new_section)
       config.write(filename: config_file)
+    end
+
+    def do_api_paths
+      display_paths(@iklass.remote_api_paths)
+    end
+
+    def do_api_supported
+      display_paths(@iklass.supported_api_paths)
+    end
+
+    def do_api_missing
+      display_paths(@iklass.missing_api_paths)
+    end
+
+    def display_paths(paths)
+      puts paths.map { |k, v| format('%<verb>8s %<path>s', verb: k, path: v) }
     end
 
     def create_profile(profile)

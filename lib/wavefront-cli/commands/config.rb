@@ -16,6 +16,9 @@ class WavefrontCommandConfig < WavefrontCommandBase
      'setup [-D] [-c file] [<profile>]',
      'delete [-D] [-c file] <profile>',
      'envvars',
+     'api paths',
+     'api supported',
+     'api missing',
      'about']
   end
 
