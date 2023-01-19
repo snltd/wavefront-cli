@@ -15,11 +15,11 @@ class MessageEndToEndTest < EndToEndTest
                       '/api/v2/message?limit=100&offset=0&unreadOnly=true')
     end
 
+    params = { offset: 0, limit: 100, unreadOnly: true }
+
     assert_noop('list',
                 'uri: GET https://default.wavefront.com/api/v2/message',
-                'params: ' + {
-                  offset: 0, limit: 100, unreadOnly: true
-                }.to_s)
+                "params: #{params}")
 
     assert_abort_on_missing_creds('list')
   end

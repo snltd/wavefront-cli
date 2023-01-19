@@ -49,7 +49,7 @@ class UsageEndToEndTest < EndToEndTest
   end
 
   def response
-    IO.read(RES_DIR + 'responses' + 'usage-export-csv.json')
+    File.read(RES_DIR.join('responses', 'usage-export-csv.json'))
   end
 end
 

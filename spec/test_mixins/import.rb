@@ -61,11 +61,11 @@ module WavefrontCliTest
     private
 
     def import_file
-      RES_DIR + 'imports' + "#{api_path}.json"
+      RES_DIR.join('imports', "#{api_path}.json")
     end
 
     def update_file
-      RES_DIR + 'updates' + "#{api_path}.json"
+      RES_DIR.join('updates', "#{api_path}.json")
     end
   end
 end

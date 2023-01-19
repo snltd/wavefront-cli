@@ -53,7 +53,7 @@ class Test < MiniTest::Test
   end
 
   def test_create_dir_ok
-    dir = TEST_EVENT_STORE_DIR + 'testdir'
+    dir = TEST_EVENT_STORE_DIR.join('testdir')
     refute dir.exist?
     wf.create_dir(dir)
     assert dir.exist?
@@ -79,9 +79,9 @@ class Test < MiniTest::Test
   def test_pop_event
     setup_test_state_dir
 
-    assert (wf.dir + '1568133440530:ev3:0').exist?
+    assert wf.dir.join('1568133440530:ev3:0').exist?
     assert_equal('1568133440530:ev3:0', wf.pop_event!)
-    refute (wf.dir + '1568133440530:ev3:0').exist?
+    refute wf.dir.join('1568133440530:ev3:0').exist?
 
     empty_test_state_dir
   end
@@ -89,9 +89,9 @@ class Test < MiniTest::Test
   def test_pop_event_named
     setup_test_state_dir
 
-    assert (wf.dir + '1568133440515:ev1:1').exist?
+    assert wf.dir.join('1568133440515:ev1:1').exist?
     assert_equal('1568133440515:ev1:1', wf.pop_event!('ev1'))
-    refute (wf.dir + '1568133440515:ev1:1').exist?
+    refute wf.dir.join('1568133440515:ev1:1').exist?
 
     empty_test_state_dir
   end
@@ -99,9 +99,9 @@ class Test < MiniTest::Test
   def test_event_specific
     setup_test_state_dir
 
-    assert (wf.dir + '1568133440515:ev1:1').exist?
+    assert wf.dir.join('1568133440515:ev1:1').exist?
     assert_equal('1568133440515:ev1:1', wf.event('1568133440515:ev1:1'))
-    assert (wf.dir + '1568133440515:ev1:1').exist?
+    assert wf.dir.join('1568133440515:ev1:1').exist?
 
     empty_test_state_dir
   end

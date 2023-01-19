@@ -1,6 +1,6 @@
 ---
 AllCops:
-  TargetRubyVersion: 2.5
+  TargetRubyVersion: 2.7
   NewCops: enable
 
 require:
@@ -16,7 +16,5 @@ Naming/VariableNumber:
   Enabled: false
 Style/IfUnlessModifier:
   Enabled: false # because it wants to make lines >80 chars
-Style/StringConcatenation:
-  Enabled: false
 Style/OptionalBooleanParameter:
   Enabled: false

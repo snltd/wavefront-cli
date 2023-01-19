@@ -1,5 +1,8 @@
 # Changelog
 
+* Drop support for Ruby 2.5. (Breaking change.)
+* Drop support for Ruby 2.6. (Breaking change.)
+* Add `metricspolicy` command.
 * `wf write` has changed.  Tokens and API endpoints are now specified exactly
   like other commands. This means certain options had to change.  A proxy is
   now specified with `-y` instead of `-E`; A timestamp is given with `-s`, not

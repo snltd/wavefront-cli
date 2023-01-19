@@ -61,6 +61,6 @@ class WavefrontDisplayPrinterTerse < MiniTest::Test
     input, expected = OutputTester.new.in_and_out('alerts-input.json',
                                                   'alerts-human-terse')
     out = WavefrontDisplayPrinter::Terse.new(input, %i[id status name]).to_s
-    assert_equal(expected, out + "\n")
+    assert_equal(expected, "#{out}\n")
   end
 end

@@ -78,6 +78,7 @@ class TestWavefrontDisplayPrinterLong < MiniTest::Test
     assert_equal(22, pr.longest_key_col(input))
   end
 
+  # rubocop:disable Layout/LineContinuationLeadingSpace
   def test_to_s
     assert_equal("today\n" \
                  "  weather   sunny\n" \
@@ -92,24 +93,25 @@ class TestWavefrontDisplayPrinterLong < MiniTest::Test
                    key1: 'val1', key2: 'val2'
                  ).to_s)
   end
+  # rubocop:enable Layout/LineContinuationLeadingSpace
 
   def test_end_to_end
     input, expected = OutputTester.new.in_and_out('user-input.json',
                                                   'user-human-long')
     output = WavefrontDisplayPrinter::Long.new(input).to_s
-    assert_equal(expected, output + "\n")
+    assert_equal(expected, "#{output}\n")
 
     input, expected = OutputTester.new.in_and_out('user-input.json',
                                                   'user-human-long-no_sep')
     output = WavefrontDisplayPrinter::Long.new(input, nil, nil,
                                                separator: false).to_s
-    assert_equal(expected, output + "\n")
+    assert_equal(expected, "#{output}\n")
   end
 
   def test_end_to_end_fold
     input, expected = OutputTester.new.in_and_out('alert-input.json',
                                                   'alert-human-long')
     output = WavefrontDisplayPrinter::Long.new(input).to_s
-    assert_equal(expected, output + "\n")
+    assert_equal(expected, "#{output}\n")
   end
 end

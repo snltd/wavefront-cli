@@ -54,7 +54,7 @@ module WavefrontCli
 
     def do_show
       present?
-      puts IO.read(config_file)
+      puts File.read(config_file)
     end
 
     def do_about
@@ -97,7 +97,7 @@ module WavefrontCli
       prof_arr = ["[#{profile}]"]
 
       CONFIGURABLES.each do |c|
-        prof_arr.<< format('%<key>s=%<value>s',
+        prof_arr << format('%<key>s=%<value>s',
                            key: c[:key],
                            value: read_thing(c))
       end
@@ -138,8 +138,8 @@ module WavefrontCli
 
     def input_prompt(label, default)
       ret = format('  %<label>s', label: label)
-      ret.<< format(' [%<value>s]', value: default) unless default.nil?
-      ret + ':> '
+      ret << format(' [%<value>s]', value: default) unless default.nil?
+      "#{ret}:> "
     end
 
     # Read STDIN and strip the whitespace. The rescue is there to

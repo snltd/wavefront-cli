@@ -20,11 +20,11 @@ module WavefrontWavefrontOutput
     def raw_output
       resp.each_with_object('') do |point, a|
         point[:points].each do |p|
-          a.<< wavefront_format(options[:'<metric>'],
-                                p[:value],
-                                p[:timestamp],
-                                options[:host],
-                                point[:tags]) + "\n"
+          a << "#{wavefront_format(options[:'<metric>'],
+                                   p[:value],
+                                   p[:timestamp],
+                                   options[:host],
+                                   point[:tags])}\n"
         end
       end
     end
@@ -34,7 +34,7 @@ module WavefrontWavefrontOutput
 
       resp[:timeseries].each_with_object([]) do |ts, a|
         ts[:data].each do |point|
-          a.<< wavefront_format(ts[:label],
+          a << wavefront_format(ts[:label],
                                 point[1],
                                 point[0],
                                 ts[:host],
@@ -46,7 +46,7 @@ module WavefrontWavefrontOutput
     def wavefront_format(path, value, timestamp, source, tags = nil)
       arr = [path, value, timestamp, format('source=%<source>s',
                                             source: source)]
-      arr.<< tags.to_wf_tag if tags && !tags.empty?
+      arr << tags.to_wf_tag if tags && !tags.empty?
       arr.join(' ')
     end
   end

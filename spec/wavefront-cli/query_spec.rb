@@ -183,7 +183,7 @@ class QueryEndToEndTest < EndToEndTest
   end
 
   def canned_response
-    IO.read(RES_DIR + 'responses' + 'query.json')
+    File.read(RES_DIR.join('responses', 'query.json'))
   end
 end
 

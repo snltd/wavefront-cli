@@ -18,7 +18,7 @@ module WavefrontCli
     end
 
     def default_start
-      parse_time(Time.now - 60 * 60 * 24)
+      parse_time(Time.now - 86_400)
     end
   end
 end

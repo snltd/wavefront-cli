@@ -38,7 +38,7 @@ module WavefrontCli
     def do_show
       events = state.list
 
-      if events.size.zero?
+      if events.empty?
         puts 'No open events.'
       else
         events.sort.reverse_each { |e| puts e.basename }
@@ -94,7 +94,7 @@ module WavefrontCli
     end
 
     def window_start
-      parse_time((options[:start] || Time.now - 600), true)
+      parse_time((options[:start] || (Time.now - 600)), true)
     end
 
     def window_end

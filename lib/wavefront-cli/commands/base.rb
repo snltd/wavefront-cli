@@ -80,7 +80,7 @@ class WavefrontCommandBase
   end
 
   def things
-    thing + 's'
+    "#{thing}s"
   end
 
   # @return [String] the name of the SDK class which does the work
@@ -105,10 +105,11 @@ class WavefrontCommandBase
     text_arr = %w[Usage:]
 
     _commands.flatten.each do |cmd|
-      text_arr.<< '  ' + "#{CMD} #{word} #{cmd}\n".cmd_fold(term_width)
+      folded = "#{CMD} #{word} #{cmd}\n".cmd_fold(term_width)
+      text_arr << "  #{folded}"
     end
 
-    text_arr.<< "  #{CMD} #{word} --help"
+    text_arr << "  #{CMD} #{word} --help"
     text_arr.join("\n")
   end
 
@@ -124,15 +125,15 @@ class WavefrontCommandBase
                  global_option_text(width, term_width)
                end
 
-    text_arr.<< 'Options:'
-    _options.flatten.each { |o| text_arr.<< opt_row(o, width, term_width) }
+    text_arr << 'Options:'
+    _options.flatten.each { |o| text_arr << opt_row(o, width, term_width) }
     text_arr.join("\n")
   end
 
   def global_option_text(width, term_width)
     text_arr = ['Global options:']
-    global_options.each { |o| text_arr.<< opt_row(o, width, term_width) }
-    text_arr.<< ''
+    global_options.each { |o| text_arr << opt_row(o, width, term_width) }
+    text_arr << ''
   end
 
   # Formats an option string.
@@ -165,6 +166,6 @@ class WavefrontCommandBase
   # @return [String] a full options string which docopt understands
   #
   def docopt
-    commands + "\n\n" + options + "\n\n" + postscript
+    "#{commands}\n\n#{options}\n\n#{postscript}"
   end
 end

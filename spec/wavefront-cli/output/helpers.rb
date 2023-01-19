@@ -14,5 +14,5 @@ def load_raw_query_response
 end
 
 def load_file(file)
-  JSON.parse(IO.read(RES_DIR + file), symbolize_names: true)
+  JSON.parse(File.read(RES_DIR.join(file)), symbolize_names: true)
 end

@@ -40,11 +40,11 @@ module WavefrontCli
       private
 
       def load_json(file)
-        read_json(IO.read(file))
+        read_json(File.read(file))
       end
 
       def load_yaml(file)
-        read_yaml(IO.read(file))
+        read_yaml(File.read(file))
       end
 
       # Read STDIN and return a Ruby object, assuming that STDIN is

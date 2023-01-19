@@ -2,11 +2,13 @@
 
 require_relative '../constants'
 
+# Produces a list of wf's commands
+#
 class SupportedCommands
   attr_reader :cmd_dir
 
   def initialize
-    @cmd_dir = ROOT + 'lib' + 'wavefront-cli' + 'commands'
+    @cmd_dir = ROOT.join('lib', 'wavefront-cli', 'commands')
   end
 
   def all

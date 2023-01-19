@@ -159,7 +159,7 @@ class WavefrontCliWriteTest < MiniTest::Test
   def test_valid_timestamp?
     assert wf.valid_timestamp?(Time.now.to_i)
     refute wf.valid_timestamp?(Time.new(1999, 11, 30).to_i)
-    refute wf.valid_timestamp?(Time.now.to_i + 367 * 24 * 60 * 60)
+    refute wf.valid_timestamp?(Time.now.to_i + (367 * 24 * 60 * 60))
   end
 
   def test__sdk_class_and_default_port

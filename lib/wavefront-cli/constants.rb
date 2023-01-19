@@ -3,6 +3,7 @@
 require 'pathname'
 
 module WavefrontCli
+  #
   # Universal truths
   #
   module Constants
@@ -24,7 +25,7 @@ module WavefrontCli
 
     # Default configuration file
     #
-    DEFAULT_CONFIG = (Pathname.new(ENV['HOME']) + '.wavefront').freeze
+    DEFAULT_CONFIG = Pathname.new(Dir.home).join('.wavefront').freeze
 
     # Split regex for searches
     #
