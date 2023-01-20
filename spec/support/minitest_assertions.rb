@@ -198,7 +198,7 @@ module Minitest
     #
     def all_permutations
       perms = permutations
-      perms = perms.shuffle.take(1) if @single_perm
+      perms = perms.shuffle.take(1) if @single_perm || ENV['FAST_TESTS']
 
       perms.each do |p|
         yield(p)
