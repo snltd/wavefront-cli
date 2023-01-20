@@ -42,6 +42,8 @@ module WavefrontCli
         abort "'#{exception}' is not a valid API token ID."
       when Wavefront::Exception::InvalidIngestionPolicyId
         abort "'#{exception}' is not a valid ingestion policy ID."
+      when Wavefront::Exception::InvalidVersion
+        abort "'#{exception}' is not a valid version."
       when WavefrontCli::Exception::InvalidValue
         abort "Invalid value for #{exception}."
       when WavefrontCli::Exception::ProfileExists
