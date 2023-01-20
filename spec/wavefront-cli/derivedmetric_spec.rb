@@ -30,16 +30,18 @@ class DerivedMetricEndToEndTest < EndToEndTest
                        query: 'ts(series)')
     end
 
+    json_body = {
+      query: 'ts(series)',
+      name: 'mymetric',
+      minutes: 5,
+      includeObsoleteMetrics: false,
+      processRateMinutes: 1
+    }.to_json
+
     assert_noop('create mymetric ts(series)',
                 'uri: POST https://default.wavefront.com/api/v2/' \
                 'derivedmetric',
-                'body: ' + {
-                  query: 'ts(series)',
-                  name: 'mymetric',
-                  minutes: 5,
-                  includeObsoleteMetrics: false,
-                  processRateMinutes: 1
-                }.to_json)
+                "body: #{json_body}")
 
     assert_usage('create')
     assert_abort_on_missing_creds("create #{id} ts(series)")

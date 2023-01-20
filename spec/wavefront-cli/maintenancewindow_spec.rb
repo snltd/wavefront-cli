@@ -42,15 +42,17 @@ class MaintenanceWindowEndToEndTest < EndToEndTest
                        title: 'test_window')
     end
 
+    json_body = { title: 'test_window',
+                  startTimeInSeconds: 1_566_776_337,
+                  endTimeInSeconds: 1_566_776_399,
+                  reason: 'testing',
+                  relevantHostNames: %w[shark box] }.to_json
+
     assert_noop(
       'create --desc testing -H shark -s 1566776337 -H box ' \
       '-e 1566776399 test_window',
       'uri: POST https://default.wavefront.com/api/v2/maintenancewindow',
-      'body: ' + { title: 'test_window',
-                   startTimeInSeconds: 1_566_776_337,
-                   endTimeInSeconds: 1_566_776_399,
-                   reason: 'testing',
-                   relevantHostNames: %w[shark box] }.to_json
+      "body: #{json_body}"
     )
   end
 
@@ -172,16 +174,18 @@ class MaintenanceWindowEndToEndTest < EndToEndTest
       end
     end
 
+    json_body = { limit: 999,
+                  offset: 0,
+                  query: [{ key: 'runningState',
+                            value: 'ongoing',
+                            matchingMethod: 'EXACT' }],
+                  sort: { field: 'runningState',
+                          ascending: true } }.to_json
+
     assert_noop(
       'ongoing',
       'uri: POST https://default.wavefront.com/api/v2/search/maintenancewindow',
-      'body: ' + { limit: 999,
-                   offset: 0,
-                   query: [{ key: 'runningState',
-                             value: 'ongoing',
-                             matchingMethod: 'EXACT' }],
-                   sort: { field: 'runningState',
-                           ascending: true } }.to_json
+      "body: #{json_body}"
     )
 
     assert_empty(err)
@@ -198,16 +202,18 @@ class MaintenanceWindowEndToEndTest < EndToEndTest
       end
     end
 
+    json_body = { limit: 999,
+                  offset: 0,
+                  query: [{ key: 'runningState',
+                            value: 'pending',
+                            matchingMethod: 'EXACT' }],
+                  sort: { field: 'runningState',
+                          ascending: true } }.to_json
+
     assert_noop(
       'pending',
       'uri: POST https://default.wavefront.com/api/v2/search/maintenancewindow',
-      'body: ' + { limit: 999,
-                   offset: 0,
-                   query: [{ key: 'runningState',
-                             value: 'pending',
-                             matchingMethod: 'EXACT' }],
-                   sort: { field: 'runningState',
-                           ascending: true } }.to_json
+      "body: #{json_body}"
     )
 
     assert_empty(err)

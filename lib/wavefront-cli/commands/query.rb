@@ -45,7 +45,7 @@ class WavefrontCommandQuery < WavefrontCommandBase
   def postscript
     'The query command has an additional output format. Using ' \
     "'-f wavefront' produces output suitable for feeding back into a " \
-    "proxy. Other output formats are 'yaml', 'json', 'ruby', "\
+    "proxy. Other output formats are 'yaml', 'json', 'ruby', " \
     "and 'csv'. CSV format options are 'headers' (print column headers); " \
     "'tagkeys' (print tags as key=value rather than value); and 'quote' " \
     '(force quoting of every CSV element).'.cmd_fold(TW, 0)

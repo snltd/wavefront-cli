@@ -88,7 +88,7 @@ class EndToEndTest < MiniTest::Test
     end
   end
 
-  def have_config?
-    (Pathname.new(ENV['HOME']) + '.wavefront').exist?
+  def config?
+    Pathname.new(Dir.home).join('.wavefront').exist?
   end
 end

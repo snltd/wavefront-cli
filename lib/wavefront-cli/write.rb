@@ -163,7 +163,7 @@ module WavefrontCli
     #
     def process_input_file(data)
       data.each_with_object([]) do |l, a|
-        a.<< process_line(l)
+        a << process_line(l)
       rescue WavefrontCli::Exception::UnparseableInput => e
         puts "Bad input. #{e.message}."
         next
@@ -422,7 +422,7 @@ module WavefrontCli
     #
     def valid_timestamp?(timestamp)
       (timestamp.is_a?(Integer) ||
-        timestamp.is_a?(String) && timestamp.match(/^\d+$/)) &&
+        (timestamp.is_a?(String) && timestamp.match(/^\d+$/))) &&
         timestamp.to_i > 946_684_800 &&
         timestamp.to_i < (Time.now.to_i + 31_557_600)
     end
@@ -432,7 +432,7 @@ module WavefrontCli
     end
 
     def load_data(file)
-      IO.read(file)
+      File.read(file)
     rescue StandardError
       raise WavefrontCli::Exception::FileNotFound
     end

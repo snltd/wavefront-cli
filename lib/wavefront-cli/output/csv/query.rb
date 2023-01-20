@@ -32,7 +32,7 @@ module WavefrontCsvOutput
     def raw_output
       resp.each_with_object([]) do |point, a|
         point[:points].each do |p|
-          a.<< csv_format(options[:'<metric>'],
+          a << csv_format(options[:'<metric>'],
                           p[:value],
                           p[:timestamp],
                           options[:host],
@@ -48,7 +48,7 @@ module WavefrontCsvOutput
 
       resp[:timeseries].each_with_object([]) do |ts, a|
         ts[:data].each do |point|
-          a.<< csv_format(ts[:label],
+          a << csv_format(ts[:label],
                           point[1],
                           point[0],
                           ts[:host],

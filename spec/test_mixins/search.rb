@@ -18,17 +18,19 @@ module WavefrontCliTest
                          sort: { field: 'id', ascending: true })
       end
 
+      json_body = { limit: 10,
+                    offset: 0,
+                    query: [{ key: 'id',
+                              value: id,
+                              matchingMethod: 'EXACT',
+                              negated: false }],
+                    sort: { field: 'id', ascending: true } }.to_json
+
       assert_noop(
         "search id=#{id}",
         'uri: POST https://default.wavefront.com/api/v2/search/' \
         "#{search_api_path}",
-        'body: ' + { limit: 10,
-                     offset: 0,
-                     query: [{ key: 'id',
-                               value: id,
-                               matchingMethod: 'EXACT',
-                               negated: false }],
-                     sort: { field: 'id', ascending: true } }.to_json
+        "body: #{json_body}"
       )
       assert_abort_on_missing_creds("search id=#{id}")
       assert_usage('search')

@@ -26,7 +26,7 @@ class AlertEndToEndTest < EndToEndTest
   # file.
   #
   def test_no_config_no_envvars
-    skip if have_config?
+    skip if config?
 
     blank_envvars
     wf = WavefrontCliController
@@ -67,10 +67,12 @@ class AlertEndToEndTest < EndToEndTest
                        id: id, v: nil, name: nil)
     end
 
+    json_body = { id: id, name: nil, v: nil }.to_json
+
     assert_noop("clone #{id}",
                 'uri: POST https://default.wavefront.com/api/v2/' \
                 "alert/#{id}/clone",
-                'body: ' + { id: id, name: nil, v: nil }.to_json)
+                "body: #{json_body}")
 
     assert_invalid_id("clone #{invalid_id}")
     assert_usage('clone')
@@ -84,10 +86,12 @@ class AlertEndToEndTest < EndToEndTest
                        id: id, v: 5, name: nil)
     end
 
+    json_body = { id: id, name: nil, v: 5 }.to_json
+
     assert_noop("clone #{id} --version 5",
                 'uri: POST https://default.wavefront.com/api/v2/' \
                 "alert/#{id}/clone",
-                'body: ' + { id: id, name: nil, v: 5 }.to_json)
+                "body: #{json_body}")
 
     assert_invalid_id("clone -v 10 #{invalid_id}")
     assert_usage('clone -v')
@@ -192,7 +196,7 @@ class AlertEndToEndTest < EndToEndTest
     assert_noop('snoozed',
                 'uri: POST https://default.wavefront.com/api/v2/' \
                 'search/alert',
-                'body: ' + state_search('snoozed').to_json)
+                "body: #{state_search('snoozed').to_json}")
 
     assert_abort_on_missing_creds('snoozed')
   end
@@ -212,7 +216,7 @@ class AlertEndToEndTest < EndToEndTest
     assert_noop('firing',
                 'uri: POST https://default.wavefront.com/api/v2/' \
                 'search/alert',
-                'body: ' + state_search('firing').to_json)
+                "body: #{state_search('firing').to_json}")
 
     assert_abort_on_missing_creds('firing')
   end
@@ -232,7 +236,7 @@ class AlertEndToEndTest < EndToEndTest
     assert_noop('currently firing',
                 'uri: POST https://default.wavefront.com/api/v2/' \
                 'search/alert',
-                'body: ' + state_search('firing').to_json)
+                "body: #{state_search('firing').to_json}")
 
     assert_abort_on_missing_creds('currently firing')
   end
@@ -252,7 +256,7 @@ class AlertEndToEndTest < EndToEndTest
     assert_noop('currently in_maintenance',
                 'uri: POST https://default.wavefront.com/api/v2/' \
                 'search/alert',
-                'body: ' + state_search('in_maintenance').to_json)
+                "body: #{state_search('in_maintenance').to_json}")
 
     assert_abort_on_missing_creds('currently in_maintenance')
   end

@@ -15,7 +15,7 @@ $ gem install wavefront-cli
 
 It is built on [our Wavefront Ruby
 SDK](https://github.com/snltd/wavefront-sdk) and requires Ruby >=
-2.5. It has no "native extension" dependencies.
+2.7. It has no "native extension" dependencies.
 
 For a far more comprehensive overview/tutorial, please read [this
 article](https://sysdef.xyz/article/wavefront-cli).
@@ -30,6 +30,7 @@ Usage:
   wf --help
 
 Commands:
+  account            view and manage Wavefront accounts
   alert              view and manage alerts
   apitoken           view and your own API tokens
   cloudintegration   view and manage cloud integrations
@@ -45,6 +46,7 @@ Commands:
   notificant         view and manage Wavefront alert targets
   proxy              view and manage proxies
   query              run Wavefront queries
+  role               view and manage roles
   savedsearch        view and manage saved searches
   serviceaccount     view and manage service accounts
   settings           view and manage system preferences

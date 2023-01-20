@@ -9,7 +9,7 @@ class Array
   # @return [String]
   #
   def to_hcl_list
-    '[' + join(',') + ']'
+    "[#{join(',')}]"
   end
 
   # Turn an array into a string which represents an HCL object

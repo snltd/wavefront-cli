@@ -16,7 +16,7 @@ class WavefrontSparkline
   attr_reader :sparkline
 
   def initialize(series)
-    @sparkline = '>' + generate_sparkline(series) + '<'
+    @sparkline = ">#{generate_sparkline(series)}<"
   end
 
   # @return [String] the block corresponding to the given value in
@@ -38,8 +38,8 @@ class WavefrontSparkline
   def make_fit(vals)
     return vals if vals.size < SPARK_WIDTH
 
-    vals.<< vals.last if vals.size.odd?
-    ret = vals.each_slice(2).with_object([]) { |s, a| a.<< s.sum / 2 }
+    vals << vals.last if vals.size.odd?
+    ret = vals.each_slice(2).with_object([]) { |s, a| a << (s.sum / 2) }
     make_fit(ret)
   end
 

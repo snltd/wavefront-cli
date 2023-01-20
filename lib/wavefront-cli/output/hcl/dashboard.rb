@@ -32,19 +32,19 @@ module WavefrontHclOutput
     # @return [String] HCL list of vals
     #
     def listmaker(vals, method)
-      vals.each_with_object([]) { |v, a| a.<< send(method, v) }.to_hcl_list
+      vals.each_with_object([]) { |v, a| a << send(method, v) }.to_hcl_list
     end
 
     def vhandle_sections(vals)
       vals.each_with_object([]) do |section, a|
-        a.<< ("name = \"#{section[:name]}\"\n      row = " +
+        a << ("name = \"#{section[:name]}\"\n      row = " +
               handle_rows(section[:rows])).braced(4)
       end.to_hcl_list
     end
 
     def handle_rows(rows)
       rows.each_with_object([]) do |row, a|
-        a.<< ('chart = ' + handle_charts(row[:charts]).to_s).braced(8)
+        a << "chart = #{handle_charts(row[:charts])}".braced(8)
       end.to_hcl_list
     end
 
@@ -58,10 +58,10 @@ module WavefrontHclOutput
       lines = chart.each_with_object([]) do |(k, v), a|
         next unless fields.include?(k)
 
-        a.<< format('%<key>s = %<value>s', key: k, value: quote_value(v))
+        a << format('%<key>s = %<value>s', key: k, value: quote_value(v))
       end
 
-      lines.<< "source = #{handle_sources(chart[:sources])}"
+      lines << "source = #{handle_sources(chart[:sources])}"
       lines.to_hcl_obj(10)
     end
 
@@ -75,7 +75,7 @@ module WavefrontHclOutput
 
         k = 'queryBuilderEnabled' if k == 'querybuilderEnabled'
 
-        a.<< format('%<key>s = %<value>s',
+        a << format('%<key>s = %<value>s',
                     key: k.to_snake,
                     value: quote_value(v))
       end.to_hcl_obj(14)

@@ -10,7 +10,7 @@ class String
   # @param indent [Integer] size of hanging indent, in chars
   #
   def cmd_fold(twidth = TW, indent = 10)
-    gsub(/(-\w) /, '\\1^').scan_line(twidth - 12).join("\n" + ' ' * indent)
+    gsub(/(-\w) /, '\\1^').scan_line(twidth - 12).join("\n#{' ' * indent}")
                           .restored
   end
 
@@ -58,7 +58,7 @@ class String
   #
   def value_fold(indent = 0, twidth = TW)
     max_line_length = twidth - indent - 4
-    scan_line(max_line_length).join("\n" + ' ' * indent)
+    scan_line(max_line_length).join("\n#{' ' * indent}")
   end
 
   # @param width [Integer] length of longest string (width of
@@ -94,7 +94,7 @@ class String
   #
   def to_snake
     gsub(/(.)([A-Z])/) do
-      Regexp.last_match[1] + '_' + Regexp.last_match[2].downcase
+      "#{Regexp.last_match[1]}_#{Regexp.last_match[2].downcase}"
     end
   end
 
@@ -102,7 +102,7 @@ class String
 
   def indent_folded_lines(chunks, twidth, indent, prefix)
     chunks.join(' ').scan_line(twidth - indent - 5).map do |line|
-      prefix + ' ' * indent + line
+      "#{prefix}#{' ' * indent}#{line}"
     end
   end
 end

@@ -220,7 +220,7 @@ module Minitest
     def mk_headers(token = nil, extra_headers = {})
       { Accept: /.*/,
         'Accept-Encoding': /.*/,
-        Authorization: 'Bearer ' + (token || '0123456789-ABCDEF'),
+        Authorization: "Bearer #{token || '0123456789-ABCDEF'}",
         'User-Agent': "wavefront-cli-#{WF_CLI_VERSION}" }.merge(extra_headers)
     end
 

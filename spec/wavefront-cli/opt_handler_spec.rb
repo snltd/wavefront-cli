@@ -9,7 +9,7 @@ require_relative '../../lib/wavefront-cli/opt_handler'
 # Some of these tests will be skipped if you have a ~/.wavefront
 # config file. CI will never have that.
 #
-INTERFERING_FILE = Pathname.new(ENV['HOME']) + '.wavefront'
+INTERFERING_FILE = Pathname.new(Dir.home).join('.wavefront')
 
 # Test option handler class. End to end tests because the work is
 # always done in the constructor

@@ -228,10 +228,12 @@ class AccountEndToEndTest < EndToEndTest
     cmd = "validate #{user_list.join(' ')}"
 
     quietly do
-      assert_cmd_posts(cmd,
-                       '/api/v2/account/validateAccounts',
-                       user_list.to_json,
-                       IO.read(RES_DIR + 'responses' + 'user-validate.json'))
+      assert_cmd_posts(
+        cmd,
+        '/api/v2/account/validateAccounts',
+        user_list.to_json,
+        File.read(RES_DIR.join('responses', 'user-validate.json'))
+      )
     end
 
     assert_noop(cmd,

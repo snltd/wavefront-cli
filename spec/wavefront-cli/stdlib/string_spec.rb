@@ -28,13 +28,14 @@ class StringTest < MiniTest::Test
 
     str = '-o, --option PARAMETER a rather pointless option with a ' \
           'needlessly wordy description string'
-    pad = "\n" + ' ' * 12
+    pad = "\n#{' ' * 12}"
     assert_equal("  -o, --option PARAMETER a#{pad}rather pointless" \
                  "#{pad}option with a#{pad}needlessly wordy#{pad}" \
                  "description#{pad}string",
                  str.opt_fold(30, 10))
   end
 
+  # rubocop:disable Layout/LineContinuationLeadingSpace
   def test_fold_options
     str = '-l, --longoption    a long option with a quite long ' \
           'description which needs folding'
@@ -48,6 +49,7 @@ class StringTest < MiniTest::Test
                  '      folding')
     assert_equal(str.opt_fold(100), "  #{str}")
   end
+  # rubocop:enable Layout/LineContinuationLeadingSpace
 
   def test_to_seconds
     assert_equal(14, '14s'.to_seconds)

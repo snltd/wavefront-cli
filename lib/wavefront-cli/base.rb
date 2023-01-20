@@ -206,7 +206,7 @@ module WavefrontCli
     #
     def method_word_list
       do_methods = methods.select { |m| m.to_s.start_with?('do_') }
-      do_methods.map { |m| m.to_s.split('_')[1..-1] }.sort_by(&:length)
+      do_methods.map { |m| m.to_s.split('_')[1..] }.sort_by(&:length)
     end
 
     # Display a Ruby object as JSON, YAML, or human-readable.  We
@@ -545,7 +545,7 @@ module WavefrontCli
       when Hash
         obj.each_pair do |k, v|
           if k == key && !v.to_s.empty?
-            aggr.<< v
+            aggr << v
           else
             extract_values(v, key, aggr)
           end

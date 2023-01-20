@@ -6,7 +6,7 @@ require 'minitest/autorun'
 require_relative '../constants'
 require_relative '../../lib/wavefront-cli/config'
 
-DEF_CF = Pathname.new(ENV['HOME']) + '.wavefront'
+DEF_CF = Pathname.new(Dir.home).join('.wavefront')
 CONF_TMP = Pathname.new('/tmp/outfile')
 
 # Test CLI configuration command
@@ -56,7 +56,7 @@ class WavefrontCliConfigTest < MiniTest::Test
     out, err = capture_io { assert_instance_of(IniFile, wf.base_config) }
     assert_empty(err)
 
-    if (Pathname.new(ENV['HOME']) + '.wavefront').exist?
+    if Pathname.new(Dir.home).join('.wavefront').exist?
       assert_empty(out)
     else
       assert_match(/Creating new configuration file at/, out)
@@ -196,7 +196,7 @@ class WavefrontCliConfigTest < MiniTest::Test
     assert_equal(
       "[other]\ntoken = abcdefab-0123-abcd-0123-abcdefabcdef\n" \
       "endpoint = other.wavefront.com\nproxy = otherwf.localnet\n\n",
-      IO.read(CONF_TMP)
+      File.read(CONF_TMP)
     )
 
     assert_raises(WavefrontCli::Exception::ProfileNotFound) do

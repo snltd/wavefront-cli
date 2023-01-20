@@ -14,7 +14,7 @@ class OutputTester
   # @return [Object] canned raw responses used to test outputs
   #
   def load_input(file, only_items = true)
-    ret = JSON.parse(IO.read(RES_DIR + 'display' + file),
+    ret = JSON.parse(File.read(RES_DIR.join('display', file)),
                      symbolize_names: true)
     only_items ? ret[:items] : ret
   end
@@ -23,7 +23,7 @@ class OutputTester
   # @return [String]
   #
   def load_expected(file)
-    IO.read(RES_DIR + 'display' + file)
+    File.read(RES_DIR.join('display', file))
   end
 
   def in_and_out(input, expected, only_items = true)

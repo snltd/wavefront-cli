@@ -99,7 +99,7 @@ class EventEndToEndTest < EndToEndTest
     assert state_file.exist?
     assert_equal(
       "{\"hosts\":[],\"description\":null,\"severity\":null,\"tags\":[]}\n",
-      IO.read(state_file)
+      File.read(state_file)
     )
 
     assert_abort_on_missing_creds("create #{event_name}")
@@ -131,7 +131,7 @@ class EventEndToEndTest < EndToEndTest
     assert state_file.exist?
     assert_equal('{"hosts":["host1","host2"],"description":"reason",' \
                  "\"severity\":null,\"tags\":[\"mytag\"]}\n",
-                 IO.read(state_file))
+                 File.read(state_file))
   end
 
   def test_create_instantaneous_with_start_time
@@ -173,20 +173,20 @@ class EventEndToEndTest < EndToEndTest
     @single_perm = true
 
     setup_test_state_dir
-    assert((state_dir + '1568133440530:ev3:0').exist?)
+    assert state_dir.join('1568133440530:ev3:0').exist?
 
     quietly do
       assert_cmd_posts('close', '/api/v2/event/1568133440530:ev3:0/close')
     end
 
-    refute((state_dir + '1568133440530:ev3:0').exist?)
-    assert((state_dir + '1568133440520:ev2:0').exist?)
+    refute state_dir.join('1568133440530:ev3:0').exist?
+    assert state_dir.join('1568133440520:ev2:0').exist?
 
     quietly do
       assert_cmd_posts('close', '/api/v2/event/1568133440520:ev2:0/close')
     end
 
-    refute((state_dir + '1568133440520:ev2:0').exist?)
+    refute state_dir.join('1568133440520:ev2:0').exist?
     @single_perm = false
   end
 

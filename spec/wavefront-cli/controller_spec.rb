@@ -94,9 +94,11 @@ end
 # tested above.
 #
 # rubocop:disable Lint/MissingSuper
+# rubocop:disable Style/RedundantInitialize
 class Giblets < WavefrontCliController
   def initialize; end
 end
+# rubocop:enable Style/RedundantInitialize
 # rubocop:enable Lint/MissingSuper
 
 # Here's the subclass

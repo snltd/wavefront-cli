@@ -84,7 +84,7 @@ module WavefrontDisplayPrinter
       elsif data.is_a?(Array)
         append_array(data, aggr, depth, last_key)
       else
-        aggr.<< ['', preened_value(data), depth]
+        aggr << ['', preened_value(data), depth]
       end
     end
     # rubocop:enable Style/CaseLikeIf
@@ -99,16 +99,14 @@ module WavefrontDisplayPrinter
     # @return [Integer]
     #
     def longest_key_col(data)
-      data.map { |d| d[0].size + opts[:padding] + opts[:indent] * d[2] }.max
+      data.map { |d| d[0].size + opts[:padding] + (opts[:indent] * d[2]) }.max
     end
 
     # Turn the list made by #make_list into user output
     # @return [String]
     #
     def to_s
-      list.map do |item|
-        stringify_line(item)
-      end.join("\n")
+      list.map { |item| stringify_line(item) }.join("\n")
     end
 
     # @param item [Array] of the form [key, value, indent_level]
@@ -162,7 +160,7 @@ module WavefrontDisplayPrinter
         elsif v.is_a?(Array)
           aggr = append_array_values(k, v, aggr, depth)
         else
-          aggr.<< [k, smart_value(v), depth]
+          aggr << [k, smart_value(v), depth]
         end
       end
 
@@ -183,7 +181,7 @@ module WavefrontDisplayPrinter
 
         if opts[:separator] && element.is_a?(Hash) && i < data.size &&
            depth < opts[:sep_depth]
-          aggr.<< ['', :separator, depth]
+          aggr << ['', :separator, depth]
         end
       end
 
@@ -202,9 +200,9 @@ module WavefrontDisplayPrinter
     #
     def append_hash_values(key, values, aggr, depth)
       if values.empty? && opts[:none]
-        aggr.<< [key, '<none>', depth]
+        aggr << [key, '<none>', depth]
       else
-        aggr.<< [key, nil, depth]
+        aggr << [key, nil, depth]
         make_list(values, aggr, depth + 1)
       end
     end
@@ -218,13 +216,13 @@ module WavefrontDisplayPrinter
     #
     def append_array_values(key, values, aggr, depth)
       if values.empty? && opts[:none]
-        aggr.<< [key, '<none>', depth]
+        aggr << [key, '<none>', depth]
       elsif values.all?(String)
         values.sort!
-        aggr.<< [key, preened_value(values.shift), depth]
+        aggr << [key, preened_value(values.shift), depth]
         make_list(values, aggr, depth, key)
       else
-        aggr.<< [key, nil, depth]
+        aggr << [key, nil, depth]
         make_list(values, aggr, depth + 1, key)
       end
     end

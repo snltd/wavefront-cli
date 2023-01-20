@@ -7,8 +7,8 @@
 
 if defined?(DEVELOPMENT)
   dir = Pathname.new(__dir__).realpath.parent.parent.parent
-  $LOAD_PATH.<< dir + 'lib'
-  $LOAD_PATH.<< dir + 'wavefront-sdk' + 'lib'
+  $LOAD_PATH << dir.join('lib')
+  $LOAD_PATH << dir.join('wavefront-sdk', 'lib')
 end
 
 require 'pathname'
@@ -20,7 +20,7 @@ require_relative 'opt_handler'
 require_relative 'exception_handler'
 require_relative 'stdlib/string'
 
-CMD_DIR = Pathname.new(__dir__) + 'commands'
+CMD_DIR = Pathname.new(__dir__).join('commands')
 
 # Dynamically generate a CLI interface from files which describe
 # each subcomand.
@@ -65,13 +65,13 @@ class WavefrontCliController
          'Commands:']
 
     cmds.sort.each do |k, v|
-      s.<< format('  %-18<command>s %<desc>s',
+      s << format('  %-18<command>s %<desc>s',
                   command: k,
                   desc: v.description)
     end
 
-    s.<< ''
-    s.<< "Use '#{CMD} <command> --help' for further information."
+    s << ''
+    s << "Use '#{CMD} <command> --help' for further information."
     s.join("\n")
   end
   # rubocop:enable Metrics/MethodLength
@@ -124,7 +124,7 @@ class WavefrontCliController
 
   def load_cli_class(cmd, opts)
     require_relative File.join('.', cmds[cmd].sdk_file)
-    Object.const_get('WavefrontCli').const_get(cmds[cmd].sdk_class).new(opts)
+    Object.const_get(:WavefrontCli).const_get(cmds[cmd].sdk_class).new(opts)
   end
 
   def run_command(cli_class_obj)
@@ -146,7 +146,7 @@ class WavefrontCliController
   #
   def handle_missing_credentials(error)
     message = error.message.capitalize
-    message.<<('.') unless message.end_with?('.')
+    message << ('.') unless message.end_with?('.')
 
     puts "Credential error. #{message}"
 

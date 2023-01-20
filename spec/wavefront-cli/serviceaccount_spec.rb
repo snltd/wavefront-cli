@@ -105,14 +105,16 @@ class ServiceAccountEndToEndTest < EndToEndTest
                        userGroups: [])
     end
 
+    json_body = { identifier: id,
+                  active: true,
+                  tokens: [],
+                  roles: [],
+                  userGroups: [] }.to_json
+
     assert_noop(
       "create #{id}",
       'uri: POST https://default.wavefront.com/api/v2/account/serviceaccount',
-      'body: ' + { identifier: id,
-                   active: true,
-                   tokens: [],
-                   roles: [],
-                   userGroups: [] }.to_json
+      "body: #{json_body}"
     )
 
     assert_abort_on_missing_creds("create #{id}")

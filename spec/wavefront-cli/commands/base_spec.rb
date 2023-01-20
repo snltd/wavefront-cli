@@ -68,7 +68,7 @@ class WavefrontCommmandBaseTest < MiniTest::Test
     assert wf.commands.start_with?("Usage:\n")
     assert wf.commands.match(/ --help$/)
 
-    wf.commands(600).split("\n")[1..-1].each do |c|
+    wf.commands(600).split("\n")[1..].each do |c|
       next if skip_cmd && c.match(skip_cmd)
 
       assert_match(/^  \w+/, c)
@@ -80,7 +80,7 @@ class WavefrontCommmandBaseTest < MiniTest::Test
     assert wf.options(600).start_with?("Global options:\n")
     assert_match(/\nOptions:/, wf.options)
 
-    wf.options(600).split("\n")[1..-1].each do |o|
+    wf.options(600).split("\n")[1..].each do |o|
       next if o == 'Global options:' || o == 'Options:' || o.empty?
 
       assert_instance_of(String, o)
