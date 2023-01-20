@@ -10,7 +10,7 @@ class WavefrontCommandWrite < WavefrontCommandBase
   end
 
   def _commands
-    ["point #{CMN} [-iq] [-y proxy] [-t time] " \
+    ["point #{CMN} [-iq] [-y proxy] [-s time] " \
      '[-p port] [-H host] [-T tag...] [-u method] [-S socket] <metric> ' \
      '[--] <value>',
      "distribution #{CMN} [-iq] [-y proxy] " \
