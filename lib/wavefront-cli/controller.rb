@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'pathname'
-
 # For development against a local checkout of the SDK, uncomment
 # this definition
 #
