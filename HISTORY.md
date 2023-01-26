@@ -1,5 +1,8 @@
 # Changelog
 
+* Add `wf config api ...` commands, which show the API paths which the CLI
+  does and does not cover.
+
 ## 9.0.0 (2023-01-20)
 
 * Drop support for Ruby 2.5. (Breaking change.)
