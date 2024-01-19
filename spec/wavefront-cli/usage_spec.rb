@@ -55,7 +55,7 @@ end
 
 # test class methods
 #
-class UsageTest < MiniTest::Test
+class UsageTest < Minitest::Test
   attr_reader :wf
 
   def setup

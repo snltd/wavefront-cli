@@ -11,7 +11,7 @@ CONF_TMP = Pathname.new('/tmp/outfile')
 
 # Test CLI configuration command
 #
-class WavefrontCliConfigTest < MiniTest::Test
+class WavefrontCliConfigTest < Minitest::Test
   attr_reader :wf, :wfo, :wfn
 
   def setup

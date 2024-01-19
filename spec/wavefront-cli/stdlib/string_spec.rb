@@ -8,7 +8,7 @@ require_relative '../../../lib/wavefront-cli/commands/base'
 
 # Test extensions to string class
 #
-class StringTest < MiniTest::Test
+class StringTest < Minitest::Test
   def test_cmd_fold
     cmn = '[-DnV] [-c file] [-P profile] [-E endpoint] [-t token]'
     str = "command subcommand #{cmn} [-a alpha] [-b beta] [-c gamma] <id>"

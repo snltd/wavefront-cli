@@ -8,7 +8,7 @@ require_relative '../../../lib/wavefront-cli/output/wavefront'
 
 # Test the Wavefront instantiation of the base class
 #
-class WavefrontOutputBaseTest < MiniTest::Test
+class WavefrontOutputBaseTest < Minitest::Test
   attr_reader :wfo
 
   def setup

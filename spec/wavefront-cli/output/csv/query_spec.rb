@@ -7,7 +7,7 @@ require_relative '../../../../lib/wavefront-cli/output/csv/query'
 
 # Test CSV output
 #
-class WavefrontOutputCsvTest < MiniTest::Test
+class WavefrontOutputCsvTest < Minitest::Test
   attr_reader :wfq, :wfr, :wfqq, :wfh, :wft, :wftl
 
   def setup

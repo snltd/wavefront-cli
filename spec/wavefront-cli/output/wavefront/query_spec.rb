@@ -7,7 +7,7 @@ require_relative '../../../../lib/wavefront-cli/output/wavefront/query'
 
 # Test Wavefront wire-format output
 #
-class WavefrontOutputWavefrontTest < MiniTest::Test
+class WavefrontOutputWavefrontTest < Minitest::Test
   attr_reader :wfq, :wfr
 
   def setup

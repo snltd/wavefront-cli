@@ -199,7 +199,7 @@ end
 
 # Query tests
 #
-class QueryTest < MiniTest::Test
+class QueryTest < Minitest::Test
   attr_reader :wf
 
   def setup

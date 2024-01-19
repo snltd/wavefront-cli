@@ -8,7 +8,7 @@ require_relative '../../lib/wavefront-cli/controller'
 
 # Be sure the CLI behaves properly when people ask for help
 #
-class WavefrontCliHelpTest < MiniTest::Test
+class WavefrontCliHelpTest < Minitest::Test
   def test_development_mode
     refute defined?(DEVELOPMENT) if ENV['CI']
   end
@@ -103,7 +103,7 @@ end
 
 # Here's the subclass
 #
-class GibletsTest < MiniTest::Test
+class GibletsTest < Minitest::Test
   attr_reader :wfc
 
   def setup

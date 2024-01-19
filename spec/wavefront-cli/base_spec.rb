@@ -12,7 +12,7 @@ require_relative '../../lib/wavefront-cli/version'
 # class via an instantiation of a concrete class. I don't think any
 # of this matters.
 #
-class WavefrontCliBaseTest < MiniTest::Test
+class WavefrontCliBaseTest < Minitest::Test
   attr_reader :wf, :wf_cmd
 
   def setup

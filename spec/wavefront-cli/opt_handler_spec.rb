@@ -14,7 +14,7 @@ INTERFERING_FILE = Pathname.new(Dir.home).join('.wavefront')
 # Test option handler class. End to end tests because the work is
 # always done in the constructor
 #
-class OptHandlerTest < MiniTest::Test
+class OptHandlerTest < Minitest::Test
   def test_no_opts
     x = WavefrontCli::OptHandler.new
     assert x.is_a?(WavefrontCli::OptHandler)
