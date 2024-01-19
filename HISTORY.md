@@ -1,7 +1,9 @@
 # Changelog
 
-## 9.0.0 (2023-01-20)
+## 9.0.1 (2024-01-19)
+* Fix HTTP proxy write bug by bumping SDK dependency.
 
+## 9.0.0 (2023-01-20)
 * Drop support for Ruby 2.5. (Breaking change.)
 * Drop support for Ruby 2.6. (Breaking change.)
 * Add `metricspolicy` command.
