@@ -92,7 +92,7 @@ module WavefrontCsvOutput
     end
 
     def quote_value(value)
-      format('"%<value>s"', value: value.to_s.gsub(/"/, '\"'))
+      format('"%<value>s"', value: value.to_s.gsub('"', '\"'))
     end
 
     # Turn a string of output options into an easy-to-query array

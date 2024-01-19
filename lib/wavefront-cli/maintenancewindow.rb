@@ -27,7 +27,7 @@ module WavefrontCli
 
       [%i[CustomerTags atag], %i[HostTags htag],
        %i[HostNames host]].each do |key, opt|
-        k = "relevant#{key}".to_sym
+        k = :"relevant#{key}"
         body[k] = options[opt] unless options[opt].empty?
       end
 

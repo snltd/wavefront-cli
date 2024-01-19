@@ -29,7 +29,7 @@ module WavefrontCli
 
     # Split regex for searches
     #
-    SEARCH_SPLIT = /\^|!\^|=|!=|~|!~/.freeze
+    SEARCH_SPLIT = /\^|!\^|=|!=|~|!~/
 
     # Where we store local event information
     #

@@ -35,7 +35,7 @@ class String
   # @return [String] the folded line
   #
   def fold(twidth = TW, indent = 10, prefix = '')
-    chunks = gsub(/default: /, 'default:^').scan_line(twidth - 8)
+    chunks = gsub('default: ', 'default:^').scan_line(twidth - 8)
     first_line = format("%<padding>s%<text>s\n",
                         padding: prefix,
                         text: chunks.shift)

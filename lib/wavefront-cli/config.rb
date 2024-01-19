@@ -34,7 +34,7 @@ module WavefrontCli
         test: proc { |v| %w[human json yaml].include?(v) } }
     ].freeze
 
-    RX = /^[\da-f]{8}-[\da-f]{4}-[\da-f]{4}-[\da-f]{4}-[\da-f]{12}$/.freeze
+    RX = /^[\da-f]{8}-[\da-f]{4}-[\da-f]{4}-[\da-f]{4}-[\da-f]{12}$/
 
     # rubocop:disable Lint/MissingSuper
     def initialize(options)

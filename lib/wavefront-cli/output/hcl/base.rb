@@ -61,9 +61,9 @@ module WavefrontHclOutput
     # @return [String]
     #
     def handler(key, val)
-      key_handler = "khandle_#{key}".to_sym
-      value_handler = "vhandle_#{key}".to_sym
-      quote_handler = "qhandle_#{key}".to_sym
+      key_handler = :"khandle_#{key}"
+      value_handler = :"vhandle_#{key}"
+      quote_handler = :"qhandle_#{key}"
       key = send(key_handler) if respond_to?(key_handler)
       val = send(value_handler, val) if respond_to?(value_handler)
 
@@ -92,7 +92,7 @@ module WavefrontHclOutput
     def quote_value(val)
       case val.class.to_s.to_sym
       when :String
-        format('"%<value>s"', value: val.gsub(/"/, '\"'))
+        format('"%<value>s"', value: val.gsub('"', '\"'))
       else
         val
       end
