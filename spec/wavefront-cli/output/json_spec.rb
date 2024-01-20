@@ -8,7 +8,7 @@ require_relative '../../../lib/wavefront-cli/output/json'
 
 # Test JSON output
 #
-class WavefrontOutputJsonTest < MiniTest::Test
+class WavefrontOutputJsonTest < Minitest::Test
   attr_reader :wfo
 
   def setup

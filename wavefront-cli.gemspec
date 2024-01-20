@@ -23,18 +23,8 @@ Gem::Specification.new do |gem|
 
   gem.add_runtime_dependency 'docopt', '~> 0.6'
   gem.add_runtime_dependency 'inifile', '~> 3.0'
-  gem.add_runtime_dependency 'wavefront-sdk', '~> 7.0'
+  gem.add_runtime_dependency 'wavefront-sdk', '~> 8.0'
 
-  gem.add_development_dependency 'minitest', '~> 5.17'
-  gem.add_development_dependency 'rake', '~> 13.0'
-  gem.add_development_dependency 'rubocop', '~> 1.43'
-  gem.add_development_dependency 'rubocop-minitest', '~> 0.26'
-  gem.add_development_dependency 'rubocop-performance', '~> 1.15'
-  gem.add_development_dependency 'rubocop-rake', '~> 0.6'
-  gem.add_development_dependency 'spy', '~> 1.0'
-  gem.add_development_dependency 'webmock', '~> 3.18'
-  gem.add_development_dependency 'yard', '~> 0.9'
-
-  gem.required_ruby_version = Gem::Requirement.new('>= 2.7.0')
+  gem.required_ruby_version = Gem::Requirement.new('>= 3.0.0')
   gem.metadata['rubygems_mfa_required'] = 'true'
 end

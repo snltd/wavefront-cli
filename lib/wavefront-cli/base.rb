@@ -49,7 +49,7 @@ module WavefrontCli
     # Overriding this method lets you map to something else.
     #
     def _sdk_class
-      self.class.name.sub(/Cli/, '')
+      self.class.name.sub('Cli', '')
     end
 
     # Some subcommands don't make an API call, so they don't return
@@ -85,7 +85,7 @@ module WavefrontCli
     # that, override this method.
     #
     def validator_method
-      "wf_#{klass_word}_id?".to_sym
+      :"wf_#{klass_word}_id?"
     end
 
     def validator_exception

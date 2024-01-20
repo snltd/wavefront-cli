@@ -11,7 +11,7 @@ TEST_EVENT_STORE_DIR = Pathname.new(Dir.mktmpdir)
 # Tests for event store class. This is tested well via the interface of the
 # events CLI class.
 #
-class Test < MiniTest::Test
+class Test < Minitest::Test
   attr_reader :wf
 
   include WavefrontCli::Constants

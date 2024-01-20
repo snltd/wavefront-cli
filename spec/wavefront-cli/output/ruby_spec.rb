@@ -10,7 +10,7 @@ require_relative '../../../lib/wavefront-cli/output/ruby'
 # controlled an environment as this, I'm not going to bother. We
 # only p() an objecty anyway.
 #
-class WavefrontOutputJsonTest < MiniTest::Test
+class WavefrontOutputJsonTest < Minitest::Test
   attr_reader :wfo
 
   def setup

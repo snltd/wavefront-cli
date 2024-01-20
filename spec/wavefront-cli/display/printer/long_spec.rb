@@ -7,7 +7,7 @@ require_relative '../../../../lib/wavefront-cli/display/printer/long'
 
 # Test verbose printing stuff
 #
-class TestWavefrontDisplayPrinterLong < MiniTest::Test
+class TestWavefrontDisplayPrinterLong < Minitest::Test
   attr_reader :wf
 
   def setup

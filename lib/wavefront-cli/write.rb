@@ -11,7 +11,7 @@ module WavefrontCli
     attr_reader :fmt
 
     include Wavefront::Mixins
-    SPLIT_PATTERN = /\s(?=(?:[^"]|"[^"]*")*$)/.freeze
+    SPLIT_PATTERN = /\s(?=(?:[^"]|"[^"]*")*$)/
 
     # rubocop:disable Metrics/AbcSize
     def do_point(value = options[:'<value>'])
@@ -235,7 +235,7 @@ module WavefrontCli
     #
     def extract_ts(chunks)
       ts = chunks[fmt.index('t')]
-      return parse_time(ts) if valid_timestamp?(ts)
+      parse_time(ts) if valid_timestamp?(ts)
     rescue TypeError
       Time.now.utc.to_i
     end

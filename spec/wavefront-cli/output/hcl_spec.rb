@@ -8,7 +8,7 @@ require_relative '../../../lib/wavefront-cli/output/hcl'
 
 # Test HCL stuff
 #
-class WavefrontOutputBaseTest < MiniTest::Test
+class WavefrontOutputBaseTest < Minitest::Test
   attr_reader :wfo
 
   def setup

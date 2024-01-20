@@ -6,7 +6,7 @@ require_relative '../../../lib/wavefront-cli/stdlib/array'
 
 # Test extensions to stlib Array
 #
-class TestArray < MiniTest::Test
+class TestArray < Minitest::Test
   def test_max_length
     assert_equal(7, %w[short longer longest].max_length)
     assert_equal(7, %i[short longer longest].max_length)

@@ -8,7 +8,7 @@ require_relative '../../lib/wavefront-cli/controller'
 # An abstract class which facilitates "end-to-end" testing of
 # commands.
 #
-class EndToEndTest < MiniTest::Test
+class EndToEndTest < Minitest::Test
   attr_accessor :single_perm
   attr_reader :wf
 

@@ -6,7 +6,7 @@ require_relative 'base'
 #
 class WavefrontCommandConfig < WavefrontCommandBase
   def description
-    'create and manage local configuration'
+    'create and manage local configuration, and display debug info'
   end
 
   def _commands
@@ -16,15 +16,11 @@ class WavefrontCommandConfig < WavefrontCommandBase
      'setup [-D] [-c file] [<profile>]',
      'delete [-D] [-c file] <profile>',
      'envvars',
+     "cluster #{CMN}",
      'about']
   end
 
   def _options
-    ['-c, --config=FILE    path to configuration file',
-     '-D, --debug          enable debug mode']
-  end
-
-  def global_options
-    []
+    [common_options]
   end
 end

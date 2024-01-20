@@ -6,7 +6,7 @@ require_relative '../../lib/wavefront-cli/write'
 
 # Test base writer
 #
-class WavefrontCliWriteTest < MiniTest::Test
+class WavefrontCliWriteTest < Minitest::Test
   attr_reader :wf
 
   def setup

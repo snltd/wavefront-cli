@@ -8,7 +8,7 @@ require_relative '../../../lib/wavefront-cli/output/csv'
 
 # Test the CSV instantiation of the base class
 #
-class CsvOutputBaseTest < MiniTest::Test
+class CsvOutputBaseTest < Minitest::Test
   attr_reader :wfo
 
   def setup

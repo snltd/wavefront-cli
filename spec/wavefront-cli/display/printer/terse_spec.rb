@@ -10,7 +10,7 @@ TERSE_DATA = [{ id: 'id1', name: 'name1', fa: 1, fb: 2, fc: 3 },
 
 # Test terse printer
 #
-class WavefrontDisplayPrinterTerse < MiniTest::Test
+class WavefrontDisplayPrinterTerse < Minitest::Test
   attr_reader :wf, :out
 
   def setup

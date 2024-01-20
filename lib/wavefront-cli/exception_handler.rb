@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'faraday'
+
 module WavefrontCli
   #
   # Handle fatal errors.
@@ -80,6 +82,8 @@ module WavefrontCli
         abort 'Search on non-existent key. Please use a top-level field.'
       when Wavefront::Exception::InvalidSamplingValue
         abort 'Sampling rates must be between 0 and 0.05.'
+      when Faraday::ConnectionFailed
+        abort 'Error connecting to remote host.'
       else
         warn "general error: #{exception}"
         backtrace_message(exception)

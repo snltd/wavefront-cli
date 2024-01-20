@@ -8,7 +8,7 @@ require_relative '../../../lib/wavefront-cli/output/yaml'
 
 # Test YAML output
 #
-class WavefrontOutputYamlTest < MiniTest::Test
+class WavefrontOutputYamlTest < Minitest::Test
   attr_reader :wfo
 
   def setup

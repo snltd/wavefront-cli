@@ -8,7 +8,7 @@ require_relative '../../../lib/wavefront-cli/commands/base'
 
 # Abstract class for testing commands
 #
-class WavefrontCommmandBaseTest < MiniTest::Test
+class WavefrontCommmandBaseTest < Minitest::Test
   attr_reader :wf, :col_width, :skip_cmd
 
   def setup

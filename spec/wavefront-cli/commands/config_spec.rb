@@ -13,11 +13,11 @@ require_relative 'base_spec'
 class WavefrontCommmandConfigTest < WavefrontCommmandBaseTest
   def setup
     @wf = WavefrontCommandConfig.new
-    @col_width = 17
+    @col_width = 19
   end
 
   def test_options
-    refute wf.options(600).start_with?("Global options:\n")
+    assert wf.options(600).start_with?("Global options:\n")
     assert_match(/Options:\n/, wf.options)
 
     wf.options(600).split("\n")[1..].each do |o|
@@ -28,7 +28,7 @@ class WavefrontCommmandConfigTest < WavefrontCommmandBaseTest
       refute o.end_with?('.')
     end
 
-    assert_equal(wf.options.split("\n").count(&:empty?), 0)
+    assert_equal(wf.options.split("\n").count(&:empty?), 1)
   end
 
   def test_commands
@@ -45,7 +45,7 @@ class WavefrontCommmandConfigTest < WavefrontCommmandBaseTest
   def test_docopt
     x = wf.docopt
     assert x.start_with?("Usage:\n")
-    refute_match("\nGlobal options:\n", x)
+    assert_match("\nGlobal options:\n", x)
     assert_match("--help\n", x)
     assert_instance_of(String, x)
   end

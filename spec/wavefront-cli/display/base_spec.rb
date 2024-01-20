@@ -12,7 +12,7 @@ S_OPTIONS = { '<id>': 'abc123' }.freeze
 
 # Test base class for display methods
 #
-class WavefrontDisplayBaseTest < MiniTest::Test
+class WavefrontDisplayBaseTest < Minitest::Test
   attr_reader :wf, :wff
 
   def setup
