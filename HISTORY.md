@@ -3,6 +3,8 @@
 ## 10.0.0 (2024-01-19)
 * Remove support for Ruby < 3.0 (Breaking change.)
 * Fix HTTP proxy write bug by bumping SDK dependency.
+* Add `config cluster` command.
+* Revamp `config` command internals and improve tests.
 
 ## 9.0.0 (2023-01-20)
 * Drop support for Ruby 2.5. (Breaking change.)

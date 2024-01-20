@@ -5,9 +5,11 @@ require 'pathname'
 require 'minitest/autorun'
 require_relative '../constants'
 require_relative '../../lib/wavefront-cli/config'
+require_relative '../support/command_base'
 
 DEF_CF = Pathname.new(Dir.home).join('.wavefront')
 CONF_TMP = Pathname.new('/tmp/outfile')
+CMD_PATH = Pathname.new(__FILE__)
 
 # Test CLI configuration command
 #
@@ -15,19 +17,20 @@ class WavefrontCliConfigTest < Minitest::Test
   attr_reader :wf, :wfo, :wfn
 
   def setup
+    blank_envvars
     @wf = WavefrontCli::Config.new({})
     @wfo = WavefrontCli::Config.new(config: CF)
     @wfn = WavefrontCli::Config.new(config: '/no/file')
   end
 
   def test_do_location
-    assert_output(format("%<file>s\n", file: CF)) { wfo.do_location }
-    assert_output("/no/file\n") { wfn.do_location }
-    assert_output(format("%<file>s\n", file: DEF_CF)) { wf.do_location }
+    assert_equal(DEF_CF, wf.do_location)
+    assert_equal(Pathname('/no/file'), wfn.do_location)
+    assert_equal(CF, wfo.do_location)
   end
 
   def test_do_profiles
-    assert_output("default\nother\n") { wfo.do_profiles }
+    assert_equal(%w[default other], wfo.do_profiles)
 
     assert_raises(WavefrontCli::Exception::ConfigFileNotFound) do
       wfn.do_profiles
@@ -35,10 +38,10 @@ class WavefrontCliConfigTest < Minitest::Test
   end
 
   def test_do_show
-    out, err = capture_io { wfo.do_show }
-    assert_empty(err)
-    assert out.start_with?("[default]\n")
-    assert_equal(10, out.split("\n").size)
+    assert_equal(File.read(CF), wfo.do_show)
+    # assert_empty(err)
+    # assert out.start_with?("[default]\n")
+    # assert_equal(10, out.split("\n").size)
   end
 
   def test_input_prompt
@@ -72,23 +75,25 @@ class WavefrontCliConfigTest < Minitest::Test
     end
   end
 
-  def test_validate_input
-    assert_equal('str', wf.validate_input('str', nil,
-                                          proc { |v| v.is_a?(String) }))
+  def test_validate_thing_input
+    assert_equal('str', wf.validate_thing_input('str', nil,
+                                                proc { |v| v.is_a?(String) }))
 
-    assert_equal('defval', wf.validate_input('', 'defval',
-                                             proc { |v| v.is_a?(String) }))
+    assert_equal('defval', wf.validate_thing_input('', 'defval',
+                                                   proc { |v|
+                                                     v.is_a?(String)
+                                                   }))
 
     assert_raises(WavefrontCli::Exception::MandatoryValue) do
-      wf.validate_input('', nil, proc { |v| v.is_a?(String) })
+      wf.validate_thing_input('', nil, proc { |v| v.is_a?(String) })
     end
 
     assert_raises(WavefrontCli::Exception::InvalidValue) do
-      wf.validate_input(:symbol, nil, proc { |v| v.is_a?(String) })
+      wf.validate_thing_input(:symbol, nil, proc { |v| v.is_a?(String) })
     end
 
     assert_raises(WavefrontCli::Exception::InvalidValue) do
-      wf.validate_input('', 123, proc { |v| v.is_a?(String) })
+      wf.validate_thing_input('', 123, proc { |v| v.is_a?(String) })
     end
   end
 
@@ -204,40 +209,28 @@ class WavefrontCliConfigTest < Minitest::Test
     end
   end
 
-  def test_do_envvars_1
-    blank_envvars
-    out, err = capture_io { wfo.do_envvars }
-    assert_empty(err)
-    out.each_line { |l| assert_match(/WAVEFRONT_[A-Z]+\s+unset$/, l) }
-    blank_envvars
+  def test_do_envvars_all_unset
+    assert_equal(['WAVEFRONT_ENDPOINT   unset',
+                  'WAVEFRONT_TOKEN      unset',
+                  'WAVEFRONT_PROXY      unset'], wfo.do_envvars)
   end
 
-  def test_do_envvars_2
-    blank_envvars
+  def test_do_envvars_proxy_set
     ENV['WAVEFRONT_PROXY'] = 'myproxy'
 
-    out, err = capture_io { wfo.do_envvars }
-    assert_empty(err)
-    assert_match(/WAVEFRONT_ENDPOINT+\s+unset$/, out)
-    assert_match(/WAVEFRONT_TOKEN+\s+unset$/, out)
-    assert_match(/WAVEFRONT_PROXY+\s+myproxy$/, out)
-    blank_envvars
+    assert_equal(['WAVEFRONT_ENDPOINT   unset',
+                  'WAVEFRONT_TOKEN      unset',
+                  'WAVEFRONT_PROXY      myproxy'], wfo.do_envvars)
   end
 
-  def test_do_envvars_3
-    blank_envvars
+  def test_do_envvars_proxy_and_token_set
     ENV['WAVEFRONT_PROXY'] = 'myproxy'
     ENV['WAVEFRONT_TOKEN'] = 'token'
 
-    out, err = capture_io { wfo.do_envvars }
-    assert_empty(err)
-    assert_match(/WAVEFRONT_ENDPOINT+\s+unset$/, out)
-    assert_match(/WAVEFRONT_TOKEN+\s+token$/, out)
-    assert_match(/WAVEFRONT_PROXY+\s+myproxy$/, out)
-    blank_envvars
+    assert_equal(['WAVEFRONT_ENDPOINT   unset',
+                  'WAVEFRONT_TOKEN      token',
+                  'WAVEFRONT_PROXY      myproxy'], wfo.do_envvars)
   end
-
-  def test_read_thing; end
 
   def test_present?
     assert wfo.present?
@@ -259,5 +252,52 @@ class WavefrontCliConfigTest < Minitest::Test
     %w[WAVEFRONT_ENDPOINT WAVEFRONT_PROXY WAVEFRONT_TOKEN].each do |v|
       ENV[v] = nil
     end
+  end
+end
+
+class ConfigEndToEndTest < EndToEndTest
+  def test_location
+    assert_output("#{Pathname.new(Dir.home).join('.wavefront')}\n", '') do
+      wf.new('config location'.split)
+    end
+  end
+
+  def test_profiles
+    assert_output("default\nother\n", '') do
+      wf.new("config profiles -c #{CF}".split)
+    end
+  end
+
+  def test_envvars
+    out, err = capture_io { wf.new('config envvars'.split) }
+    assert_equal(3, out.lines.count)
+    assert_empty err
+    assert_match(/^WAVEFRONT_ENDPOINT /, out)
+    assert_match(/^WAVEFRONT_TOKEN /, out)
+    assert_match(/^WAVEFRONT_PROXY /, out)
+  end
+
+  def test_cluster
+    assert_abort_on_missing_creds('cluster')
+    quietly { assert_cmd_gets('cluster', '/api/v2/cluster/info') }
+  end
+
+  def test_about
+    out, err = capture_io { wf.new('config about'.split) }
+    lines = out.lines
+
+    assert_match(/^wf version *#{WF_CLI_VERSION}$/o, lines[0])
+    assert lines[1].start_with?('wf path')
+    assert lines[2].start_with?('SDK version')
+    assert lines[3].start_with?('SDK location')
+    assert lines[4].start_with?('Ruby version')
+    assert lines[5].start_with?('Ruby platform')
+    assert_empty err
+  end
+
+  private
+
+  def cmd_word
+    'config'
   end
 end

@@ -3,7 +3,7 @@
 # For development against a local checkout of the SDK, uncomment
 # this definition
 #
-# DEVELOPMENT = true
+DEVELOPMENT = true
 
 if defined?(DEVELOPMENT)
   dir = Pathname.new(__dir__).realpath.parent.parent.parent

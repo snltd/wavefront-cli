@@ -6,11 +6,7 @@ require_relative 'base'
 
 module WavefrontCli
   #
-  # Create and manage a local configuration file. This class doesn't
-  # fit many of the assumptions made by the Base class. (Primarily,
-  # that it will consume the SDK.) Rather than split everything up,
-  # we're going to do some bad programming and override a couple of
-  # methods in the parent class to force different behaviour.
+  # Create and manage a local configuration file.
   #
   class Config < WavefrontCli::Base
     attr_reader :config_file, :profile
@@ -36,39 +32,37 @@ module WavefrontCli
 
     RX = /^[\da-f]{8}-[\da-f]{4}-[\da-f]{4}-[\da-f]{4}-[\da-f]{12}$/
 
-    # rubocop:disable Lint/MissingSuper
-    def initialize(options)
-      @options = options
+    def post_initialize(options)
       @config_file = _config_file
       @profile = options[:'<profile>'] || 'default'
     end
-    # rubocop:enable Lint/MissingSuper
+
+    def _sdk_class
+      'Wavefront::Cluster'
+    end
 
     def do_location
-      puts config_file
+      config_file
     end
 
     def do_profiles
-      read_config.sections.each { |s| puts s }
+      read_config.sections.sort
     end
 
     def do_show
       present?
-      puts File.read(config_file)
+      File.read(config_file)
     end
 
     def do_about
       require 'wavefront-sdk/defs/version'
-      require_relative 'display/base'
 
-      info = { 'wf version': WF_CLI_VERSION,
-               'wf path': CMD_PATH.realpath.to_s,
-               'SDK version': WF_SDK_VERSION,
-               'SDK location': WF_SDK_LOCATION.to_s,
-               'Ruby version': RUBY_VERSION,
-               'Ruby platform': Gem::Platform.local.os.capitalize }
-
-      WavefrontDisplay::Base.new(info).long_output
+      { 'wf version': WF_CLI_VERSION,
+        'wf path': CMD_PATH.realpath.to_s,
+        'SDK version': WF_SDK_VERSION,
+        'SDK location': WF_SDK_LOCATION.to_s,
+        'Ruby version': RUBY_VERSION,
+        'Ruby platform': Gem::Platform.local.os.capitalize }
     end
 
     def base_config
@@ -121,20 +115,22 @@ module WavefrontCli
     end
 
     def do_envvars
-      %w[WAVEFRONT_ENDPOINT WAVEFRONT_TOKEN WAVEFRONT_PROXY].each do |v|
-        puts format('%-20<var>s %<value>s',
-                    var: v,
-                    value: ENV[v] || 'unset')
+      %w[WAVEFRONT_ENDPOINT WAVEFRONT_TOKEN WAVEFRONT_PROXY].map do |v|
+        format('%-20<var>s %<value>s', var: v, value: ENV[v] || 'unset')
       end
+    end
+
+    def do_cluster
+      wf.describe
     end
 
     def validate_opts; end
 
-    def display(_data, _method); end
-
-    def run
-      dispatch
+    def no_api_response
+      %w[do_location do_profiles do_show do_envvars do_about]
     end
+
+    # def display(_data, _method); end
 
     def input_prompt(label, default)
       ret = format('  %<label>s', label: label)
@@ -156,10 +152,10 @@ module WavefrontCli
     #
     def read_thing(thing)
       print input_prompt(thing[:text], thing[:default])
-      validate_input(read_input, thing[:default], thing[:test])
+      validate_thing_input(read_input, thing[:default], thing[:test])
     end
 
-    def validate_input(input, default, test)
+    def validate_thing_input(input, default, test)
       if input.empty?
         raise WavefrontCli::Exception::MandatoryValue if default.nil?
 

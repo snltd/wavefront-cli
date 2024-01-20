@@ -9,7 +9,7 @@ class Array
   def max_length
     return 0 if empty?
 
-    map(&:to_s).map(&:length).max
+    map { |x| x.to_s.length }.max
   end
 
   # @return [Integer] the length of the longest value in an array of
