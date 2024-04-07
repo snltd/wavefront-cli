@@ -1,5 +1,5 @@
 # Wavefront CLI
-[![Test](https://github.com/snltd/wavefront-cli/actions/workflows/test.yml/badge.svg?branch=master)](https://github.com/snltd/wavefront-cli/actions/workflows/test.yml) ![Release](https://github.com/snltd/wavefront-sdk/workflows/Release/badge.svg) [![Maintainability](https://api.codeclimate.com/v1/badges/9b712047af0b2dafc146/maintainability)](https://codeclimate.com/github/snltd/wavefront-cli/maintainability) [![Gem Version](https://badge.fury.io/rb/wavefront-cli.svg)](https://badge.fury.io/rb/wavefront-cli) ![](http://ruby-gem-downloads-badge.herokuapp.com/wavefront-cli?type=total)
+[![Test](https://github.com/snltd/wavefront-cli/actions/workflows/test.yml/badge.svg)](https://github.com/snltd/wavefront-cli/actions/workflows/test.yml) ![Release](https://github.com/snltd/wavefront-sdk/workflows/Release/badge.svg) [![Gem Version](https://badge.fury.io/rb/wavefront-cli.svg)](https://badge.fury.io/rb/wavefront-cli) ![](http://ruby-gem-downloads-badge.herokuapp.com/wavefront-cli?type=total)
 
 This is a complete command-line interface to
 [Wavefront](https://www.wavefront.com/)'s API. It also provides easy
