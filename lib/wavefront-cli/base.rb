@@ -246,7 +246,7 @@ module WavefrontCli
 
     def check_response_blocks(data)
       %i[status response].each do |b|
-        abort "no #{b} block in API response" unless data.respond_to?(b)
+        abort "No #{b} block in API response" unless data.respond_to?(b)
       end
     end
 

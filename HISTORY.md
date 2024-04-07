@@ -1,5 +1,8 @@
 # Changelog
 
+## 10.0.1 (2024-04-07)
+* Fix "no status in API response" bug when sending stdin data to API.
+
 ## 10.0.0 (2024-01-19)
 * Remove support for Ruby < 3.0 (Breaking change.)
 * Fix HTTP proxy write bug by bumping SDK dependency.
