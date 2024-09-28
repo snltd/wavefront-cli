@@ -79,7 +79,7 @@ class WriteEndToEndTest < EndToEndTest
     wf = WavefrontCliController
 
     out, err = capture_io do
-      assert_raises(SystemExit) { wf.new(%w[write point -u unix test 1]) }
+      assert_raises(SystemExit) { wf.new(%w[write point -u socket test 1]) }
     end
 
     assert_empty(err)
