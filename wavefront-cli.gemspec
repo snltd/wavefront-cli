@@ -21,9 +21,9 @@ Gem::Specification.new do |gem|
   gem.executables   = 'wf'
   gem.require_paths = %w[lib]
 
-  gem.add_runtime_dependency 'docopt', '~> 0.6'
-  gem.add_runtime_dependency 'inifile', '~> 3.0'
-  gem.add_runtime_dependency 'wavefront-sdk', '~> 8.0'
+  gem.add_dependency 'docopt', '~> 0.6'
+  gem.add_dependency 'inifile', '~> 3.0'
+  gem.add_dependency 'wavefront-sdk', '~> 8.0'
 
   gem.required_ruby_version = Gem::Requirement.new('>= 3.0.0')
   gem.metadata['rubygems_mfa_required'] = 'true'

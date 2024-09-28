@@ -190,7 +190,7 @@ module WavefrontCli
       end
 
       if respond_to?(:do_default)
-        return display(public_send(:do_default), :do_default)
+        return display(do_default, :do_default)
       end
 
       raise WavefrontCli::Exception::UnhandledCommand
