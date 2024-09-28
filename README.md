@@ -296,7 +296,7 @@ $ while true; do echo $RANDOM; sleep 1; done | wf write file -m cli.demo -Fv -
 If you wish to write points directly via the API, and you have the
 "direct ingestion" privilege, just add `-u api` to your `write`
 command. To send points to a proxy over HTTP, use `-u http`, and to
-write to a Unix socket use `-u unix`.
+write to a Unix socket use `-u socket`.
 
 You can write delta metrics with `-i` (for increment).
 
