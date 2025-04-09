@@ -58,13 +58,14 @@ class WavefrontOutputWavefrontTest < Minitest::Test
   end
 
   def check_wf_native_output(out)
+    vals = [10, 13]
     out.each do |l|
       c = l.split(' ', 5)
       assert_equal(c[0], 'solaris.network.obytes64')
       assert_match(/^[\d.]+$/, c[1])
       # query returns epoch s timestamp, raw returns epoch ms
       assert_match(/^\d+$/, c[2])
-      assert(c[2].size == 10 || c[2].size == 13)
+      assert(vals.include?(c[2].size))
       assert_match(/^source=[-\w]+$/, c[3])
       assert_match(/^source=[-\w]+$/, c[3])
       c[4].split.each { |t| assert_match(/^\w+="[-\w]+"$/, t) }

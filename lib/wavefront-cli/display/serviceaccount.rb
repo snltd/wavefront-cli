@@ -20,11 +20,11 @@ module WavefrontDisplay
     end
 
     def do_activate
-      puts format("Activated service account '#{options[:'<id>']}'.")
+      puts "Activated service account '#{options[:'<id>']}'."
     end
 
     def do_deactivate
-      puts format("Deactivated service account '#{options[:'<id>']}'.")
+      puts "Deactivated service account '#{options[:'<id>']}'."
     end
 
     def do_groups
@@ -73,7 +73,7 @@ module WavefrontDisplay
     end
 
     def do_apitoken_delete
-      puts format("Deleted API token '#{options[:'<token_id>']}'.")
+      puts "Deleted API token '#{options[:'<token_id>']}'."
     end
 
     def do_delete

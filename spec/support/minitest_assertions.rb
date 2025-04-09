@@ -105,9 +105,9 @@ module Minitest
                    "performed as no-ops.\n", err)
     end
 
-    def assert_repeated_output(msg, &block)
+    def assert_repeated_output(msg, &)
       begin
-        out, err = capture_io(&block)
+        out, err = capture_io(&)
       rescue SystemExit => e
         puts e.backtrace
         p e
