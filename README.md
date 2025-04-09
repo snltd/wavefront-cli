@@ -1,13 +1,17 @@
 # Wavefront CLI
 
 [![Test](https://github.com/snltd/wavefront-cli/actions/workflows/test.yml/badge.svg)](https://github.com/snltd/wavefront-cli/actions/workflows/test.yml)
-![Release](https://github.com/snltd/wavefront-sdk/workflows/Release/badge.svg)
+[![Release](https://github.com/snltd/wavefront-cli/actions/workflows/release.yml/badge.svg)](https://github.com/snltd/wavefront-cli/actions/workflows/release.yml)
 [![Gem Version](https://badge.fury.io/rb/wavefront-cli.svg)](https://badge.fury.io/rb/wavefront-cli)
 ![](http://ruby-gem-downloads-badge.herokuapp.com/wavefront-cli?type=total)
 
 This is a complete command-line interface to
-[Wavefront](https://www.wavefront.com/)'s API. It also provides easy ways to get
-data into Wavefront.
+[Tanzu Observability](https://www.broadcom.com/products/software/aiops-observability/tanzu-observability),
+formerly known as Wavefront. Throughout this document it will be referred to by
+its old name.
+
+As well as covering the Wavefront API, the CLI also makes it easy to get data
+into Wavefront from the command-line.
 
 The gem is hosted [on Rubygems](https://rubygems.org/gems/wavefront-cli) and can
 be installed with
@@ -16,18 +20,17 @@ be installed with
 $ gem install wavefront-cli
 ```
 
-It is built on [our Wavefront Ruby SDK](https://github.com/snltd/wavefront-sdk)
+It is built on my [Wavefront Ruby SDK](https://github.com/snltd/wavefront-sdk)
 and requires Ruby >= 3.1. It has no "native extension" dependencies.
 
 For a far more comprehensive overview/tutorial, please read
-[this article](https://sysdef.xyz/article/wavefront-cli).
+[this article](https://tech.id264.net/article/wavefront-cli).
 
 ```
-$ wf --help
 Wavefront CLI
 
 Usage:
-  wf [options] command [options]
+  wf command [options]
   wf --version
   wf --help
 
@@ -36,7 +39,7 @@ Commands:
   alert              view and manage alerts
   apitoken           view and your own API tokens
   cloudintegration   view and manage cloud integrations
-  config             create and manage local configuration
+  config             create and manage local configuration, and display debug info
   dashboard          view and manage dashboards
   derivedmetric      view and manage derived metrics
   event              open, close, view, and manage events
@@ -45,6 +48,7 @@ Commands:
   link               view and manage external links
   message            read and mark user messages
   metric             get metric details
+  metricspolicy      view and manage metrics policies
   notificant         view and manage Wavefront alert targets
   proxy              view and manage proxies
   query              run Wavefront queries
@@ -304,7 +308,7 @@ $ wf write point cli.example -- -10
 $ wf write point cli.example "\-10"
 ```
 
-You can even write distibutions. Either list every number individually, or use
+You can even write distributions. Either list every number individually, or use
 `x` to specify multiples of any value. You can mix and match within the same
 line.
 
