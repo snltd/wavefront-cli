@@ -10,5 +10,5 @@ gem 'rubocop-minitest', '~> 0.26', group: :development
 gem 'rubocop-performance', '~> 1.15', group: :development
 gem 'rubocop-rake', '~> 0.6', group: :development
 gem 'spy', '~> 1.0', group: :development
-gem 'webmock', '~> 3.20.0', group: :development
+gem 'webmock', '~> 3.20', group: :development
 gem 'yard', '~> 0.9', group: :development

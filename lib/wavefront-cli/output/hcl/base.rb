@@ -52,7 +52,7 @@ module WavefrontHclOutput
     def required_fields
       return resp if hcl_fields.empty?
 
-      resp.select { |k, _v| hcl_fields.include?(k) }
+      resp.slice(*hcl_fields)
     end
 
     # Format each key-value pair

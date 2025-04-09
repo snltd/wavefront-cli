@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'pathname'
-require 'date'
 require_relative 'lib/wavefront-cli/version'
 
 Gem::Specification.new do |gem|
@@ -25,6 +23,6 @@ Gem::Specification.new do |gem|
   gem.add_dependency 'inifile', '~> 3.0'
   gem.add_dependency 'wavefront-sdk', '~> 8.0'
 
-  gem.required_ruby_version = Gem::Requirement.new('>= 3.0.0')
+  gem.required_ruby_version = Gem::Requirement.new('>= 3.1.0')
   gem.metadata['rubygems_mfa_required'] = 'true'
 end
