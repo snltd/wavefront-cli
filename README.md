@@ -1,9 +1,12 @@
 # Wavefront CLI
-[![Test](https://github.com/snltd/wavefront-cli/actions/workflows/test.yml/badge.svg)](https://github.com/snltd/wavefront-cli/actions/workflows/test.yml) ![Release](https://github.com/snltd/wavefront-sdk/workflows/Release/badge.svg) [![Gem Version](https://badge.fury.io/rb/wavefront-cli.svg)](https://badge.fury.io/rb/wavefront-cli) ![](http://ruby-gem-downloads-badge.herokuapp.com/wavefront-cli?type=total)
+[![Test](https://github.com/snltd/wavefront-cli/actions/workflows/test.yml/badge.svg)](https://github.com/snltd/wavefront-cli/actions/workflows/test.yml) [![Release](https://github.com/snltd/wavefront-cli/actions/workflows/release.yml/badge.svg)](https://github.com/snltd/wavefront-cli/actions/workflows/release.yml) [![Gem Version](https://badge.fury.io/rb/wavefront-cli.svg)](https://badge.fury.io/rb/wavefront-cli) ![](http://ruby-gem-downloads-badge.herokuapp.com/wavefront-cli?type=total)
 
-This is a complete command-line interface to
-[Wavefront](https://www.wavefront.com/)'s API. It also provides easy
-ways to get data into Wavefront.
+This is a complete command-line interface to [Tanzu Observability](https://www.broadcom.com/products/software/aiops-observability/tanzu-observability), 
+formerly known as Wavefront. Throughout this document it will be referred to
+by its old name.
+
+As well as covering the Wavefront API, the CLI also makes it easy
+to get data into Wavefront from the command-line.
 
 The gem is hosted [on
 Rubygems](https://rubygems.org/gems/wavefront-cli) and can be
@@ -18,7 +21,7 @@ SDK](https://github.com/snltd/wavefront-sdk) and requires Ruby >=
 3.0. It has no "native extension" dependencies.
 
 For a far more comprehensive overview/tutorial, please read [this
-article](https://sysdef.xyz/article/wavefront-cli).
+article](https://tech.id264.net/article/wavefront-cli).
 
 ```
 $ wf --help
