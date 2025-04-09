@@ -158,13 +158,14 @@ class WavefrontOutputCsvTest < Minitest::Test
   end
 
   def check_csv_output(out)
+    vals = [10, 13]
     out.each do |l|
       c = l.split(',', 5)
       assert_equal(c[0], 'solaris.network.obytes64')
       assert_match(/^[\d.]+$/, c[1])
       # query returns epoch s timestamp, raw returns epoch ms
       assert_match(/^\d+$/, c[2])
-      assert(c[2].size == 10 || c[2].size == 13)
+      assert(vals.include?(c[2].size))
       assert(c[3] =~ /.*blue$/)
     end
   end

@@ -143,12 +143,10 @@ class WavefrontCommandBase
   #   columns. This is used to indent following lines
   # @param term_width [Integer] the width of the user's terminal
   #
-  # rubocop:disable Lint/FormatParameterMismatch
   def opt_row(opt_str, width, term_width = TW)
     format("  %s %-#{width}s %s",
            *opt_str.split(/\s+/, 3)).opt_fold(term_width, width + 5)
   end
-  # rubocop:enable Lint/FormatParameterMismatch
 
   # @return [Integer] the width of the column containing short and
   #   long options
